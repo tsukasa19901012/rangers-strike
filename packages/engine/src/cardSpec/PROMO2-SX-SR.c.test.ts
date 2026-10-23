@@ -214,7 +214,7 @@ describe("SR-004 ヘドリアン女王（2nd）", () => {
 
   it("SR-004: カタログ本文・スペックが出典と一致（出典: atwiki/page-578）", () => {
     expectCatalogText("SR-004", TEXT);
-    expectUnitStats("SR-004", { name: "ヘドリアン女王（2nd）", category: "DA", size: "S", bp: 5000, sp: undefined, powerCost: 3, features: ["女王", "ベーダー一族", "女", "メカ", "2nd"] });
+    expectUnitStats("SR-004", { name: "ヘドリアン女王", category: "DA", size: "S", bp: 5000, sp: undefined, powerCost: 3, features: ["女王", "ベーダー一族", "女", "メカ", "2nd"] });
     expectRarityIn("SR-004", ["SC"]);
   });
 

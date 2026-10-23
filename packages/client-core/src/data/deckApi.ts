@@ -8,7 +8,6 @@ type Catalog = { expansion: string; cards: CardDefinition[] };
 export type DeckRuleFunctions = {
   catalog: Catalog;
   validateDeckEntries(entries: DeckEntry[], catalog: Catalog): { ok: boolean; total: number; errors: string[] };
-  normalizeSameCardName(name: string): string;
   maxCopiesForCard(card: CardDefinition): number;
   cardCategories(card: CardDefinition): string[];
   expandDeck(deck: { id: string; name: string; starterType: string; expansion: string; source: string; entries: DeckEntry[] }, catalog: Catalog): CardDefinition[];
@@ -19,7 +18,7 @@ export function createDeckApi(rules: DeckRuleFunctions): DeckApi {
   return {
     cards,
     validate: (entries) => rules.validateDeckEntries([...entries], rules.catalog),
-    sameNameKey: (card) => rules.normalizeSameCardName(card.name),
+    sameNameKey: (card) => card.name,
     maxCopies: (card) => rules.maxCopiesForCard(card),
     categories: (card) => rules.cardCategories(card),
     build: (entries) =>

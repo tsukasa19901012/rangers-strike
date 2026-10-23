@@ -511,7 +511,7 @@ describe("RS-653 レッドファルコン（2nd）", () => {
 
   it("RS-653: カタログ本文・スペックが出典と一致（出典: atwiki/page-1518）", () => {
     expectCatalogText("RS-653", TEXT);
-    expectStats("RS-653", { name: "レッドファルコン（2nd）", category: "ET", size: "S", bp: 3000, sp: undefined, powerCost: 4, comboNumber: 1, features: ["レッド", "男", "2nd"] });
+    expectStats("RS-653", { name: "レッドファルコン", category: "ET", size: "S", bp: 3000, sp: undefined, powerCost: 4, comboNumber: 1, features: ["レッド", "男", "2nd"] });
   });
 
   it("RS-653: レアリティはスーパーレア（出典: atwiki/page-1518「レアリティ：スーパーレア」）", () => {
@@ -566,7 +566,7 @@ describe("RS-654 ガオイエロー（2nd）", () => {
 
   it("RS-654: カタログ本文・スペックが出典と一致（出典: atwiki/page-1519）", () => {
     expectCatalogText("RS-654", TEXT);
-    expectStats("RS-654", { name: "ガオイエロー（2nd）", category: "WB", size: "S", bp: 2000, sp: "special", powerCost: 3, comboNumber: 2, features: ["イエロー", "男", "2nd"] });
+    expectStats("RS-654", { name: "ガオイエロー", category: "WB", size: "S", bp: 2000, sp: "special", powerCost: 3, comboNumber: 2, features: ["イエロー", "男", "2nd"] });
   });
 
   it("RS-654: レアリティはスーパーレア（出典: atwiki/page-1519「レアリティ：スーパーレア」）", () => {

@@ -163,7 +163,7 @@ describe("RK-296 仮面ライダーキックホッパー（2nd）", () => {
 
   it("RK-296: カタログ本文・スペックが出典と一致（出典: atwiki/page-1392）", () => {
     expectCatalogText("RK-296", TEXT);
-    expectStats("RK-296", { name: "仮面ライダーキックホッパー（2nd）", category: "OT", size: "S", bp: 2000, sp: "1/4", powerCost: 4, comboNumber: 1, features: ["仮面ライダー", "男", "加速", "2nd"] });
+    expectStats("RK-296", { name: "仮面ライダーキックホッパー", category: "OT", size: "S", bp: 2000, sp: "1/4", powerCost: 4, comboNumber: 1, features: ["仮面ライダー", "男", "加速", "2nd"] });
     expectRarityIn("RK-296", ["R"]);
   });
 
@@ -233,7 +233,7 @@ describe("RK-297 仮面ライダーパンチホッパー（2nd）", () => {
 
   it("RK-297: カタログ本文・スペックが出典と一致（出典: atwiki/page-1386）", () => {
     expectCatalogText("RK-297", TEXT);
-    expectStats("RK-297", { name: "仮面ライダーパンチホッパー（2nd）", category: "OT", size: "S", bp: 2000, sp: undefined, powerCost: 3, comboNumber: 2, features: ["仮面ライダー", "男", "加速", "2nd"] });
+    expectStats("RK-297", { name: "仮面ライダーパンチホッパー", category: "OT", size: "S", bp: 2000, sp: undefined, powerCost: 3, comboNumber: 2, features: ["仮面ライダー", "男", "加速", "2nd"] });
     expectRarityIn("RK-297", ["N"]);
   });
 

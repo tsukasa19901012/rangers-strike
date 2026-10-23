@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-549",
-  "name": "トリケラレンジャー（2nd）",
+  "name": "トリケラレンジャー",
   "type": "unit",
   "category": "WB",
   "rarity": "N",

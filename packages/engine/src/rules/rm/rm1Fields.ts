@@ -10,7 +10,7 @@
  * - `rm1ComboNumber`: RM-011 ターボユニット-W（rules/numberComboEffects.ts ncEffectiveNumber）。
  * - `isRm1StackedUnderUnitOperation`: RM-009・RM-011（ユニットの下に重ね、ユニットでなくなるとき捨札。rules/rk/rk1Features.ts）。
  */
-import { isSameCardIdentity, normalizeSameCardName } from "@rangers-strike/cards";
+import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { rk12ResidentsNegated } from "../rk/rk12Fields";
 
@@ -25,7 +25,7 @@ function def(state: Defs, cardId: string) {
 
 function named(state: Defs, cardId: string, name: string): boolean {
   const n = def(state, cardId)?.name;
-  return !!n && normalizeSameCardName(n) === normalizeSameCardName(name);
+  return !!n && n === name;
 }
 
 function fieldCards(player: Pick<PlayerState, "battle" | "rush">): CardInstance[] {

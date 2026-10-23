@@ -320,7 +320,7 @@ describe("RS-402 ガオレッド（2nd）", () => {
   it("RS-402: カタログ本文・スペックが出典と一致（出典: atwiki/page-543）", () => {
     expectCatalogText("RS-402", TEXT);
     expectStats("RS-402", {
-      name: "ガオレッド（2nd）",
+      name: "ガオレッド",
       category: "WB",
       size: "S",
       bp: 3000,
@@ -379,7 +379,7 @@ describe("RS-403 デカレッド（2nd）", () => {
   it("RS-403: カタログ本文・スペックが出典と一致（出典: atwiki/page-560）", () => {
     expectCatalogText("RS-403", TEXT);
     expectStats("RS-403", {
-      name: "デカレッド（2nd）",
+      name: "デカレッド",
       category: "OT",
       size: "S",
       bp: 3000,

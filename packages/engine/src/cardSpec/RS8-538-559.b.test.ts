@@ -315,7 +315,7 @@ describe("RS-548 ティラノレンジャー（2nd）", () => {
   it("RS-548: カタログ本文・スペックが出典と一致（出典: atwiki/page-1225）", () => {
     expectCatalogText("RS-548", TEXT);
     expectStats("RS-548", {
-      name: "ティラノレンジャー（2nd）",
+      name: "ティラノレンジャー",
       category: "WB",
       size: "S",
       bp: 3000,
@@ -387,7 +387,7 @@ describe("RS-549 トリケラレンジャー（2nd）", () => {
   it("RS-549: カタログ本文・スペックが出典と一致（出典: atwiki/page-1172）", () => {
     expectCatalogText("RS-549", TEXT);
     expectStats("RS-549", {
-      name: "トリケラレンジャー（2nd）",
+      name: "トリケラレンジャー",
       category: "WB",
       size: "S",
       bp: 1000,

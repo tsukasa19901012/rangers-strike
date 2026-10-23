@@ -1,8 +1,8 @@
 import type { CardDefinition } from "@rangers-strike/cards";
-import { fusionMaterialAliasNames, fusionMaterialAliasRequiresNoOwnL, normalizeSameCardName } from "@rangers-strike/cards";
+import { fusionMaterialAliasNames, fusionMaterialAliasRequiresNoOwnL } from "@rangers-strike/cards";
 
 /**
- * 同名カード判定（wiki 区別表記の（2nd）/（XG〜XG7）を無視して比較）。
+ * 同名カード判定（カードデータの名前は印刷名なので、そのまま比べる）。
  * glossary「2nd」: カードテキストや種類が異なっても同名カードとして扱う。
  */
 export function sameCardName(
@@ -10,7 +10,7 @@ export function sameCardName(
   b: string | undefined,
 ): boolean {
   if (!a || !b) return false;
-  return normalizeSameCardName(a) === normalizeSameCardName(b);
+  return a === b;
 }
 
 /**
@@ -24,7 +24,7 @@ export function namesWithAliases(def: Pick<CardDefinition, "name" | "text"> | un
   return [def.name, ...fusionMaterialAliasNames(def.text)];
 }
 
-/** カード名か「※これは「X」としてつかえる」の別名が name と同名か（（2nd）等の区別表記は無視。sameCardName）。 */
+/** カード名か「※これは「X」としてつかえる」の別名が name と同名か（sameCardName）。 */
 export function hasNameOrAlias(def: Pick<CardDefinition, "name" | "text"> | undefined, name: string): boolean {
   return namesWithAliases(def).some((n) => sameCardName(n, name));
 }

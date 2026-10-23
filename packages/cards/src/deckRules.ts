@@ -28,15 +28,6 @@ const UNLIMITED_DECK_NOTES = [
 
 const EXCLUDED_DECK_TYPES = new Set<string>(PLAYABLE_EXCLUDED_CARD_TYPES);
 
-/**
- * 同名判定用の正規化カード名。
- * wiki 由来の区別表記（2nd / XG〜XG7）はカードの印刷名ではないため取り除く。
- * glossary「2nd」: カードテキストや種類が異なっても同名のカードはデッキに3枚まで。
- */
-export function normalizeSameCardName(name: string): string {
-  return name.replace(/（(?:2nd|XG[2-7]?)）$/, "");
-}
-
 function formatCardRef(card: CardDefinition): string {
   return `${card.name}（${card.id}）`;
 }
@@ -76,7 +67,7 @@ export function countDeckCopiesByName(
   for (const entry of entries) {
     const card = byId.get(entry.cardId);
     if (!card) continue;
-    const name = normalizeSameCardName(card.name);
+    const name = card.name;
     byName.set(name, (byName.get(name) ?? 0) + entry.count);
   }
   return byName;
@@ -88,9 +79,9 @@ export function remainingCopiesForCard(
   entries: DeckEntry[],
   catalog: CardCatalog = allCardsCatalog,
 ): number {
-  const cardName = normalizeSameCardName(card.name);
+  const cardName = card.name;
   const sameNameCards = catalog.cards.filter(
-    (c) => normalizeSameCardName(c.name) === cardName,
+    (c) => c.name === cardName,
   );
   const limit = nameCopyLimit(sameNameCards);
   const totalForName = countDeckCopiesByName(entries, catalog).get(cardName) ?? 0;
@@ -152,7 +143,7 @@ export function validateDeckEntries(
       errors.push(`${formatCardRef(card)}は最大 ${perCardMax} 枚までです`);
     }
 
-    const name = normalizeSameCardName(card.name);
+    const name = card.name;
     const bucket = byName.get(name) ?? { count: 0, cards: [] };
     bucket.count += entry.count;
     if (!bucket.cards.some((c) => c.id === card.id)) {

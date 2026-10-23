@@ -356,7 +356,7 @@ describe("RS-585 ボウケンシルバー（2nd）", () => {
   it("RS-585: カタログ本文・スペックが出典と一致（出典: atwiki/page-1141）", () => {
     expectCatalogText("RS-585", TEXT);
     expectStats("RS-585", {
-      name: "ボウケンシルバー（2nd）",
+      name: "ボウケンシルバー",
       category: "ET",
       size: "S",
       bp: 4000,

@@ -2938,7 +2938,7 @@ function applyActionCore(
             );
           }
         }
-        // RM-006 怒（いか）る！: 撃破されて捨札になったあとで、敵軍 S ユニットを選ぶ（rules/rm/rm1Effects.ts）。
+        // RM-006 怒る！: 撃破されて捨札になったあとで、敵軍 S ユニットを選ぶ（rules/rm/rm1Effects.ts）。
         {
           const counter = findInZone(state.players[playerId], "hand", action.instanceId)?.card;
           if (counter && isRm1LeaveCounterCard(counter.cardId)) {

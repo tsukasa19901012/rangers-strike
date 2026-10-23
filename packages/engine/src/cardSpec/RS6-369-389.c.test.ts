@@ -585,7 +585,7 @@ describe("RS-388 ゴーレッド（2nd）", () => {
 
   it("RS-388: カタログ本文・スペックが出典と一致（出典: atwiki/page-537）", () => {
     expectCatalogText("RS-388", TEXT);
-    expectStats("RS-388", { name: "ゴーレッド（2nd）", category: "ET", size: "S", bp: 3000, sp: "special", powerCost: 4, comboNumber: 5, features: ["レッド", "男", "2nd"] });
+    expectStats("RS-388", { name: "ゴーレッド", category: "ET", size: "S", bp: 3000, sp: "special", powerCost: 4, comboNumber: 5, features: ["レッド", "男", "2nd"] });
   });
 
   it("RS-388: 【ブイランサー】NC 成立（5番目）で SP1（出典: atwiki/page-537「「SP1」」）", () => {

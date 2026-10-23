@@ -240,7 +240,7 @@ describe("RK-304 仮面ライダー電王RF（2nd）", () => {
 
   it("RK-304: カタログ本文・スペックが出典と一致（出典: atwiki/page-1272）", () => {
     expectCatalogText("RK-304", TEXT);
-    expectStats("RK-304", { name: "仮面ライダー電王RF（2nd）", category: "OT", size: "S", bp: 2000, sp: "1/4", powerCost: 3, comboNumber: "RC", features: ["仮面ライダー", "男", "DEN-O", "2nd"] });
+    expectStats("RK-304", { name: "仮面ライダー電王RF", category: "OT", size: "S", bp: 2000, sp: "1/4", powerCost: 3, comboNumber: "RC", features: ["仮面ライダー", "男", "DEN-O", "2nd"] });
     expectRarityIn("RK-304", ["NR"]);
   });
 
@@ -278,7 +278,7 @@ describe("RK-305 仮面ライダー電王SF（2nd）", () => {
 
   it("RK-305: カタログ本文・スペックが出典と一致（出典: atwiki/page-1275）", () => {
     expectCatalogText("RK-305", TEXT);
-    expectStats("RK-305", { name: "仮面ライダー電王SF（2nd）", category: "OT", size: "S", bp: 3000, sp: "1/4", powerCost: 4, comboNumber: "RC", features: ["仮面ライダー", "男", "DEN-O", "2nd"] });
+    expectStats("RK-305", { name: "仮面ライダー電王SF", category: "OT", size: "S", bp: 3000, sp: "1/4", powerCost: 4, comboNumber: "RC", features: ["仮面ライダー", "男", "DEN-O", "2nd"] });
     expectRarityIn("RK-305", ["R"]);
   });
 
@@ -344,7 +344,7 @@ describe("RK-306 仮面ライダー電王AF（2nd）", () => {
 
   it("RK-306: カタログ本文・スペックが出典と一致（出典: atwiki/page-1273）", () => {
     expectCatalogText("RK-306", TEXT);
-    expectStats("RK-306", { name: "仮面ライダー電王AF（2nd）", category: "OT", size: "S", bp: 4000, sp: undefined, powerCost: 6, features: ["仮面ライダー", "男", "DEN-O", "2nd"] });
+    expectStats("RK-306", { name: "仮面ライダー電王AF", category: "OT", size: "S", bp: 4000, sp: undefined, powerCost: 6, features: ["仮面ライダー", "男", "DEN-O", "2nd"] });
     expectRarityIn("RK-306", ["N"]);
   });
 
@@ -395,7 +395,7 @@ describe("RK-307 仮面ライダー電王GF（2nd）", () => {
 
   it("RK-307: カタログ本文・スペックが出典と一致（出典: atwiki/page-1274）", () => {
     expectCatalogText("RK-307", TEXT);
-    expectStats("RK-307", { name: "仮面ライダー電王GF（2nd）", category: "OT", size: "S", bp: 3000, sp: "1/4", powerCost: 5, comboNumber: "RC", features: ["仮面ライダー", "男", "DEN-O", "2nd"] });
+    expectStats("RK-307", { name: "仮面ライダー電王GF", category: "OT", size: "S", bp: 3000, sp: "1/4", powerCost: 5, comboNumber: "RC", features: ["仮面ライダー", "男", "DEN-O", "2nd"] });
     expectRarityIn("RK-307", ["R"]);
   });
 
@@ -429,7 +429,7 @@ describe("RK-308 リュウタロス（2nd）", () => {
 
   it("RK-308: カタログ本文・スペックが出典と一致（出典: atwiki/page-1282）", () => {
     expectCatalogText("RK-308", TEXT);
-    expectStats("RK-308", { name: "リュウタロス（2nd）", category: "OT", size: "S", bp: 3000, sp: "1/4", powerCost: 2, comboNumber: 2, features: ["イマジン", "2nd"] });
+    expectStats("RK-308", { name: "リュウタロス", category: "OT", size: "S", bp: 3000, sp: "1/4", powerCost: 2, comboNumber: 2, features: ["イマジン", "2nd"] });
     expectRarityIn("RK-308", ["N"]);
   });
 

@@ -24,25 +24,25 @@ describe("RS core batch07 audit coverage (RS-521..690)", () => {
 });
 
 // ──────────────────────────────────────────────────────────
-// Bug-fix verification: P1 name drift – "(2nd)" suffix
-// Wiki shows these cards have「（2nd）」in their official name.
+// Bug-fix verification: P1 name drift – "(2nd)" suffix removed
+// 「（2nd）」は wiki の区別表記で印刷名ではないため、名前からは除く。
 // ──────────────────────────────────────────────────────────
 
-describe("RS batch07 name drift fixes – '（2nd）' suffix", () => {
+describe("RS batch07 name drift fixes – no 「（2nd）」 suffix", () => {
   const expectedNames: Record<string, string> = {
-    "RS-527": "バルジオン（2nd）",
-    "RS-528": "バイオハンター・シルバ（2nd）",
-    "RS-548": "ティラノレンジャー（2nd）",
-    "RS-549": "トリケラレンジャー（2nd）",
-    "RS-572": "デカマスター（2nd）",
-    "RS-573": "ファイヤーカイザー（2nd）",
-    "RS-577": "マジレッド（2nd）",
-    "RS-581": "魔導馬バリキオン（2nd）",
-    "RS-585": "ボウケンシルバー（2nd）",
-    "RS-653": "レッドファルコン（2nd）",
-    "RS-654": "ガオイエロー（2nd）",
-    "RS-685": "ブラックコンドル（2nd）",
-    "RS-689": "レッドホーク（2nd）",
+    "RS-527": "バルジオン",
+    "RS-528": "バイオハンター・シルバ",
+    "RS-548": "ティラノレンジャー",
+    "RS-549": "トリケラレンジャー",
+    "RS-572": "デカマスター",
+    "RS-573": "ファイヤーカイザー",
+    "RS-577": "マジレッド",
+    "RS-581": "魔導馬バリキオン",
+    "RS-585": "ボウケンシルバー",
+    "RS-653": "レッドファルコン",
+    "RS-654": "ガオイエロー",
+    "RS-685": "ブラックコンドル",
+    "RS-689": "レッドホーク",
   };
 
   it.each(Object.entries(expectedNames))("%s has wiki-correct canonical name", (id, expected) => {

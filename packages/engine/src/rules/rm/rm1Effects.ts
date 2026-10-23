@@ -4,7 +4,7 @@
  * - `tryRm1CardEffect`: DSL の grant_keyword から呼ばれる起点（`rm1::cardId::name`。オペレーション・RC・ラッシュしたとき）。
  * - `tryResolveRm1Choice` / `trySkipRm1Choice` / `tryConfirmRm1Choice`: このモジュールが開いた選択の解決。
  * - `openRm1OnUnitRushed`: RM-007 世界忍者戦（自軍ラッシュフェイズ中、自軍ユニットをラッシュしたとき。rules/onRushUnitEffects.ts）。
- * - `isRm1LeaveCounterCard` / `applyRm1LeaveCounter`: RM-006 怒（いか）る！（離場の応答のカウンター。core/legalActions.ts・core/applyAction.ts・
+ * - `isRm1LeaveCounterCard` / `applyRm1LeaveCounter`: RM-006 怒る！（離場の応答のカウンター。core/legalActions.ts・core/applyAction.ts・
  *   rules/operationCounters.ts）。
  * - `isRm1ActivatableResident` / `canActivateRm1Resident` / `activateRm1Resident`: RM-012 JPカード（rules/permanentOperation.ts）。
  * - `applyRm1StrikeDamageTriggers`: RM-009 マルチパック（core/applyAction.ts finishStrikeResolution）。
@@ -530,7 +530,7 @@ function effectiveBpOf(state: GameState, ownerId: PlayerId, card: CardInstance):
 }
 
 // ---------------------------------------------------------------------------
-// RM-006 怒（いか）る！（※カウンター）
+// RM-006 怒る！（※カウンター）
 // 「特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき発動できる⇒特徴「メカ」と「人型」を持つ自軍ユニットの数と同じ数まで敵軍Sユニットを
 //  選び、選んだユニットを好きな順で持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。」（atwiki/page-879）
 // 発動の条件は RK-015 人類の進化と同じ（rules/rk/rk1NamedEffects.ts rk1LeaveCounterConditionMet）。撃破されて捨札になった後で、選んだ順に置く

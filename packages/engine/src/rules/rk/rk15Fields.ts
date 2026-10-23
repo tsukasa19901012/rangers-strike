@@ -8,7 +8,7 @@
  * - `rk15DefenderBlocksAttack`: RK-300【クロックアップ】（rules/legend3/restrictions.ts）。
  * - `rk15RequiresBattleEntry`: RK-308 の※（敵軍バトルエリアにユニットがあれば可能なら出る。rules/restrictions.ts）。
  */
-import { isSameCardIdentity, normalizeSameCardName } from "@rangers-strike/cards";
+import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { battlePositionOneBased } from "../fractionalSp";
@@ -127,5 +127,5 @@ export function rk15RequiresBattleEntry(state: Pick<GameState, "players" | "defi
 export function rk15IsWormPupa(state: Pick<GameState, "definitions">, cardId: string): boolean {
   if (isSameCardIdentity(cardId, "RK-303") || isSameCardIdentity(cardId, "RK-137")) return true;
   const name = state.definitions[cardId]?.name;
-  return !!name && normalizeSameCardName(name) === "ワームサナギ体";
+  return !!name && name === "ワームサナギ体";
 }

@@ -720,7 +720,7 @@
     },
     {
       "id": "PR-026",
-      "name": "デカマスター（2nd）",
+      "name": "デカマスター",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -3832,7 +3832,7 @@
     },
     {
       "id": "RK-240",
-      "name": "仮面ライダー電王CF（2nd）",
+      "name": "仮面ライダー電王CF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4069,7 +4069,7 @@
     },
     {
       "id": "RK-255",
-      "name": "電波人間タックル（2nd）",
+      "name": "電波人間タックル",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4247,7 +4247,7 @@
     },
     {
       "id": "RK-269",
-      "name": "シャドームーン（2nd）",
+      "name": "シャドームーン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4349,7 +4349,7 @@
     },
     {
       "id": "RK-278",
-      "name": "仮面ライダーナイト（2nd）",
+      "name": "仮面ライダーナイト",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -4691,7 +4691,7 @@
     },
     {
       "id": "RK-304",
-      "name": "仮面ライダー電王RF（2nd）",
+      "name": "仮面ライダー電王RF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4707,7 +4707,7 @@
     },
     {
       "id": "RK-305",
-      "name": "仮面ライダー電王SF（2nd）",
+      "name": "仮面ライダー電王SF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4723,7 +4723,7 @@
     },
     {
       "id": "RK-306",
-      "name": "仮面ライダー電王AF（2nd）",
+      "name": "仮面ライダー電王AF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -4742,7 +4742,7 @@
     },
     {
       "id": "RK-307",
-      "name": "仮面ライダー電王GF（2nd）",
+      "name": "仮面ライダー電王GF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4758,7 +4758,7 @@
     },
     {
       "id": "RK-308",
-      "name": "リュウタロス（2nd）",
+      "name": "リュウタロス",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -4777,7 +4777,7 @@
     },
     {
       "id": "RK-310",
-      "name": "モモタロス（2nd）",
+      "name": "モモタロス",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -4796,7 +4796,7 @@
     },
     {
       "id": "RK-311",
-      "name": "キンタロス（2nd）",
+      "name": "キンタロス",
       "primaryCategory": "timing_exception",
       "categories": [
         "timing_exception",
@@ -5113,7 +5113,7 @@
     },
     {
       "id": "RK-332",
-      "name": "仮面ライダー龍騎（2nd）",
+      "name": "仮面ライダー龍騎",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -5145,7 +5145,7 @@
     },
     {
       "id": "RK-335",
-      "name": "モモタロス（2nd）",
+      "name": "モモタロス",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -5212,7 +5212,7 @@
     },
     {
       "id": "RM-006",
-      "name": "怒（いか）る！",
+      "name": "怒る！",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -9485,7 +9485,7 @@
     },
     {
       "id": "RS-351",
-      "name": "アカレンジャー（2nd）",
+      "name": "アカレンジャー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -9568,7 +9568,7 @@
     },
     {
       "id": "RS-361",
-      "name": "バルイーグル（2nd）",
+      "name": "バルイーグル",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -9590,7 +9590,7 @@
     },
     {
       "id": "RS-362",
-      "name": "バルシャーク（2nd）",
+      "name": "バルシャーク",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -9606,7 +9606,7 @@
     },
     {
       "id": "RS-363",
-      "name": "バルパンサー（2nd）",
+      "name": "バルパンサー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -9745,7 +9745,7 @@
     },
     {
       "id": "RS-375",
-      "name": "レッドレーサー（2nd）",
+      "name": "レッドレーサー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -9821,7 +9821,7 @@
     },
     {
       "id": "RS-388",
-      "name": "ゴーレッド（2nd）",
+      "name": "ゴーレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override"
@@ -10365,7 +10365,7 @@
     },
     {
       "id": "RS-440",
-      "name": "バトルフィーバーロボ（2nd）",
+      "name": "バトルフィーバーロボ",
       "primaryCategory": "state_rewrite",
       "categories": [
         "state_rewrite",
@@ -11459,7 +11459,7 @@
     },
     {
       "id": "RS-527",
-      "name": "バルジオン（2nd）",
+      "name": "バルジオン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -11475,7 +11475,7 @@
     },
     {
       "id": "RS-528",
-      "name": "バイオハンター・シルバ（2nd）",
+      "name": "バイオハンター・シルバ",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -11764,7 +11764,7 @@
     },
     {
       "id": "RS-548",
-      "name": "ティラノレンジャー（2nd）",
+      "name": "ティラノレンジャー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -11783,7 +11783,7 @@
     },
     {
       "id": "RS-549",
-      "name": "トリケラレンジャー（2nd）",
+      "name": "トリケラレンジャー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -12066,7 +12066,7 @@
     },
     {
       "id": "RS-572",
-      "name": "デカマスター（2nd）",
+      "name": "デカマスター",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -12082,7 +12082,7 @@
     },
     {
       "id": "RS-573",
-      "name": "ファイヤーカイザー（2nd）",
+      "name": "ファイヤーカイザー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -12138,7 +12138,7 @@
     },
     {
       "id": "RS-577",
-      "name": "マジレッド（2nd）",
+      "name": "マジレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -12210,7 +12210,7 @@
     },
     {
       "id": "RS-581",
-      "name": "魔導馬バリキオン（2nd）",
+      "name": "魔導馬バリキオン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -13237,7 +13237,7 @@
     },
     {
       "id": "RS-653",
-      "name": "レッドファルコン（2nd）",
+      "name": "レッドファルコン",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -13256,7 +13256,7 @@
     },
     {
       "id": "RS-654",
-      "name": "ガオイエロー（2nd）",
+      "name": "ガオイエロー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -13670,7 +13670,7 @@
     },
     {
       "id": "RS-685",
-      "name": "ブラックコンドル（2nd）",
+      "name": "ブラックコンドル",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -13750,7 +13750,7 @@
     },
     {
       "id": "RS-689",
-      "name": "レッドホーク（2nd）",
+      "name": "レッドホーク",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -13857,7 +13857,7 @@
     },
     {
       "id": "SR-004",
-      "name": "ヘドリアン女王（2nd）",
+      "name": "ヘドリアン女王",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -14142,7 +14142,7 @@
     },
     {
       "id": "XG1-001",
-      "name": "バトルジャパン（XG）",
+      "name": "バトルジャパン",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override"
@@ -14158,7 +14158,7 @@
     },
     {
       "id": "XG1-002",
-      "name": "デンジレッド（XG）",
+      "name": "デンジレッド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -14174,7 +14174,7 @@
     },
     {
       "id": "XG1-003",
-      "name": "バルイーグル（XG）",
+      "name": "バルイーグル",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -14195,7 +14195,7 @@
     },
     {
       "id": "XG1-007",
-      "name": "チェンジドラゴン（XG）",
+      "name": "チェンジドラゴン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -14211,7 +14211,7 @@
     },
     {
       "id": "XG1-009",
-      "name": "レッドマスク（XG）",
+      "name": "レッドマスク",
       "primaryCategory": "replacement_effect",
       "categories": [
         "replacement_effect",
@@ -14230,7 +14230,7 @@
     },
     {
       "id": "XG1-010",
-      "name": "レッドファルコン（XG）",
+      "name": "レッドファルコン",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -14449,7 +14449,7 @@
     },
     {
       "id": "XG1-031",
-      "name": "ゴーオンレッド（XG）",
+      "name": "ゴーオンレッド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -14465,7 +14465,7 @@
     },
     {
       "id": "XG1-032",
-      "name": "ゲキレッド（XG）",
+      "name": "ゲキレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -14602,7 +14602,7 @@
     },
     {
       "id": "XG1-041",
-      "name": "仮面ライダーアマゾン（XG）",
+      "name": "仮面ライダーアマゾン",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -14656,7 +14656,7 @@
     },
     {
       "id": "XG1-044",
-      "name": "仮面ライダーV3（XG）",
+      "name": "仮面ライダーV3",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -14745,7 +14745,7 @@
     },
     {
       "id": "XG1-051",
-      "name": "仮面ライダーZX（XG）",
+      "name": "仮面ライダーZX",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -14825,7 +14825,7 @@
     },
     {
       "id": "XG1-061",
-      "name": "仮面ライダーカリス（XG）",
+      "name": "仮面ライダーカリス",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -15012,7 +15012,7 @@
     },
     {
       "id": "XG1-073",
-      "name": "仮面ライダーザビーMF（XG）",
+      "name": "仮面ライダーザビーMF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -15028,7 +15028,7 @@
     },
     {
       "id": "XG1-074",
-      "name": "仮面ライダーザビーRF（XG）",
+      "name": "仮面ライダーザビーRF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -15364,7 +15364,7 @@
     },
     {
       "id": "XG2-001",
-      "name": "ファイブレッド（XG2）",
+      "name": "ファイブレッド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -15463,7 +15463,7 @@
     },
     {
       "id": "XG2-015",
-      "name": "リュウレンジャー（XG2）",
+      "name": "リュウレンジャー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -15613,7 +15613,7 @@
     },
     {
       "id": "XG2-025",
-      "name": "ギンガレッド（XG2）",
+      "name": "ギンガレッド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -15629,7 +15629,7 @@
     },
     {
       "id": "XG2-026",
-      "name": "ギンガブルー（XG2）",
+      "name": "ギンガブルー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -15645,7 +15645,7 @@
     },
     {
       "id": "XG2-027",
-      "name": "ギンガイエロー（XG2）",
+      "name": "ギンガイエロー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -15934,7 +15934,7 @@
     },
     {
       "id": "XG2-049",
-      "name": "仮面ライダーギルス（XG2）",
+      "name": "仮面ライダーギルス",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -15974,7 +15974,7 @@
     },
     {
       "id": "XG2-053",
-      "name": "仮面ライダータイガ（XG2）",
+      "name": "仮面ライダータイガ",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override"
@@ -16131,7 +16131,7 @@
     },
     {
       "id": "XG2-063",
-      "name": "仮面ライダー響鬼（XG2）",
+      "name": "仮面ライダー響鬼",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -16150,7 +16150,7 @@
     },
     {
       "id": "XG2-064",
-      "name": "仮面ライダーカブトMF（XG2）",
+      "name": "仮面ライダーカブトMF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -16184,7 +16184,7 @@
     },
     {
       "id": "XG2-066",
-      "name": "仮面ライダーカブトRF（XG2）",
+      "name": "仮面ライダーカブトRF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -16200,7 +16200,7 @@
     },
     {
       "id": "XG2-067",
-      "name": "仮面ライダー電王GF（XG2）",
+      "name": "仮面ライダー電王GF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -16216,7 +16216,7 @@
     },
     {
       "id": "XG2-068",
-      "name": "リュウタロス（XG2）",
+      "name": "リュウタロス",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -16339,7 +16339,7 @@
     },
     {
       "id": "XG2-075",
-      "name": "仮面ライダーブレイド（XG2）",
+      "name": "仮面ライダーブレイド",
       "primaryCategory": "replacement_effect",
       "categories": [
         "replacement_effect"
@@ -16355,7 +16355,7 @@
     },
     {
       "id": "XG2-076",
-      "name": "仮面ライダーキバ（XG2）",
+      "name": "仮面ライダーキバ",
       "primaryCategory": "replacement_effect",
       "categories": [
         "replacement_effect"
@@ -16371,7 +16371,7 @@
     },
     {
       "id": "XG2-077",
-      "name": "仮面ライダーディケイド（XG2）",
+      "name": "仮面ライダーディケイド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -16387,7 +16387,7 @@
     },
     {
       "id": "XG2-079",
-      "name": "仮面ライダー龍騎（XG2）",
+      "name": "仮面ライダー龍騎",
       "primaryCategory": "replacement_effect",
       "categories": [
         "replacement_effect"
@@ -16421,7 +16421,7 @@
     },
     {
       "id": "XG2-082",
-      "name": "電子星獣ドル（XG2）",
+      "name": "電子星獣ドル",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -16442,7 +16442,7 @@
     },
     {
       "id": "XG2-083",
-      "name": "宇宙刑事ギャバン（XG2）",
+      "name": "宇宙刑事ギャバン",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -16955,7 +16955,7 @@
     },
     {
       "id": "XG3-020",
-      "name": "クワガライジャー（XG3）",
+      "name": "クワガライジャー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -16971,7 +16971,7 @@
     },
     {
       "id": "XG3-021",
-      "name": "カブトライジャー（XG3）",
+      "name": "カブトライジャー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -16990,7 +16990,7 @@
     },
     {
       "id": "XG3-022",
-      "name": "アバレッド（XG3）",
+      "name": "アバレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -17078,7 +17078,7 @@
     },
     {
       "id": "XG3-028",
-      "name": "魔導馬バリキオン（XG3）",
+      "name": "魔導馬バリキオン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17096,7 +17096,7 @@
     },
     {
       "id": "XG3-029",
-      "name": "魔導騎士ウルザード（XG3）",
+      "name": "魔導騎士ウルザード",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17128,7 +17128,7 @@
     },
     {
       "id": "XG3-031",
-      "name": "ゲキブルー（XG3）",
+      "name": "ゲキブルー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17211,7 +17211,7 @@
     },
     {
       "id": "XG3-040",
-      "name": "シンケンレッド（XG3）",
+      "name": "シンケンレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -17230,7 +17230,7 @@
     },
     {
       "id": "XG3-041",
-      "name": "仮面ライダーディケイドCF（XG3）",
+      "name": "仮面ライダーディケイドCF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -17268,7 +17268,7 @@
     },
     {
       "id": "XG3-043",
-      "name": "ライダーマン（XG3）",
+      "name": "ライダーマン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17300,7 +17300,7 @@
     },
     {
       "id": "XG3-046",
-      "name": "仮面ライダーBLACK（XG3）",
+      "name": "仮面ライダーBLACK",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -17319,7 +17319,7 @@
     },
     {
       "id": "XG3-047",
-      "name": "シャドームーン（XG3）",
+      "name": "シャドームーン",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -17338,7 +17338,7 @@
     },
     {
       "id": "XG3-048",
-      "name": "仮面ライダーBLACK RX（XG3）",
+      "name": "仮面ライダーBLACK RX",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -17429,7 +17429,7 @@
     },
     {
       "id": "XG3-058",
-      "name": "仮面ライダー斬鬼（XG3）",
+      "name": "仮面ライダー斬鬼",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17445,7 +17445,7 @@
     },
     {
       "id": "XG3-059",
-      "name": "仮面ライダー轟鬼（XG3）",
+      "name": "仮面ライダー轟鬼",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -17480,7 +17480,7 @@
     },
     {
       "id": "XG3-061",
-      "name": "仮面ライダーガタックMF（XG3）",
+      "name": "仮面ライダーガタックMF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17496,7 +17496,7 @@
     },
     {
       "id": "XG3-062",
-      "name": "仮面ライダーガタックRF（XG3）",
+      "name": "仮面ライダーガタックRF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -17515,7 +17515,7 @@
     },
     {
       "id": "XG3-063",
-      "name": "仮面ライダードレイクMF（XG3）",
+      "name": "仮面ライダードレイクMF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17531,7 +17531,7 @@
     },
     {
       "id": "XG3-064",
-      "name": "仮面ライダードレイクRF（XG3）",
+      "name": "仮面ライダードレイクRF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17547,7 +17547,7 @@
     },
     {
       "id": "XG3-065",
-      "name": "仮面ライダーサソードMF（XG3）",
+      "name": "仮面ライダーサソードMF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17563,7 +17563,7 @@
     },
     {
       "id": "XG3-066",
-      "name": "仮面ライダーサソードRF（XG3）",
+      "name": "仮面ライダーサソードRF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17595,7 +17595,7 @@
     },
     {
       "id": "XG3-068",
-      "name": "仮面ライダーディケイド（XG3）",
+      "name": "仮面ライダーディケイド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17646,7 +17646,7 @@
     },
     {
       "id": "XG3-073",
-      "name": "仮面ライダーJジャンボフォーメーション（XG3）",
+      "name": "仮面ライダーJジャンボフォーメーション",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -17923,7 +17923,7 @@
     },
     {
       "id": "XG3-089",
-      "name": "ブルービート（XG3）",
+      "name": "ブルービート",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -17966,7 +17966,7 @@
     },
     {
       "id": "XG3-091",
-      "name": "ジースタッグ（XG3）",
+      "name": "ジースタッグ",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -17985,7 +17985,7 @@
     },
     {
       "id": "XG3-092",
-      "name": "レッドル（XG3）",
+      "name": "レッドル",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -18185,7 +18185,7 @@
     },
     {
       "id": "XG4-007",
-      "name": "ドラゴンレンジャー（XG4）",
+      "name": "ドラゴンレンジャー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -18201,7 +18201,7 @@
     },
     {
       "id": "XG4-008",
-      "name": "メガシルバー（XG4）",
+      "name": "メガシルバー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -18284,7 +18284,7 @@
     },
     {
       "id": "XG4-013",
-      "name": "ギンガグリーン（XG4）",
+      "name": "ギンガグリーン",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -18303,7 +18303,7 @@
     },
     {
       "id": "XG4-014",
-      "name": "ギンガピンク（XG4）",
+      "name": "ギンガピンク",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -18335,7 +18335,7 @@
     },
     {
       "id": "XG4-017",
-      "name": "ガオシルバー（XG4）",
+      "name": "ガオシルバー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override"
@@ -18423,7 +18423,7 @@
     },
     {
       "id": "XG4-023",
-      "name": "シュリケンジャーFM（XG4）",
+      "name": "シュリケンジャーFM",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -18439,7 +18439,7 @@
     },
     {
       "id": "XG4-024",
-      "name": "エージェント・アブレラ（XG4）",
+      "name": "エージェント・アブレラ",
       "primaryCategory": "timing_exception",
       "categories": [
         "timing_exception"
@@ -18455,7 +18455,7 @@
     },
     {
       "id": "XG4-025",
-      "name": "デカブレイク（XG4）",
+      "name": "デカブレイク",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override"
@@ -18503,7 +18503,7 @@
     },
     {
       "id": "XG4-030",
-      "name": "ゲキチョッパー（XG4）",
+      "name": "ゲキチョッパー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -18538,7 +18538,7 @@
     },
     {
       "id": "XG4-032",
-      "name": "ゴーオンゴールド（XG4）",
+      "name": "ゴーオンゴールド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -18559,7 +18559,7 @@
     },
     {
       "id": "XG4-033",
-      "name": "ゴーオンシルバー（XG4）",
+      "name": "ゴーオンシルバー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -18596,7 +18596,7 @@
     },
     {
       "id": "XG4-035",
-      "name": "シンケンゴールド（XG4）",
+      "name": "シンケンゴールド",
       "primaryCategory": "state_rewrite",
       "categories": [
         "state_rewrite"
@@ -18790,7 +18790,7 @@
     },
     {
       "id": "XG4-047",
-      "name": "シンケンレッド（XG4）",
+      "name": "シンケンレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -18830,7 +18830,7 @@
     },
     {
       "id": "XG4-049",
-      "name": "アクロバッター（XG4）",
+      "name": "アクロバッター",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -18878,7 +18878,7 @@
     },
     {
       "id": "XG4-052",
-      "name": "仮面ライダークウガUF（XG4）",
+      "name": "仮面ライダークウガUF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -18897,7 +18897,7 @@
     },
     {
       "id": "XG4-053",
-      "name": "仮面ライダーアギトSHF（XG4）",
+      "name": "仮面ライダーアギトSHF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -18916,7 +18916,7 @@
     },
     {
       "id": "XG4-054",
-      "name": "仮面ライダーブレイドKF（XG4）",
+      "name": "仮面ライダーブレイドKF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -18937,7 +18937,7 @@
     },
     {
       "id": "XG4-055",
-      "name": "ドラグランザー（XG4）",
+      "name": "ドラグランザー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -18971,7 +18971,7 @@
     },
     {
       "id": "XG4-057",
-      "name": "仮面ライダー龍騎サバイブ（XG4）",
+      "name": "仮面ライダー龍騎サバイブ",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -18989,7 +18989,7 @@
     },
     {
       "id": "XG4-058",
-      "name": "オートバジンBM（XG4）",
+      "name": "オートバジンBM",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19007,7 +19007,7 @@
     },
     {
       "id": "XG4-060",
-      "name": "仮面ライダーファイズBF（XG4）",
+      "name": "仮面ライダーファイズBF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -19134,7 +19134,7 @@
     },
     {
       "id": "XG4-069",
-      "name": "仮面ライダーW・FJ（XG4）",
+      "name": "仮面ライダーW・FJ",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19204,7 +19204,7 @@
     },
     {
       "id": "XG4-073",
-      "name": "仮面ライダークウガDF（XG4）",
+      "name": "仮面ライダークウガDF",
       "primaryCategory": "timing_exception",
       "categories": [
         "timing_exception",
@@ -19223,7 +19223,7 @@
     },
     {
       "id": "XG4-075",
-      "name": "アポロガイスト（XG4）",
+      "name": "アポロガイスト",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19255,7 +19255,7 @@
     },
     {
       "id": "XG4-077",
-      "name": "仮面ライダーZX（XG4）",
+      "name": "仮面ライダーZX",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19271,7 +19271,7 @@
     },
     {
       "id": "XG4-078",
-      "name": "仮面ライダー龍騎（XG4）",
+      "name": "仮面ライダー龍騎",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19287,7 +19287,7 @@
     },
     {
       "id": "XG4-079",
-      "name": "ディケイド カブトRF（XG4）",
+      "name": "ディケイド カブトRF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19305,7 +19305,7 @@
     },
     {
       "id": "XG4-080",
-      "name": "ロボライダー（XG4）",
+      "name": "ロボライダー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -19327,7 +19327,7 @@
     },
     {
       "id": "XG4-081",
-      "name": "仮面ライダーブレイド（XG4）",
+      "name": "仮面ライダーブレイド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -19346,7 +19346,7 @@
     },
     {
       "id": "XG4-082",
-      "name": "バイオライダー（XG4）",
+      "name": "バイオライダー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19362,7 +19362,7 @@
     },
     {
       "id": "XG4-083",
-      "name": "ディケイド ファイズ（XG4）",
+      "name": "ディケイド ファイズ",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19418,7 +19418,7 @@
     },
     {
       "id": "XG4-086",
-      "name": "仮面ライダーイクサBM（XG4）",
+      "name": "仮面ライダーイクサBM",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override"
@@ -19434,7 +19434,7 @@
     },
     {
       "id": "XG4-087",
-      "name": "スカイライダー（XG4）",
+      "name": "スカイライダー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -19485,7 +19485,7 @@
     },
     {
       "id": "XG4-091",
-      "name": "ガンギブソン（XG4）",
+      "name": "ガンギブソン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19501,7 +19501,7 @@
     },
     {
       "id": "XG4-092",
-      "name": "ジャンパーソン（XG4）",
+      "name": "ジャンパーソン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19533,7 +19533,7 @@
     },
     {
       "id": "XG4-094",
-      "name": "宇宙刑事シャイダー（XG4）",
+      "name": "宇宙刑事シャイダー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -19622,7 +19622,7 @@
     },
     {
       "id": "XG5-001",
-      "name": "ゴーグルレッド（XG5）",
+      "name": "ゴーグルレッド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19775,7 +19775,7 @@
     },
     {
       "id": "XG5-020",
-      "name": "ボウケンレッド（XG5）",
+      "name": "ボウケンレッド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -19791,7 +19791,7 @@
     },
     {
       "id": "XG5-021",
-      "name": "ボウケンブラック（XG5）",
+      "name": "ボウケンブラック",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -19812,7 +19812,7 @@
     },
     {
       "id": "XG5-022",
-      "name": "ボウケンブルー（XG5）",
+      "name": "ボウケンブルー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -19836,7 +19836,7 @@
     },
     {
       "id": "XG5-023",
-      "name": "ボウケンイエロー（XG5）",
+      "name": "ボウケンイエロー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -19857,7 +19857,7 @@
     },
     {
       "id": "XG5-024",
-      "name": "ボウケンピンク（XG5）",
+      "name": "ボウケンピンク",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -19993,7 +19993,7 @@
     },
     {
       "id": "XG5-034",
-      "name": "シンケンレッド（XG5）",
+      "name": "シンケンレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -20012,7 +20012,7 @@
     },
     {
       "id": "XG5-037",
-      "name": "ゴセイレッド（XG5）",
+      "name": "ゴセイレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -20034,7 +20034,7 @@
     },
     {
       "id": "XG5-038",
-      "name": "ゴセイピンク（XG5）",
+      "name": "ゴセイピンク",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -20053,7 +20053,7 @@
     },
     {
       "id": "XG5-039",
-      "name": "ゴセイブルー（XG5）",
+      "name": "ゴセイブルー",
       "primaryCategory": "replacement_effect",
       "categories": [
         "replacement_effect",
@@ -20072,7 +20072,7 @@
     },
     {
       "id": "XG5-040",
-      "name": "ゴセイブラック（XG5）",
+      "name": "ゴセイブラック",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -20091,7 +20091,7 @@
     },
     {
       "id": "XG5-041",
-      "name": "ゴセイイエロー（XG5）",
+      "name": "ゴセイイエロー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -20225,7 +20225,7 @@
     },
     {
       "id": "XG5-050",
-      "name": "仮面ライダー装甲響鬼（XG5）",
+      "name": "仮面ライダー装甲響鬼",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -20244,7 +20244,7 @@
     },
     {
       "id": "XG5-051",
-      "name": "仮面ライダーカブトHF（XG5）",
+      "name": "仮面ライダーカブトHF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20262,7 +20262,7 @@
     },
     {
       "id": "XG5-052",
-      "name": "仮面ライダー電王CF（XG5）",
+      "name": "仮面ライダー電王CF",
       "primaryCategory": "replacement_effect",
       "categories": [
         "replacement_effect",
@@ -20281,7 +20281,7 @@
     },
     {
       "id": "XG5-053",
-      "name": "仮面ライダーキバEF（XG5）",
+      "name": "仮面ライダーキバEF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20297,7 +20297,7 @@
     },
     {
       "id": "XG5-054",
-      "name": "仮面ライダーディケイドCF（XG5）",
+      "name": "仮面ライダーディケイドCF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20313,7 +20313,7 @@
     },
     {
       "id": "XG5-055",
-      "name": "仮面ライダーギャレン（XG5）",
+      "name": "仮面ライダーギャレン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20329,7 +20329,7 @@
     },
     {
       "id": "XG5-056",
-      "name": "仮面ライダーギャレンJF（XG5）",
+      "name": "仮面ライダーギャレンJF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -20351,7 +20351,7 @@
     },
     {
       "id": "XG5-059",
-      "name": "仮面ライダーカリス（XG5）",
+      "name": "仮面ライダーカリス",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20367,7 +20367,7 @@
     },
     {
       "id": "XG5-060",
-      "name": "仮面ライダーワイルドカリス（XG5）",
+      "name": "仮面ライダーワイルドカリス",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20447,7 +20447,7 @@
     },
     {
       "id": "XG5-066",
-      "name": "仮面ライダーベルデ（XG5）",
+      "name": "仮面ライダーベルデ",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20463,7 +20463,7 @@
     },
     {
       "id": "XG5-067",
-      "name": "仮面ライダーナイト（XG5）",
+      "name": "仮面ライダーナイト",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -20482,7 +20482,7 @@
     },
     {
       "id": "XG5-068",
-      "name": "仮面ライダーナイトサバイブ（XG5）",
+      "name": "仮面ライダーナイトサバイブ",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -20533,7 +20533,7 @@
     },
     {
       "id": "XG5-071",
-      "name": "仮面ライダー響鬼（XG5）",
+      "name": "仮面ライダー響鬼",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -20552,7 +20552,7 @@
     },
     {
       "id": "XG5-072",
-      "name": "仮面ライダー威吹鬼（XG5）",
+      "name": "仮面ライダー威吹鬼",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20568,7 +20568,7 @@
     },
     {
       "id": "XG5-073",
-      "name": "仮面ライダー電王SF（XG5）",
+      "name": "仮面ライダー電王SF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20584,7 +20584,7 @@
     },
     {
       "id": "XG5-074",
-      "name": "仮面ライダーキバ（XG5）",
+      "name": "仮面ライダーキバ",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20600,7 +20600,7 @@
     },
     {
       "id": "XG5-076",
-      "name": "仮面ライダーイクサBM（XG5）",
+      "name": "仮面ライダーイクサBM",
       "primaryCategory": "timing_exception",
       "categories": [
         "timing_exception"
@@ -20632,7 +20632,7 @@
     },
     {
       "id": "XG5-079",
-      "name": "仮面ライダーディケイド（XG5）",
+      "name": "仮面ライダーディケイド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -20696,7 +20696,7 @@
     },
     {
       "id": "XG5-084",
-      "name": "仮面ライダーW・CJ（XG5）",
+      "name": "仮面ライダーW・CJ",
       "primaryCategory": "replacement_effect",
       "categories": [
         "replacement_effect",
@@ -20884,7 +20884,7 @@
     },
     {
       "id": "XG6-005",
-      "name": "セイントカイザー（XG6）",
+      "name": "セイントカイザー",
       "primaryCategory": "replacement_effect",
       "categories": [
         "replacement_effect",
@@ -20906,7 +20906,7 @@
     },
     {
       "id": "XG6-006",
-      "name": "ダイタンケン（XG6）",
+      "name": "ダイタンケン",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -21042,7 +21042,7 @@
     },
     {
       "id": "XG6-018",
-      "name": "アバレキラー（XG6）",
+      "name": "アバレキラー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -21060,7 +21060,7 @@
     },
     {
       "id": "XG6-019",
-      "name": "ダイボウケン（XG6）",
+      "name": "ダイボウケン",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -21370,7 +21370,7 @@
     },
     {
       "id": "XG6-035",
-      "name": "仮面ライダーW・CJX（XG6）",
+      "name": "仮面ライダーW・CJX",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -21386,7 +21386,7 @@
     },
     {
       "id": "XG6-036",
-      "name": "仮面ライダーW・CJ（XG6）",
+      "name": "仮面ライダーW・CJ",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -21402,7 +21402,7 @@
     },
     {
       "id": "XG6-038",
-      "name": "仮面ライダーアクセルトライアル（XG6）",
+      "name": "仮面ライダーアクセルトライアル",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -21450,7 +21450,7 @@
     },
     {
       "id": "XG6-042",
-      "name": "仮面ライダーゼロノスAF（XG6）",
+      "name": "仮面ライダーゼロノスAF",
       "primaryCategory": "timing_exception",
       "categories": [
         "timing_exception",
@@ -21469,7 +21469,7 @@
     },
     {
       "id": "XG6-043",
-      "name": "仮面ライダーゼロノスZF（XG6）",
+      "name": "仮面ライダーゼロノスZF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -21488,7 +21488,7 @@
     },
     {
       "id": "XG6-044",
-      "name": "仮面ライダーNEW電王SF（XG6）",
+      "name": "仮面ライダーNEW電王SF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -21536,7 +21536,7 @@
     },
     {
       "id": "XG6-047",
-      "name": "仮面ライダーG4（XG6）",
+      "name": "仮面ライダーG4",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -21552,7 +21552,7 @@
     },
     {
       "id": "XG6-048",
-      "name": "仮面ライダーリュウガ（XG6）",
+      "name": "仮面ライダーリュウガ",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -21570,7 +21570,7 @@
     },
     {
       "id": "XG6-049",
-      "name": "仮面ライダーオーガ（XG6）",
+      "name": "仮面ライダーオーガ",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -21589,7 +21589,7 @@
     },
     {
       "id": "XG6-050",
-      "name": "仮面ライダーグレイブ（XG6）",
+      "name": "仮面ライダーグレイブ",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -21605,7 +21605,7 @@
     },
     {
       "id": "XG6-051",
-      "name": "仮面ライダー歌舞鬼（XG6）",
+      "name": "仮面ライダー歌舞鬼",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -21624,7 +21624,7 @@
     },
     {
       "id": "XG6-052",
-      "name": "仮面ライダーコーカサス（XG6）",
+      "name": "仮面ライダーコーカサス",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -21640,7 +21640,7 @@
     },
     {
       "id": "XG6-053",
-      "name": "仮面ライダーアーク（XG6）",
+      "name": "仮面ライダーアーク",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -21656,7 +21656,7 @@
     },
     {
       "id": "XG6-054",
-      "name": "仮面ライダースカル（XG6）",
+      "name": "仮面ライダースカル",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -21949,7 +21949,7 @@
     },
     {
       "id": "XG7-006",
-      "name": "ギンガピンク（XG7）",
+      "name": "ギンガピンク",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -22000,7 +22000,7 @@
     },
     {
       "id": "XG7-009",
-      "name": "タイムレッド（XG7）",
+      "name": "タイムレッド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -22034,7 +22034,7 @@
     },
     {
       "id": "XG7-011",
-      "name": "ハリケンレッド（XG7）",
+      "name": "ハリケンレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -22101,7 +22101,7 @@
     },
     {
       "id": "XG7-014",
-      "name": "マジレッド（XG7）",
+      "name": "マジレッド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -22119,7 +22119,7 @@
     },
     {
       "id": "XG7-015",
-      "name": "ボウケンレッド（XG7）",
+      "name": "ボウケンレッド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -22157,7 +22157,7 @@
     },
     {
       "id": "XG7-017",
-      "name": "ゴーオンレッド（XG7）",
+      "name": "ゴーオンレッド",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -22173,7 +22173,7 @@
     },
     {
       "id": "XG7-018",
-      "name": "シンケンレッド（XG7）",
+      "name": "シンケンレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -22694,7 +22694,7 @@
     },
     {
       "id": "XG7-049",
-      "name": "仮面ライダーオーズ・ガタキリバコンボ（XG7）",
+      "name": "仮面ライダーオーズ・ガタキリバコンボ",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -22726,7 +22726,7 @@
     },
     {
       "id": "XG7-051",
-      "name": "仮面ライダーオーズ・ラトラーターコンボ（XG7）",
+      "name": "仮面ライダーオーズ・ラトラーターコンボ",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"

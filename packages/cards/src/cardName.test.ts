@@ -1,29 +1,17 @@
 import { describe, expect, it } from "vitest";
-import {
-  canonicalCardName,
-  hasEditionSuffix,
-  stripEditionSuffix,
-} from "./cardName";
+import { canonicalCardName } from "./cardName";
+import { fullPlayableCatalog, wikiStubsCatalog } from "./catalog/unifiedCatalog";
 
 describe("cardName", () => {
-  it("strips 2nd and XG edition suffixes", () => {
-    expect(stripEditionSuffix("デカマスター（2nd）")).toBe("デカマスター");
-    expect(stripEditionSuffix("ファイブレッド（XG2）")).toBe("ファイブレッド");
-    expect(stripEditionSuffix("バトルジャパン（XG）")).toBe("バトルジャパン");
-    expect(stripEditionSuffix("マジレッド（XG7）")).toBe("マジレッド");
+  it("canonicalCardName trims surrounding spaces only", () => {
+    expect(canonicalCardName(" デカマスター ")).toBe("デカマスター");
+    expect(canonicalCardName("タイフーン（1号）")).toBe("タイフーン（1号）");
   });
 
-  it("does not strip non-edition parentheticals", () => {
-    expect(stripEditionSuffix("タイフーン（1号）")).toBe("タイフーン（1号）");
-    expect(stripEditionSuffix("キングストーン（太陽の石）")).toBe("キングストーン（太陽の石）");
-  });
-
-  it("detects edition suffix", () => {
-    expect(hasEditionSuffix("デカレッド（XG5）")).toBe(true);
-    expect(hasEditionSuffix("デカレッド")).toBe(false);
-  });
-
-  it("canonicalCardName matches stripped names", () => {
-    expect(canonicalCardName("デカマスター（2nd）")).toBe(canonicalCardName("デカマスター"));
+  it("card data names carry no wiki edition labels（2nd / XG / N弾）", () => {
+    const labeled = [...fullPlayableCatalog.cards, ...wikiStubsCatalog.cards]
+      .filter((card) => /（(?:2nd|XG\d*|\d+弾)）$/u.test(card.name))
+      .map((card) => `${card.id} ${card.name}`);
+    expect(labeled).toEqual([]);
   });
 });

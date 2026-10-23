@@ -239,7 +239,7 @@ describe("RK-255 電波人間タックル（2nd）", () => {
 
   it("RK-255: カタログ本文・スペックが出典と一致（出典: atwiki/page-1345）", () => {
     expectCatalogText("RK-255", TEXT);
-    expectStats("RK-255", { name: "電波人間タックル（2nd）", category: "ET", size: "S", bp: 1000, sp: "1/5" as never, powerCost: 2, comboNumber: "RC", features: ["女", "改造人間", "2nd"] });
+    expectStats("RK-255", { name: "電波人間タックル", category: "ET", size: "S", bp: 1000, sp: "1/5" as never, powerCost: 2, comboNumber: "RC", features: ["女", "改造人間", "2nd"] });
     expectRarityIn("RK-255", ["N"]);
   });
 
