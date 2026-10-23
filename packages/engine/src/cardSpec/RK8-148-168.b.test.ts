@@ -485,9 +485,24 @@ describe("RK-160 シザーズジャガー", () => {
   it.todo(
     "RK-160: 公式Q&A — 【ナノロボット散布実験】で XG2-060 スカラベアンデッドを出すとき、自軍ラッシュフェイズ中ならゲームから除外して【スペード10―タイム】を発動できる（出典: atwiki/page-703 Q5）— XG2-060 は本範囲外のカードで、効果は敵軍のラッシュ（敵軍ラッシュフェイズ）で発動するため自軍ラッシュフェイズ中の状況を組むには RK-275 等（照合済み）で相手のカードを出す必要があり、XG2-060 自体が本範囲外",
   );
-  it.todo(
-    "RK-160: 公式Q&A — XP-017 仮面ライダーディケイド激情態も【ナノロボット散布実験】で出せる（出典: atwiki/page-703 Q6）— XP-017 は本範囲外のカード",
-  );
+  it("RK-160: 公式Q&A — XP-017 仮面ライダーディケイド激情態（※手札からしかラッシュできない）も【ナノロボット散布実験】で出せる（出典: atwiki/page-703 Q6・atwiki/page-1981 Q1）", () => {
+    const E4 = sUnit("SPEC-E4X", { category: "WB", bp: 1000, powerCost: 4 });
+    const s0 = st(
+      {
+        phase: "rush",
+        activePlayer: "player2",
+        player1: { rush: [inst("RK-160", "sj")], hand: [inst("XP-017", "gj")], command: releasedCat("DA", 1), deck: deckCards(3) },
+        player2: { hand: [inst("SPEC-E4X", "er")], command: releasedCat("WB", 1), power: powerCards(4, "ep"), deck: deckCards(3, "e") },
+      },
+      [E4],
+    );
+    const r = rushFromHand(s0, "player2", "SPEC-E4X:er");
+    expect(r.ok, r.error).toBe(true);
+    expect(choiceIds(r.state)).toContain("XP-017:gj");
+    const s = resolveAll(pick(r.state, "XP-017:gj"));
+    expect(zoneOf(s, "player1", "XP-017:gj")).toBe("rush");
+    expect(zoneOf(s, "player2", "SPEC-E4X:er")).toBe("discard");
+  });
 });
 
 // ===========================================================================

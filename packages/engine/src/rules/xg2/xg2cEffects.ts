@@ -24,6 +24,7 @@ import { moveToExile } from "../exile";
 import { markRushedThisTurn } from "../turnModifiers";
 import { rk12PlacesHeldOnRush } from "../rk/rk12Fields";
 import { sendFieldCardsToCommandOrDiscard } from "../fieldLeaveQueue";
+import { collectXg3TurnEndQueue, openXg3TurnEndEntry } from "../xg3/xg3Effects";
 import { applyDamageToPlayer } from "../damagePayment";
 import { filthyAirActive } from "../legend1/otherLinesNamedEffects";
 import { rk1IsSmallNow } from "../rk/rk1Features";
@@ -706,21 +707,66 @@ registerXg2Choice(HENSHIN_EFFECT_ID, {
   skip: simpleSkipXg2(),
 });
 
-/** 自分がターンを終えるとき: XG2-042 で出したユニットは捨札、XG2-055 で出したユニットはコマンドゾーンにホールド状態（置けなければ捨札）。 */
+// 自分がターンを終えるときの XG2-042・XG2-055 の移動と、そのユニット自身の XG3 の「自分がターンを終えるとき」（XG3-045 チャージアップストロンガーの
+// 置き換え等）は同タイミングなので、ターンプレイヤーが処理順を選ぶ（atwiki/page-1764 Q3・R-SIM-01）。そのユニットを選べば XG3 の効果を先に処理し
+// （置き換えで場を離れたユニットは XG2 の移動の対象外）、選ばなければ XG2 の移動を先に処理する（場を離れたので XG3 の効果は処理されない）。
+const TURN_END_ORDER_EFFECT_ID = "xg2_055_turn_end_order";
+const XG2_TURN_END_ORDER_KEY = "turnEndOrderAsked";
+
+function turnEndOrderCandidate(state: GameState, endingPlayerId: PlayerId): { instanceId: string; sourceCardId: string } | undefined {
+  const asked = xg2List<string>(state, XG2_TURN_END_ORDER_KEY);
+  const xg3Entries = collectXg3TurnEndQueue(state, endingPlayerId);
+  for (const [key, sourceCardId] of [[XG2_FAR_KEY, "XG2-042"], [XG2_HENSHIN_KEY, "XG2-055"]] as const) {
+    for (const e of xg2List<Xg2TurnEntry>(state, key)) {
+      if (e.ownerId !== endingPlayerId || asked.includes(e.instanceId) || !findField(state, e.ownerId, e.instanceId)) continue;
+      if (xg3Entries.some((x) => x.endsWith(`:${e.instanceId}`))) return { instanceId: e.instanceId, sourceCardId };
+    }
+  }
+  return undefined;
+}
+
+const markOrderAsked = (state: GameState, instanceId: string) => withXg2List(state, XG2_TURN_END_ORDER_KEY, [...xg2List<string>(state, XG2_TURN_END_ORDER_KEY), instanceId]);
+
+registerXg2Choice(TURN_END_ORDER_EFFECT_ID, {
+  resolve: (state, playerId, instanceId) => {
+    const pending = state.pendingEffectChoice!;
+    let next = markOrderAsked(close(state, pending), instanceId);
+    for (const entry of collectXg3TurnEndQueue(next, playerId).filter((x) => x.endsWith(`:${instanceId}`))) {
+      next = openXg3TurnEndEntry(next, playerId, entry);
+    }
+    return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${TURN_END_ORDER_EFFECT_ID}:xg3_first:${instanceId}`) };
+  },
+  skip: (state, playerId) => {
+    const pending = state.pendingEffectChoice!;
+    const next = markOrderAsked(close(state, pending), pending.validInstanceIds[0]!);
+    return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${TURN_END_ORDER_EFFECT_ID}:xg2_first`) };
+  },
+});
+
+/**
+ * 自分がターンを終えるとき: XG2-042 で出したユニットは捨札、XG2-055 で出したユニットはコマンドゾーンにホールド状態（置けなければ捨札）。
+ * どちらも撃破ではない離場として処理を通す（チェイス・XG2-042 の「その場に留まる」・RK-250 サバイブの機会を出す）。
+ * 処理順の選択を開いたら移動はせずに返す（rules/turnEndingEffects.ts は選択の解決後にもう一度呼ぶ。移動を済ませた後の呼び出しは何もしない）。
+ */
 xg2Hook("turnEnd", (state, endingPlayerId) => {
   let next = state;
+  const ask = turnEndOrderCandidate(next, endingPlayerId);
+  if (ask) {
+    return openAfter(
+      next,
+      selectOne({ playerId: endingPlayerId, phasePlayerId: endingPlayerId, sourceInstanceId: ask.instanceId }, ask.sourceCardId, TURN_END_ORDER_EFFECT_ID, [ask.instanceId], true),
+    );
+  }
+  next = withXg2List(next, XG2_TURN_END_ORDER_KEY, []);
   const far = xg2List<Xg2TurnEntry>(next, XG2_FAR_KEY);
   if (far.length > 0) {
     next = withXg2List(next, XG2_FAR_KEY, far.filter((e) => e.ownerId !== endingPlayerId));
-    for (const e of far) {
-      if (e.ownerId !== endingPlayerId || !findField(next, e.ownerId, e.instanceId)) continue;
-      next = moveFieldUnit(next, e.ownerId, e.instanceId, endingPlayerId, "discard");
-    }
+    const ids = far.filter((e) => e.ownerId === endingPlayerId && findField(next, e.ownerId, e.instanceId)).map((e) => e.instanceId);
+    next = sendFieldCardsToCommandOrDiscard(next, endingPlayerId, [], ids, endingPlayerId);
   }
   const henshin = xg2List<Xg2TurnEntry>(next, XG2_HENSHIN_KEY);
   if (henshin.length > 0) {
     next = withXg2List(next, XG2_HENSHIN_KEY, henshin.filter((e) => e.ownerId !== endingPlayerId));
-    // 置けない分の捨札も撃破ではない離場として処理を通す（チェイス・XG2-042 の「その場に留まる」・RK-250 サバイブの機会を出す）。
     const ids = henshin.filter((e) => e.ownerId === endingPlayerId && findField(next, e.ownerId, e.instanceId)).map((e) => e.instanceId);
     const room = Math.max(0, COMMAND_ZONE_MAX - next.players[endingPlayerId].command.length);
     next = sendFieldCardsToCommandOrDiscard(next, endingPlayerId, ids.slice(0, room), ids.slice(room), endingPlayerId);

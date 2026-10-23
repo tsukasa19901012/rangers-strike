@@ -11,7 +11,8 @@
  *
  * 既存の照合と重なるもの（ここでは繰り返さない）:
  *  - XG2-052 ユナイトベント Q1〜Q4（RS-437 白熱する実況で重ねたカードとの順番・BP 修正）は cardSpec/RS7-432-452.a.test.ts、Q6 は cardSpec/RK16-316-335.a.test.ts（RK-321）。
- *  - XG2-055 変身一発 Q2（RK-245 仮面ライダーキバ）は cardSpec/RK12-232-252.b.test.ts、Q4（XP-017 ディケイド激情態）は cardSpec/XP-017-032.a.test.ts。
+ *  - XG2-055 変身一発 Q2（RK-245 仮面ライダーキバ）は cardSpec/RK12-232-252.b.test.ts、Q4（XP-017 ディケイド激情態）は cardSpec/XP-017-032.a.test.ts にも置いた。
+ *    Q3（XG3-045 チャージアップストロンガーとの処理順）はここで扱う（XG3-045 Q1 と同じ）。
  */
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
@@ -538,5 +539,29 @@ describe("XG2-055 変身一発", () => {
     const s = henshin(inst("RK-245", "kb"));
     expect(zoneOf(s, "player1", "RK-245:kb")).toBe("rush");
     expect(cardIn(s, "player1", "RK-245:kb")?.commandHeld).toBe(true);
+  });
+
+  /** 変身一発で XG3-045 チャージアップストロンガーを出し（自軍捨札に XG3-044 仮面ライダーストロンガー）、ターンを終えようとしたところ。 */
+  const strongerEnd = () => toEnd(henshin(inst("XG3-045", "cs"), { discard: [inst("XG3-044", "st")] }));
+
+  it("XG2-055: 公式Q&A — 変身一発のコマンドゾーンに送る効果と XG3-045 チャージアップストロンガーの「自軍捨札の「仮面ライダーストロンガー」と置き換える」は同タイミングで、ターンプレイヤーが処理順を選ぶ（出典: atwiki/page-1764 Q3「同タイミングなので、ターンプレイヤーの任意の順番で処理を行って下さい」・atwiki/page-2015 Q1）", () => {
+    const s = strongerEnd();
+    expectChoiceFrom(s, "player1", "XG2-055");
+    expect(choiceIds(s)).toEqual(["XG3-045:cs"]);
+    expect(canSkip(s)).toBe(true);
+  });
+
+  it("XG2-055: 公式Q&A — 置き換えを先に処理すれば、XG3-045 は捨札になり、捨札の「仮面ライダーストロンガー」がその場に出る（コマンドゾーンには何も置かれない）（出典: atwiki/page-1764 Q3「はい、できます」）", () => {
+    const s = advanceTo(resolveAll(pick(strongerEnd(), "XG3-045:cs")), "player2", "start");
+    expect(zoneOf(s, "player1", "XG3-045:cs")).toBe("discard");
+    expect(zoneOf(s, "player1", "XG3-044:st")).toBe("rush");
+    expect(s.players.player1.command).toHaveLength(1);
+  });
+
+  it("XG2-055: 公式Q&A — 変身一発の効果を先に処理すれば、XG3-045 はコマンドゾーンにホールド状態で置かれ、置き換えは行われない（出典: atwiki/page-1764 Q3・atwiki/page-2015「これが自軍エリアにある間、自分がターンを終えるとき」）", () => {
+    const s = advanceTo(resolveAll(skip(strongerEnd())), "player2", "start");
+    expect(zoneOf(s, "player1", "XG3-045:cs")).toBe("command");
+    expect(cardIn(s, "player1", "XG3-045:cs")?.commandHeld).toBe(true);
+    expect(zoneOf(s, "player1", "XG3-044:st")).toBe("discard");
   });
 });
