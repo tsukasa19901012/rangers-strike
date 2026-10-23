@@ -2349,7 +2349,7 @@ export function tryLeaveField(
       (c) => isRk1LeaveCounterCard(c.cardId) && canPlayHandCounter(state, intent.ownerPlayerId, c.instanceId),
     );
 
-  // RM-006 怒（いか）る！（RK-015 と同じ発動の条件。rules/rm/rm1Effects.ts）。
+  // RM-006 怒る！（RK-015 と同じ発動の条件。rules/rm/rm1Effects.ts）。
   const ikaru =
     !counterLockedFor(state, intent.ownerPlayerId) &&
     rm1LeaveCounterConditionMet(state, intent.ownerPlayerId, intent) &&

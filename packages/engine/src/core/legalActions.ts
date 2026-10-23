@@ -492,7 +492,7 @@ function appendLeaveReactionActions(
       if (!rk1LeaveCounterConditionMet(state, pending.ownerPlayerId, pending)) continue;
       if (!canPlayHandCounter(state, pending.ownerPlayerId, card.instanceId)) continue;
     } else if (isRm1LeaveCounterCard(card.cardId)) {
-      // RM-006 怒（いか）る！（RK-015 と同じ発動の条件。rules/rm/rm1Effects.ts）。
+      // RM-006 怒る！（RK-015 と同じ発動の条件。rules/rm/rm1Effects.ts）。
       if (!rm1LeaveCounterConditionMet(state, pending.ownerPlayerId, pending)) continue;
       if (!canPlayHandCounter(state, pending.ownerPlayerId, card.instanceId)) continue;
     } else if (effectId === "dino_chronicle") {
