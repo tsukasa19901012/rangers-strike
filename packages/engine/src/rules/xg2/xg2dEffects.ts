@@ -305,7 +305,7 @@ xg2Hook("afterUnitLeft", (state, left) => {
 // 置いた後、山札をシャッフルする。これが自軍常駐置き場にある間、モーフの効果で自軍コマンドゾーンか自軍パワーゾーンのオモテ向きのカードからユニットカードを
 // 選ぶとき、かわりにこれに重ねたカードから選んでもよい。…」（atwiki/page-1774）。重ねたカードとモーフすると、モーフしたユニットは同じ位置に重なる（Q1・Q2）。
 
-const BOOK_EFFECT_ID = "xg2_070_book_search";
+export const BOOK_EFFECT_ID = "xg2_070_book_search";
 const BOOK_MAX = 3;
 
 function bookSearchIds(state: GameState, playerId: PlayerId): string[] {

@@ -19,6 +19,7 @@ import {
   pickChargeAction,
   pickCommandPaymentResolve,
   pickDamagePayment,
+  pickDeckStackChoice,
   pickEffectChoice,
   pickBeginZordSetup,
   pickZordSetupStep,
@@ -524,6 +525,10 @@ function pickCpuActionInner(
     if (playerId !== state.pendingEffectChoice.playerId) return null;
     const actions = getLegalActions(state);
     const pending = state.pendingEffectChoice;
+
+    // 配置するときに山札から重ねる選択（ライダーパス等）は読まずに上限まで重ねる（盤面評価では重ねない方が良く見える）。
+    const deckStack = pickDeckStackChoice(state, pending, actions);
+    if (deckStack) return deckStack;
 
     if (enableSearch && pending.kind === "deck_top_or_bottom") {
       const placements = actionsOfType(actions, "resolve_ruin_survey");
