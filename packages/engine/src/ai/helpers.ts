@@ -8,6 +8,8 @@ import { pickSet9DCpuChoice } from "../rules/legend1/set9NamedEffectsD";
 import { pickOtherLinesCpuChoice } from "../rules/legend1/otherLinesNamedEffects";
 import { pickSet9BCpuChoice } from "../rules/legend1/set9NamedEffectsB";
 import { ATTACK_HOLD_BONUS_EFFECT_ID, pickAttackHoldCount } from "../rules/attackHoldBonus";
+import { RIDER_PASS_SEARCH_EFFECT_ID } from "../rules/rk/rk2UnitEffects";
+import { BOOK_EFFECT_ID } from "../rules/xg2/xg2dEffects";
 import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
@@ -1263,6 +1265,38 @@ export function pickCpuFallbackAction(
   return actions[0] ?? null;
 }
 
+/** 配置するとき自軍山札のカードを「～枚まで」重ねる常駐（RK-022 ライダーパス・XG2-070 ライドブッカー・ブックモード）。 */
+const DECK_STACK_EFFECT_IDS = new Set([RIDER_PASS_SEARCH_EFFECT_ID, BOOK_EFFECT_ID]);
+
+/**
+ * 配置するときに山札から重ねる選択は、上限まで重ねる。重ねたカードは後で場のユニットと置き換えて使える（山札から引くのを
+ * 待たずに出せる）が、盤面評価は重ねたカードを数えず山札が減る分だけ下がるので、読みで比べると毎回「重ねない」を選んでいた。
+ * まだ重ねていないカード名を優先し、同じなら BP の高いものから選ぶ。
+ */
+export function pickDeckStackChoice(
+  state: GameState,
+  pending: PendingEffectChoice,
+  actions: GameAction[],
+): GameAction | null {
+  if (!DECK_STACK_EFFECT_IDS.has(pending.effectId)) return null;
+  const p = state.players[pending.playerId];
+  const op = p.operation.find((c) => c.instanceId === pending.sourceInstanceId);
+  const stackedIds = new Set((op?.stackedCards ?? []).map((c) => c.cardId));
+  let best: GameAction | null = null;
+  let bestScore = -Infinity;
+  for (const a of actions) {
+    if (a.type !== "resolve_effect_choice") continue;
+    const card = p.deck.find((c) => c.instanceId === a.instanceId);
+    if (!card) continue;
+    const score = (stackedIds.has(card.cardId) ? 0 : 100000) + (getDefinition(state.definitions, card.cardId)?.bp ?? 0);
+    if (score > bestScore) {
+      bestScore = score;
+      best = a;
+    }
+  }
+  return best;
+}
+
 export function pickEffectChoice(
   state: GameState,
   pending: PendingEffectChoice,
@@ -1270,6 +1304,9 @@ export function pickEffectChoice(
 ): GameAction | null {
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
+
+  const deckStack = pickDeckStackChoice(state, pending, actions);
+  if (deckStack) return deckStack;
 
   // 第7弾 RS-474〜RS-494 の選択（rules/legend1/set7NamedEffectsC.ts）。
   if (isSet7CChoiceEffect(pending.effectId)) {
