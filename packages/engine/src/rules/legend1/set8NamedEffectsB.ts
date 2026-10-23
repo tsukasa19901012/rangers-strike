@@ -477,7 +477,9 @@ CHOICE_RESOLVERS[TRICERA_LANCE_EFFECT_ID] = (state, _playerId, instanceId) => {
   const selected = [...(pending.set8bMeta?.selected ?? []), instanceId];
   const next: PendingEffectChoice = { ...pending, set8bMeta: { ...pending.set8bMeta, selected }, selectedInstanceIds: selected };
   const candidates = triceraCandidates(state, next);
-  if (candidates.length === 0) return holdSelected(state, next, selected);
+  // finish は開いている選択と同じものを閉じるので、選び終えた next を開いた状態にしてから渡す
+  // （元の選択のまま渡すと閉じずに残り、同じ選択が何度でも開いていた）。
+  if (candidates.length === 0) return holdSelected({ ...state, pendingEffectChoice: next }, next, selected);
   return { state: { ...state, pendingEffectChoice: { ...next, validInstanceIds: candidates } } };
 };
 CHOICE_SKIPPERS[TRICERA_LANCE_EFFECT_ID] = (state) => {

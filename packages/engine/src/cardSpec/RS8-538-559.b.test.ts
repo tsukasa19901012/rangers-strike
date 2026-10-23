@@ -417,6 +417,14 @@ describe("RS-549 トリケラレンジャー（2nd）", () => {
     expect(unitIn(s, "player2", "SPEC-P2:b")?.commandHeld).toBe(true);
   });
 
+  it("RS-549: 【トリケランス】候補が尽きたら選択は閉じる（同じ選択が開き直して、選び続けても終わらなかった）", () => {
+    let s = enterSeq(board(3), ["RS-549:t"]);
+    s = pick(s, "SPEC-P1:a");
+    s = pick(s, "SPEC-P2:b");
+    expect(unitIn(s, "player2", "SPEC-P2:b")?.commandHeld).toBe(true);
+    expect(s.pendingEffectChoice?.effectId).not.toBe("rs549_tricera_lance");
+  });
+
   it("RS-549: 【トリケランス】候補は敵軍バトルエリアの S ユニットで、必要パワーが敵軍ダメージを超えるもの・M ユニット・ラッシュエリアのユニットは選べない（出典: atwiki/page-1172）", () => {
     const s = enterSeq(board(3), ["RS-549:t"]);
     expect(choiceIds(s)).toEqual(["SPEC-P1:a", "SPEC-P2:b"]);
