@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { AppController } from "./controller";
 import { input } from "../input/actions";
@@ -5,6 +6,7 @@ import { hitTestGui } from "../input/devices";
 import { testPlatform } from "../testing/engine";
 import { measureText } from "../text/wrap";
 import { dropCardName, variantLabels, type GuiView } from "./guiMatch";
+import { parseSharePayload } from "./share";
 
 const VITA = { width: 480, height: 272 };
 
@@ -336,6 +338,25 @@ describe("dropCardName", () => {
 
   it("keeps a longer name that starts with it", () => {
     expect(dropCardName("ラッシュ: アバレッドAM / アバレッド", "アバレッド")).toBe("ラッシュ: アバレッドAM / アバレッド");
+  });
+});
+
+describe("morph order", () => {
+  // A shared board (RK-146 デネブ rushed; two CPU morph units can react). The turn player orders them
+  // (wiki p1827), so the human picks a CPU unit. Without a selection window the board looked frozen.
+  it("asks the rusher which of the opponent's morph units goes first in the selection window", () => {
+    const app = startGui(5);
+    const payload = parseSharePayload(JSON.parse(readFileSync(new URL("./fixtures/share-rk146-morph-order.json", import.meta.url), "utf8")))!;
+    app.startSharedMatch(payload);
+    for (let i = 0; i < 5; i++) app.tick();
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog.titleLines[0]!.text).toContain("モーフの順番");
+    expect(dialog.cards.map((c) => c.instanceId)).toEqual(["XG5-052-41", "XG2-045-59"]);
+    app.dispatch(input.confirm);
+    for (let i = 0; i < 50; i++) app.tick();
+    const session = app.session!;
+    expect(session.state.pendingMorph).toBeUndefined();
+    expect(session.humanOptions().some((o) => o.action.type === "end_phase")).toBe(true);
   });
 });
 

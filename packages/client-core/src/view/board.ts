@@ -149,6 +149,13 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
       detail: sourceText(choice.sourceCardId),
     };
   }
+  if (morph && !morph.activeMorphUnitInstanceId && morph.morphUnitInstanceIds.length > 1) {
+    // The turn player orders several morph reactions (wiki p1827), so the rusher may pick the opponent's units.
+    return {
+      actor: who(morph.phasePlayerId),
+      title: `モーフの順番: ${who(morph.rusherPlayerId)}が「${instanceName(state, morph.rushedInstanceId, index)}」をラッシュ。先にモーフする${who(morph.defenderPlayerId)}のユニットを選ぶ（${morph.morphUnitInstanceIds.length}体が反応）`,
+    };
+  }
   if (choice?.kind === "simultaneous_order") {
     return {
       actor: who(choice.playerId),
