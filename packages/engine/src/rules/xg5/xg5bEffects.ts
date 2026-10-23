@@ -5,7 +5,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { effectiveBp } from "../../core/catalog";
+import { cardWorks, effectiveBp } from "../../core/catalog";
 import { patchPlayer } from "../playerPatches";
 import { finalizeEffectRush, markFieldEntryHandled } from "../../events/emitUnitRushed";
 import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
@@ -38,7 +38,6 @@ import {
 } from "../rm/rm1Effects";
 import { ATTACK_WIN_HOOKS, AFTER_ACTION_HOOKS, CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, XG5_KEYWORDS, noop } from "./xg5Core";
 import { XG5_JET_BOARD, printedCostNumber, xg5CostNumber, xg5Flags, xg5TurnPlayer } from "./xg5Fields";
-import { XG5_SENTAI_WORK_CARD_IDS } from "./xg5SentaiWorks.generated";
 import {
   addBp,
   addFlag,
@@ -271,18 +270,17 @@ AFTER_ACTION_HOOKS.push((before, after) => {
 // XG5-028 バーニングレジェンドダイボイジャー【スーパーサーティーセンタイソウル】
 // 「自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒作品名に「戦隊」を含む、DAを持たない自軍捨札の枚数を数え、その数字以下の
 //  必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。」（atwiki/page-2237）。
-// 作品名は atwiki の「作品：」（rules/xg5/xg5SentaiWorks.generated.ts）。発動するかは選ぶユニットを見送れること（任意）で表す。
+// 作品名はカタログの works（atwiki の「作品：」）。2 作品のカード（SX-009）はどちらかが「戦隊」を含めば数える（1枚は1枚）。
+// 発動するかは選ぶユニットを見送れること（任意）で表す。
 
 const SENTAI_SOUL = "xg5_028_thirty_sentai_soul";
-function isSentaiWork(cardId: string): boolean {
-  if (XG5_SENTAI_WORK_CARD_IDS.has(cardId)) return true;
-  for (const id of XG5_SENTAI_WORK_CARD_IDS) if (isSameCardIdentity(cardId, id)) return true;
-  return false;
+function isSentaiWork(state: GameState, cardId: string): boolean {
+  return cardWorks(state.definitions, cardId).some((w) => w.includes("戦隊"));
 }
 XG5_KEYWORDS["XG5-028::thirty_sentai_soul"] = (state, ctx) => {
   const pid = ctx.playerId;
   if (xg5TurnPlayer(state) !== pid) return { state, detail: "xg5_028:enemy_turn" };
-  const count = state.players[pid].discard.filter((c) => isSentaiWork(c.cardId) && !printedCategories(state, c.cardId).includes("DA")).length;
+  const count = state.players[pid].discard.filter((c) => isSentaiWork(state, c.cardId) && !printedCategories(state, c.cardId).includes("DA")).length;
   const enemyId = opp(pid);
   const ids = fieldUnits(state, enemyId)
     .filter((c) => xg5CostNumber(state, pid, enemyId, c.cardId) <= count && selectableEnemy(state, pid, "XG5-028", c))

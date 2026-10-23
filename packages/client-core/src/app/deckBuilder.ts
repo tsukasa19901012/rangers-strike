@@ -783,7 +783,7 @@ export class DeckBuilder {
         ? []
         : [
             g.nameField && { id: "name" as const, rect: g.nameField, text: this.deckName, placeholder: "デッキ名", maxLength: DECK_NAME_MAX },
-            g.search && { id: "search" as const, rect: g.search, text: this.query, placeholder: "カード名・効果・特徴・番号で検索", maxLength: 60 },
+            g.search && { id: "search" as const, rect: g.search, text: this.query, placeholder: "カード名・効果・特徴・作品・番号で検索", maxLength: 60 },
           ].filter((f): f is DeckTextField => !!f),
       tiles,
       pageText: list.length ? `${this.index + 1}/${list.length} ${this.page + 1}/${pages}頁` : "",

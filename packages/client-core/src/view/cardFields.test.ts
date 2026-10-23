@@ -15,7 +15,12 @@ describe("effectParagraphs", () => {
 
 describe("cardFieldLines", () => {
   it("lists a unit's attributes as the wiki does", () => {
-    const def = { id: "X-1", name: "X", type: "unit", category: ["WB", "DA"], bp: 4000, sp: "1/2", powerCost: 4, comboNumber: "RC", features: ["仮面ライダー", "男"] } as never;
-    expect(cardFieldLines(def)).toEqual(["カテゴリ：ワイルドビースト/ダークアライアンス", "BP：4000", "SP：1/2", "必要パワー：4", "追加条件：なし", "CN：RC", "特徴：仮面ライダー/男"]);
+    const def = { id: "X-1", name: "X", type: "unit", category: ["WB", "DA"], bp: 4000, sp: "1/2", powerCost: 4, comboNumber: "RC", features: ["仮面ライダー", "男"], works: ["仮面ライダーオーズ/OOO"] } as never;
+    expect(cardFieldLines(def)).toEqual(["カテゴリ：ワイルドビースト/ダークアライアンス", "BP：4000", "SP：1/2", "必要パワー：4", "追加条件：なし", "CN：RC", "特徴：仮面ライダー/男", "作品：仮面ライダーオーズ/OOO"]);
+  });
+
+  it("lists each work of a card from two works (SX-009) on its own line", () => {
+    const def = { id: "X-2", name: "X", type: "unit", category: ["MA"], powerCost: 0, works: ["天装戦隊ゴセイジャー", "海賊戦隊ゴーカイジャー"] } as never;
+    expect(cardFieldLines(def).filter((l) => l.startsWith("作品"))).toEqual(["作品：天装戦隊ゴセイジャー", "作品：海賊戦隊ゴーカイジャー"]);
   });
 });
