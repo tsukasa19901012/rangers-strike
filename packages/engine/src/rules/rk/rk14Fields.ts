@@ -10,7 +10,7 @@
  * - `rk14EffectiveSp`: RK-281【ドラゴンファイヤーストーム】・RK-282【シザースアタック】・RK-292 の※（rules/legend3/fieldEffects.ts）。
  * - `rk14FieldBpBonus`: RK-288【デルタムーバー】（rules/fieldAuras.ts）。
  */
-import { isSameCardIdentity, normalizeSameCardName } from "@rangers-strike/cards";
+import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { alignedFractionSp, battlePositionOneBased } from "../fractionalSp";
@@ -32,7 +32,7 @@ function turnRuleCount(state: Pick<GameState, "players">, playerId: PlayerId, ru
 
 function nameIs(state: Pick<GameState, "definitions">, cardId: string, name: string): boolean {
   const n = state.definitions[cardId]?.name;
-  return !!n && normalizeSameCardName(n) === normalizeSameCardName(name);
+  return !!n && n === name;
 }
 
 /** RK-280・RK-281（ホールドするとビークルとして扱うユニット）か。 */

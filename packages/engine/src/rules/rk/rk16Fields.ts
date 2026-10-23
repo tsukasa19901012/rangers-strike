@@ -11,7 +11,7 @@
  * - `rk16CanDeployFromCommand`: RK-320 の※（rules/keywordGapRuntime.ts canSelfRushFromZone）。
  * - `rk16NoteStrike` / `rk16StrikesReceived`: RK-320【ファイナルライジングブラスト】のストライクの回数（core/applyAction.ts）。
  */
-import { getBattleEntryHoldCount, isSameCardIdentity, normalizeSameCardName } from "@rangers-strike/cards";
+import { getBattleEntryHoldCount, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 
@@ -30,7 +30,7 @@ function isUnit(state: Defs, card: Pick<CardInstance, "cardId">): boolean {
 
 function named(state: Defs, cardId: string, name: string): boolean {
   const n = def(state, cardId)?.name;
-  return !!n && normalizeSameCardName(n) === normalizeSameCardName(name);
+  return !!n && n === name;
 }
 
 /** 必要パワーの数字（「+」「-」を除く）。 */

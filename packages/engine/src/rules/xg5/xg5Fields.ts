@@ -13,7 +13,7 @@
  * - `xg5NotSelectable`: XG5-041【兄妹の絆】（keywords/effectTargetability.ts）。
  * - `xg5EffectiveSp`: XG5-051 ※・XG5-054【歩く完全ライダー図鑑】（rules/legend3/fieldEffects.ts）。
  */
-import { cardCategories, isSameCardIdentity, normalizeSameCardName } from "@rangers-strike/cards";
+import { cardCategories, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import type { Xg5Flag } from "./xg5Types";
 import { hasTurnRuleModifier } from "../../core/scopedModifiers";
@@ -171,7 +171,7 @@ export function xg5EffectiveSp(state: Pick<GameState, "players" | "definitions">
     const counts = new Map<string, number>();
     for (const c of faceUp) {
       if (!(state.definitions[c.cardId]?.features ?? []).includes("仮面ライダー")) continue;
-      const key = normalizeSameCardName(nameOf(state, c.cardId));
+      const key = nameOf(state, c.cardId);
       counts.set(key, (counts.get(key) ?? 0) + 1);
     }
     if ([...counts.values()].some((n) => n >= 3)) return Math.max(sp, 1);

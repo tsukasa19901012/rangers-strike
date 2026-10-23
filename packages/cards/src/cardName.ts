@@ -1,20 +1,6 @@
-/**
- * 収録エディション表記（2nd / クロスギャザー XG 系）。正式カード名ではないため除去する。
- * 例: デカマスター（2nd）→ デカマスター、ファイブレッド（XG2）→ ファイブレッド
- */
-const EDITION_SUFFIX_PATTERN = /（(?:2nd|XG\d*)）$/u;
-
-export function stripEditionSuffix(name: string): string {
-  return name.replace(EDITION_SUFFIX_PATTERN, "");
-}
-
-export function hasEditionSuffix(name: string): boolean {
-  return EDITION_SUFFIX_PATTERN.test(name);
-}
-
-/** デッキ同名制限・ゾード素材照合に使う正規化名称。 */
+/** ゾード素材・名前指定の照合に使う名称（前後の空白を除く）。カードデータの名前は印刷名そのまま。 */
 export function canonicalCardName(name: string): string {
-  return stripEditionSuffix(name.trim());
+  return name.trim();
 }
 
 export function sameCanonicalCardName(a: string, b: string): boolean {

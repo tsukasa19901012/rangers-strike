@@ -22,7 +22,6 @@ export { getEffectLabel, starterDecks } from "../../../packages/cards/src/index"
 export {
   fullPlayableCatalog,
   validateDeckEntries,
-  normalizeSameCardName,
   maxCopiesForCard,
   cardCategories,
   expandDeck,
