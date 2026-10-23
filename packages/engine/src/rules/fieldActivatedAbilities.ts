@@ -649,6 +649,10 @@ export function listFieldActivatedAbilityCards(state: GameState, playerId: Playe
       const ability = abilityFor(card.cardId);
       if (!ability || !ability.zones.includes(zone)) continue;
       if ((ability.phase ?? "rush") !== state.phase) continue;
+      // 捨札コストのない起動効果は、repeatable でなければ同じターンに1回（markFieldAbilityUsed）。能力ごとの canActivate で
+      // 確かめ忘れると何度でも起動できた（XG7-036【戦わなければ生き残れない】「自軍ラッシュフェイズごとに1度だけ」が
+      // 起動 → 宣言を繰り返してクロスが増え続け、CPU 対戦が終わらなかった）。
+      if (ability.discardSelf === false && !ability.repeatable && fieldAbilityUsedThisTurn(player, card.instanceId)) continue;
       if (ability.canActivate && !ability.canActivate(state, playerId, card)) continue;
       ids.push(card.instanceId);
     }
