@@ -11,6 +11,7 @@
  */
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
+import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import {
   accept,
   act,
@@ -189,6 +190,14 @@ describe("XG6-037 仮面ライダーアクセル", () => {
     const s = ridingCopy("XG7-031", inst("SPEC-RC37", "r"), {}, {}, true);
     expect(zoneOf(s, "player1", "SPEC-RC37:r")).toBe("battle");
     expect(bpOf(s, "player1", "SPEC-RC37:r")).toBe(3000);
+  });
+
+  it(`XG6-037: 【振り切るぜ】XG7-031【サイクロンアタック】を写すと、これにライドしているユニットは敵軍 S ユニット（XG4-014）・S ビークル（XG4-005）の効果に選ばれない（敵軍 M ユニット RS-155 の効果には選ばれる）${REQ}`, () => {
+    const s = ridingCopy("XG7-031", inst("SPEC-RC37", "r"), {}, { battle: [inst("XG4-014", "gp"), inst("RS-155", "bs")], rush: [inst("XG4-005", "bv")] }, true);
+    expect(zoneOf(s, "player1", "SPEC-RC37:r")).toBe("battle");
+    expect(isSelectableByOpponentEffect(s, "player2", "SPEC-RC37:r", "XG4-014", "player2")).toBe(false);
+    expect(isSelectableByOpponentEffect(s, "player2", "SPEC-RC37:r", "XG4-005", "player2")).toBe(false);
+    expect(isSelectableByOpponentEffect(s, "player2", "SPEC-RC37:r", "RS-155", "player2")).toBe(true);
   });
 
   it(`XG6-037: 【振り切るぜ】写したテキストは、ライドしているユニットだけに働く（ライドしていない自軍ユニットは BP そのまま）${REQ}`, () => {

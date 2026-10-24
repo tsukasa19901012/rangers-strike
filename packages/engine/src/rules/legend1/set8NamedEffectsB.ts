@@ -130,11 +130,16 @@ function powerCostHasPlus(def: CardDefinition | undefined): boolean {
 }
 
 /** 敵軍のバトル・ラッシュエリアの、相手の効果で選べるユニット。 */
-function selectableEnemyUnits(state: GameState, actorId: PlayerId, pred: (c: CardInstance, ownerId: PlayerId) => boolean): string[] {
+function selectableEnemyUnits(
+  state: GameState,
+  actorId: PlayerId,
+  pred: (c: CardInstance, ownerId: PlayerId) => boolean,
+  sourceCardId?: string,
+): string[] {
   const enemyId = opponent(actorId);
   return fieldUnits(state, enemyId)
     .filter((c) => isUnitCard(state, c.cardId))
-    .filter((c) => isSelectableByOpponentEffect(state, actorId, c.instanceId))
+    .filter((c) => isSelectableByOpponentEffect(state, actorId, c.instanceId, sourceCardId))
     .filter((c) => pred(c, enemyId))
     .map((c) => c.instanceId);
 }
@@ -433,7 +438,7 @@ function triceraCandidates(state: GameState, pending: PendingEffectChoice): stri
   return state.players[enemyId].battle
     .filter((c) => !selected.includes(c.instanceId) && !c.commandHeld)
     .filter((c) => isUnitCard(state, c.cardId) && isSmallUnitNow(state, enemyId, c))
-    .filter((c) => isSelectableByOpponentEffect(state, pending.playerId, c.instanceId))
+    .filter((c) => isSelectableByOpponentEffect(state, pending.playerId, c.instanceId, pending.sourceCardId))
     .filter((c) => used + parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost) <= budget)
     .map((c) => c.instanceId);
 }
@@ -526,7 +531,7 @@ function openEnemyUnitChoice(
 
 function applyGodFinish(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   if (turnPlayerOf(state) !== ctx.playerId) return { state, detail: "rs550_god_finish:not_own_turn" };
-  const ids = selectableEnemyUnits(state, ctx.playerId, (c) => !powerCostHasPlus(getDefinition(state.definitions, c.cardId)));
+  const ids = selectableEnemyUnits(state, ctx.playerId, (c) => !powerCostHasPlus(getDefinition(state.definitions, c.cardId)), ctx.sourceCardId);
   return openEnemyUnitChoice(state, ctx, "rs550_god_finish", ids, "power");
 }
 
@@ -536,6 +541,7 @@ function applyFlyingBeam(state: GameState, ctx: GrantKeywordContext): GrantKeywo
     state,
     ctx.playerId,
     (c) => parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost) > count,
+    ctx.sourceCardId,
   );
   return openEnemyUnitChoice(state, ctx, "rs554_flying_beam", ids, "power");
 }
@@ -544,7 +550,7 @@ const POWER_ARROW_EFFECT_ID = "rs559_power_arrow";
 
 function powerArrowTargets(state: GameState, playerId: PlayerId, sourceCardId: string): string[] {
   const maxBp = Number(textOf(state, sourceCardId).match(/BP(\d+)以下の敵軍ユニット/)?.[1] ?? 8000);
-  return selectableEnemyUnits(state, playerId, (c, ownerId) => effectiveBp(state, ownerId, c) <= maxBp);
+  return selectableEnemyUnits(state, playerId, (c, ownerId) => effectiveBp(state, ownerId, c) <= maxBp, sourceCardId);
 }
 
 function applyPowerArrow(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {

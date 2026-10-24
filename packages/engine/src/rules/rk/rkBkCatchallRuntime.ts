@@ -194,7 +194,7 @@ const handleCounterBattleSkip: PatternHandler = (state, ctx, body, keyword) => {
 
 const handleImposeDestroyRule: PatternHandler = (state, ctx, body, keyword) => {
   const enemyId = opponent(ctx.playerId);
-  const valid = collectEnemyUnits(state, ctx.playerId, parseEnemyUnitFilter(body));
+  const valid = collectEnemyUnits(state, ctx.playerId, parseEnemyUnitFilter(body), ctx.sourceCardId);
   if (valid.length === 0) return { state, detail: `${keyword}:no_targets` };
   return {
     state: registerFieldPassive(

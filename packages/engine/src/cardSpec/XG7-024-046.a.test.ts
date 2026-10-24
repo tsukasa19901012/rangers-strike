@@ -10,6 +10,7 @@
  */
 import { describe, expect, it } from "vitest";
 import type { GameAction } from "../types/actions";
+import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import type { CardInstance, GameState } from "../types/game";
 import {
   DEFS,
@@ -432,6 +433,41 @@ describe("XG7-031 新サイクロン号", () => {
     );
     s = act(s, { type: "initiate_command_payment", playerId: "player2", kind: "battle_entry", sourceInstanceId: "RS-155:bs" } as GameAction);
     expect(s.pendingEffectChoice?.validInstanceIds ?? []).toContain("RK-023:r");
+  });
+
+  it("XG7-031: 【サイクロンアタック】敵軍 S ユニット XG4-014 ギンガピンクの NC【キバアロー】ではライドしているユニットを選べない（ライドしていない敵軍ユニットは選べる）（出典: atwiki/page-2429「敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない」）", () => {
+    const s = ncBoard("XG4-014:gp", 3, {}, { battle: [...ridingPair("SPEC-E-A", "r", "XG7-031", "v"), inst("SPEC-E-B", "n")], deck: deckCards(4, "e") }, EXTRA);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG4-014");
+    expect(choiceIds(s)).toContain("SPEC-E-B:n");
+    expect(choiceIds(s)).not.toContain("SPEC-E-A:r");
+  });
+
+  it("XG7-031: 【サイクロンアタック】敵軍 S ビークル XG4-005 バギバギルガー－の【バキバキビックサンダー】ではライドしているユニットを選べない（ライドしていない敵軍ユニットは選べる）（出典: atwiki/page-2429「敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない」）", () => {
+    const s0 = rushPhaseOf(
+      { hand: [inst("XG4-005", "bv")], command: releasedCat("DA", 1), power: powerCards(3) },
+      { battle: [...ridingPair("SPEC-C3", "r", "XG7-031", "v"), inst("SPEC-C3", "n")] },
+      EXTRA,
+    );
+    const r = rushFromHand(s0, "player1", "XG4-005:bv");
+    expect(r.ok, r.error).toBe(true);
+    expect(r.state.pendingEffectChoice?.sourceCardId).toBe("XG4-005");
+    expect(choiceIds(r.state)).toContain("SPEC-C3:n");
+    expect(choiceIds(r.state)).not.toContain("SPEC-C3:r");
+  });
+
+  it("XG7-031: 【サイクロンアタック】の「選ばれない」は敵軍の効果だけ — 持ち主自身の S ユニット（XG4-014）・S ビークル（XG4-005）の効果では選べる（出典: atwiki/page-2429「敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない」）", () => {
+    const s = p1Battle({ battle: [...ridingPair("RK-023", "r", "XG7-031", "v"), inst("XG4-014", "gp")], rush: [inst("XG4-005", "bv")] }, {}, EXTRA);
+    expect(isSelectableByOpponentEffect(s, "player1", "RK-023:r", "XG4-014", "player1")).toBe(true);
+    expect(isSelectableByOpponentEffect(s, "player1", "RK-023:r", "XG4-005")).toBe(true);
+  });
+
+  it("XG7-031: 【サイクロンアタック】の「選ばれない」はこれにライドしているユニットだけ — ライドしていない自軍ユニットは敵軍 S ユニット・S ビークルの効果に選ばれる（出典: atwiki/page-2429「敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない」）", () => {
+    const s = p1Battle({ battle: [inst("XG7-031", "v"), inst("RK-023", "r")] }, { battle: [inst("XG4-014", "gp")], rush: [inst("XG4-005", "bv")] }, EXTRA);
+    expect(isSelectableByOpponentEffect(s, "player2", "RK-023:r", "XG4-014", "player2")).toBe(true);
+    expect(isSelectableByOpponentEffect(s, "player2", "RK-023:r", "XG4-005", "player2")).toBe(true);
+    const ridden = p1Battle({ battle: ridingPair("RK-023", "r", "XG7-031", "v") }, { battle: [inst("XG4-014", "gp")], rush: [inst("XG4-005", "bv")] }, EXTRA);
+    expect(isSelectableByOpponentEffect(ridden, "player2", "RK-023:r", "XG4-014", "player2")).toBe(false);
+    expect(isSelectableByOpponentEffect(ridden, "player2", "RK-023:r", "XG4-005")).toBe(false);
   });
 });
 

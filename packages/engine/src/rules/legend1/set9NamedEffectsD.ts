@@ -544,7 +544,7 @@ function applyAcrobatics(state: GameState, ctx: GrantKeywordContext): GrantKeywo
   const lowest = Math.min(...units.map((c) => effectiveBp(state, enemyId, c)));
   const ids = units
     .filter((c) => effectiveBp(state, enemyId, c) === lowest)
-    .filter((c) => isSelectableByOpponentEffect(state, ctx.playerId, c.instanceId))
+    .filter((c) => isSelectableByOpponentEffect(state, ctx.playerId, c.instanceId, ctx.sourceCardId))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: `${ACROBATICS_EFFECT_ID}:no_targets` };
   return {
@@ -655,7 +655,7 @@ export const SPADE_ARTS_RUSH_EFFECT_ID = "rs690_spade_arts_rush";
 function spadeSUnits(state: GameState, actorId: PlayerId, zone: "battle" | "rush"): CardInstance[] {
   const enemyId = opponent(actorId);
   return state.players[enemyId][zone].filter(
-    (c) => isUnit(state, c.cardId) && isSmallUnitNow(state, enemyId, c) && isSelectableByOpponentEffect(state, actorId, c.instanceId),
+    (c) => isUnit(state, c.cardId) && isSmallUnitNow(state, enemyId, c) && isSelectableByOpponentEffect(state, actorId, c.instanceId, "RS-690"),
   );
 }
 

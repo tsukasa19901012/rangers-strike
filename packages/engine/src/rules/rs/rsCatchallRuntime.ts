@@ -267,7 +267,7 @@ function holdEnemyUnitInPlace(state: GameState, ctx: GrantKeywordContext, body: 
   const clause = sentence.includes("とき、") ? sentence.slice(sentence.lastIndexOf("とき、") + 3) : sentence;
   const filter = parseEnemyUnitFilter(clause);
   if (!/バトルエリア|ラッシュエリア/.test(clause)) filter.zone = "both";
-  const valid = collectEnemyUnits(state, ctx.playerId, filter).filter((id) => {
+  const valid = collectEnemyUnits(state, ctx.playerId, filter, ctx.sourceCardId).filter((id) => {
     const enemy = state.players[opponent(ctx.playerId)];
     return ![...enemy.battle, ...enemy.rush].some((c) => c.instanceId === id && c.commandHeld);
   });
@@ -455,7 +455,7 @@ function startAdjacentPairToPowerChoice(
   const bpSum = Number(m[2]);
   const size = m[3] as "S" | "M" | "L";
   const pairConstraint = { adjacentZone: zone, bpSum, size } as const;
-  const valid = adjacentPairCandidates(state, ctx.playerId, pairConstraint, []);
+  const valid = adjacentPairCandidates(state, ctx.playerId, pairConstraint, [], ctx.sourceCardId);
   if (valid.length === 0) return { state, detail: `${ctx.effectId}:no_targets` };
   const opened = openEffectChoice(state, {
     playerId: ctx.playerId,

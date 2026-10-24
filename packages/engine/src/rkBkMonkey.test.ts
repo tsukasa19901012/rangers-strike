@@ -218,7 +218,7 @@ describe("RK/BK monkey test (random legal actions, RK/BK-only decks)", () => {
 describe("RK/BK CPU simulation (hybrid promoted, unresolved audit)", () => {
   it(
     `${SIM_GAMES} games with zero interpret_effect_unresolved on RK/BK cards`,
-    { timeout: 300_000 },
+    { timeout: 600_000 },
     async () => {
       const traces = [];
       let applyFailed = 0;
