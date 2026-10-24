@@ -1,10 +1,11 @@
 // 「共有する」で短い URL にしたデッキ（Upstash の deck:<id>）を全部読み出して一覧にする。読むだけで、何も書き換えない。
 //   cd apps/web-pocket && vercel env pull .env.local   # KV_REST_API_URL / KV_REST_API_TOKEN を手元に出す
+//   （Sensitive の変数は [SENSITIVE] になるので、そのときは Upstash の URL と Read-Only Token を .env 形式のファイルに書いて --env で渡す）
 //   node scripts/list-shared-decks.mjs [--env .env.local] [--out shared-decks.json] [--arena ../../packages/engine/arena-decks]
 // --out: 一覧（id・名前・枚数・カード）を JSON で書く。--arena: 対戦台のデッキ（shared-<id>.json）としても書く。
 import { readFileSync, writeFileSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
-import { isDeckCode, upstashStore } from "../api/share.js";
+import { isDeckCode } from "../api/share.js";
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -22,12 +23,13 @@ function readEnvFile(path) {
 }
 
 const env = { ...process.env, ...readEnvFile(arg("env", ".env.local")) };
-if (!upstashStore(env)) {
-  console.error("KV_REST_API_URL / KV_REST_API_TOKEN がありません（vercel env pull .env.local を先に）");
+// 読むだけなので、読み取り専用の鍵（KV_REST_API_READ_ONLY_TOKEN）があればそちらを使う。
+const url = env.KV_REST_API_URL ?? env.UPSTASH_REDIS_REST_URL;
+const token = env.KV_REST_API_READ_ONLY_TOKEN ?? env.KV_REST_API_TOKEN ?? env.UPSTASH_REDIS_REST_TOKEN;
+if (!url || !token || token === "[SENSITIVE]") {
+  console.error("KV_REST_API_URL と KV_REST_API_READ_ONLY_TOKEN（または KV_REST_API_TOKEN）がありません");
   process.exit(1);
 }
-const url = env.KV_REST_API_URL ?? env.UPSTASH_REDIS_REST_URL;
-const token = env.KV_REST_API_TOKEN ?? env.UPSTASH_REDIS_REST_TOKEN;
 async function command(args) {
   const res = await fetch(url, { method: "POST", headers: { authorization: `Bearer ${token}` }, body: JSON.stringify(args) });
   if (!res.ok) throw new Error(`upstash ${res.status}`);
