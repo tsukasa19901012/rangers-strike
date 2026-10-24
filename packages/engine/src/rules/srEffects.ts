@@ -10,6 +10,7 @@ import {
   getDefinition,
   isSmallUnit,
   parsePowerCost,
+  commandCategoriesOf,
 } from "../core/catalog";
 import { spBecomesInZone } from "./fractionalSp";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
@@ -72,8 +73,7 @@ export function applyOpponentHoldOtEtOnCommandRelease(
   let changed = false;
   const command = player.command.map((card) => {
     if (card.commandHeld) return card;
-    const def = getDefinition(state.definitions, card.cardId);
-    const cats = cardCategories(def);
+    const cats = commandCategoriesOf(state, playerId, card.cardId);
     if (!cats.includes("OT") && !cats.includes("ET")) return card;
     changed = true;
     return { ...card, commandHeld: true, mothershipHold: false };

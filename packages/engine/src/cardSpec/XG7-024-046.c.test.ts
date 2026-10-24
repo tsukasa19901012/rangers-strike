@@ -121,6 +121,10 @@ describe("XG7-040 仮面ライダー電王LF×モモタロス", () => {
     expect(offered(entered({ command: releasedCat("OT", 1, "ot") }))).toBe(false);
   });
 
+  it("XG7-040: 【ダブルアクション】敵軍ターン中なので、XG7-059 トリガー・ドーパントのコマンドは OT として数えない（OT 1つ＋トリガーでは出せない）（出典: atwiki/page-2438・atwiki/page-2379「自軍ターン中、OTが追加される」）", () => {
+    expect(offered(entered({ command: [...releasedCat("OT", 1, "ot"), inst("XG7-059", "tg")] }))).toBe(false);
+  });
+
   it("XG7-040: 【ダブルアクション】出したとき、OT のコマンド2つがホールドされ、敵軍バトルエリアの S ユニットをすべて持ち主のパワーゾーンに送る（M ユニットは残る）（出典: atwiki/page-2438「敵軍バトルエリアのSユニットをすべて持ち主のパワーゾーンに送る」）", () => {
     let s = entered();
     const a = legal(s).find((x) => x.playerId === "player1" && JSON.stringify(x).includes("XG7-040:lf"));

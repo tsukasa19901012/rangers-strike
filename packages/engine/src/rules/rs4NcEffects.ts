@@ -18,6 +18,7 @@ import {
   getDefinition,
   isSmallUnit,
   unitEffectiveCategories,
+  commandCategoriesOf,
 } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
@@ -127,7 +128,7 @@ function daEnemySUnitIds(state: GameState, playerId: PlayerId): string[] {
 
 function releasedMaCommandIds(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].command
-    .filter((c) => !c.commandHeld && cardCategories(getDefinition(state.definitions, c.cardId)).includes("MA"))
+    .filter((c) => !c.commandHeld && commandCategoriesOf(state, playerId, c.cardId).includes("MA"))
     .map((c) => c.instanceId);
 }
 

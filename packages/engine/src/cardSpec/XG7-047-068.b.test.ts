@@ -60,6 +60,17 @@ const S4000 = sUnit("SPEC-S4000", { category: "WB", bp: 4000, powerCost: 0 });
 const WOMAN = sUnit("SPEC-WOMAN", { category: "WB", bp: 1000, powerCost: 0, features: ["女"] });
 const EXTRA = [V, PLAIN, E1000, S4000, WOMAN];
 
+/**
+ * ※「自軍エリアまたは自軍ゾーンにある間、自軍ターン中、○○が追加される」のコマンドゾーンでの共通テスト。
+ * 自軍ターン中は追加カテゴリのオペレーションの支払いに使える（敵軍ターン中に使えないことは各カードの it で見る）。
+ */
+function commandZoneCategoryTests(id: string, cat: "MA" | "WB" | "OT", op: string, page: string): void {
+  it(`${id}: ※ 自軍ターン中、自軍コマンドゾーンにある間も ${cat} のコマンドとして ${cat} のオペレーションの支払いに使える（出典: ${page}「自軍エリアまたは自軍ゾーンにある間」）`, () => {
+    const s = rushPhaseOf({ hand: [inst(op, "op")], command: [released(id, "c")], power: powerCards(4) }, {}, EXTRA);
+    expect(payableFor(s, `${op}:op`)).toContain(`${id}:c`);
+  });
+}
+
 /** 自軍ターン（ラッシュフェイズ）と敵軍ターンで、場の id のカテゴリ・特徴を見る。 */
 const ownTurn = (id: string) => rushPhaseOf({ rush: [inst(id, "x")] }, {}, EXTRA);
 const enemyTurn = (id: string) => enemyTurnOf({ rush: [inst(id, "x")] }, {}, EXTRA);
@@ -74,6 +85,10 @@ const enemyRush = (p1: Partial<GameState["players"]["player1"]>, unit: string, p
 /** 敵軍ターン、TST-UNIT-7 が自軍の target にアタックした直後（バトルの反応は開いたまま）。 */
 const attacked = (p1: Partial<GameState["players"]["player1"]>, target: string) =>
   attack(enemyTurnOf(p1, { battle: [inst("TST-UNIT-7", "atk")] }, EXTRA), "TST-UNIT-7:atk", target, "player2");
+
+/** 敵軍ターン、敵軍 S ユニット（SPEC-S4000）が自軍の target にアタックした直後（RK-004 は「敵軍Sユニットにアタックされたとき」）。 */
+const attackedByS = (p1: Partial<GameState["players"]["player1"]>, target: string) =>
+  attack(enemyTurnOf(p1, { battle: [inst("SPEC-S4000", "atk")] }, EXTRA), "SPEC-S4000:atk", target, "player2");
 
 const offeredBy = (s: GameState, cardId: string, instanceId: string) => choiceFromCard(s, cardId) || actionsMentioning(s, instanceId).length > 0;
 const accept = (s0: GameState, instanceId: string, prefer: string[] = []) => {
@@ -148,6 +163,16 @@ describe("XG7-056 ルナ・ドーパント", () => {
     expect(categoriesOf(enemyTurn("XG7-056"), "player1", "XG7-056:x")).toEqual(["DA"]);
   });
 
+  commandZoneCategoryTests("XG7-056", "MA", "TST-OP-MA", "atwiki/page-2376");
+
+  it("XG7-056: ※ 敵軍ターン中はコマンドゾーンにあっても MA のコマンドにならない — MA のカウンター RS-247 ギギの腕輪を払えない（出典: atwiki/page-2376「自軍ターン中」）", () => {
+    expect(canCounter(enemyRush({ hand: [inst("RS-247", "cn")], command: [released("XG7-056", "c")], power: powerCards(4) }, "SPEC-S4000:u"), "RS-247:cn")).toBe(false);
+  });
+
+  it("XG7-056: （確認）MA のコマンドがあれば同じ場面で RS-247 を使える（出典: RS-247 本文）", () => {
+    expect(canCounter(enemyRush({ hand: [inst("RS-247", "cn")], command: releasedCat("MA", 1), power: powerCards(4) }, "SPEC-S4000:u"), "RS-247:cn")).toBe(true);
+  });
+
   it("XG7-056: 【嫌いじゃないわ！】手札にある間、特徴「男」を持つ敵軍 S ユニットがラッシュされたとき、これを自軍ラッシュエリアに出すかを選べる（出典: atwiki/page-2376「これを自軍ラッシュエリアに出してもよい」）", () => {
     const s = enemyRushedFromHand({ hand: [inst("XG7-056", "ln")] }, EXTRA);
     expect(offeredBy(s, "XG7-056", "XG7-056:ln")).toBe(true);
@@ -182,6 +207,18 @@ describe("XG7-057 ヒート・ドーパント", () => {
 
   it("XG7-057: ※ 敵軍ターン中は DA だけ（出典: atwiki/page-2377）", () => {
     expect(categoriesOf(enemyTurn("XG7-057"), "player1", "XG7-057:x")).toEqual(["DA"]);
+  });
+
+  commandZoneCategoryTests("XG7-057", "WB", "TST-OP", "atwiki/page-2377");
+
+  it("XG7-057: ※ 敵軍ターン中はコマンドゾーンにあっても WB のコマンドにならない — WB のカウンター RK-004 疾風流超忍法を払えない（出典: atwiki/page-2377「自軍ターン中」）", () => {
+    const s = attackedByS({ battle: [inst("SPEC-PLAIN", "p")], hand: [inst("RK-004", "cn")], command: [released("XG7-057", "c")], power: powerCards(4) }, "SPEC-PLAIN:p");
+    expect(canCounter(s, "RK-004:cn")).toBe(false);
+  });
+
+  it("XG7-057: （確認）WB のコマンドがあれば同じ場面で RK-004 を使える（出典: RK-004 本文）", () => {
+    const s = attackedByS({ battle: [inst("SPEC-PLAIN", "p")], hand: [inst("RK-004", "cn")], command: releasedCat("WB", 1), power: powerCards(4) }, "SPEC-PLAIN:p");
+    expect(canCounter(s, "RK-004:cn")).toBe(true);
   });
 
   const heat = (p2: Partial<GameState["players"]["player2"]> = {}) =>
@@ -262,6 +299,8 @@ describe("XG7-059 トリガー・ドーパント", () => {
   /** 敵軍が XG7-049 ガタキリバコンボ（「手札からラッシュしたとき」【分身体】）を手札からラッシュする。 */
   const trigger = (power: CardInstance[] = [inst("XG7-059", "tg")]) =>
     enemyRush({ power }, "XG7-049:g", { deck: [inst("XG7-049", "e1"), inst("TST-OP", "e2"), ...deckCards(3, "e")], power: powerCards(4, "ep") });
+
+  commandZoneCategoryTests("XG7-059", "OT", "TST-OP-OT", "atwiki/page-2379");
 
   it("XG7-059: 【ゲームスタート……】自軍パワーゾーンでオモテ向きの間、敵軍ユニットの「ラッシュしたとき」の効果の発動に対して、これを自軍ラッシュエリアに出すかを選べる（出典: atwiki/page-2379「それを実行する前に、これを自軍ラッシュエリアに出してもよい」）", () => {
     expect(offeredBy(trigger(), "XG7-059", "XG7-059:tg")).toBe(true);

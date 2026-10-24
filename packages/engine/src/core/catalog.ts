@@ -597,6 +597,7 @@ export function effectiveCommandCategories(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   cardId: string,
+  turnPlayerId?: PlayerId,
 ): Category[] {
   const def = getDefinition(definitions, cardId);
   // XG6-013【未来の戦士達へ】: コマンドゾーンにある間、WB・MA・ET が追加される（rules/xg6/xg6Fields.ts）。
@@ -607,11 +608,20 @@ export function effectiveCommandCategories(
   // XG7-055〜XG7-059 の※（自軍ゾーン＝コマンドゾーンにある間も、自軍ターン中はカテゴリが追加される）。
   // コマンドのカテゴリはプレイヤー単位で判定するので、いまのターンは applyAction / getLegalActions の入口の状態で見る。
   const ownTurnExtra = XG7_OWN_TURN_ADDED_CATEGORY[cardId];
-  const printed = ownTurnExtra && !withTurn.includes(ownTurnExtra) && isTurnPlayerInActionContext(player.id) ? [...withTurn, ownTurnExtra] : withTurn;
+  const printed = ownTurnExtra && !withTurn.includes(ownTurnExtra) && (turnPlayerId !== undefined ? turnPlayerId === player.id : isTurnPlayerInActionContext(player.id)) ? [...withTurn, ownTurnExtra] : withTurn;
   if (!yogosteinGrantsDa(player)) return printed;
   if (printed.includes("DA")) return printed;
   if (parsePowerCost(def?.powerCost) > 3) return printed;
   return [...printed, "DA"];
+}
+
+/**
+ * 効果の条件・対象で見るコマンドの今のカテゴリ（effectiveCommandCategories を、いまのターンを state から見て呼ぶ）。
+ * XG7-055〜XG7-059 の※（自軍ターン中に追加されるカテゴリ）・XG1-033・XG6-013/060 で増えたカテゴリを含む。
+ */
+export function commandCategoriesOf(state: GameState, playerId: PlayerId, cardId: string): Category[] {
+  const turnPlayer = state.pendingRush?.phasePlayerId ?? state.pendingEffectChoice?.phasePlayerId ?? state.activePlayer;
+  return effectiveCommandCategories(state.players[playerId], state.definitions, cardId, turnPlayer);
 }
 
 /** コマンドゾーンに必要カテゴリがすべて揃っているか（atwiki 1559）。 */

@@ -13,7 +13,7 @@ import { cardCategories, isSameCardIdentity, type CardDefinition } from "@ranger
 import type { CardInstance, GameState, PendingBattle, PlayerId, PlayerState } from "../../types/game";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { isCostWindowSatisfied } from "../../core/costWindow";
-import { isSmallUnit } from "../../core/catalog";
+import { effectiveCommandCategories, isSmallUnit } from "../../core/catalog";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { rk12UnitHeldThisTurn } from "../rk/rk12Fields";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
@@ -287,7 +287,7 @@ function categoriesOfDef(def: CardDefinition | undefined): string[] {
 }
 
 function releasedEtCommands(player: PlayerState, definitions: Record<string, CardDefinition>): CardInstance[] {
-  return player.command.filter((c) => !c.commandHeld && categoriesOfDef(definitions[c.cardId]).includes("ET"));
+  return player.command.filter((c) => !c.commandHeld && effectiveCommandCategories(player, definitions, c.cardId).includes("ET"));
 }
 
 /**
