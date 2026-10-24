@@ -11,7 +11,7 @@ import { rs627NotSelectable } from "../rules/rs/rsCatchallField";
 import { set7BNotSelectable } from "../rules/legend1/set7NamedEffectsB";
 import { rk6SnakeBlocksSelection } from "../rules/rk/rk6Fields";
 import { rk10G3xProtects } from "../rules/rk/rk10Fields";
-import { xg7NotSelectable } from "../rules/xg7/xg7Fields";
+import { xg7CycloneBlocksSelection, xg7NotSelectable } from "../rules/xg7/xg7Fields";
 import { unitFeatures } from "../rules/addedFeatures";
 import { xg5NotSelectable } from "../rules/xg5/xg5Fields";
 import { xg2CommandZoneProtected } from "../rules/xg2/xg2Fields";
@@ -52,6 +52,9 @@ export function isSelectableByOpponentEffect(
   ) {
     return false;
   }
+  // XG7-031 新サイクロン号「これにライドしているユニットは…敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない。」
+  // （ブレイカーと同じく、選ぶのが持ち主でも敵軍の効果なら防ぐ。rules/xg7/xg7Fields.ts）。
+  if (xg7CycloneBlocksSelection(state, found.playerId, found.card, sourceCardId, sourceOwnerId)) return false;
   if (found.playerId === selectorPlayerId) return true;
   // XG2-093 ソルドーザー【道路封鎖】（rules/xg2/xg2Fields.ts）。
   if (found.zone === "command" && xg2CommandZoneProtected(state, found.playerId)) return false;

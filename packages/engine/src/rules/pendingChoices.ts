@@ -944,7 +944,7 @@ export function startEnterHoldEnemyPowerLeDamageChoice(
   const valid: string[] = [];
   for (const zone of ["battle", "rush"] as const) {
     for (const card of state.players[enemyId][zone]) {
-      if (!isSelectableByOpponentEffect(state, params.playerId, card.instanceId)) continue;
+      if (!isSelectableByOpponentEffect(state, params.playerId, card.instanceId, params.sourceCardId)) continue;
       const def = getDefinition(state.definitions, card.cardId);
       if (def?.type !== "unit") continue;
       if (parsePowerCost(def.powerCost ?? 99) <= maxCost) {
@@ -995,7 +995,7 @@ export function startRaidapanchiDiscardChoice(
   const valid: string[] = [];
   for (const card of state.players[enemyId].power) {
     if (card.faceDown) continue;
-    if (!isSelectableByOpponentEffect(state, params.playerId, card.instanceId)) continue;
+    if (!isSelectableByOpponentEffect(state, params.playerId, card.instanceId, params.sourceCardId)) continue;
     const def = getDefinition(state.definitions, card.cardId);
     if (parsePowerCost(def?.powerCost ?? 99) > maxPowerCost) continue;
     valid.push(card.instanceId);
@@ -3351,6 +3351,7 @@ export function adjacentPairCandidates(
   actorId: PlayerId,
   constraint: NonNullable<PendingEffectChoice["pairConstraint"]>,
   selected: string[],
+  sourceCardId?: string,
 ): string[] {
   const enemyId = opponent(actorId);
   const row = state.players[enemyId][constraint.adjacentZone];
@@ -3358,7 +3359,7 @@ export function adjacentPairCandidates(
     constraint.size === "S"
       ? isSmallUnit(state.definitions, c)
       : unitSizeOf(state.definitions, c) === constraint.size;
-  const ok = (c: CardInstance) => sizeOk(c) && isSelectableByOpponentEffect(state, actorId, c.instanceId);
+  const ok = (c: CardInstance) => sizeOk(c) && isSelectableByOpponentEffect(state, actorId, c.instanceId, sourceCardId);
   const result = new Set<string>();
   for (let i = 0; i + 1 < row.length; i++) {
     const a = row[i]!;
@@ -4148,7 +4149,7 @@ export function applyEffectChoiceSelect(
         const selected = [...prev, instanceId];
         if (selected.length < requiredCount) {
           const remaining = pending.pairConstraint
-            ? adjacentPairCandidates(state, pending.playerId, pending.pairConstraint, selected)
+            ? adjacentPairCandidates(state, pending.playerId, pending.pairConstraint, selected, pending.sourceCardId)
             : pending.validInstanceIds.filter((id) => !selected.includes(id));
           return {
             state: {

@@ -34,19 +34,19 @@ function openChoice(
   });
 }
 
-function collectEnemyBattleHeldS(state: GameState, playerId: PlayerId): string[] {
+function collectEnemyBattleHeldS(state: GameState, playerId: PlayerId, sourceCardId?: string): string[] {
   const enemyId = opponent(playerId);
   return state.players[enemyId].battle
     .filter((c) => c.commandHeld && isSmallUnit(state.definitions, c))
-    .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId))
+    .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId, sourceCardId))
     .map((c) => c.instanceId);
 }
 
-function collectEnemyBattleS(state: GameState, playerId: PlayerId): string[] {
+function collectEnemyBattleS(state: GameState, playerId: PlayerId, sourceCardId?: string): string[] {
   const enemyId = opponent(playerId);
   return state.players[enemyId].battle
     .filter((c) => isSmallUnit(state.definitions, c))
-    .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId))
+    .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId, sourceCardId))
     .map((c) => c.instanceId);
 }
 
@@ -69,7 +69,7 @@ export function applyEnemyBattleHeldSToPower(
   state: GameState,
   ctx: GrantKeywordContext,
 ): GameState | null {
-  const valid = collectEnemyBattleHeldS(state, ctx.playerId);
+  const valid = collectEnemyBattleHeldS(state, ctx.playerId, ctx.sourceCardId);
   return openChoice(state, ctx, {
     kind: "select_unit",
     validInstanceIds: valid,
@@ -93,7 +93,7 @@ export function applyHoldSelfEnemyBattleSToPower(
     ...state,
     ...updatePlayer(state, ctx.playerId, { ...player, battle }),
   };
-  const valid = collectEnemyBattleS(heldState, ctx.playerId);
+  const valid = collectEnemyBattleS(heldState, ctx.playerId, ctx.sourceCardId);
   if (valid.length === 0) return null;
   return openChoice(heldState, ctx, {
     kind: "select_unit",

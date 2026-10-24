@@ -331,7 +331,7 @@ function heldEnemySUnits(state: GameState, actorId: PlayerId): string[] {
   const enemyId = opponent(actorId);
   return fieldUnits(state, enemyId)
     .filter((c) => c.commandHeld && isUnitCard(state, c.cardId) && isSmallUnitNow(state, enemyId, c))
-    .filter((c) => isSelectableByOpponentEffect(state, actorId, c.instanceId))
+    .filter((c) => isSelectableByOpponentEffect(state, actorId, c.instanceId, "RS-634"))
     .map((c) => c.instanceId);
 }
 

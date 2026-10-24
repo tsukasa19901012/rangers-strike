@@ -56,11 +56,12 @@ function collectEnemyBattleUnits(
   state: GameState,
   playerId: PlayerId,
   filter?: (cardId: string) => boolean,
+  sourceCardId?: string,
 ): string[] {
   const enemyId = opponent(playerId);
   return state.players[enemyId].battle
     .filter((c) => !filter || filter(c.cardId))
-    .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId))
+    .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId, sourceCardId))
     .map((c) => c.instanceId);
 }
 
@@ -68,12 +69,13 @@ function collectEnemyBattleS(
   state: GameState,
   playerId: PlayerId,
   maxPower?: number,
+  sourceCardId?: string,
 ): string[] {
   return collectEnemyBattleUnits(state, playerId, (cardId) => {
     if (!isSmallUnit(state.definitions, cardId)) return false;
     if (maxPower === undefined) return true;
     return parsePowerCost(getDefinition(state.definitions, cardId)?.powerCost ?? 99) <= maxPower;
-  });
+  }, sourceCardId);
 }
 
 function holdSelf(state: GameState, ctx: GrantKeywordContext): GameState | null {
@@ -95,7 +97,7 @@ function applyHoldSelfEnemyPowerLeHand(
   if (!held) return null;
   const enemyId = opponent(ctx.playerId);
   const maxPower = held.players[enemyId].hand.length;
-  const valid = collectEnemyBattleS(held, ctx.playerId, maxPower);
+  const valid = collectEnemyBattleS(held, ctx.playerId, maxPower, ctx.sourceCardId);
   if (valid.length === 0) return null;
   return openChoice(held, ctx, {
     kind: "select_unit",
@@ -109,7 +111,7 @@ function applyEnterBattleDestroyEnemyS(
   state: GameState,
   ctx: GrantKeywordContext,
 ): GameState | null {
-  const valid = collectEnemyBattleS(state, ctx.playerId);
+  const valid = collectEnemyBattleS(state, ctx.playerId, undefined, ctx.sourceCardId);
   if (valid.length === 0) return null;
   return openChoice(state, ctx, {
     kind: "select_unit",
@@ -128,7 +130,7 @@ function applyDestroyChooseEnemyS(
   const valid = state.players[enemyId].battle
     .concat(state.players[enemyId].rush)
     .filter((c) => isSmallUnit(state.definitions, c))
-    .filter((c) => isSelectableByOpponentEffect(state, ctx.playerId, c.instanceId))
+    .filter((c) => isSelectableByOpponentEffect(state, ctx.playerId, c.instanceId, ctx.sourceCardId))
     .filter((c) => {
       if (maxBp === undefined) return true;
       const def = getDefinition(state.definitions, c.cardId);
@@ -150,7 +152,7 @@ function applyPowerZoneFaceupCountToPower(
 ): GameState | null {
   const player = state.players[ctx.playerId];
   const maxPower = player.power.filter((c) => !c.faceDown).length;
-  const valid = collectEnemyBattleUnits(state, ctx.playerId).filter((id) => {
+  const valid = collectEnemyBattleUnits(state, ctx.playerId, undefined, ctx.sourceCardId).filter((id) => {
     const owner = opponent(ctx.playerId);
     const card = state.players[owner].battle.find((c) => c.instanceId === id);
     if (!card) return false;
