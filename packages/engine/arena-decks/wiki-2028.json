@@ -1,0 +1,115 @@
+{
+  "id": "wiki-2028",
+  "name": "ディケイド・イン・ザ・ミラー（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/2028.html",
+  "entries": [
+    {
+      "cardId": "RK-016",
+      "count": 3
+    },
+    {
+      "cardId": "RK-125",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-067",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-079",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-065",
+      "count": 2
+    },
+    {
+      "cardId": "RK-066",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-071",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-064",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-066",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-070",
+      "count": 2
+    },
+    {
+      "cardId": "RK-146",
+      "count": 2
+    },
+    {
+      "cardId": "RK-142",
+      "count": 2
+    },
+    {
+      "cardId": "RK-023",
+      "count": 1
+    },
+    {
+      "cardId": "RK-175",
+      "count": 1
+    },
+    {
+      "cardId": "RK-073",
+      "count": 1
+    },
+    {
+      "cardId": "RK-176",
+      "count": 1
+    },
+    {
+      "cardId": "RK-064",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-066",
+      "count": 1
+    },
+    {
+      "cardId": "RK-058",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-077",
+      "count": 1
+    },
+    {
+      "cardId": "XG3-069",
+      "count": 1
+    },
+    {
+      "cardId": "XG2-081",
+      "count": 1
+    },
+    {
+      "cardId": "RK-029",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-068",
+      "count": 1
+    },
+    {
+      "cardId": "RK-162",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-064",
+      "count": 1
+    },
+    {
+      "cardId": "RK-221",
+      "count": 1
+    }
+  ]
+}

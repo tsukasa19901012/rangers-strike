@@ -1,0 +1,83 @@
+{
+  "id": "wiki-1722",
+  "name": "Vコマレンオー（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1722.html",
+  "entries": [
+    {
+      "cardId": "RS-050",
+      "count": 3
+    },
+    {
+      "cardId": "RS-051",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-012",
+      "count": 3
+    },
+    {
+      "cardId": "RS-052",
+      "count": 3
+    },
+    {
+      "cardId": "RS-053",
+      "count": 3
+    },
+    {
+      "cardId": "RS-249",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-028",
+      "count": 3
+    },
+    {
+      "cardId": "RS-437",
+      "count": 3
+    },
+    {
+      "cardId": "XG6-003",
+      "count": 3
+    },
+    {
+      "cardId": "RS-227",
+      "count": 2
+    },
+    {
+      "cardId": "RS-228",
+      "count": 2
+    },
+    {
+      "cardId": "XG6-018",
+      "count": 2
+    },
+    {
+      "cardId": "RS-039",
+      "count": 1
+    },
+    {
+      "cardId": "RS-167",
+      "count": 1
+    },
+    {
+      "cardId": "RS-223",
+      "count": 1
+    },
+    {
+      "cardId": "RK-146",
+      "count": 1
+    },
+    {
+      "cardId": "RS-509",
+      "count": 1
+    },
+    {
+      "cardId": "RK-242",
+      "count": 1
+    },
+    {
+      "cardId": "RS-605",
+      "count": 1
+    }
+  ]
+}

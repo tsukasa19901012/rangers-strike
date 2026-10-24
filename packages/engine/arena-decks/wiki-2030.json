@@ -1,0 +1,83 @@
+{
+  "id": "wiki-2030",
+  "name": "赤黒戒律（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/2030.html",
+  "entries": [
+    {
+      "cardId": "RM-059",
+      "count": 3
+    },
+    {
+      "cardId": "RS-256",
+      "count": 3
+    },
+    {
+      "cardId": "RK-127",
+      "count": 2
+    },
+    {
+      "cardId": "RS-499",
+      "count": 2
+    },
+    {
+      "cardId": "RM-055",
+      "count": 2
+    },
+    {
+      "cardId": "RM-057",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-023",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-044",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-007",
+      "count": 2
+    },
+    {
+      "cardId": "RS-115",
+      "count": 2
+    },
+    {
+      "cardId": "RK-269",
+      "count": 2
+    },
+    {
+      "cardId": "RS-410",
+      "count": 2
+    },
+    {
+      "cardId": "RS-409",
+      "count": 2
+    },
+    {
+      "cardId": "RM-045",
+      "count": 2
+    },
+    {
+      "cardId": "RS-587",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-091",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-088",
+      "count": 2
+    },
+    {
+      "cardId": "XG5-094",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-095",
+      "count": 2
+    }
+  ]
+}

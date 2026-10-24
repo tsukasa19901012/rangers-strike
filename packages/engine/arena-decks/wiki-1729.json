@@ -1,0 +1,83 @@
+{
+  "id": "wiki-1729",
+  "name": "サイレンビルダー山札解体デッキ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1729.html",
+  "entries": [
+    {
+      "cardId": "RS-237",
+      "count": 3
+    },
+    {
+      "cardId": "RS-238",
+      "count": 3
+    },
+    {
+      "cardId": "RS-240",
+      "count": 3
+    },
+    {
+      "cardId": "RS-239",
+      "count": 3
+    },
+    {
+      "cardId": "RS-186",
+      "count": 3
+    },
+    {
+      "cardId": "RS-014",
+      "count": 3
+    },
+    {
+      "cardId": "RS-349",
+      "count": 3
+    },
+    {
+      "cardId": "RS-439",
+      "count": 3
+    },
+    {
+      "cardId": "RS-223",
+      "count": 3
+    },
+    {
+      "cardId": "RK-089",
+      "count": 2
+    },
+    {
+      "cardId": "RK-146",
+      "count": 2
+    },
+    {
+      "cardId": "RK-155",
+      "count": 2
+    },
+    {
+      "cardId": "RS-012",
+      "count": 1
+    },
+    {
+      "cardId": "RS-075",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-088",
+      "count": 1
+    },
+    {
+      "cardId": "RS-185",
+      "count": 1
+    },
+    {
+      "cardId": "RK-135",
+      "count": 1
+    },
+    {
+      "cardId": "RK-156",
+      "count": 1
+    },
+    {
+      "cardId": "RS-438",
+      "count": 1
+    }
+  ]
+}

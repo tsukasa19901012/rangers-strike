@@ -1,0 +1,87 @@
+{
+  "id": "wiki-1420",
+  "name": "青黒黄クライマックス刑事（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1420.html",
+  "entries": [
+    {
+      "cardId": "RK-240",
+      "count": 3
+    },
+    {
+      "cardId": "RK-311",
+      "count": 3
+    },
+    {
+      "cardId": "RK-242",
+      "count": 3
+    },
+    {
+      "cardId": "RK-066",
+      "count": 3
+    },
+    {
+      "cardId": "RK-061",
+      "count": 3
+    },
+    {
+      "cardId": "RK-152",
+      "count": 2
+    },
+    {
+      "cardId": "RK-154",
+      "count": 2
+    },
+    {
+      "cardId": "RK-310",
+      "count": 2
+    },
+    {
+      "cardId": "RK-309",
+      "count": 2
+    },
+    {
+      "cardId": "RK-308",
+      "count": 2
+    },
+    {
+      "cardId": "RK-193",
+      "count": 2
+    },
+    {
+      "cardId": "RK-248",
+      "count": 2
+    },
+    {
+      "cardId": "RK-290",
+      "count": 2
+    },
+    {
+      "cardId": "RK-326",
+      "count": 2
+    },
+    {
+      "cardId": "RK-246",
+      "count": 2
+    },
+    {
+      "cardId": "RK-058",
+      "count": 1
+    },
+    {
+      "cardId": "RK-241",
+      "count": 1
+    },
+    {
+      "cardId": "XG5-078",
+      "count": 1
+    },
+    {
+      "cardId": "RK-191",
+      "count": 1
+    },
+    {
+      "cardId": "RK-177",
+      "count": 1
+    }
+  ]
+}

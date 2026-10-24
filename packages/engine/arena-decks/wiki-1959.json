@@ -1,0 +1,71 @@
+{
+  "id": "wiki-1959",
+  "name": "赤黄速攻（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1959.html",
+  "entries": [
+    {
+      "cardId": "RS-341",
+      "count": 3
+    },
+    {
+      "cardId": "RS-041",
+      "count": 3
+    },
+    {
+      "cardId": "RK-133",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-006",
+      "count": 3
+    },
+    {
+      "cardId": "XG4-043",
+      "count": 3
+    },
+    {
+      "cardId": "RK-127",
+      "count": 3
+    },
+    {
+      "cardId": "RM-057",
+      "count": 3
+    },
+    {
+      "cardId": "RK-038",
+      "count": 3
+    },
+    {
+      "cardId": "XG6-059",
+      "count": 2
+    },
+    {
+      "cardId": "RS-676",
+      "count": 2
+    },
+    {
+      "cardId": "XG7-014",
+      "count": 2
+    },
+    {
+      "cardId": "RS-548",
+      "count": 2
+    },
+    {
+      "cardId": "RS-059",
+      "count": 2
+    },
+    {
+      "cardId": "RS-039",
+      "count": 2
+    },
+    {
+      "cardId": "RK-142",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-041",
+      "count": 2
+    }
+  ]
+}

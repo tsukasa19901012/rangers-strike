@@ -1,0 +1,67 @@
+{
+  "id": "wiki-1734",
+  "name": "メレスラスターデッキ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1734.html",
+  "entries": [
+    {
+      "cardId": "RS-233",
+      "count": 3
+    },
+    {
+      "cardId": "RS-504",
+      "count": 3
+    },
+    {
+      "cardId": "RS-431",
+      "count": 3
+    },
+    {
+      "cardId": "RK-016",
+      "count": 3
+    },
+    {
+      "cardId": "RS-180",
+      "count": 3
+    },
+    {
+      "cardId": "RS-402",
+      "count": 3
+    },
+    {
+      "cardId": "XG6-047",
+      "count": 3
+    },
+    {
+      "cardId": "RS-409",
+      "count": 3
+    },
+    {
+      "cardId": "RS-256",
+      "count": 3
+    },
+    {
+      "cardId": "RS-634",
+      "count": 3
+    },
+    {
+      "cardId": "RS-637",
+      "count": 3
+    },
+    {
+      "cardId": "RS-638",
+      "count": 3
+    },
+    {
+      "cardId": "RS-661",
+      "count": 2
+    },
+    {
+      "cardId": "XG3-033",
+      "count": 1
+    },
+    {
+      "cardId": "XG4-093",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "wiki-1803",
+  "name": "モーフダイデンジン（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1803.html",
+  "entries": [
+    {
+      "cardId": "RS-352",
+      "count": 3
+    },
+    {
+      "cardId": "RS-353",
+      "count": 3
+    },
+    {
+      "cardId": "RS-359",
+      "count": 3
+    },
+    {
+      "cardId": "RK-306",
+      "count": 3
+    },
+    {
+      "cardId": "RK-334",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-072",
+      "count": 3
+    },
+    {
+      "cardId": "RK-331",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-077",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-076",
+      "count": 3
+    },
+    {
+      "cardId": "RK-058",
+      "count": 3
+    },
+    {
+      "cardId": "RK-242",
+      "count": 3
+    },
+    {
+      "cardId": "RS-438",
+      "count": 3
+    },
+    {
+      "cardId": "RS-186",
+      "count": 1
+    },
+    {
+      "cardId": "RS-375",
+      "count": 1
+    },
+    {
+      "cardId": "RS-349",
+      "count": 1
+    },
+    {
+      "cardId": "RS-439",
+      "count": 1
+    }
+  ]
+}

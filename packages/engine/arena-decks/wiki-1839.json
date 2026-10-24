@@ -1,0 +1,75 @@
+{
+  "id": "wiki-1839",
+  "name": "エンジンオーG12デッキ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1839.html",
+  "entries": [
+    {
+      "cardId": "RS-663",
+      "count": 3
+    },
+    {
+      "cardId": "RM-016",
+      "count": 3
+    },
+    {
+      "cardId": "RS-526",
+      "count": 3
+    },
+    {
+      "cardId": "RS-665",
+      "count": 3
+    },
+    {
+      "cardId": "RS-592",
+      "count": 3
+    },
+    {
+      "cardId": "RK-089",
+      "count": 3
+    },
+    {
+      "cardId": "RK-156",
+      "count": 3
+    },
+    {
+      "cardId": "RK-135",
+      "count": 3
+    },
+    {
+      "cardId": "RS-605",
+      "count": 3
+    },
+    {
+      "cardId": "RS-249",
+      "count": 3
+    },
+    {
+      "cardId": "RK-146",
+      "count": 3
+    },
+    {
+      "cardId": "RS-359",
+      "count": 2
+    },
+    {
+      "cardId": "RS-664",
+      "count": 1
+    },
+    {
+      "cardId": "RM-004",
+      "count": 1
+    },
+    {
+      "cardId": "XG6-002",
+      "count": 1
+    },
+    {
+      "cardId": "RS-407",
+      "count": 1
+    },
+    {
+      "cardId": "RS-558",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "id": "wiki-1705",
+  "name": "黄緑トリプルカウンター（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1705.html",
+  "entries": [
+    {
+      "cardId": "RK-012",
+      "count": 3
+    },
+    {
+      "cardId": "RS-018",
+      "count": 3
+    },
+    {
+      "cardId": "RS-026",
+      "count": 3
+    },
+    {
+      "cardId": "RS-585",
+      "count": 3
+    },
+    {
+      "cardId": "RK-274",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-100",
+      "count": 2
+    },
+    {
+      "cardId": "RS-447",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-061",
+      "count": 2
+    },
+    {
+      "cardId": "RS-029",
+      "count": 2
+    },
+    {
+      "cardId": "RS-059",
+      "count": 2
+    },
+    {
+      "cardId": "RK-189",
+      "count": 2
+    },
+    {
+      "cardId": "RK-225",
+      "count": 2
+    },
+    {
+      "cardId": "RS-577",
+      "count": 2
+    },
+    {
+      "cardId": "XG7-027",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-047",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-088",
+      "count": 1
+    },
+    {
+      "cardId": "RS-349",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-038",
+      "count": 1
+    },
+    {
+      "cardId": "RS-455",
+      "count": 1
+    },
+    {
+      "cardId": "RS-293",
+      "count": 1
+    },
+    {
+      "cardId": "RS-145",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "wiki-2018",
+  "name": "赤緑ライフビート（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/2018.html",
+  "entries": [
+    {
+      "cardId": "RM-055",
+      "count": 3
+    },
+    {
+      "cardId": "RS-430",
+      "count": 3
+    },
+    {
+      "cardId": "RS-434",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-090",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-092",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-091",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-095",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-096",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-094",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-096",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-097",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-093",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-097",
+      "count": 3
+    },
+    {
+      "cardId": "RS-585",
+      "count": 1
+    }
+  ]
+}

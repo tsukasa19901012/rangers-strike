@@ -1,0 +1,107 @@
+{
+  "id": "wiki-1716",
+  "name": "赤黄激気（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1716.html",
+  "entries": [
+    {
+      "cardId": "RS-436",
+      "count": 3
+    },
+    {
+      "cardId": "RS-499",
+      "count": 3
+    },
+    {
+      "cardId": "RS-500",
+      "count": 3
+    },
+    {
+      "cardId": "RS-424",
+      "count": 3
+    },
+    {
+      "cardId": "RS-425",
+      "count": 3
+    },
+    {
+      "cardId": "RS-429",
+      "count": 2
+    },
+    {
+      "cardId": "RS-498",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-032",
+      "count": 2
+    },
+    {
+      "cardId": "XG3-032",
+      "count": 2
+    },
+    {
+      "cardId": "XG3-031",
+      "count": 2
+    },
+    {
+      "cardId": "RS-027",
+      "count": 1
+    },
+    {
+      "cardId": "RK-127",
+      "count": 1
+    },
+    {
+      "cardId": "RS-514",
+      "count": 1
+    },
+    {
+      "cardId": "RS-289",
+      "count": 1
+    },
+    {
+      "cardId": "RS-426",
+      "count": 1
+    },
+    {
+      "cardId": "RS-423",
+      "count": 1
+    },
+    {
+      "cardId": "RS-059",
+      "count": 1
+    },
+    {
+      "cardId": "RS-676",
+      "count": 1
+    },
+    {
+      "cardId": "RS-577",
+      "count": 1
+    },
+    {
+      "cardId": "RS-335",
+      "count": 1
+    },
+    {
+      "cardId": "XG2-039",
+      "count": 1
+    },
+    {
+      "cardId": "RS-455",
+      "count": 1
+    },
+    {
+      "cardId": "RS-457",
+      "count": 1
+    },
+    {
+      "cardId": "RS-324",
+      "count": 1
+    },
+    {
+      "cardId": "RK-133",
+      "count": 1
+    }
+  ]
+}

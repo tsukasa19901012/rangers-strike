@@ -1,0 +1,107 @@
+{
+  "id": "wiki-1709",
+  "name": "青緑車両デッキ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1709.html",
+  "entries": [
+    {
+      "cardId": "RS-186",
+      "count": 3
+    },
+    {
+      "cardId": "RK-089",
+      "count": 3
+    },
+    {
+      "cardId": "RK-155",
+      "count": 3
+    },
+    {
+      "cardId": "RS-386",
+      "count": 3
+    },
+    {
+      "cardId": "RK-274",
+      "count": 3
+    },
+    {
+      "cardId": "RS-008",
+      "count": 3
+    },
+    {
+      "cardId": "RS-046",
+      "count": 2
+    },
+    {
+      "cardId": "RK-135",
+      "count": 2
+    },
+    {
+      "cardId": "RK-146",
+      "count": 2
+    },
+    {
+      "cardId": "RS-121",
+      "count": 1
+    },
+    {
+      "cardId": "RK-030",
+      "count": 1
+    },
+    {
+      "cardId": "RS-383",
+      "count": 1
+    },
+    {
+      "cardId": "RS-439",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-088",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-093",
+      "count": 1
+    },
+    {
+      "cardId": "RS-043",
+      "count": 1
+    },
+    {
+      "cardId": "RS-045",
+      "count": 1
+    },
+    {
+      "cardId": "RS-263",
+      "count": 1
+    },
+    {
+      "cardId": "RK-150",
+      "count": 1
+    },
+    {
+      "cardId": "RK-151",
+      "count": 1
+    },
+    {
+      "cardId": "RS-509",
+      "count": 1
+    },
+    {
+      "cardId": "RK-062",
+      "count": 1
+    },
+    {
+      "cardId": "RS-310",
+      "count": 1
+    },
+    {
+      "cardId": "XG2-006",
+      "count": 1
+    },
+    {
+      "cardId": "XG3-083",
+      "count": 1
+    }
+  ]
+}
