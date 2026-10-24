@@ -5,7 +5,7 @@
  */
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
-import { cardName, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { commandCategoriesOf, cardName, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { buildLogEntry } from "../../log/formatLog";
 import { drawOne, opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
@@ -738,7 +738,7 @@ const DOUBLE_ACTION_EFFECT_ID = "xg7040_double_action";
 const DOUBLE_ACTION_COST_EFFECT_ID = "xg7040_double_action_cost";
 
 function releasedOt(state: GameState, playerId: PlayerId, exclude: string[] = []): string[] {
-  return state.players[playerId].command.filter((c) => !c.commandHeld && categoriesOf(state, c.cardId).includes("OT") && !exclude.includes(c.instanceId)).map((c) => c.instanceId);
+  return state.players[playerId].command.filter((c) => !c.commandHeld && commandCategoriesOf(state, playerId, c.cardId).includes("OT") && !exclude.includes(c.instanceId)).map((c) => c.instanceId);
 }
 
 function openDoubleAction(state: GameState, enteredOwner: PlayerId): GameState {
@@ -793,7 +793,7 @@ function applyGoldenHope(state: GameState, ctx: GrantKeywordContext): GrantKeywo
   const commands = state.players[ctx.playerId].command;
   if (!self || commands.length === 0) return { state, detail: "xg7041:no_commands" };
   let next = patchPlayer(state, ctx.playerId, (p) => ({ ...p, command: [], discard: [...p.discard, ...p.command.map(stripForZone)] }));
-  const cats = new Set(commands.flatMap((c) => categoriesOf(state, c.cardId)));
+  const cats = new Set(commands.flatMap((c) => commandCategoriesOf(state, ctx.playerId, c.cardId)));
   const enemyId = opponent(ctx.playerId);
   const ids = fieldUnits(next, enemyId)
     .filter((c) => {

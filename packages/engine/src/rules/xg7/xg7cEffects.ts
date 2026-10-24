@@ -6,7 +6,7 @@
  */
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition } from "../../core/catalog";
+import { commandCategoriesOf, cardName, effectiveBp, getDefinition } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -255,7 +255,7 @@ function tajaTargets(state: GameState, playerId: PlayerId): string[] {
 
 function canActivateTaja(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
   if (!isCard(card.cardId, "XG7-052") || state.phase !== "battle" || !ownTurn(state, playerId)) return false;
-  const wb = state.players[playerId].command.filter((c) => categoriesOf(state, c.cardId).includes("WB")).length;
+  const wb = state.players[playerId].command.filter((c) => commandCategoriesOf(state, playerId, c.cardId).includes("WB")).length;
   return wb >= 3 && tajaTargets(state, playerId).length > 0;
 }
 

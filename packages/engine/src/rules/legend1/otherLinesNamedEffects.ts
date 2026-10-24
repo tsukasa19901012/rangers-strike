@@ -16,7 +16,7 @@ import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../p
 import { isSmallUnitNow } from "./set6NamedEffectsB";
 import { patchPlayer } from "../playerPatches";
 import { namedTextNegated } from "./set6NamedEffects348";
-import { cardCategories, cardName, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
+import { commandCategoriesOf, cardCategories, cardName, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 import { countJointLGrant } from "../jointComboGrants";
@@ -315,7 +315,7 @@ CHOICE_RESOLVERS[ACCEL_GRANZER_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
   const command = state.players[playerId].command.find((c) => c.instanceId === instanceId);
   if (!command) return { error: "invalid_target" };
-  const categories = cardCategories(getDefinition(state.definitions, command.cardId));
+  const categories = commandCategoriesOf(state, playerId, command.cardId);
   let next = close(state, pending);
   next = patchPlayer(next, playerId, (p) => ({
     ...p,

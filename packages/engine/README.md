@@ -31,6 +31,11 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 | `src/verticalSlice/` | スターター対戦の生成と、CPU 同士の長い対戦テスト |
 | `scripts/` | CPU の対戦台・監査・負荷テスト・デバッグ用スクリプト |
 
+## 効果を書くときの注意
+
+- 「○○を持つ自軍コマンド」のようにコマンドのカテゴリを見るときは、`cardCategories`（印刷されたカテゴリ）ではなく `src/core/catalog.ts` の `commandCategoriesOf(state, playerId, cardId)` を使います。XG7-055〜059 のドーパント（自軍ターン中、コマンドゾーンでもカテゴリが追加される）や XG1-033・XG6-013/060 で増えたカテゴリを含めるためです。
+- 特定のカード名を見るときは `src/core/cardNames.ts` の `hasNameOrAlias` を使います（「※これは「X」としてつかえる」を含めるため）。
+
 ## テスト
 
 ```bash

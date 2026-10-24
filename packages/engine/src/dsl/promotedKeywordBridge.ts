@@ -5,7 +5,7 @@ import { isDivingOrochi } from "../rules/errataCardEffects";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories, unitSizeOf, type SizedCard } from "../core/catalog";
+import { commandCategoriesOf, getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories, unitSizeOf, type SizedCard } from "../core/catalog";
 import { findInZone, opponent } from "../core/helpers";
 import { lastBattleProtectsOtherS } from "../rules/promotedNcEffects";
 import { getCardDslDocument } from "./effectLookup";
@@ -237,8 +237,7 @@ export function promotedKeywordBpBonus(
     ) {
       const enemyId = playerId === "player1" ? "player2" : "player1";
       const count = state.players[enemyId].command.filter((cmd) => {
-        const def = state.definitions[cmd.cardId];
-        return def ? cardCategories(def).includes("OT") : false;
+        return commandCategoriesOf(state, enemyId, cmd.cardId).includes("OT");
       }).length;
       bonus += count * 1000;
       continue;

@@ -2,7 +2,7 @@ import { canonicalCardName, getJointLNamedEffect } from "@rangers-strike/cards";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
 import { activeOnAttackNamedEffect } from "../ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
-import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
+import { cardCategories, commandCategoriesOf, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
 import { getCostWindowMetadata } from "../../core/costWindow";
 import { hasTurnRuleModifier } from "../../core/scopedModifiers";
 import { findBattleAttacker, findInZone, opponent, updatePlayer } from "../../core/helpers";
@@ -308,8 +308,10 @@ export function isLegend3EnterBattleEffect(effectId: string): boolean {
  * 「このターン、自分と相手のコマンドゾーンにあるホールド状態のコマンドのカテゴリは、すべて「OT」になる」を反映する。
  */
 export function commandCategoriesNow(state: GameState, card: CardInstance): string[] {
+  const owner = (["player1", "player2"] as const).find((pid) => state.players[pid].command.some((c) => c.instanceId === card.instanceId));
   const def = getDefinition(state.definitions, card.cardId);
-  const printed = def ? cardCategories(def) : [];
+  // XG7-055〜XG7-059 の※など、コマンドゾーンで増えたカテゴリを含む（core/catalog.ts commandCategoriesOf）。
+  const printed: string[] = owner ? commandCategoriesOf(state, owner, card.cardId) : def ? cardCategories(def) : [];
   if (!card.commandHeld) return printed;
   for (const pid of ["player1", "player2"] as const) {
     for (const category of ["OT", "ET", "MA", "WB", "DA"]) {

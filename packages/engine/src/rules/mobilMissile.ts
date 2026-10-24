@@ -9,7 +9,7 @@
  * - 必要な数のコマンドを1つずつ選び、選び終えたらホールドしてストライクを無効にする（ダメージ0）。
  */
 import type { GameState, PendingEffectChoice, PendingStrike, PlayerId } from "../types/game";
-import { cardCategories, getDefinition, isLargeUnit, isMediumUnit } from "../core/catalog";
+import { commandCategoriesOf, cardCategories, getDefinition, isLargeUnit, isMediumUnit } from "../core/catalog";
 import { findInZone, opponent, updatePlayer } from "../core/helpers";
 
 export const MOBIL_MISSILE_EFFECT_ID = "geki_mobirumisairu";
@@ -25,7 +25,7 @@ function holdCountFor(state: GameState, pending: PendingStrike): number {
 
 function releasedEtCommandIds(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].command
-    .filter((c) => !c.commandHeld && cardCategories(getDefinition(state.definitions, c.cardId)).includes("ET"))
+    .filter((c) => !c.commandHeld && commandCategoriesOf(state, playerId, c.cardId).includes("ET"))
     .map((c) => c.instanceId);
 }
 

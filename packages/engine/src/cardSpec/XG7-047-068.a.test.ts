@@ -287,6 +287,11 @@ describe("XG7-052 仮面ライダーオーズ・タジャドルコンボ", () =>
     const s = p1Battle({ rush: [inst("XG7-052", "tj")], command: releasedCat("WB", 2, "w") }, { rush: [inst("SPEC-E-S", "e")] }, EXTRA);
     expect(canActivate(s, "XG7-052:tj")).toBe(false);
   });
+
+  it("XG7-052: 【タジャスピナー】自軍ターン中に WB が追加される XG7-057 ヒート・ドーパントのコマンドも WB のコマンドとして数える（WB 2つ＋ヒートで起動できる）（出典: atwiki/page-2426・atwiki/page-2377「自軍エリアまたは自軍ゾーンにある間、自軍ターン中、WBが追加される」）", () => {
+    const s = p1Battle({ rush: [inst("XG7-052", "tj")], command: [...releasedCat("WB", 2, "w"), inst("XG7-057", "ht")] }, { rush: [inst("SPEC-E-S", "e")] }, EXTRA);
+    expect(canActivate(s, "XG7-052:tj")).toBe(true);
+  });
 });
 
 // ===========================================================================

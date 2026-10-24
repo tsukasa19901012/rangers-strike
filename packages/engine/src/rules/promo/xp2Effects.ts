@@ -4,7 +4,7 @@
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardCategories, effectiveBp, effectiveCommandCategories, getDefinition, unitSizeOf } from "../../core/catalog";
+import { commandCategoriesOf, cardCategories, effectiveBp, effectiveCommandCategories, getDefinition, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { countAvailablePower } from "../../core/power";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -90,7 +90,7 @@ registerPromoKeywordGrant((state, ownerId, unit, keyword) => {
   if (!owner.operation.some((c) => isSameCardIdentity(c.cardId, GOLD_SUSHI_ID))) return false;
   if (getDefinition(state.definitions, unit.cardId)?.type !== "unit" || !isSmallUnitNow(state, ownerId, unit)) return false;
   if (!unitFeatures(state, ownerId, unit).some((f) => SUSHI_FEATURES.includes(f))) return false;
-  return owner.command.some((c) => cardCategories(getDefinition(state.definitions, c.cardId)).includes(category as never));
+  return owner.command.some((c) => commandCategoriesOf(state, ownerId, c.cardId).includes(category as never));
 });
 
 // ---------------------------------------------------------------------------

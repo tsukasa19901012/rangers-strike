@@ -9,7 +9,7 @@
  */
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, TagChoiceMeta } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { commandCategoriesOf, cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import { opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
@@ -600,7 +600,7 @@ function ridingVehicleCardId(state: GameState, playerId: PlayerId, instance: Car
 /** BP の継続効果（rules/fieldAuras.ts から呼ぶ）。 */
 export function set8AFieldBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
   if (ridingVehicleCardId(state, playerId, instance) !== "RS-527") return 0;
-  const otCommands = state.players[opponent(playerId)].command.filter((c) => categoriesOf(state, c.cardId).includes("OT")).length;
+  const otCommands = state.players[opponent(playerId)].command.filter((c) => commandCategoriesOf(state, opponent(playerId), c.cardId).includes("OT")).length;
   return 1000 * otCommands;
 }
 
@@ -622,7 +622,7 @@ export function applyThunderboltSword(state: GameState, playerId: PlayerId, sour
   if (sourceCardId !== "RS-529") return state;
   const numbers: number[] = [];
   for (const c of state.players[playerId].command) {
-    if (!categoriesOf(state, c.cardId).includes("MA")) continue;
+    if (!commandCategoriesOf(state, playerId, c.cardId).includes("MA")) continue;
     const n = powerCostNumber(state, c.cardId);
     if (!numbers.includes(n)) numbers.push(n);
   }

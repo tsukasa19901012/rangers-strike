@@ -20,7 +20,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import { isZordUpCost } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";
-import { cardCategories, getDefinition, parsePowerCost, unitSizeOf } from "../core/catalog";
+import { commandCategoriesOf, cardCategories, getDefinition, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { sameCardName } from "../core/cardNames";
 import { countAvailablePower, rushEffectivePowerCost } from "../core/power";
 import { getPlayerModifiers } from "../core/scopedModifiers";
@@ -140,7 +140,7 @@ function scrambleTargets(state: GameState, playerId: PlayerId): string[] {
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
       if (!def || def.type !== "unit" || unitSizeOf(state.definitions, c) !== "M") return false;
-      if (!cardCategories(def).includes("ET")) return false;
+      if (!commandCategoriesOf(state, playerId, c.cardId).includes("ET")) return false;
       const cost = rushEffectivePowerCost(state, playerId, parsePowerCost(def.powerCost), def.id);
       return available >= cost;
     })

@@ -12,6 +12,7 @@ import {
   cardName,
   getDefinition,
   rushPowerCost,
+  commandCategoriesOf,
 } from "../core/catalog";
 import { removeAt, updatePlayer } from "../core/helpers";
 import { listDslEffectsForTrigger } from "../dsl/effectLookup";
@@ -125,7 +126,7 @@ export function beginCastoffOnRush(
   const otCommands = player.command
     .filter((cmd) => {
       if (cmd.commandHeld) return false;
-      const cats = cardCategories(getDefinition(state.definitions, cmd.cardId));
+      const cats = commandCategoriesOf(state, params.playerId, cmd.cardId);
       return cats.includes("OT" as Category);
     })
     .map((cmd) => cmd.instanceId);

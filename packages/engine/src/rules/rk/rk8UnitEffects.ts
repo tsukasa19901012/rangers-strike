@@ -17,7 +17,7 @@
 import { isSameCardIdentity, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { commandCategoriesOf, cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { shuffleCards } from "../../core/deckShuffle";
@@ -645,7 +645,7 @@ function applyV3Kick(state: GameState, ctx: GrantKeywordContext): GrantKeywordRe
 export const JAGUAR_EFFECT_ID = "rk160_nano_robot";
 
 function releasedDaCommand(state: GameState, playerId: PlayerId): CardInstance | undefined {
-  return state.players[playerId].command.find((c) => !c.commandHeld && categoriesOfCard(state, c.cardId).includes("DA"));
+  return state.players[playerId].command.find((c) => !c.commandHeld && commandCategoriesOf(state, playerId, c.cardId).includes("DA"));
 }
 
 export function openRk8JaguarOnEnemyRush(state: GameState, rusherPlayerId: PlayerId, rushedInstanceId: string, phasePlayerId: PlayerId): GameState {
