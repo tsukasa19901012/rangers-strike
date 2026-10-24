@@ -119,6 +119,9 @@ Web 版は `apps/web-pocket` の静的サイト（`dist/`）を Vercel で配信
 Lv5 の価値ネットワークの重みは `packages/engine/src/ai/weights/valueNetV1.ts`（約 380 kB）に同梱しています。重みは、新しい Lv5 同士の自己対戦 16 万試合だけで学習し直した版（v3b、2026-10-22）です。手書きだけの Lv5 には、46 デッキのミラー戦 368 試合で 65% 勝ちます。最初の版（v1）との対戦では 54% です。学習のしかたは [packages/engine/scripts/nn/README.md](packages/engine/scripts/nn/README.md) を見てください。
 
 強さの比較は `packages/engine/scripts/cpu-arena.ts`（並列版 `cpu-arena-par.sh`）で行います。
+スターターのほかに、atwiki の大会のデッキ・デッキサンプルから組んだ 43 デッキ（[packages/engine/arena-decks](packages/engine/arena-decks/README.md)）でも測れます。
+
+どのレベルでも、常駐の起動は、自分の選択まで済ませて評価が下がるなら選びません（RK-242 クライマックス刑事でパワーを毎ターン山札に戻し、対戦が終わらなかったため）。
 
 ## カードとデッキ
 

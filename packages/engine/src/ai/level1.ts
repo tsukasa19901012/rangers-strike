@@ -41,6 +41,7 @@ import {
 } from "./helpers";
 import { planComboEntry } from "./comboOrder";
 import { deckProfile } from "./deckProfile";
+import { heuristicEvaluate } from "./scoring";
 import { pickMirrorWorldActivation, pickMirrorWorldChoice } from "./mirrorWorld";
 import { dedupeActions, pickBestByRollout, pickBestBySearch, pickBestByTurnPlan, scoreAction, type SearchOptions } from "./simulation";
 
@@ -216,9 +217,31 @@ function remainingActions(
       if (NOT_CANDIDATE_TYPES.has(a.type) || a.type.startsWith("pass_") || taken.has(JSON.stringify(a))) return false;
       if (a.type === "begin_zord_setup" || a.type === "initiate_command_payment") return !cpuWouldCancelProcedure(state, playerId, a);
       if ((a.type === "activate_resident_operation" || a.type === "activate_field_unit_ability") && activatedThisPhase(state, a)) return false;
+      if (a.type === "activate_resident_operation" && residentActivationHurts(state, playerId, a)) return false;
       return true;
     }),
   );
+}
+
+/**
+ * 常駐の起動を、自分の選択まで済ませたら（同じフェイズのまま）盤面の評価が下がるか。起動した直後は選択が開いたままで評価が
+ * 変わらず、ラッシュフェイズを終える手（バトルフェイズの評価になる）より良く見えていた。RK-242 クライマックス刑事は、チャージした
+ * パワーを毎ターン山札の上に戻し、パワー 0 のまま何百ターンも決着しなかった（atwiki モーフダイデンジン）。
+ */
+function residentActivationHurts(state: GameState, playerId: PlayerId, action: GameAction): boolean {
+  const before = heuristicEvaluate(state, playerId);
+  let result = applyAction(state, action);
+  if (!result.ok) return false;
+  let next = result.state;
+  for (let i = 0; i < 6 && next.pendingEffectChoice?.playerId === playerId && next.phase === state.phase; i++) {
+    const choice = pickEffectChoice(next, next.pendingEffectChoice, getLegalActions(next));
+    if (!choice) break;
+    result = applyAction(next, choice);
+    if (!result.ok) break;
+    next = result.state;
+  }
+  if (next.pendingEffectChoice || next.phase !== state.phase || next.winner) return false;
+  return heuristicEvaluate(next, playerId) < before - 50;
 }
 
 /**
