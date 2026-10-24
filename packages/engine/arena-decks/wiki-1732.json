@@ -1,0 +1,87 @@
+{
+  "id": "wiki-1732",
+  "name": "赤緑プロジェクト呉越（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1732.html",
+  "entries": [
+    {
+      "cardId": "RS-524",
+      "count": 3
+    },
+    {
+      "cardId": "RK-170",
+      "count": 3
+    },
+    {
+      "cardId": "RM-055",
+      "count": 3
+    },
+    {
+      "cardId": "RM-057",
+      "count": 3
+    },
+    {
+      "cardId": "RK-280",
+      "count": 3
+    },
+    {
+      "cardId": "RM-044",
+      "count": 2
+    },
+    {
+      "cardId": "RM-058",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-097",
+      "count": 2
+    },
+    {
+      "cardId": "RM-051",
+      "count": 2
+    },
+    {
+      "cardId": "RM-054",
+      "count": 2
+    },
+    {
+      "cardId": "RM-010",
+      "count": 2
+    },
+    {
+      "cardId": "RK-111",
+      "count": 2
+    },
+    {
+      "cardId": "RM-046",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-089",
+      "count": 2
+    },
+    {
+      "cardId": "XG7-064",
+      "count": 2
+    },
+    {
+      "cardId": "RS-613",
+      "count": 1
+    },
+    {
+      "cardId": "RK-322",
+      "count": 1
+    },
+    {
+      "cardId": "RK-205",
+      "count": 1
+    },
+    {
+      "cardId": "RS-612",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-100",
+      "count": 1
+    }
+  ]
+}

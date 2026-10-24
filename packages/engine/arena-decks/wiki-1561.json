@@ -1,0 +1,67 @@
+{
+  "id": "wiki-1561",
+  "name": "星獣合体デッキ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1561.html",
+  "entries": [
+    {
+      "cardId": "RS-467",
+      "count": 3
+    },
+    {
+      "cardId": "RS-468",
+      "count": 3
+    },
+    {
+      "cardId": "RS-469",
+      "count": 3
+    },
+    {
+      "cardId": "RS-470",
+      "count": 3
+    },
+    {
+      "cardId": "RM-010",
+      "count": 3
+    },
+    {
+      "cardId": "RK-126",
+      "count": 3
+    },
+    {
+      "cardId": "RS-607",
+      "count": 3
+    },
+    {
+      "cardId": "RS-439",
+      "count": 3
+    },
+    {
+      "cardId": "RS-014",
+      "count": 3
+    },
+    {
+      "cardId": "RM-057",
+      "count": 3
+    },
+    {
+      "cardId": "RS-252",
+      "count": 3
+    },
+    {
+      "cardId": "RK-023",
+      "count": 3
+    },
+    {
+      "cardId": "RK-254",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-044",
+      "count": 1
+    },
+    {
+      "cardId": "XG3-089",
+      "count": 1
+    }
+  ]
+}

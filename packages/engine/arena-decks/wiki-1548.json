@@ -1,0 +1,83 @@
+{
+  "id": "wiki-1548",
+  "name": "ドロー誘発デッキ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1548.html",
+  "entries": [
+    {
+      "cardId": "RS-060",
+      "count": 3
+    },
+    {
+      "cardId": "RS-676",
+      "count": 3
+    },
+    {
+      "cardId": "RM-035",
+      "count": 3
+    },
+    {
+      "cardId": "RK-290",
+      "count": 3
+    },
+    {
+      "cardId": "RK-293",
+      "count": 3
+    },
+    {
+      "cardId": "RS-324",
+      "count": 3
+    },
+    {
+      "cardId": "RS-061",
+      "count": 3
+    },
+    {
+      "cardId": "RS-622",
+      "count": 3
+    },
+    {
+      "cardId": "RS-059",
+      "count": 3
+    },
+    {
+      "cardId": "RS-335",
+      "count": 2
+    },
+    {
+      "cardId": "RS-018",
+      "count": 2
+    },
+    {
+      "cardId": "RS-029",
+      "count": 2
+    },
+    {
+      "cardId": "RS-102",
+      "count": 1
+    },
+    {
+      "cardId": "RS-115",
+      "count": 1
+    },
+    {
+      "cardId": "RS-447",
+      "count": 1
+    },
+    {
+      "cardId": "RK-276",
+      "count": 1
+    },
+    {
+      "cardId": "RK-099",
+      "count": 1
+    },
+    {
+      "cardId": "RS-209",
+      "count": 1
+    },
+    {
+      "cardId": "RS-145",
+      "count": 1
+    }
+  ]
+}

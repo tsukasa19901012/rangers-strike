@@ -1,0 +1,63 @@
+{
+  "id": "wiki-2027",
+  "name": "赤単ミラーライダー（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/2027.html",
+  "entries": [
+    {
+      "cardId": "RK-033",
+      "count": 3
+    },
+    {
+      "cardId": "RK-333",
+      "count": 3
+    },
+    {
+      "cardId": "RK-281",
+      "count": 3
+    },
+    {
+      "cardId": "RK-067",
+      "count": 3
+    },
+    {
+      "cardId": "RK-279",
+      "count": 3
+    },
+    {
+      "cardId": "RK-280",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-050",
+      "count": 3
+    },
+    {
+      "cardId": "RK-036",
+      "count": 3
+    },
+    {
+      "cardId": "RK-038",
+      "count": 3
+    },
+    {
+      "cardId": "RK-039",
+      "count": 3
+    },
+    {
+      "cardId": "RK-068",
+      "count": 3
+    },
+    {
+      "cardId": "SK-003",
+      "count": 3
+    },
+    {
+      "cardId": "RK-243",
+      "count": 3
+    },
+    {
+      "cardId": "XG5-066",
+      "count": 1
+    }
+  ]
+}

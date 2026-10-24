@@ -1,0 +1,87 @@
+{
+  "id": "wiki-1728",
+  "name": "侍コール（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1728.html",
+  "entries": [
+    {
+      "cardId": "RS-610",
+      "count": 3
+    },
+    {
+      "cardId": "RS-676",
+      "count": 2
+    },
+    {
+      "cardId": "RS-678",
+      "count": 2
+    },
+    {
+      "cardId": "RS-675",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-037",
+      "count": 2
+    },
+    {
+      "cardId": "RS-674",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-036",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-038",
+      "count": 2
+    },
+    {
+      "cardId": "RS-059",
+      "count": 2
+    },
+    {
+      "cardId": "RS-577",
+      "count": 2
+    },
+    {
+      "cardId": "RS-060",
+      "count": 2
+    },
+    {
+      "cardId": "RS-208",
+      "count": 2
+    },
+    {
+      "cardId": "RS-209",
+      "count": 2
+    },
+    {
+      "cardId": "RS-537",
+      "count": 2
+    },
+    {
+      "cardId": "RS-018",
+      "count": 2
+    },
+    {
+      "cardId": "RS-026",
+      "count": 2
+    },
+    {
+      "cardId": "RS-184",
+      "count": 2
+    },
+    {
+      "cardId": "RS-447",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-049",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-051",
+      "count": 1
+    }
+  ]
+}

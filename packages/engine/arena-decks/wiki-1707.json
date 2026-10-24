@@ -1,0 +1,91 @@
+{
+  "id": "wiki-1707",
+  "name": "赤青レスキューレーダー（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1707.html",
+  "entries": [
+    {
+      "cardId": "RS-039",
+      "count": 3
+    },
+    {
+      "cardId": "RS-089",
+      "count": 3
+    },
+    {
+      "cardId": "RS-124",
+      "count": 3
+    },
+    {
+      "cardId": "RS-125",
+      "count": 3
+    },
+    {
+      "cardId": "RS-156",
+      "count": 3
+    },
+    {
+      "cardId": "XG6-057",
+      "count": 3
+    },
+    {
+      "cardId": "RS-249",
+      "count": 3
+    },
+    {
+      "cardId": "RS-266",
+      "count": 2
+    },
+    {
+      "cardId": "RS-085",
+      "count": 2
+    },
+    {
+      "cardId": "RK-146",
+      "count": 2
+    },
+    {
+      "cardId": "RS-038",
+      "count": 2
+    },
+    {
+      "cardId": "RS-037",
+      "count": 2
+    },
+    {
+      "cardId": "RS-234",
+      "count": 1
+    },
+    {
+      "cardId": "XG5-065",
+      "count": 1
+    },
+    {
+      "cardId": "RS-320",
+      "count": 1
+    },
+    {
+      "cardId": "RK-242",
+      "count": 1
+    },
+    {
+      "cardId": "RS-110",
+      "count": 1
+    },
+    {
+      "cardId": "RS-150",
+      "count": 1
+    },
+    {
+      "cardId": "RS-438",
+      "count": 1
+    },
+    {
+      "cardId": "RS-345",
+      "count": 1
+    },
+    {
+      "cardId": "RS-572",
+      "count": 1
+    }
+  ]
+}

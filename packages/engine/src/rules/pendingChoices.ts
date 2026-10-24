@@ -3877,8 +3877,9 @@ export function applyEffectChoiceSelect(
           pending,
           declared,
         );
-        if (revealed.pendingEffectChoice) return { state: revealed };
-        return { state: revealed };
+        // 選択を終えたら、止めていたバトル進入（ライドオフの後のアタック・ストライクの選択など）を続ける。続けないと、
+        // 次のターンの効果の処理の後に前のターンのバトル進入が開いていた（XG2-069 NEW電王SF【カウント】、青緑ハイビート）。
+        return { state: revealed.pendingEffectChoice ? revealed : promoteDeferredBattleEntry(revealed) };
       }
       if (pending.effectId === "senko_sosa_declare") {
         const revealed = resolveSenkoSosa(
@@ -3886,7 +3887,7 @@ export function applyEffectChoiceSelect(
           pending,
           declared,
         );
-        return { state: revealed };
+        return { state: revealed.pendingEffectChoice ? revealed : promoteDeferredBattleEntry(revealed) };
       }
       const nextState = applyFlowerBombDeclaredNumber(
         state,

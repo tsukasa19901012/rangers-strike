@@ -19,6 +19,7 @@ UI は Vita 版と同じ [PocketJS](https://github.com/pocket-stack/pocketjs)（
   デッキ名は上部の欄で付け替え（検索欄・デッキ名欄はホストページの `<input>` をキャンバスに重ねたもので、スマホの IME が使えます）
 - デッキの共有: デッキ構築のメニュー「共有する（URL・テキスト・QR）」で、QR コード・URL・カードリストのパネルを出します。
   - 「URLをコピー」: 短い URL `/?d=<8文字>`（`api/share.js` が Upstash Redis に期限なしで保存。同じデッキは同じ URL）。
+  - 共有されたデッキの一覧: `vercel env pull .env.local` のあと `node scripts/list-shared-decks.mjs [--out shared-decks.json] [--arena ../../packages/engine/arena-decks]`（読むだけ。`--arena` で対戦台のデッキ `shared-<id>.json` にもする）。
     保存先がないときはデッキを圧縮して入れた長い URL `/#d=RD1.…`（40 枚で約 260 文字）
   - 「テキスト（カードリスト）でコピー」: `# デッキ名` / `枚数 カードID カード名` の行 / `# 計N枚`
   - 「QR画像を保存」: デッキ名・枚数・QR・URL を入れた PNG。PC はダウンロード、スマホは共有シート（写真に保存・LINE に送るなど）

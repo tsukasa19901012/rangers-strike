@@ -1,0 +1,79 @@
+{
+  "id": "wiki-2019",
+  "name": "青黒セイクウオー（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/2019.html",
+  "entries": [
+    {
+      "cardId": "RS-686",
+      "count": 3
+    },
+    {
+      "cardId": "RS-667",
+      "count": 3
+    },
+    {
+      "cardId": "RS-668",
+      "count": 3
+    },
+    {
+      "cardId": "RS-666",
+      "count": 3
+    },
+    {
+      "cardId": "RS-673",
+      "count": 3
+    },
+    {
+      "cardId": "RS-605",
+      "count": 3
+    },
+    {
+      "cardId": "RS-526",
+      "count": 3
+    },
+    {
+      "cardId": "RS-622",
+      "count": 3
+    },
+    {
+      "cardId": "RS-285",
+      "count": 3
+    },
+    {
+      "cardId": "RS-296",
+      "count": 3
+    },
+    {
+      "cardId": "RK-146",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-032",
+      "count": 2
+    },
+    {
+      "cardId": "RS-110",
+      "count": 1
+    },
+    {
+      "cardId": "RS-401",
+      "count": 1
+    },
+    {
+      "cardId": "RS-438",
+      "count": 1
+    },
+    {
+      "cardId": "RS-685",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-030",
+      "count": 1
+    },
+    {
+      "cardId": "SX-007",
+      "count": 1
+    }
+  ]
+}

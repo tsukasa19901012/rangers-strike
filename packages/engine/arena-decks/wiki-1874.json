@@ -1,0 +1,63 @@
+{
+  "id": "wiki-1874",
+  "name": "赤緑メガヘラクレス（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1874.html",
+  "entries": [
+    {
+      "cardId": "RM-051",
+      "count": 3
+    },
+    {
+      "cardId": "RM-054",
+      "count": 3
+    },
+    {
+      "cardId": "RM-052",
+      "count": 3
+    },
+    {
+      "cardId": "RM-053",
+      "count": 3
+    },
+    {
+      "cardId": "RM-010",
+      "count": 3
+    },
+    {
+      "cardId": "RS-439",
+      "count": 3
+    },
+    {
+      "cardId": "RS-039",
+      "count": 3
+    },
+    {
+      "cardId": "RS-167",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-088",
+      "count": 3
+    },
+    {
+      "cardId": "RS-585",
+      "count": 3
+    },
+    {
+      "cardId": "RS-027",
+      "count": 3
+    },
+    {
+      "cardId": "RS-014",
+      "count": 3
+    },
+    {
+      "cardId": "XG5-010",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-054",
+      "count": 1
+    }
+  ]
+}

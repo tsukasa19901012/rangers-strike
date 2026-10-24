@@ -1,0 +1,83 @@
+{
+  "id": "wiki-2029",
+  "name": "FFRデッキ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/2029.html",
+  "entries": [
+    {
+      "cardId": "XG3-068",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-076",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-080",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-075",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-078",
+      "count": 3
+    },
+    {
+      "cardId": "XG4-088",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-081",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-057",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-076",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-074",
+      "count": 2
+    },
+    {
+      "cardId": "XG3-077",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-089",
+      "count": 2
+    },
+    {
+      "cardId": "RK-242",
+      "count": 1
+    },
+    {
+      "cardId": "RK-253",
+      "count": 1
+    },
+    {
+      "cardId": "RK-239",
+      "count": 1
+    },
+    {
+      "cardId": "RK-238",
+      "count": 1
+    },
+    {
+      "cardId": "RK-026",
+      "count": 1
+    },
+    {
+      "cardId": "RK-187",
+      "count": 1
+    },
+    {
+      "cardId": "XG5-078",
+      "count": 1
+    }
+  ]
+}

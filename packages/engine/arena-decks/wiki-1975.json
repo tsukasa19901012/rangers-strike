@@ -1,0 +1,63 @@
+{
+  "id": "wiki-1975",
+  "name": "Wのデッキ／夢の5色混合（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1975.html",
+  "entries": [
+    {
+      "cardId": "XG2-044",
+      "count": 3
+    },
+    {
+      "cardId": "XP-014",
+      "count": 3
+    },
+    {
+      "cardId": "XG6-036",
+      "count": 3
+    },
+    {
+      "cardId": "XG6-035",
+      "count": 3
+    },
+    {
+      "cardId": "XG4-067",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-045",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-080",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-079",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-081",
+      "count": 3
+    },
+    {
+      "cardId": "XG4-068",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-078",
+      "count": 3
+    },
+    {
+      "cardId": "XP-015",
+      "count": 3
+    },
+    {
+      "cardId": "RM-057",
+      "count": 2
+    },
+    {
+      "cardId": "RS-518",
+      "count": 2
+    }
+  ]
+}
