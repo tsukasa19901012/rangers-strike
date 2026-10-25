@@ -1,0 +1,87 @@
+{
+  "id": "wiki-1686",
+  "name": "3色マルチJP（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1686.html",
+  "entries": [
+    {
+      "cardId": "RM-012",
+      "count": 3
+    },
+    {
+      "cardId": "RK-274",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-088",
+      "count": 3
+    },
+    {
+      "cardId": "RS-059",
+      "count": 3
+    },
+    {
+      "cardId": "RK-280",
+      "count": 2
+    },
+    {
+      "cardId": "RK-030",
+      "count": 2
+    },
+    {
+      "cardId": "RM-044",
+      "count": 2
+    },
+    {
+      "cardId": "RS-335",
+      "count": 2
+    },
+    {
+      "cardId": "RS-676",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-039",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-007",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-023",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-095",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-072",
+      "count": 2
+    },
+    {
+      "cardId": "XG3-089",
+      "count": 2
+    },
+    {
+      "cardId": "SX-008",
+      "count": 2
+    },
+    {
+      "cardId": "RS-039",
+      "count": 1
+    },
+    {
+      "cardId": "RM-057",
+      "count": 1
+    },
+    {
+      "cardId": "RS-349",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-032",
+      "count": 1
+    }
+  ]
+}

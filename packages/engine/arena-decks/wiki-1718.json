@@ -1,0 +1,107 @@
+{
+  "id": "wiki-1718",
+  "name": "黄緑中速レスキューポリスデッキ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1718.html",
+  "entries": [
+    {
+      "cardId": "RK-170",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-089",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-088",
+      "count": 3
+    },
+    {
+      "cardId": "RM-046",
+      "count": 2
+    },
+    {
+      "cardId": "RK-274",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-047",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-090",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-092",
+      "count": 2
+    },
+    {
+      "cardId": "XG7-064",
+      "count": 2
+    },
+    {
+      "cardId": "RS-324",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-022",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-023",
+      "count": 2
+    },
+    {
+      "cardId": "RS-023",
+      "count": 1
+    },
+    {
+      "cardId": "RS-282",
+      "count": 1
+    },
+    {
+      "cardId": "RS-362",
+      "count": 1
+    },
+    {
+      "cardId": "RS-390",
+      "count": 1
+    },
+    {
+      "cardId": "RK-111",
+      "count": 1
+    },
+    {
+      "cardId": "RK-194",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-092",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-093",
+      "count": 1
+    },
+    {
+      "cardId": "XG2-089",
+      "count": 1
+    },
+    {
+      "cardId": "XG7-065",
+      "count": 1
+    },
+    {
+      "cardId": "XG7-066",
+      "count": 1
+    },
+    {
+      "cardId": "XG7-067",
+      "count": 1
+    },
+    {
+      "cardId": "RS-059",
+      "count": 1
+    }
+  ]
+}

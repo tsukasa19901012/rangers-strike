@@ -1,0 +1,71 @@
+{
+  "id": "wiki-1731",
+  "name": "緑青超電子ダイナモ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1731.html",
+  "entries": [
+    {
+      "cardId": "RK-005",
+      "count": 3
+    },
+    {
+      "cardId": "RK-183",
+      "count": 3
+    },
+    {
+      "cardId": "RK-030",
+      "count": 3
+    },
+    {
+      "cardId": "RK-074",
+      "count": 3
+    },
+    {
+      "cardId": "RK-146",
+      "count": 3
+    },
+    {
+      "cardId": "RK-087",
+      "count": 3
+    },
+    {
+      "cardId": "RK-061",
+      "count": 3
+    },
+    {
+      "cardId": "RK-144",
+      "count": 3
+    },
+    {
+      "cardId": "RK-135",
+      "count": 3
+    },
+    {
+      "cardId": "RK-007",
+      "count": 3
+    },
+    {
+      "cardId": "RK-098",
+      "count": 3
+    },
+    {
+      "cardId": "RK-274",
+      "count": 3
+    },
+    {
+      "cardId": "RK-288",
+      "count": 1
+    },
+    {
+      "cardId": "RK-142",
+      "count": 1
+    },
+    {
+      "cardId": "RK-017",
+      "count": 1
+    },
+    {
+      "cardId": "RK-175",
+      "count": 1
+    }
+  ]
+}

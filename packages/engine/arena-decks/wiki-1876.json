@@ -1,0 +1,99 @@
+{
+  "id": "wiki-1876",
+  "name": "ディケイドCFデッキ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1876.html",
+  "entries": [
+    {
+      "cardId": "XG2-042",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-077",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-076",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-071",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-062",
+      "count": 3
+    },
+    {
+      "cardId": "RK-313",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-071",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-069",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-054",
+      "count": 2
+    },
+    {
+      "cardId": "RK-246",
+      "count": 2
+    },
+    {
+      "cardId": "RK-237",
+      "count": 2
+    },
+    {
+      "cardId": "RK-135",
+      "count": 2
+    },
+    {
+      "cardId": "RK-315",
+      "count": 1
+    },
+    {
+      "cardId": "RK-242",
+      "count": 1
+    },
+    {
+      "cardId": "XG4-023",
+      "count": 1
+    },
+    {
+      "cardId": "RS-110",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-038",
+      "count": 1
+    },
+    {
+      "cardId": "RK-028",
+      "count": 1
+    },
+    {
+      "cardId": "RK-264",
+      "count": 1
+    },
+    {
+      "cardId": "RK-013",
+      "count": 1
+    },
+    {
+      "cardId": "RK-300",
+      "count": 1
+    },
+    {
+      "cardId": "RS-488",
+      "count": 1
+    },
+    {
+      "cardId": "XG3-002",
+      "count": 1
+    }
+  ]
+}

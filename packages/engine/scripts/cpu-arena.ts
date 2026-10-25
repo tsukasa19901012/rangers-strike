@@ -1,11 +1,14 @@
 // CPU 同士の対戦で強さを比べる。
 //   npx tsx scripts/cpu-arena.ts --a 2 --b 2 [--b-src ../../.cache/base/packages/engine/src/ai/index.ts] [--games 40] [--decks abarenoh,dekaranger,magiking]
+//   --decks には arena-decks/<id>.json（大会のデッキ等）の id も使える。
 //   学習した評価を試す: --a 2 --b 2 --nna .cache/nn/value.json [--nn-blend 0.5]
 // 各対戦は席と先攻を入れ替えて2回ずつ行うので、デッキ・先攻の有利不利は打ち消される。
 // --b-src を渡すと B 側は別の作業ツリーの AI（改良前など）を使う。
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { allCardsCatalog, expandDeck, type CardDefinition, type DeckDefinition } from "@rangers-strike/cards";
 import { applyAction } from "../src/core/applyAction";
 import { getLegalActions, isLegalAction } from "../src/core/legalActions";
 import { createValueNet, heuristicEvaluate, pickCpuAction, setCpuLevelOverrides, setEvalWeights, setValueEvaluator, type CpuLevelConfig, type EvalWeights } from "../src/ai/index";
@@ -61,10 +64,22 @@ const moves = { A: 0, B: 0 };
 const deckOuts = { A: 0, B: 0 };
 let turnsTotal = 0;
 
+const ARENA_DECKS_DIR = resolve(dirname(fileURLToPath(import.meta.url)), "../arena-decks");
+
+/** arena-decks/<id>.json（大会のデッキ等、スターター以外）があればそのデッキ、なければスターターを使う。 */
+function arenaDeck(id: string): CardDefinition[] | undefined {
+  const file = resolve(ARENA_DECKS_DIR, `${id}.json`);
+  if (!existsSync(file)) return undefined;
+  const deck = JSON.parse(readFileSync(file, "utf8")) as DeckDefinition;
+  return expandDeck(deck, allCardsCatalog);
+}
+
 function play(seed: number, deck1: string, deck2: string, aSeat: PlayerId): { winner: "A" | "B" | null; steps: number; ms: Record<"A" | "B", number> } {
   let state = createStarterGame({
     player1Starter: deck1 as never,
     player2Starter: deck2 as never,
+    player1Deck: arenaDeck(deck1),
+    player2Deck: arenaDeck(deck2),
     seed,
     firstPlayer: seed % 2 === 0 ? "player1" : "player2",
   });

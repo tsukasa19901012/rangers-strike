@@ -1,0 +1,79 @@
+{
+  "id": "wiki-1706",
+  "name": "青緑ハイビート（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1706.html",
+  "entries": [
+    {
+      "cardId": "RK-307",
+      "count": 3
+    },
+    {
+      "cardId": "RS-024",
+      "count": 3
+    },
+    {
+      "cardId": "RK-024",
+      "count": 3
+    },
+    {
+      "cardId": "RS-068",
+      "count": 3
+    },
+    {
+      "cardId": "RK-135",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-069",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-086",
+      "count": 2
+    },
+    {
+      "cardId": "RS-046",
+      "count": 2
+    },
+    {
+      "cardId": "RS-438",
+      "count": 2
+    },
+    {
+      "cardId": "XG3-068",
+      "count": 2
+    },
+    {
+      "cardId": "RK-023",
+      "count": 2
+    },
+    {
+      "cardId": "RS-349",
+      "count": 2
+    },
+    {
+      "cardId": "RK-097",
+      "count": 2
+    },
+    {
+      "cardId": "RK-030",
+      "count": 2
+    },
+    {
+      "cardId": "RK-274",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-061",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-088",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-074",
+      "count": 2
+    }
+  ]
+}

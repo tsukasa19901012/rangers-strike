@@ -1,0 +1,87 @@
+{
+  "id": "wiki-744",
+  "name": "シンプル戦闘員デッキ（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/744.html",
+  "entries": [
+    {
+      "cardId": "RS-303",
+      "count": 3
+    },
+    {
+      "cardId": "RK-056",
+      "count": 3
+    },
+    {
+      "cardId": "RK-091",
+      "count": 3
+    },
+    {
+      "cardId": "RK-059",
+      "count": 3
+    },
+    {
+      "cardId": "RS-080",
+      "count": 3
+    },
+    {
+      "cardId": "RM-060",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-027",
+      "count": 3
+    },
+    {
+      "cardId": "RS-072",
+      "count": 3
+    },
+    {
+      "cardId": "RS-304",
+      "count": 3
+    },
+    {
+      "cardId": "RS-616",
+      "count": 3
+    },
+    {
+      "cardId": "RK-270",
+      "count": 1
+    },
+    {
+      "cardId": "RS-004",
+      "count": 1
+    },
+    {
+      "cardId": "RS-185",
+      "count": 1
+    },
+    {
+      "cardId": "RS-242",
+      "count": 1
+    },
+    {
+      "cardId": "RK-146",
+      "count": 1
+    },
+    {
+      "cardId": "RK-242",
+      "count": 1
+    },
+    {
+      "cardId": "RS-519",
+      "count": 1
+    },
+    {
+      "cardId": "RS-586",
+      "count": 1
+    },
+    {
+      "cardId": "RS-497",
+      "count": 1
+    },
+    {
+      "cardId": "RK-251",
+      "count": 1
+    }
+  ]
+}

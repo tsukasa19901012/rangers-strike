@@ -1,0 +1,91 @@
+{
+  "id": "wiki-1727",
+  "name": "緑黒シザースマザー（atwiki デッキサンプル、中核3枚＋候補で40枚に組んだもの）",
+  "source": "https://w.atwiki.jp/renst/pages/1727.html",
+  "entries": [
+    {
+      "cardId": "RK-160",
+      "count": 3
+    },
+    {
+      "cardId": "RK-190",
+      "count": 3
+    },
+    {
+      "cardId": "RS-460",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-004",
+      "count": 3
+    },
+    {
+      "cardId": "RS-176",
+      "count": 3
+    },
+    {
+      "cardId": "RS-014",
+      "count": 2
+    },
+    {
+      "cardId": "RS-194",
+      "count": 2
+    },
+    {
+      "cardId": "RS-630",
+      "count": 2
+    },
+    {
+      "cardId": "XG5-082",
+      "count": 2
+    },
+    {
+      "cardId": "RK-275",
+      "count": 2
+    },
+    {
+      "cardId": "RS-497",
+      "count": 2
+    },
+    {
+      "cardId": "RS-476",
+      "count": 2
+    },
+    {
+      "cardId": "RS-634",
+      "count": 2
+    },
+    {
+      "cardId": "RK-101",
+      "count": 2
+    },
+    {
+      "cardId": "RS-195",
+      "count": 1
+    },
+    {
+      "cardId": "RS-520",
+      "count": 1
+    },
+    {
+      "cardId": "RS-255",
+      "count": 1
+    },
+    {
+      "cardId": "RK-269",
+      "count": 1
+    },
+    {
+      "cardId": "RK-093",
+      "count": 1
+    },
+    {
+      "cardId": "RS-622",
+      "count": 1
+    },
+    {
+      "cardId": "RK-099",
+      "count": 1
+    }
+  ]
+}
