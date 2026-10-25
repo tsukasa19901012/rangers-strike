@@ -1,0 +1,75 @@
+{
+  "id": "blog-jimdo-ccrs-black",
+  "name": "黒単（NOVA）（CCRS大会 運営デッキ）",
+  "source": "https://rensutodamasi.jimdofree.com/レポート/レンスト超超非公認大会/",
+  "entries": [
+    {
+      "cardId": "RS-497",
+      "count": 3
+    },
+    {
+      "cardId": "RS-410",
+      "count": 3
+    },
+    {
+      "cardId": "RS-216",
+      "count": 2
+    },
+    {
+      "cardId": "RS-492",
+      "count": 2
+    },
+    {
+      "cardId": "RS-256",
+      "count": 2
+    },
+    {
+      "cardId": "RK-269",
+      "count": 3
+    },
+    {
+      "cardId": "XG4-084",
+      "count": 3
+    },
+    {
+      "cardId": "RK-099",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-076",
+      "count": 1
+    },
+    {
+      "cardId": "XG7-057",
+      "count": 2
+    },
+    {
+      "cardId": "XG6-041",
+      "count": 2
+    },
+    {
+      "cardId": "RK-243",
+      "count": 2
+    },
+    {
+      "cardId": "RK-251",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-093",
+      "count": 3
+    },
+    {
+      "cardId": "XG5-094",
+      "count": 3
+    },
+    {
+      "cardId": "RM-045",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-101",
+      "count": 2
+    }
+  ]
+}

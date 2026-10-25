@@ -1,0 +1,75 @@
+{
+  "id": "blog-jimdo-street-red",
+  "name": "疾風迅雷の赤デッキ（ストリート・ストライカー 運営デッキ）",
+  "source": "https://rensutodamasi.jimdofree.com/レポート/レンスト魂vsx/ストリート-ストライカー/",
+  "entries": [
+    {
+      "cardId": "RS-549",
+      "count": 3
+    },
+    {
+      "cardId": "RS-104",
+      "count": 3
+    },
+    {
+      "cardId": "RS-342",
+      "count": 3
+    },
+    {
+      "cardId": "RS-161",
+      "count": 2
+    },
+    {
+      "cardId": "RS-039",
+      "count": 2
+    },
+    {
+      "cardId": "XG5-067",
+      "count": 3
+    },
+    {
+      "cardId": "RK-279",
+      "count": 1
+    },
+    {
+      "cardId": "XG5-066",
+      "count": 2
+    },
+    {
+      "cardId": "XG3-050",
+      "count": 2
+    },
+    {
+      "cardId": "XG6-059",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-048",
+      "count": 3
+    },
+    {
+      "cardId": "RM-057",
+      "count": 3
+    },
+    {
+      "cardId": "RS-648",
+      "count": 1
+    },
+    {
+      "cardId": "RK-043",
+      "count": 3
+    },
+    {
+      "cardId": "RK-004",
+      "count": 2
+    },
+    {
+      "cardId": "RS-245",
+      "count": 2
+    },
+    {
+      "cardId": "RS-179",
+      "count": 2
+    }
+  ]
+}
