@@ -15,7 +15,7 @@ import {
   skipXg7Strike,
 } from "../rules/xg7/xg7Effects";
 import { payMirrorWorldSelection } from "../rules/mirrorWorldSelection";
-import { memoizeInSearch } from "./searchCache";
+import { memoizeInSearch, sharePerCardCacheInSearch } from "./searchCache";
 import { isInstancePlacedAnywhere } from "./helpers";
 import { rk6RecordSnakeSelected } from "../rules/rk/rk6Fields";
 import { rk6SideBasherOnEntry } from "../rules/rk/rk6UnitEffects";
@@ -1084,7 +1084,9 @@ function applyActionUncached(
     applyActionWithRng(state, action, options),
   );
   if (!result.ok || rngState === undefined) return result;
-  return { ...result, state: { ...result.state, rngState } };
+  const withRng = { ...result.state, rngState };
+  sharePerCardCacheInSearch(result.state, withRng);
+  return { ...result, state: withRng };
 }
 
 function applyActionWithRng(

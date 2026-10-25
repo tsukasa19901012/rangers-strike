@@ -328,6 +328,9 @@ export function pickBestBySearch(
   options?: SearchOptions,
 ): GameAction | null {
   const unique = rankCandidatesForSearch(state, playerId, candidates, options);
+  // 候補が 1 つなら読んでも同じ手になるので、適用できるかだけ確かめる（相手の応手の読み・評価を省く。
+  // パスしかないリアクションの窓などで多く、Lv5 の思考時間の約 2 割だった）。
+  if (unique.length === 1) return applyAction(state, unique[0]!).ok ? unique[0]! : null;
   let best: GameAction | null = null;
   let bestScore = Number.NEGATIVE_INFINITY;
   const scored: { action: GameAction; score: number }[] = [];

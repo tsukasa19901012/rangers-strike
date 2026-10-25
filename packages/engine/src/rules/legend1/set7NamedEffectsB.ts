@@ -302,9 +302,22 @@ export function chargeReplacesBattle(state: GameState): boolean {
  */
 const COMMAND_FEATURE_SP1_RE = /これは自軍コマンドゾーンに特徴「([^」]+)」を持つ([SML])ユニットのカードが(\d+)枚(?:以上)?あれば「SP1」になる/;
 
+/** 効果文ごとの COMMAND_FEATURE_SP1_RE の一致（文字列だけで決まる。SP の計算のたびに効果文を正規化していた）。 */
+const commandFeatureSp1Cache = new Map<string, RegExpMatchArray | null>();
+
+function commandFeatureSp1Match(text: string | undefined): RegExpMatchArray | null {
+  const key = text ?? "";
+  let hit = commandFeatureSp1Cache.get(key);
+  if (hit === undefined) {
+    hit = normText(key).match(COMMAND_FEATURE_SP1_RE);
+    commandFeatureSp1Cache.set(key, hit);
+  }
+  return hit;
+}
+
 export function set7BEffectiveSp(state: GameState, playerId: PlayerId, instance: CardInstance, sp: number): number {
   const def = getDefinition(state.definitions, instance.cardId);
-  const m = normText(def?.text).match(COMMAND_FEATURE_SP1_RE);
+  const m = commandFeatureSp1Match(def?.text);
   if (!m) return sp;
   const [, feature, size, countText] = m;
   const count = state.players[playerId].command.filter((c) => {

@@ -39,7 +39,8 @@ export function pickMirrorWorldChoice(state: GameState, playerId: PlayerId): Gam
 /** 自軍ラッシュフェイズ: 重ねると今より良くなるならミラーワールドを起動する。 */
 export function pickMirrorWorldActivation(state: GameState, playerId: PlayerId, actions: GameAction[]): GameAction | null {
   const ops = state.players[playerId].operation;
-  const base = heuristicEvaluate(state, playerId) + MARGIN;
+  // 起動の手があるときだけ今の盤面を評価する（ラッシュフェイズの毎手で呼ばれる。全体の約 2%）。
+  let base: number | undefined;
   for (const a of actions) {
     if (a.type !== "activate_resident_operation") continue;
     const op = ops.find((c) => c.instanceId === a.operationInstanceId);
@@ -47,7 +48,7 @@ export function pickMirrorWorldActivation(state: GameState, playerId: PlayerId, 
     const r = applyAction(state, a);
     if (!r.ok) continue;
     const { action, score } = bestStack(r.state, playerId);
-    if (action?.type === "resolve_effect_choice" && score > base) return a;
+    if (action?.type === "resolve_effect_choice" && score > (base ??= heuristicEvaluate(state, playerId) + MARGIN)) return a;
   }
   return null;
 }
