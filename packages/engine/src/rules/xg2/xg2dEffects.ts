@@ -34,6 +34,7 @@ import {
   openAfter,
   openNext,
   pendingBase,
+  selectableOwnByEnemyEffect,
   printedBp,
   proceed,
   selectableEnemy,
@@ -617,7 +618,7 @@ registerXg2Choice(FFR_HOLD_EFFECT_ID, {
       const ids = sortedIds(enemyUnits(next, playerId, "XG2-075", (c) => rk1IsSmallNow(next, c), "battle"));
       if (ids.length > 0) step = selectOne(ctx, "XG2-075", BLADE_EFFECT_ID, ids, false, { xg2Meta: { decade } });
     } else if (pending.sourceCardId === "XG2-076") {
-      const ids = sortedIds(fieldUnits(next, enemyId).filter((c) => rk1IsSmallNow(next, c)));
+      const ids = sortedIds(fieldUnits(next, enemyId).filter((c) => rk1IsSmallNow(next, c) && selectableOwnByEnemyEffect(next, enemyId, playerId, "XG2-076", c)));
       if (ids.length > 0) step = selectOne({ ...ctx, playerId: enemyId }, "XG2-076", KIBA_EFFECT_ID, ids, false, { xg2Meta: { decade } });
     } else {
       const ids = sortedIds(enemyUnits(next, playerId, "XG2-078", (c) => effectiveBp(next, enemyId, c) % 1000 === 500, decade ? undefined : "battle"));

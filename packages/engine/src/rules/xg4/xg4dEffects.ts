@@ -28,6 +28,7 @@ import {
   openAfter,
   openNext,
   pendingBase,
+  selectableOwnByEnemyEffect,
   proceed,
   selectableEnemy,
   simpleSkip,
@@ -510,7 +511,9 @@ XG4_KEYWORDS["XG4-075::life"] = (state, ctx) => {
   const self = findField(state, ctx.playerId, id);
   if (!self?.commandHeld) return { state, detail: "xg4075:released" };
   const enemyId = opponent(ctx.playerId);
-  const ids = fieldUnits(state, enemyId).filter((c) => isUnit(state, c.cardId) && rk1IsSmallNow(state, c)).map((c) => c.instanceId);
+  const ids = fieldUnits(state, enemyId)
+    .filter((c) => isUnit(state, c.cardId) && rk1IsSmallNow(state, c) && selectableOwnByEnemyEffect(state, enemyId, ctx.playerId, "XG4-075", c))
+    .map((c) => c.instanceId);
   return {
     state: openAfter(state, { ...base({ playerId: enemyId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: id }, "XG4-075"), effectId: APOLLO_EFFECT_ID, kind: "pick_effect_branch", validInstanceIds: [...ids, XG4_APOLLO_RELEASE], selectCount: 1, optional: false }),
     detail: APOLLO_EFFECT_ID,

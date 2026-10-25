@@ -40,6 +40,7 @@ import {
   openAfter,
   openNext,
   pendingBase,
+  selectableOwnByEnemyEffect,
   proceed,
   selectableEnemy,
   shuffleDeck,
@@ -566,7 +567,9 @@ function applyRiderKick(state: GameState, ctx: GrantKeywordContext): GrantKeywor
   if (!selfId) return { state, detail: "xg6040:no_source" };
   if (fieldUnits(state, ctx.playerId).some((c) => c.instanceId !== selfId && isSmall(state, c))) return { state, detail: "xg6040:other_small" };
   const enemyId = opponent(ctx.playerId);
-  const ids = fieldUnits(state, enemyId).filter((c) => isSmall(state, c)).map((c) => c.instanceId);
+  const ids = fieldUnits(state, enemyId)
+    .filter((c) => isSmall(state, c) && selectableOwnByEnemyEffect(state, enemyId, ctx.playerId, "XG6-040", c))
+    .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "xg6040:no_enemy_small" };
   const opened: PendingEffectChoice = { ...choice({ ...ctxBase(ctx), playerId: enemyId }, "XG6-040", RIDER_KICK, "select_unit", ids, false), xg6Meta: { targetPlayerId: ctx.playerId } };
   return { state: openAfter(state, opened), detail: RIDER_KICK };

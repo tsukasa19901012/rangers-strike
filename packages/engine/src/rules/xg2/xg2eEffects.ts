@@ -31,6 +31,7 @@ import {
   openAfter,
   openNext,
   pendingBase,
+  selectableOwnByEnemyEffect,
   printedBp,
   proceed,
   selectableEnemy,
@@ -373,7 +374,9 @@ const PILE_EFFECT_ID = "xg2_092_pile_tornado";
 
 function applyPile(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const enemyId = opponent(ctx.playerId);
-  const ids = sortedIds(fieldUnits(state, enemyId).filter((c) => !xg2ActsAsVehicle(state.players[enemyId], c)));
+  const ids = sortedIds(
+    fieldUnits(state, enemyId).filter((c) => !xg2ActsAsVehicle(state.players[enemyId], c) && selectableOwnByEnemyEffect(state, enemyId, ctx.playerId, "XG2-092", c)),
+  );
   if (ids.length === 0) return { state, detail: "xg2_092:no_targets" };
   return {
     state: openAfter(state, selectOne({ playerId: enemyId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: ctx.triggerSourceInstanceId }, "XG2-092", PILE_EFFECT_ID, ids, false)),

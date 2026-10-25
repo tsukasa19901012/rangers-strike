@@ -77,6 +77,7 @@ export function collectEnemyUnits(
   state: GameState,
   actorId: PlayerId,
   filter: EnemyUnitFilter = {},
+  sourceCardId?: string,
 ): string[] {
   const enemyId = opponent(actorId);
   const enemy = state.players[enemyId];
@@ -89,7 +90,7 @@ export function collectEnemyUnits(
   const ids: string[] = [];
   for (const zone of zones) {
     for (const card of enemy[zone]) {
-      if (!isSelectableByOpponentEffect(state, actorId, card.instanceId)) continue;
+      if (!isSelectableByOpponentEffect(state, actorId, card.instanceId, sourceCardId)) continue;
       if (!unitMatchesFilter(state, enemyId, card, filter)) continue;
       ids.push(card.instanceId);
     }
@@ -151,7 +152,7 @@ export function startGenericEnemyUnitChoice(
     placeAsDamage?: boolean;
   },
 ): GameState | null {
-  const valid = collectEnemyUnits(state, params.playerId, params.filter);
+  const valid = collectEnemyUnits(state, params.playerId, params.filter, params.sourceCardId);
   if (valid.length === 0) return null;
   return openEffectChoice(state, {
     ...params,

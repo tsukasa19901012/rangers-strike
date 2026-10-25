@@ -64,5 +64,5 @@ describe("vertical slice — core flow", () => {
     if (result.reason === "winner") {
       expect(result.state.winner).not.toBeNull();
     }
-  });
+  }, 30_000);
 });

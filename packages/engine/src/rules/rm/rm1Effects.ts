@@ -205,6 +205,14 @@ export function selectableEnemy(state: GameState, playerId: PlayerId, sourceCard
   return isSelectableByOpponentEffect(state, playerId, card.instanceId, sourceCardId, playerId);
 }
 
+/**
+ * 「相手は自分自身のユニットを選び」の効果で、相手（持ち主）が選べる自分のユニット（ブレイカー・XG7-031 新サイクロン号等の
+ * 「敵軍…の効果に選ばれない」だけを確かめる。R-KW-BREAKER-03）。victimId が選ぶプレイヤー、userId が効果の使い手。
+ */
+export function selectableOwnByEnemyEffect(state: GameState, victimId: PlayerId, userId: PlayerId, sourceCardId: string, card: CardInstance): boolean {
+  return isSelectableByOpponentEffect(state, victimId, card.instanceId, sourceCardId, userId);
+}
+
 export function stripForZone(card: Pick<CardInstance, "instanceId" | "cardId">): CardInstance {
   return { instanceId: card.instanceId, cardId: card.cardId };
 }

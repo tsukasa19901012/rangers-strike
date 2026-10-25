@@ -5,7 +5,7 @@
  * - `xg7AttackerBattleBonus` / `xg7DefenderBattleBonus`: バトル中の BP 修正（rules/namedUnitEffects.ts）。
  * - `xg7EffectiveSp`: SP（rules/legend3/fieldEffects.ts legend3EffectiveSp）。
  * - `xg7DefenderBlocksAttack`: アタックされない（rules/legend3/restrictions.ts canAttackDefender）。
- * - `xg7NotSelectable`: 相手に選ばれない（keywords/effectTargetability.ts isSelectableByOpponentEffect）。
+ * - `xg7NotSelectable` / `xg7CycloneBlocksSelection`: 相手に選ばれない・敵軍Sユニット／Sビークルの効果に選ばれない（keywords/effectTargetability.ts isSelectableByOpponentEffect）。
  * - `xg7HandDeployCondition`: 「これが自分の手札にある間、…これを自軍ラッシュエリアに出してもよい」（rules/keywordGapRuntime.ts）。
  * - `xg7NcAnyNumberAt`: 「バトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する」（rules/numberComboEffects.ts）。
  * - `xg7CrossBonus`: このターン得たクロス（keywords/battleKeywords.ts crossShiftLeftOf）。
@@ -163,6 +163,31 @@ export function xg7NotSelectable(state: GameState, selectorPlayerId: PlayerId, o
     if (neighbors.some((c) => isId(c.cardId, "XG7-009"))) return true;
   }
   return false;
+}
+
+/**
+ * XG7-031 新サイクロン号【サイクロンアタック】「これにライドしているユニットは…敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない。」
+ * （keywords/effectTargetability.ts isSelectableByOpponentEffect）。
+ * - 「敵軍」はライドしているユニットの持ち主から見た敵軍（効果の発生源の持ち主が相手）。選ぶのが持ち主自身でも、敵軍の効果なら防ぐ。
+ * - 発生源のサイズは、場にあればその時点のサイズ（サイズを変える効果を反映）、場になければカードの定義のサイズ。
+ * - 発生源が分からない効果（sourceCardId なし）は防がない（これまでどおり選べる）。
+ * - XG6-037【振り切るぜ】で XG7-031 として扱うビークルにも効く（isSameVehicleTextIdentity）。
+ */
+export function xg7CycloneBlocksSelection(
+  state: GameState,
+  ownerId: PlayerId,
+  card: CardInstance,
+  sourceCardId: string | undefined,
+  sourceOwnerId: PlayerId,
+): boolean {
+  if (!sourceCardId || sourceOwnerId === ownerId) return false;
+  if (!ridingOn(state, ownerId, card, "XG7-031")) return false;
+  const sourceType = getDefinition(state.definitions, sourceCardId)?.type;
+  if (sourceType !== "unit" && sourceType !== "vehicle") return false;
+  const area = areaCards(state, sourceOwnerId);
+  const onField = area.find((c) => c.cardId === sourceCardId) ?? area.find((c) => isId(c.cardId, sourceCardId));
+  const size = onField ? unitSizeOf(state.definitions, onField) : getDefinition(state.definitions, sourceCardId)?.size;
+  return size === "S";
 }
 
 // ---------------------------------------------------------------------------

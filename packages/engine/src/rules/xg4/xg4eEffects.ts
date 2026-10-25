@@ -25,6 +25,7 @@ import {
   openAfter,
   openNext,
   pendingBase,
+  selectableOwnByEnemyEffect,
   proceed,
   selectableEnemy,
   simpleSkip,
@@ -230,7 +231,9 @@ export function activateXg4eFieldAbility(state: GameState, playerId: PlayerId, c
     return { ...p, rush: hold(p.rush), battle: hold(p.battle) };
   });
   const enemyId = opponent(playerId);
-  const ids = fieldUnits(next, enemyId).filter((c) => isUnit(next, c.cardId)).map((c) => c.instanceId);
+  const ids = fieldUnits(next, enemyId)
+    .filter((c) => isUnit(next, c.cardId) && selectableOwnByEnemyEffect(next, enemyId, playerId, "XG4-091", c))
+    .map((c) => c.instanceId);
   next = { ...next, log: [...next.log, logFor(state, playerId, "XG4-091", `${SPINDLE_EFFECT_ID}:hold`)] };
   if (ids.length === 0) return next;
   return openEffectChoice(next, {
