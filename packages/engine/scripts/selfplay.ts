@@ -1,5 +1,6 @@
 // 学習用の自己対戦データを作る（docs: CPU 学習ロードマップ Phase 0・2）。
-//   npx tsx scripts/selfplay.ts --games 1000 --out .cache/selfplay/run1 [--shard 0 --shards 1]
+//   npx tsx scripts/selfplay.ts --games 1000 --out .cache/selfplay/run1 [--shard 0 --shards 1] [--decks starters,arena]
+//   --decks は既定でスターター 46 個。arena-decks/<id>.json の id や、まとめた名前（starters, arena, wiki, blog）も使える。
 // 並列で回すときは scripts/selfplay-par.sh を使う。
 //
 // 1 試合ごとに、途中の盤面から --positions 個を無作為に選び、両方のプレイヤーから見た特徴（ai/valueFeatures.ts）と
@@ -15,7 +16,8 @@ import { getLegalActions, isLegalAction } from "../src/core/legalActions";
 import { createValueNet, pickCpuAction, setValueEvaluator } from "../src/ai/index";
 import type { CpuLevel } from "../src/ai/types";
 import { FEATURE_DIM, FEATURE_NAMES, FEATURE_VERSION, encodeState } from "../src/ai/valueFeatures";
-import { ALL_STARTER_DECK_IDS, createStarterGame } from "../src/verticalSlice/createStarterGame";
+import { createStarterGame } from "../src/verticalSlice/createStarterGame";
+import { arenaDeck, resolveDeckList } from "./arenaDecks";
 import type { GameState, PlayerId } from "../src/types/game";
 
 function arg(name: string, fallback: string): string {
@@ -29,7 +31,9 @@ const shard = Number(arg("shard", "0"));
 const shards = Number(arg("shards", "1"));
 const outDir = arg("out", ".cache/selfplay/run");
 const positions = Number(arg("positions", "12"));
-const decks = arg("decks", ALL_STARTER_DECK_IDS.join(",")).split(",");
+const decks = resolveDeckList(arg("decks", "starters"));
+// 試合ごとに JSON を読み直さないよう、arena-decks のデッキは最初に展開しておく。
+const deckCards = new Map(decks.map((id) => [id, arenaDeck(id)]));
 // --mix: 「先手側Lv:後手側Lv=重み」のカンマ区切り。既定は Lv2 中心に Lv3 と Lv5 を混ぜる（ロードマップ Phase 2）。
 const mix = arg("mix", "2:2=45,3:2=20,3:3=20,5:5=15")
   .split(",")
@@ -67,6 +71,8 @@ function play(seed: number, d1: string, d2: string, levels: Record<PlayerId, Cpu
   let state = createStarterGame({
     player1Starter: d1 as never,
     player2Starter: d2 as never,
+    player1Deck: deckCards.get(d1),
+    player2Deck: deckCards.get(d2),
     seed,
     firstPlayer: rand() < 0.5 ? "player1" : "player2",
   });

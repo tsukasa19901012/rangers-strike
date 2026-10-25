@@ -1932,11 +1932,14 @@ function appendBattleEntryActions(
       defenderInstanceId: defender.instanceId,
     });
   }
-  // ルール: R-ATK-05 — ゴーマ宮で「可能ならアタックする」ユニットはアタックしなければならない。
+  // ルール: R-ATK-05 — ゴーマ宮で「可能ならアタックする」ユニットはアタックしなければならない。アタックできる相手がいない
+  // （RS-508 ゴーオンレッドのような「アタックすることができない」ユニットも）ときは、ストライクや何もしないを選べる。
+  // 以前はアタックの手がなくても打ち切っていて、合法手が 1 つもなくなり対局が止まった（ブログの青単速攻 対 百鬼夜行の黒デッキ）。
+  const canAttackNow = actions.some((a) => a.type === "battle");
   const forcedAttack =
-    gomaPalaceForcesAttack(state, playerId, pending.instanceId) ||
+    (gomaPalaceForcesAttack(state, playerId, pending.instanceId) && canAttackNow) ||
     // XG5-031【ガゼル脚】: 可能なら敵軍ユニットにアタックする（rules/xg5/xg5Fields.ts）。
-    (xg5ForcesAttack(state, playerId, pending.instanceId) && actions.some((a) => a.type === "battle"));
+    (xg5ForcesAttack(state, playerId, pending.instanceId) && canAttackNow);
   if (forcedAttack) return;
   // SX-002【黒い瞳に映るもの】: アタックできるならストライクを選べない（何もしないことはできる。rules/promo/promoHooks.ts）。
   const promoMustAttack =

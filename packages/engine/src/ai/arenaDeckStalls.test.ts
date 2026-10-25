@@ -46,4 +46,12 @@ describe("atwiki のデッキで対戦が止まらない", () => {
     const returned = state.log.filter((line) => line.includes("rk242_climax:imagin_police")).length;
     expect(returned).toBeLessThan(50);
   }, 120_000);
+
+  // ブログの緑単（レンスト魂 CCRS 大会の運営デッキ）: RK-030 トライチェイサーの「山札の上を見る」を開いた後、先に RM-017
+  // オメデトロフィーが山札の上のカードを動かし、見たカードが山札になく、上か下かを選ぶ手をエンジンが断っていた（seed 2）。
+  it("トライチェイサーで見る山札の上が、選択の間に動いても止まらない", () => {
+    const { state, rejected } = playLv2("blog-jimdo-ccrs-green", 2);
+    expect(rejected).toBeNull();
+    expect(state.winner).toBeDefined();
+  }, 120_000);
 });

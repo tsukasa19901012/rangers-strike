@@ -3,7 +3,7 @@ import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { canPayBattleCommandReleaseCost, payBattleCommandReleaseCost } from "./battleCommand";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, opponent, updatePlayer } from "../core/helpers";
-import { cannotAttackOrStrikeThisTurn } from "./restrictions";
+import { cannotAttackOrStrikeThisTurn, unitCannotInitiateAttack } from "./restrictions";
 import { canAttackDefender } from "./legend3/restrictions";
 import { canAttackRushWithYellowThunder } from "./namedUnitEffects";
 import { openEffectChoice, startJuuKunDoChoice } from "./pendingChoices";
@@ -55,6 +55,8 @@ export function gomaPalaceForcesAttack(
   if (!isSmallUnit(state.definitions, first)) return false;
   if (first.battleActed) return false;
   if (cannotAttackOrStrikeThisTurn(player, first, state, playerId)) return false;
+  // 「※これはアタックすることができない」ユニット（RS-508 ゴーオンレッド）は、アタックできないので強制もされない。
+  if (unitCannotInitiateAttack(first.cardId)) return false;
   return hasAttackableDefender(state, playerId, attackerInstanceId);
 }
 

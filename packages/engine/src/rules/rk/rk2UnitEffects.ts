@@ -356,8 +356,12 @@ function openRadio(state: GameState, playerId: PlayerId, vehicleInstanceId: stri
   });
 }
 
-CHOICE_RESOLVERS[RADIO_LOOK_EFFECT_ID] = (state, playerId, instanceId) => {
+CHOICE_RESOLVERS[RADIO_LOOK_EFFECT_ID] = (state, playerId, chosenId) => {
   const pending = state.pendingEffectChoice!;
+  // 見るのはいまの山札の上。選択を開いたあとに先に解決した効果（RM-017 オメデトロフィー など）で上のカードが動くと、
+  // 選択に残っていたカードが山札になく、上か下かを選ぶところでエンジンが手を断っていた（緑単ロボコン、トライチェイサー）。
+  const instanceId = state.players[playerId].deck[0]?.instanceId;
+  if (!instanceId) return { state: proceed(close(state, pending), pending), log: logFor(state, playerId, "RK-030", `${RADIO_LOOK_EFFECT_ID}:${chosenId}`) };
   return {
     state: {
       ...state,

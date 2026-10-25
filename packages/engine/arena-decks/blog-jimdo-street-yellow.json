@@ -1,0 +1,79 @@
+{
+  "id": "blog-jimdo-street-yellow",
+  "name": "鎧袖一触の黄デッキ（ストリート・ストライカー 運営デッキ）",
+  "source": "https://rensutodamasi.jimdofree.com/レポート/レンスト魂vsx/ストリート-ストライカー/",
+  "entries": [
+    {
+      "cardId": "RS-536",
+      "count": 3
+    },
+    {
+      "cardId": "RS-059",
+      "count": 3
+    },
+    {
+      "cardId": "RS-335",
+      "count": 1
+    },
+    {
+      "cardId": "RS-458",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-011",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-014",
+      "count": 3
+    },
+    {
+      "cardId": "RS-310",
+      "count": 1
+    },
+    {
+      "cardId": "RK-261",
+      "count": 2
+    },
+    {
+      "cardId": "RK-262",
+      "count": 2
+    },
+    {
+      "cardId": "RK-263",
+      "count": 2
+    },
+    {
+      "cardId": "RK-246",
+      "count": 2
+    },
+    {
+      "cardId": "RK-133",
+      "count": 3
+    },
+    {
+      "cardId": "XG6-034",
+      "count": 2
+    },
+    {
+      "cardId": "XG6-009",
+      "count": 1
+    },
+    {
+      "cardId": "RK-028",
+      "count": 3
+    },
+    {
+      "cardId": "XG5-035",
+      "count": 2
+    },
+    {
+      "cardId": "RS-017",
+      "count": 2
+    },
+    {
+      "cardId": "RS-018",
+      "count": 2
+    }
+  ]
+}

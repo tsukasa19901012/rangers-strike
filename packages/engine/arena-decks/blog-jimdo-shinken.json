@@ -1,0 +1,79 @@
+{
+  "id": "blog-jimdo-shinken",
+  "name": "シンケンジャーデッキ（2022-01-05）",
+  "source": "https://rensutodamasi.jimdofree.com/2022/01/05/",
+  "entries": [
+    {
+      "cardId": "XG5-033",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-037",
+      "count": 2
+    },
+    {
+      "cardId": "RS-677",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-040",
+      "count": 1
+    },
+    {
+      "cardId": "RS-676",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-039",
+      "count": 2
+    },
+    {
+      "cardId": "RS-675",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-038",
+      "count": 1
+    },
+    {
+      "cardId": "RS-678",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-041",
+      "count": 1
+    },
+    {
+      "cardId": "XG1-038",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-034",
+      "count": 2
+    },
+    {
+      "cardId": "XG1-036",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-037",
+      "count": 3
+    },
+    {
+      "cardId": "XP-025",
+      "count": 3
+    },
+    {
+      "cardId": "RS-610",
+      "count": 2
+    },
+    {
+      "cardId": "XG5-035",
+      "count": 1
+    },
+    {
+      "cardId": "XG7-027",
+      "count": 3
+    }
+  ]
+}
