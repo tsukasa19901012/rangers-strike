@@ -781,6 +781,18 @@ describe("R-ATK-05 「アタックするかわりに」", () => {
     expect(attackTargets(s, "RS-106:deka")).toEqual(["TST-UNIT-0:d"]);
   });
 
+  // RS-508 ゴーオンレッド「※これはアタックすることができない」は、ゴーマ宮があってもアタックを強制されない。以前は強制の判定で
+  // 打ち切って合法手が 1 つもなくなり、対局が止まった（ブログの青単速攻 対 百鬼夜行の黒デッキの自己対戦）。
+  it("R-ATK-05: ゴーマ宮下でもアタックできないユニット（ゴーオンレッド）は何もしないを選べる", () => {
+    let s = battleState({
+      player1: { rush: [inst("RS-508", "goon")] },
+      player2: { operation: [inst("RS-187", "goma")], battle: [inst("TST-UNIT-0", "d")] },
+    });
+    s = enter(s, "RS-508:goon");
+    expect(attackTargets(s, "RS-508:goon")).toEqual([]);
+    expect(legalOfType(s, "pass_battle_entry")).toHaveLength(1);
+  });
+
   it.todo("R-ATK-05: [未確定] 公式コラム vol44 原文の確認（page-318 の抜粋のみ取得済み）");
 });
 
