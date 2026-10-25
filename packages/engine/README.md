@@ -62,6 +62,19 @@ ARENA_PROCS=4 scripts/cpu-arena-par.sh --a 3 --b 2 --games 40   # 4 プロセス
 自己対戦データの集め方・学習・重みの同梱は [scripts/nn/README.md](scripts/nn/README.md) にまとめています。
 スターター同士の行動の内訳は `npx tsx scripts/starter-sim-stats.ts --p1 w-impact-b --p2 w-impact-a --games 10` で数えられます。
 
+## CPU・エンジンを速くするとき
+
+- CPU の探索の間（`src/ai/index.ts` の `pickCpuAction` の中）は状態を書き換えないので、`src/core/searchCache.ts` の表で合法手・`applyAction` の結果・BP 等を使い回します。状態だけで決まる計算はここに載せます。
+- 弾ごとのフック（`src/rules/xg1`〜`xg7` の BP の補正・`applyAction` の後処理）は、探索の間はその弾のカードが対局に無ければ呼びません（`src/rules/setHookGates.ts`）。フックに他の弾のカードの ID を書いたら `SET_HOOK_EXTRA_IDS` にも足します（`setHookGates.test.ts` が突き合わせます）。呼ばないフックが本当に何もしないかは、`RS_HOOK_GATE_CHECK=1 npm run test:unit -w @rangers-strike/engine` で確かめます（呼ばないことにしたフックも呼んで比べ、違えば例外にします）。
+- 選ぶ手を変えない変更は、変更の前後で `scripts/cpu-move-hash.ts` の出力（同じ seed の対局の手順のハッシュ）を diff して確かめます。
+
+```bash
+npx tsx scripts/cpu-move-hash.ts 5 0 16 > before.txt   # Lv5 の 16 局（Lv1 なら 0 46 で全スターター）
+```
+
+2026-10-25 の見直し（候補が 1 つの読みを省く、支払いの試し打ちを必要な分だけにする、弾ごとのフックを絞る等）で、
+選ぶ手は同じまま、Lv5 同士の 4 局の思考時間は 42.5 秒 → 26.4 秒になりました（1 手あたり 25 ms → 16 ms）。
+
 ## ビルド
 
 `npm run build -w @rangers-strike/engine`（`tsc` で `dist/` に出力）。Vita 版とブラウザ版は `dist` ではなく、

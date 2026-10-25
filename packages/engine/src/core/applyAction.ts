@@ -122,7 +122,8 @@ import { promoOperationCostReduction } from "../rules/promo/promoHooks";
 import { applyPromoAfterAction, isPromoAttackedChoice, openPromoAttacked, resolvePromoAttacked, skipPromoAttacked } from "../rules/promo";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import {
-  applyXg4AfterAction,
+  applyXg4aAfterAction,
+  applyXg4AfterActionRest,
   applyXg4BattleCounter,
   applyXg4RideOff,
   isXg4BattleCounterCard,
@@ -141,6 +142,7 @@ import { openXg1aStrikeReplacement } from "../rules/xg1/xg1aEffects";
 import { openXg1bSakanamaru, xg1bOnAttackDeclared } from "../rules/xg1/xg1bEffects";
 import { xg1cBlackFangOnRide, xg1cOnAttackDeclared } from "../rules/xg1/xg1cEffects";
 import { applyXg3AfterAction } from "../rules/xg3/xg3Effects";
+import { gatedAfterAction } from "../rules/setHookGates";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -1129,9 +1131,9 @@ function applyActionWithRng(
   // RK-240・RK-247: このターン、ユニットがホールドされたかを記録する（rules/rk/rk12UnitEffects.ts）。
   next = trackRk12UnitHolds(state, next);
   // XG1-063【トルネードチェイサー】: 手札のカードが捨札に置かれたか（いちばん外側のアクションの前後で見る。rules/xg1/xg1dEffects.ts）。
-  if (applyActionDepth === 0) next = xg1dTrackHandDiscards(state, next, action);
+  if (applyActionDepth === 0) { const n0 = next; next = gatedAfterAction(state, n0, "XG1", () => xg1dTrackHandDiscards(state, n0, action)); }
   // XG1-082【戦士シャイダーの遺産】（捨札になったとき）・XG1-092 の数え上げ（rules/xg1/xg1eEffects.ts）。
-  if (applyActionDepth === 0) next = xg1eAfterAction(state, next, action);
+  if (applyActionDepth === 0) { const n0 = next; next = gatedAfterAction(state, n0, "XG1", () => xg1eAfterAction(state, n0, action)); }
   // RK-251 ゴルゴムの仕業を使わなかった: オペレーションの使用（効果の実行）を続ける（rules/rk/rk12UnitEffects.ts）。
   if (next.rk12ResumeOperation && !next.pendingEffectChoice) {
     const op = next.rk12ResumeOperation;
@@ -1200,7 +1202,10 @@ function applyActionWithRng(
   // RM-017 オメデトロフィー（自軍ユニットがバトルエリアに出たとき。rules/rm/rm1Effects.ts）。
   if (applyActionDepth === 0) next = applyRm1AfterAction(state, next);
   // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の後処理（rules/xg4/xg4Effects.ts）。
-  if (applyActionDepth === 0) next = applyXg4AfterAction(state, next);
+  if (applyActionDepth === 0) {
+    const n0 = applyXg4aAfterAction(state, next);
+    next = gatedAfterAction(state, n0, "XG4", () => applyXg4AfterActionRest(state, n0));
+  }
   // プロモーションカードの、前後の状態を比べて発動する効果（XP-013【キョウリュウマル】等。rules/promo）。
   if (applyActionDepth === 0) next = applyPromoAfterAction(state, next);
   // RM-026 グランドバース【収容】: チェイス等の選択の後で、選んだビークルをパワーゾーンに送る（rules/rm/rm2Effects.ts）。
@@ -1208,17 +1213,17 @@ function applyActionWithRng(
   // RM-059 異次元調達屋カブト（WB の自軍 S ユニットがバトルエリアに出たとき。rules/rm/rm3Effects.ts）。
   if (applyActionDepth === 0) next = applyRm3AfterAction(state, next);
   // クロスギャザー XG5 の後処理（rules/xg5/xg5Effects.ts）。
-  if (applyActionDepth === 0) next = applyXg5AfterAction(state, next, applyAction);
+  if (applyActionDepth === 0) { const n0 = next; next = gatedAfterAction(state, n0, "XG5", () => applyXg5AfterAction(state, n0, applyAction)); }
   // XG6-042 の※（手札が0枚のとき撃破）・XG6-025【ここからは私のターンだ】のバトルフェイズの終了（rules/xg6/xg6bEffects.ts）。
-  if (applyActionDepth === 0) next = applyXg6AfterAction(next);
+  if (applyActionDepth === 0) { const n0 = next; next = gatedAfterAction(state, n0, "XG6", () => applyXg6AfterAction(n0)); }
   if (applyActionDepth === 0 && next.xg6?.endBattlePhase && !hasBlockingInteraction(next) && !next.winner) {
     const ending = takeXg6BattlePhaseEnd(next);
     if (ending) next = ending.playerId && ending.state.activePlayer === ending.playerId ? endXg6BattlePhase(ending.state, ending.playerId) : ending.state;
   }
   // XG2-019 知恵の樹モーク（ターンが変わったら M ユニットとして扱うのをやめる。rules/xg2/xg2Effects.ts）。
-  if (applyActionDepth === 0) next = applyXg2AfterAction(state, next);
+  if (applyActionDepth === 0) { const n0 = next; next = gatedAfterAction(state, n0, "XG2", () => applyXg2AfterAction(state, n0)); }
   // クロスギャザー ザ・Wインパクト XG3-002〜XG3-103 の後処理（rules/xg3/xg3Effects.ts）。
-  if (applyActionDepth === 0) next = applyXg3AfterAction(state, next);
+  if (applyActionDepth === 0) { const n0 = next; next = gatedAfterAction(state, n0, "XG3", () => applyXg3AfterAction(state, n0)); }
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;

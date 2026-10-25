@@ -65,6 +65,7 @@ import { set5PassiveBpBonus } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
 import { rk11CounterCostReduction } from "../rules/rk/rk11Fields";
 import { rk12ResidentsNegated } from "../rules/rk/rk12Fields";
+import { gatedBpBonus } from "../rules/setHookGates";
 import { xg1BpBonus, xg1HandCardAddedCategories, xg1YogosteinOnEitherField } from "../rules/xg1/xg1Fields";
 import { actionContextState } from "../rules/zordFeatureContext";
 import { memoizePerCardInSearch } from "./searchCache";
@@ -472,7 +473,7 @@ function effectiveBpUncached(
     signed(promotedKeywordBpBonus(state, playerId, instance)) +
     signed(rideMountedVehicleBpBonus(state, playerId, instance)) +
     // XG1-040 虎折神【侍武装】・XG1-039【折神の結集】・XG1-058 の※（ライド中）（rules/xg1/xg1Fields.ts）。
-    signed(xg1BpBonus(state, playerId, instance)) +
+    signed(gatedBpBonus(state, "XG1", instance.cardId, () => xg1BpBonus(state, playerId, instance))) +
     // XP-020 護星天使 等（rules/promo/promoHooks.ts）。
     signed(promoBpBonus(state, playerId, instance));
   const floor = srBigBatonBpFloor(state, playerId, instance);

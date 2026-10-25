@@ -97,8 +97,18 @@ export function applyXg4AfterUnitLeft(before: GameState, state: GameState, ctx: 
 }
 
 export function applyXg4AfterAction(before: GameState, after: GameState): GameState {
-  return applyXg4eAfterAction(before, applyXg4cAfterAction(before, applyXg4bAfterAction(before, applyXg4aAfterAction(before, after))));
+  return applyXg4AfterActionRest(before, applyXg4aAfterAction(before, after));
 }
+
+/**
+ * applyXg4AfterAction の XG4-001〜020 以外の後処理（XG4 のカードがあるときだけ働く）。XG4-001〜020 の後処理は、XG4-007 の※の
+ * 記録（ラッシュフェイズ中に捨札に置かれた）を XG4 のカードが無くても付けるので、いつも呼ぶ（rules/setHookGates.ts）。
+ */
+export function applyXg4AfterActionRest(before: GameState, after: GameState): GameState {
+  return applyXg4eAfterAction(before, applyXg4cAfterAction(before, applyXg4bAfterAction(before, after)));
+}
+
+export { applyXg4aAfterAction };
 
 export function xg4OnBattleDestroy(state: GameState, winnerId: PlayerId, winnerInstanceId: string, defeatedOwnerId: PlayerId, defeatedInstanceId: string, defeatedBp?: number): GameState {
   const next = xg4aOnBattleDestroy(state, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
