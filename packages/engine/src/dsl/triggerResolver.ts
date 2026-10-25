@@ -67,6 +67,8 @@ function splitOptionalPrimitives(primitives: EffectPrimitive[]): {
 
 /** 効果の解決で両プレイヤーの場・手札等が変わったか。 */
 function fieldChanged(before: GameState, after: GameState): boolean {
+  // 同じオブジェクトなら変わっていない（JSON にして比べるのは重い）。
+  if (before.players === after.players) return false;
   return JSON.stringify(before.players) !== JSON.stringify(after.players);
 }
 

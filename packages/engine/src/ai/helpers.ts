@@ -628,16 +628,12 @@ export function pickRushCategoryPayment(
   );
   if (payments.length === 0) return null;
 
-  let best: GameAction | null = null;
-  let bestScore = Number.NEGATIVE_INFINITY;
+  const scored: { action: GameAction; score: number }[] = [];
   for (const action of payments) {
     const card = state.players[playerId].hand.find(
       (c) => c.instanceId === action.sourceInstanceId,
     );
     if (!card) continue;
-    // 払えずに取り消すことになる支払いは選ばない（選び続けると始めては取り消すのを繰り返す。
-    // 先読みの試し打ちがこれで毎回 400 手まで回り、Lv5 の 1 手が 5 秒以上かかっていた）。
-    if (cpuWouldCancelProcedure(state, playerId, action)) continue;
     const rushAction = actions.find(
       (a): a is Extract<GameAction, { type: "rush" }> =>
         a.type === "rush" &&
@@ -650,12 +646,21 @@ export function pickRushCategoryPayment(
         : effectiveBp(state, playerId, card) +
           strikeDamageFor(state.definitions, card, state, playerId) * 3_000) -
       godomDiscardPenalty(state, playerId, action.godomDiscardInstanceIds);
-    if (score > bestScore) {
-      bestScore = score;
-      best = action;
-    }
+    scored.push({ action, score });
   }
-  return best;
+  // 払えずに取り消すことになる支払いは選ばない（選び続けると始めては取り消すのを繰り返す。
+  // 先読みの試し打ちがこれで毎回 400 手まで回り、Lv5 の 1 手が 5 秒以上かかっていた）。
+  return bestNotCancelled(state, playerId, scored);
+}
+
+/**
+ * 点の高い順に、CPU が最後まで払えずに取り消すもの（cpuWouldCancelProcedure）を除いた最初の手（同点なら先に並んだ手）。
+ * 取り消すかの判定は手を試しに打つので重い（全体の約 12%）。全部の候補で調べず、選ぶ手が決まるまでだけ調べる。
+ */
+function bestNotCancelled(state: GameState, playerId: PlayerId, scored: { action: GameAction; score: number }[]): GameAction | null {
+  const ordered = scored.filter((s) => s.score > Number.NEGATIVE_INFINITY).sort((a, b) => b.score - a.score);
+  for (const { action } of ordered) if (!cpuWouldCancelProcedure(state, playerId, action)) return action;
+  return null;
 }
 
 export function pickHoldBeforeRush(
@@ -747,14 +752,12 @@ export function pickBeginZordSetup(
   playerId: PlayerId,
   actions: GameAction[],
 ): GameAction | null {
-  let best: Extract<GameAction, { type: "begin_zord_setup" }> | null = null;
-  let bestScore = Number.NEGATIVE_INFINITY;
+  const scored: { action: GameAction; score: number }[] = [];
 
   for (const action of actions) {
     if (action.type !== "begin_zord_setup" || action.playerId !== playerId) continue;
     if (!canBeginZordSetup(state, playerId, action.zordInstanceId)) continue;
     if (findDirectZordRushAction(state, playerId, action.zordInstanceId)) continue;
-    if (cpuWouldCancelProcedure(state, playerId, action)) continue;
 
     const card = state.players[playerId].hand.find(
       (c) => c.instanceId === action.zordInstanceId,
@@ -768,13 +771,10 @@ export function pickBeginZordSetup(
       }) +
       25_000 -
       godomDiscardPenalty(state, playerId, action.godomDiscardInstanceIds);
-    if (score > bestScore) {
-      bestScore = score;
-      best = action;
-    }
+    scored.push({ action, score });
   }
 
-  return best;
+  return bestNotCancelled(state, playerId, scored);
 }
 
 export function pickDamagePayment(

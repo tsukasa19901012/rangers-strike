@@ -20,7 +20,20 @@ export function featuresMatchKeywordSlug(
   features: readonly string[] | undefined,
   slug: string,
 ): boolean {
-  return (features ?? []).some((f) => featureMatchesKeywordSlug(f, slug));
+  return (features ?? []).some((f) => featureMatchesSlugCached(f, slug));
+}
+
+/** 特徴と slug の照合の結果（文字列だけで決まる。BP の計算のたびに特徴を slug にしていた）。 */
+const featureSlugMatchCache = new Map<string, boolean>();
+
+function featureMatchesSlugCached(feature: string, slug: string): boolean {
+  const key = `${feature}\u0000${slug}`;
+  let hit = featureSlugMatchCache.get(key);
+  if (hit === undefined) {
+    hit = featureMatchesKeywordSlug(feature, slug);
+    featureSlugMatchCache.set(key, hit);
+  }
+  return hit;
 }
 
 /**

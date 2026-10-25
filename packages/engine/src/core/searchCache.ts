@@ -30,6 +30,8 @@ export type SearchCache = {
    * 状態ごと・入口の状態ごと（無ければ noContext）・対象のオブジェクトごと・key ごと。
    */
   withContext: WeakMap<GameState, ContextMemo>;
+  /** 状態によらず、オブジェクト（カードの定義など。探索の間は書き換えない）だけで決まる計算の結果。 */
+  perObject: WeakMap<object, Map<string, unknown>>;
 };
 
 type ContextMemo = {
@@ -42,7 +44,7 @@ let active: SearchCache | null = null;
 /** fn の間、状態ごとの計算結果を使い回す（入れ子の呼び出しは外側の表を使う）。fn の間は状態を書き換えないこと。 */
 export function withSearchCache<T>(fn: () => T): T {
   if (active) return fn();
-  active = { legalActions: new WeakMap(), memo: new WeakMap(), perCard: new WeakMap(), cleanZones: new WeakMap(), withContext: new WeakMap() };
+  active = { legalActions: new WeakMap(), memo: new WeakMap(), perCard: new WeakMap(), cleanZones: new WeakMap(), withContext: new WeakMap(), perObject: new WeakMap() };
   try {
     return fn();
   } finally {
@@ -71,6 +73,39 @@ export function memoizeInSearch<T>(state: GameState, key: string, compute: () =>
   }
   byKey.set(key, value);
   return value;
+}
+
+/**
+ * 探索の間は、オブジェクト subject（カードの定義など）と key だけで決まる計算 compute の結果を使い回す（探索の外では毎回計算する）。
+ * 結果をそのまま返すので、呼び出し側で書き換えない値に限る。
+ */
+export function memoizeOnObjectInSearch<T>(subject: object, key: string, compute: () => T): T {
+  const cache = active?.perObject;
+  if (!cache) return compute();
+  let byKey = cache.get(subject);
+  if (byKey?.has(key)) return byKey.get(key) as T;
+  const value = compute();
+  if (!byKey) {
+    byKey = new Map();
+    cache.set(subject, byKey);
+  }
+  byKey.set(key, value);
+  return value;
+}
+
+/**
+ * 探索の間、乱数の状態（rngState）だけを書き換えて写した状態 to に、元の状態 from のカードごとの数値（BP・SP）の表を引き継ぐ
+ * （BP・SP は乱数の状態によらない。乱数を引いた計算はもともと覚えない）。applyAction の結果を写すたびに BP を計算し直していた。
+ */
+export function sharePerCardCacheInSearch(from: GameState, to: GameState): void {
+  const cache = active?.perCard;
+  if (!cache || from === to) return;
+  let perState = cache.get(from);
+  if (!perState) {
+    perState = new Map();
+    cache.set(from, perState);
+  }
+  cache.set(to, perState);
 }
 
 /**

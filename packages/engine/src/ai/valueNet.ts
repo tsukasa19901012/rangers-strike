@@ -42,13 +42,20 @@ export function createValueNet(weights: ValueNetWeights): ValueNet {
   const logitFromFeatures = (features: Float32Array): number => {
     let x = Float32Array.from(features);
     for (let i = 0; i < x.length; i++) x[i] = (x[i]! - mean[i]!) * invStd[i]!;
+    const nonZero = new Int32Array(Math.max(FEATURE_DIM, ...layers.map((l) => l.inp)));
     for (let li = 0; li < layers.length; li++) {
       const { out, inp, w, b } = layers[li]!;
+      // 0 の入力（ReLU で 0 になった中間の値が多い）は足しても変わらないので飛ばす（足す順は同じなので結果も同じ）。
+      let n = 0;
+      for (let i = 0; i < inp; i++) if (x[i] !== 0) nonZero[n++] = i;
       const y = new Float32Array(out);
       for (let o = 0; o < out; o++) {
         let s = b[o]!;
         const row = o * inp;
-        for (let i = 0; i < inp; i++) s += w[row + i]! * x[i]!;
+        for (let k = 0; k < n; k++) {
+          const i = nonZero[k]!;
+          s += w[row + i]! * x[i]!;
+        }
         y[o] = li < layers.length - 1 && s < 0 ? 0 : s;
       }
       x = y;

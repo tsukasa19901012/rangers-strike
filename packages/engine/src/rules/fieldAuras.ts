@@ -5,6 +5,7 @@ import { xg6FieldBpBonus } from "./xg6/xg6Fields";
 import { xg4FieldBpBonus } from "./xg4/xg4Fields";
 import { xg2FieldBpBonus } from "./xg2/xg2Fields";
 import { xg3FieldBpBonus } from "./xg3/xg3Fields";
+import { gatedBpBonus } from "./setHookGates";
 import type { Category } from "@rangers-strike/cards";
 import { set9AFieldBpBonus } from "./legend1/set9NamedEffectsA";
 import { changePowerBpBonus } from "./legend1/set6NamedEffects348";
@@ -284,17 +285,17 @@ export function passiveNamedFieldBpBonus(
   // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「スタッガータンク」があれば BP+3000。rules/rm/rm3Fields.ts）。
   if (role === "general") bonus += rm3FieldBpBonus(state, playerId, instance);
   // XG5-034 シンケンレッド ※（自軍ターン中、これ以外の「侍」の S ユニット1体につき BP+2000。rules/xg5/xg5Fields.ts）。
-  if (role === "general") bonus += xg5FieldBpBonus(state, playerId, instance);
+  if (role === "general") bonus += gatedBpBonus(state, "XG5", instance.cardId, () => xg5FieldBpBonus(state, playerId, instance));
   // XG7-007【龍撃剣＆獣奏剣】・XG7-008【アースの戦士】等（rules/xg7/xg7Fields.ts）。
-  bonus += xg7FieldBpBonus(state, playerId, instance, role);
+  bonus += gatedBpBonus(state, "XG7", instance.cardId, () => xg7FieldBpBonus(state, playerId, instance, role));
   // クロスギャザー ザ・ギガンティックタイタン XG6-013 の※・XG6-021【激臨剣】（rules/xg6/xg6Fields.ts）。
-  if (role === "general") bonus += xg6FieldBpBonus(state, playerId, instance);
+  if (role === "general") bonus += gatedBpBonus(state, "XG6", instance.cardId, () => xg6FieldBpBonus(state, playerId, instance));
   // クロスギャザー ザ・ジェットアクセル XG4-001【黒十字ハリケーン】・XG4-006 ドラゴンアーマー等（rules/xg4/xg4Fields.ts）。
-  if (role === "general") bonus += xg4FieldBpBonus(state, playerId, instance, unitFeatures);
+  if (role === "general") bonus += gatedBpBonus(state, "XG4", instance.cardId, () => xg4FieldBpBonus(state, playerId, instance, unitFeatures));
   // XG2-029【災魔ツリー】・XG2-031【宇宙警察のバックアップ】（rules/xg2/xg2Fields.ts）。
-  if (role === "general") bonus += xg2FieldBpBonus(state, playerId, instance);
+  if (role === "general") bonus += gatedBpBonus(state, "XG2", instance.cardId, () => xg2FieldBpBonus(state, playerId, instance));
   // クロスギャザー ザ・Wインパクト XG3（rules/xg3/xg3Fields.ts）。
-  bonus += xg3FieldBpBonus(state, playerId, instance, role);
+  bonus += gatedBpBonus(state, "XG3", instance.cardId, () => xg3FieldBpBonus(state, playerId, instance, role));
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

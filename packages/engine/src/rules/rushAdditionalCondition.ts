@@ -3,6 +3,7 @@ import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import { isSmallUnit } from "../core/catalog";
+import { memoizeOnObjectInSearch } from "../core/searchCache";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { playerHasAllyWithLeadOnField } from "./callLead";
@@ -206,10 +207,11 @@ export function withEffectiveRushConditionDefinitions(state: GameState): GameSta
     for (const card of state.players[pid].hand) {
       const current = state.definitions[card.cardId] as OverridableDefinition | undefined;
       // XG2-012・XG2-017「自軍合体ユニットまたは自軍「X」1体を捨札にする」（rules/xg2/xg2Fields.ts）。
-      const xg2Alt = !!current && xg2HasFusionOrNamedCondition(current);
-      if (!current?.text || (!hasConditionChangeText(current.text) && !xg2Alt)) continue;
+      // 定義だけで決まる判定は、探索の間は定義ごとに覚える（applyAction・合法手の列挙のたびに手札の全カードの文章を読んでいた）。
+      const xg2Alt = !!current && memoizeOnObjectInSearch(current, "xg2FusionOrNamed", () => xg2HasFusionOrNamedCondition(current));
+      if (!current?.text || (!xg2Alt && !memoizeOnObjectInSearch(current, "conditionChangeText", () => hasConditionChangeText(current.text!)))) continue;
       const { rushAdditionalConditionOverride: previous, ...original } = current;
-      const base = resolveRushAdditionalCondition(card.cardId, original as CardDefinition);
+      const base = memoizeOnObjectInSearch(current, `rushBase:${card.cardId}`, () => resolveRushAdditionalCondition(card.cardId, original as CardDefinition));
       const effective = xg2Alt
         ? (xg2FusionOrNamedCondition(state, pid, card, original as CardDefinition) ?? base)
         : effectiveRushAdditionalCondition(state, pid, card.cardId, original as CardDefinition);
