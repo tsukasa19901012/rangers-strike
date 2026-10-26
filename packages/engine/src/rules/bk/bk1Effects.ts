@@ -7,6 +7,7 @@
  * 既存の rules/bkOperationTurnRules.ts の記録を使う（判定は core/power.ts・rules/vehicleRules.ts・rules/rushDeclaration.ts・rules/effectRush.ts）。
  * 選択の組み立ては rules/rm/rm1Effects.ts の共通の部品を使う。
  */
+import { battleDestroyToPowerLosers } from "../turnModifierBridge";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
@@ -447,7 +448,9 @@ CHOICE_RESOLVERS[AIR_OWN_EFFECT_ID] = (state, playerId, instanceId) => {
   const losers: string[] = [];
   if (bpEnemy <= bpOwn) losers.push(enemy.instanceId);
   if (bpOwn <= bpEnemy) losers.push(own.instanceId);
-  const n = destroyAll(cleared, pendingBase(pending), pending.sourceCardId, `${AIR_OWN_EFFECT_ID}_battle`, losers);
+  // RS-182 ジャイアントローラーで選ばれたユニットとバトルした側は、ダメージにして置く。
+  const asDamage = battleDestroyToPowerLosers(cleared, own.instanceId, enemy.instanceId, losers);
+  const n = destroyAll(cleared, pendingBase(pending), pending.sourceCardId, `${AIR_OWN_EFFECT_ID}_battle`, losers, { discardAsDamageInstanceIds: asDamage });
   return { state: proceed(n, pending), log: logFor(state, playerId, pending.sourceCardId, `${AIR_OWN_EFFECT_ID}:${bpOwn}vs${bpEnemy}`) };
 };
 

@@ -11,7 +11,7 @@ import { hasTurnRuleModifier } from "./scopedModifiers";
 import { isHoldToActivateNc } from "../rules/holdToActivate";
 import type { GameAction, RushAction } from "../types/actions";
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { GameState, PlayerId, PlayerState } from "../types/game";
+import type { GameState, PendingEffectChoice, PlayerId, PlayerState } from "../types/game";
 import { isCostWindowSatisfied } from "./costWindow";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { hasAutoBattleEntryOnRushNote, isSameCardIdentity } from "@rangers-strike/cards";
@@ -1348,7 +1348,7 @@ function appendEffectChoiceActions(
 
   // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）: 行う＝confirm、行わない＝skip。
   if (pending.mayConfirm) {
-    actions.push({ type: "confirm_effect_choice", playerId });
+    if (!moduleConfirmBlocked(pending)) actions.push({ type: "confirm_effect_choice", playerId });
     // 「行う」を選択肢（validInstanceIds）として選んでもよい（confirm と同じ）。
     for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
@@ -1837,6 +1837,25 @@ function battlePhaseSkippedThisTurn(state: GameState, playerId: PlayerId): boole
   );
 }
 
+/**
+ * 弾ごとの選択（XG1-097【ブルームキャノン】等）は、mayConfirm を「選んだところで確定できる」の意味で使い、1枚も選んでいないと
+ * 確定を断る（rules/pendingChoices.ts の確定は弾ごとの処理を先に試す）。合法手にも同じ判定で出す。
+ */
+function moduleConfirmBlocked(pending: PendingEffectChoice): boolean {
+  const families: [(effectId: string) => boolean, (p: PendingEffectChoice) => boolean][] = [
+    [isRk3ChoiceEffect, canConfirmRk3Choice],
+    [isXg1ChoiceEffect, canConfirmXg1Choice],
+    [isXg2ChoiceEffect, canConfirmXg2Choice],
+    [isXg3ChoiceEffect, canConfirmXg3Choice],
+    [isXg5ChoiceEffect, canConfirmXg5Choice],
+    [isXg6ChoiceEffect, canConfirmXg6Choice],
+    [isXg7ChoiceEffect, canConfirmXg7Choice],
+    [isRm2ChoiceEffect, canConfirmRm2Choice],
+    [isRm3ChoiceEffect, canConfirmRm3Choice],
+  ];
+  return families.some(([owns, canConfirm]) => owns(pending.effectId) && !canConfirm(pending));
+}
+
 function appendBattleEntryActions(
   state: GameState,
   playerId: PlayerId,
@@ -1856,7 +1875,9 @@ function appendBattleEntryActions(
   const player = state.players[playerId];
   const enemy = state.players[opponent(playerId)];
   const unit = player.battle.find((c) => c.instanceId === pending.instanceId);
-  if (!unit || unit.battleActed || battlePhaseSkippedThisTurn(state, playerId)) {
+  // バトルフェイズ以外（XG4-037 牛折神など「ラッシュするとき可能ならバトルエリアに置く」）ではアタック・ストライクできない
+  // （applyAction の battle / strike は wrong_phase で断る）。以前は合法手に出していて、選ぶと断られていた。
+  if (!unit || unit.battleActed || battlePhaseSkippedThisTurn(state, playerId) || state.phase !== "battle") {
     actions.push({ type: "pass_battle_entry", playerId });
     return;
   }
@@ -1999,6 +2020,10 @@ export function getActionPlayerId(state: GameState): PlayerId {
       ? damagePaymentChoosingPlayer(state.pendingDamagePayment)
       : undefined) ??
     getReactionChooserPlayerId(state) ??
+    // RS-255 巨大化爆弾の窓（getLegalActions と同じく、チェイス・ライドオフの選択の後、効果の選択・バトル進入より先）。
+    (state.pendingGiantBomb && !state.pendingZordSetup && !state.pendingLeave && !state.pendingChase && !state.pendingRideOffChoice
+      ? state.pendingGiantBomb.ownerId
+      : undefined) ??
     state.pendingEffectChoice?.playerId ??
     (state.pendingMorph
       ? getMorphReactionActorId(state, state.pendingMorph)
@@ -2723,6 +2748,16 @@ export function isLegalActionBase(state: GameState, action: GameAction): boolean
       if (action.playerId !== reactionActor) return false;
       return isInitiateCommandPaymentLegal(state, action);
     }
+    if (state.pendingGiantBomb && !state.pendingZordSetup && !state.pendingLeave) {
+      // RS-255 巨大化爆弾の窓では、持ち主の巨大化爆弾の支払いだけ（getLegalActions と同じ）。
+      const ownerId = state.pendingGiantBomb.ownerId;
+      return (
+        action.playerId === ownerId &&
+        action.kind === "category_use" &&
+        giantBombCounterIds(state, ownerId).includes(action.sourceInstanceId) &&
+        isInitiateCommandPaymentLegal(state, action)
+      );
+    }
     if (!assertActive(state, action.playerId)) return false;
     return isInitiateCommandPaymentLegal(state, action);
   }
@@ -2838,6 +2873,9 @@ export function isLegalActionBase(state: GameState, action: GameAction): boolean
     if (action.playerId !== state.pendingEffectChoice.playerId) return false;
   } else if (state.pendingLeave) {
     if (action.playerId !== state.pendingLeave.ownerPlayerId) return false;
+  } else if (state.pendingGiantBomb && !state.pendingZordSetup) {
+    // RS-255 巨大化爆弾の窓は、進入中のユニットの選択（pendingBattleEntry）より先に持ち主が答える（getLegalActions と同じ順）。
+    if (action.playerId !== state.pendingGiantBomb.ownerId) return false;
   } else if (state.pendingEffectChoice) {
     if (action.playerId !== state.pendingEffectChoice.playerId) return false;
   } else if (state.pendingBattleEntry) {

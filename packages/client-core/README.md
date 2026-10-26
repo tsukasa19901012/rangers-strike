@@ -44,3 +44,5 @@ npm run build -w @rangers-strike/client-core       # tsc で dist/ に出力（e
 npm test -w @rangers-strike/client-core            # Vitest
 npm run typecheck -w @rangers-strike/client-core
 ```
+
+`src/app/guiStall.test.ts` は CPU 同士の対戦で、自分の番なのに選択ウィンドウも盤面の手もない局面（画面では止まって見える）がないことを確かめます。エンジンに新しい待ち（`pending…`）を足したら、`src/view/board.ts` の `buildPendingView` にも足してください。

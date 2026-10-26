@@ -10,6 +10,7 @@
  * レアリティは atwiki の「ノーマル／ノーマルレア／レア／スーパーレア」を N／NR／R／SR として照合する。
  */
 import { describe, expect, it } from "vitest";
+import { setBattleDestroyToPower } from "../rules/turnModifierBridge";
 import type { GameState } from "../types/game";
 import {
   attackersOf,
@@ -122,6 +123,17 @@ describe("XG3-017 猛獣使いオルグ", () => {
   it("XG3-017:【猛獣使いの鞭】— 選んだ2体でバトルし、BP の低いほうが撃破される（出典: atwiki/page-1895「そうしたとき、選んだ2体でバトルする」・R-BTL-02）", () => {
     const s = resolveAll(pick(pick(entered(), "SPEC-BEAST-S:eb"), "SPEC-BEAST-BIG:ownb"));
     expect(zoneOf(s, "player2", "SPEC-BEAST-S:eb")).toBe("discard");
+    expect(zoneOf(s, "player1", "SPEC-BEAST-BIG:ownb")).toBe("battle");
+  });
+
+  // RS-182 ジャイアントローラーはアタックかどうかを見ない（XG1-058【ワーウルフ化】と同じ。利用者の決定 2026-10-20・questions-all.md U-11、
+  // 2026-10-26 にこのカードにも広げる）。
+  it("XG3-017 × RS-182: ジャイアントローラーで選んだ自軍ユニットと【猛獣使いの鞭】でバトルして負けた敵軍ユニットは、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-379「このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」・atwiki/page-1895）", () => {
+    const mark = setBattleDestroyToPower({ modifiers: [] } as unknown as GameState["players"]["player1"], "SPEC-BEAST-BIG:ownb", "RS-182").modifiers;
+    const s = resolveAll(pick(pick(enter(battle({ ...p1(), modifiers: mark }, p2()), "XG3-017:o"), "SPEC-BEAST-S:eb"), "SPEC-BEAST-BIG:ownb"));
+    expect(zoneOf(s, "player2", "SPEC-BEAST-S:eb")).toBe("power");
+    expect(s.players.player2.power.find((c) => c.instanceId === "SPEC-BEAST-S:eb")?.faceDown).toBe(true);
+    expect(s.players.player2.damage).toBe(1);
     expect(zoneOf(s, "player1", "SPEC-BEAST-BIG:ownb")).toBe("battle");
   });
 

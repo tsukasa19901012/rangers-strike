@@ -31,7 +31,7 @@ import { openEffectChoice } from "../pendingChoices";
 import { rk1IsSmallNow } from "../rk/rk1Features";
 import { RK12_UNIT_HELD_RULE, rk12TurnPayloads } from "../rk/rk12Fields";
 import { grantSp1ToRushUnit } from "../srEffects";
-import { addBakiBakiExtraAttack, getBattleDestroyToPowerInstanceIds } from "../turnModifierBridge";
+import { addBakiBakiExtraAttack, battleDestroyToPowerLosers } from "../turnModifierBridge";
 import { strikeDamageFor } from "../combo";
 import {
   type BaseCtx,
@@ -656,8 +656,7 @@ XG1_RESOLVERS[WEREWOLF_SECOND_EFFECT_ID] = (state, playerId, instanceId) => {
   const bpB = effectiveBp(next, b, findField(next, b, instanceId)!);
   const losers = bpA === bpB ? [firstId, instanceId] : bpA < bpB ? [firstId] : [instanceId];
   // RS-182 ジャイアントローラーで選ばれたユニットとバトルした側（turnModifierBridge の BATTLE_DESTROY_TO_POWER）。
-  const marked = [...getBattleDestroyToPowerInstanceIds(next.players.player1), ...getBattleDestroyToPowerInstanceIds(next.players.player2)];
-  const asDamage = losers.filter((id) => marked.includes(id === firstId ? instanceId : firstId));
+  const asDamage = battleDestroyToPowerLosers(next, firstId, instanceId, losers);
   next = destroyAll(next, pendingBase(pending), "XG1-058", `${WEREWOLF_EFFECT_ID}_battle`, losers, { discardAsDamageInstanceIds: asDamage });
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG1-058", `${WEREWOLF_EFFECT_ID}_battle:${bpA}:${bpB}`) };
 };

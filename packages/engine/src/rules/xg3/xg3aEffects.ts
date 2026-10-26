@@ -2,6 +2,7 @@
  * クロスギャザー ザ・Wインパクト XG3-002〜XG3-021（ラジエッカー〜カブトライジャー）のカード固有の効果（cardSpec XG3-002-021 の監査）。
  * 入口は rules/xg3/xg3Effects.ts、登録簿は rules/xg3/xg3Registry.ts。選択の組み立ては rules/rm/rm1Effects.ts の共通の部品を使う。
  */
+import { battleDestroyToPowerLosers } from "../turnModifierBridge";
 import { addSet8Category } from "../legend1/set8TurnGrants";
 import { ZIEG_JENNE_CARD_ID } from "./xg3Fields";
 import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
@@ -782,7 +783,9 @@ CHOICE_RESOLVERS[WHIP_SECOND_EFFECT_ID] = (state, playerId, instanceId) => {
   const losers: string[] = [];
   if (bpA <= bpB) losers.push(a.instanceId);
   if (bpB <= bpA) losers.push(b.instanceId);
-  const done = destroyAll(next, pendingBase(pending), "XG3-017", `${WHIP_SECOND_EFFECT_ID}_battle`, losers);
+  // RS-182 ジャイアントローラーで選ばれたユニットとバトルした側は、ダメージにして置く。
+  const asDamage = battleDestroyToPowerLosers(next, a.instanceId, b.instanceId, losers);
+  const done = destroyAll(next, pendingBase(pending), "XG3-017", `${WHIP_SECOND_EFFECT_ID}_battle`, losers, { discardAsDamageInstanceIds: asDamage });
   return { state: proceed(done, pending), log: logFor(state, playerId, "XG3-017", `${WHIP_SECOND_EFFECT_ID}:${bpA}vs${bpB}`) };
 };
 
