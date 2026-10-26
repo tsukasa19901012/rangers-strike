@@ -881,11 +881,14 @@ function continueDeferredPowerFlip(state: GameState): GameState {
 
 function completeStrike(state: GameState, pending: PendingStrike, extraLogs: string[] = []): ActionResult {
   // XG1-009【マスキークラッシュ】: ダメージを与えるかわりに敵軍捨札のカードをダメージにするかを選ぶ（rules/xg1/xg1aEffects.ts）。
+  // 反応（プラズマエネルギー等）のログは、ダメージの支払いや置き換えの選択で止まるときも先に残す（止まると extraLogs を渡す先が無い）。
+  const withExtraLogs = (s: GameState): GameState =>
+    extraLogs.length > 0 ? { ...s, log: [...s.log, ...extraLogs] } : s;
   const xg1Replace = openXg1aStrikeReplacement(state, pending);
-  if (xg1Replace) return ok(xg1Replace, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending", String(pending.damage)));
+  if (xg1Replace) return ok(withExtraLogs(xg1Replace), buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending", String(pending.damage)));
   const nextState = finalizeStrike(state, pending);
   if (nextState.pendingDamagePayment || nextState.deferredPowerFlip) {
-    return ok(nextState, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending_damage"));
+    return ok(withExtraLogs(nextState), buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending_damage"));
   }
   return finishStrikeResolution(state, pending, nextState, extraLogs);
 }
@@ -2820,10 +2823,7 @@ function applyActionCore(
         action.interceptInstanceId,
       );
       if (result.state.pendingLeave) {
-        return ok(
-          { ...result.state, log: [...result.state.log, result.log] },
-          result.log,
-        );
+        return ok(result.state, result.log);
       }
       return completeStrike(result.state, result.pending, [result.log]);
     }
@@ -2874,6 +2874,7 @@ function applyActionCore(
             return completeStrike(
             clearCounterHoldReady(nextState, playerId),
             resumedStrike,
+            [result.log],
           );
           }
           return ok(clearCounterHoldReady(nextState, playerId), result.log);
@@ -2914,6 +2915,7 @@ function applyActionCore(
             return completeStrike(
               clearCounterHoldReady(nextState, playerId),
               resumedStrike,
+              [result.log],
             );
           }
           return ok(clearCounterHoldReady(nextState, playerId), result.log);
@@ -3224,10 +3226,7 @@ function applyActionCore(
         pending.strikerInstanceId,
       );
       if (counter.state.pendingLeave) {
-        return ok(
-          { ...counter.state, log: [...counter.state.log, counter.log] },
-          counter.log,
-        );
+        return ok(counter.state, counter.log);
       }
       return completeStrike(counter.state, pending, [counter.log]);
     }
@@ -3761,7 +3760,7 @@ function applyActionCore(
         return completeStrike(nextState, {
           ...state.pendingStrike,
           damageCancelled: pending.resumePendingStrike.damageCancelled,
-        });
+        }, [buildSimpleLogEntry(playerId, "use_register")]);
       }
       return ok(nextState, buildSimpleLogEntry(playerId, "use_register"));
     }
