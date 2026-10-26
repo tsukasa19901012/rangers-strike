@@ -9,6 +9,8 @@ import { pickOtherLinesCpuChoice } from "../rules/legend1/otherLinesNamedEffects
 import { pickSet9BCpuChoice } from "../rules/legend1/set9NamedEffectsB";
 import { ATTACK_HOLD_BONUS_EFFECT_ID, pickAttackHoldCount } from "../rules/attackHoldBonus";
 import { RIDER_PASS_SEARCH_EFFECT_ID } from "../rules/rk/rk2UnitEffects";
+import { RIDER_PASS_CARD, RIDER_PASS_UNIT } from "../rules/errataCardEffects";
+import { HOMERUN_HOLD_EFFECT_ID, HOMERUN_REVEAL_EFFECT_ID } from "../rules/legend1/set5NamedEffectsA";
 import { BOOK_EFFECT_ID } from "../rules/xg2/xg2dEffects";
 import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
@@ -1305,6 +1307,113 @@ export function pickDeckStackChoice(
   return best;
 }
 
+/**
+ * RS-257 野球仮面【予告ホームラン】: 敵軍山札の上をオモテにするか。同じ必要パワーの自軍コマンドをホールドできればダメージ、
+ * できなければ相手の手札が増える。オモテにする前なので上のカードは見ず、相手の山札の必要パワーの割合で、半分以上の見込みで
+ * ホールドできるならオモテにする。ホールドできるなら必ずする（しなければ相手の手札に加わるだけ）。
+ * 以前は「1 枚選ぶ」形の選択として簡易の選び方が見送り、一度も使わなかった（2026-10-26 の見直し）。
+ */
+export function pickHomerunChoice(state: GameState, pending: PendingEffectChoice, actions: GameAction[]): GameAction | null {
+  if (pending.effectId === HOMERUN_HOLD_EFFECT_ID) return actions.find((a) => a.type === "resolve_effect_choice") ?? null;
+  if (pending.effectId !== HOMERUN_REVEAL_EFFECT_ID) return null;
+  const costs = new Set(
+    state.players[pending.playerId].command
+      .filter((c) => !c.commandHeld)
+      .map((c) => parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost)),
+  );
+  const deck = state.players[opponent(pending.playerId)].deck;
+  if (deck.length === 0 || costs.size === 0) return actions.find((a) => a.type === "skip_effect_choice") ?? null;
+  const hits = deck.filter((c) => costs.has(parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost))).length;
+  const reveal = actions.find((a) => a.type === "resolve_effect_choice");
+  const skip = actions.find((a) => a.type === "skip_effect_choice");
+  return (hits * 2 >= deck.length ? reveal : skip) ?? skip ?? reveal ?? null;
+}
+
+/** pickChoiceByEvaluation の入れ子の深さ（選んだ後に続く選択も同じ選び方で済ませるが、その先は読まない）。 */
+let evaluationChoiceDepth = 0;
+
+/**
+ * 場に無いカード（手札・山札）を選ぶ選択。pickWeakestEffectTarget は場のユニットしか見ず、何も返さなかったので、選択の途中の
+ * 盤面で評価して「行う」が選ばれなかった（XG3-068【この世界でやるべきこと】の山札から出すカード等。2026-10-26 の見直し）。
+ * 1 枚選べば終わる選択で、選択肢ごとに、続く自分の選択まで済ませた盤面を評価して一番良いものを選ぶ。見送れるなら見送りとも比べる。
+ */
+function pickChoiceByEvaluation(state: GameState, pending: PendingEffectChoice, actions: GameAction[]): GameAction | null {
+  const playerId = pending.playerId;
+  const picks = actions.filter((a) => a.type === "resolve_effect_choice" || a.type === "skip_effect_choice");
+  if (picks.length === 0 || evaluationChoiceDepth > 1) return null;
+  evaluationChoiceDepth++;
+  try {
+    let best: GameAction | null = null;
+    let bestScore = Number.NEGATIVE_INFINITY;
+    for (const a of picks) {
+      const result = applyAction(state, a);
+      if (!result.ok) continue;
+      // 何枚か選んでから確定する選択（選ぶたびに印が付くだけ）は扱わない。選んでは外すのを繰り返していた（XG5-079）。
+      if (result.state.pendingEffectChoice?.effectId === pending.effectId) return null;
+      let next = result.state;
+      for (let i = 0; i < 3 && !next.winner && next.pendingEffectChoice?.playerId === playerId; i++) {
+        const follow = pickEffectChoice(next, next.pendingEffectChoice, getLegalActions(next));
+        const r = follow ? applyAction(next, follow) : null;
+        if (!r?.ok) break;
+        next = r.state;
+      }
+      const score = evaluateState(next, playerId);
+      if (score > bestScore) {
+        bestScore = score;
+        best = a;
+      }
+    }
+    return best;
+  } finally {
+    evaluationChoiceDepth--;
+  }
+}
+
+/** 置き換えた後の盤面が、置き換えない盤面よりこれだけ良いときだけ置き換える（同じくらいなら場をそのままにする）。 */
+const RESIDENT_SWAP_MARGIN = 50;
+
+/**
+ * 重ねたカードと場のユニットの置き換え（RK-022 ライダーパス・RK-080 超変身・RK-082 オルタフォース）。重ねたカードを選ぶ選択は
+ * 「1 枚選ぶ」形（scry_keep_one）で読みの対象にならず、簡易の選び方は見送っていたので、起動しても一度も置き換えなかった
+ * （2026-10-26 の見直し）。重ねたカードと場のユニットの組を全部置き換えてみて、盤面の評価が一番良い組を選ぶ。
+ */
+export function pickResidentSwapChoice(
+  state: GameState,
+  pending: PendingEffectChoice,
+  actions: GameAction[],
+): GameAction | null {
+  if (pending.effectId !== RIDER_PASS_CARD && pending.effectId !== RIDER_PASS_UNIT) return null;
+  const playerId = pending.playerId;
+  const scoreOf = (action: GameAction): number => {
+    const result = applyAction(state, action);
+    if (!result.ok) return Number.NEGATIVE_INFINITY;
+    if (pending.effectId === RIDER_PASS_UNIT) return evaluateState(result.state, playerId);
+    // 重ねたカードを選んだ後: 置き換える場のユニットの選択で一番良いもの。
+    let best = Number.NEGATIVE_INFINITY;
+    for (const unit of getLegalActions(result.state)) {
+      if (unit.type !== "resolve_effect_choice") continue;
+      const swapped = applyAction(result.state, unit);
+      if (swapped.ok) best = Math.max(best, evaluateState(swapped.state, playerId));
+    }
+    return best;
+  };
+  let best: GameAction | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+  for (const a of actions) {
+    if (a.type !== "resolve_effect_choice") continue;
+    const score = scoreOf(a);
+    if (score > bestScore) {
+      bestScore = score;
+      best = a;
+    }
+  }
+  const skip = actions.find((a) => a.type === "skip_effect_choice");
+  if (!skip) return best;
+  const skipped = applyAction(state, skip);
+  const skipScore = skipped.ok ? evaluateState(skipped.state, playerId) : Number.NEGATIVE_INFINITY;
+  return best && bestScore > skipScore + RESIDENT_SWAP_MARGIN ? best : skip;
+}
+
 export function pickEffectChoice(
   state: GameState,
   pending: PendingEffectChoice,
@@ -1315,6 +1424,10 @@ export function pickEffectChoice(
 
   const deckStack = pickDeckStackChoice(state, pending, actions);
   if (deckStack) return deckStack;
+  const residentSwap = pickResidentSwapChoice(state, pending, actions);
+  if (residentSwap) return residentSwap;
+  const homerun = pickHomerunChoice(state, pending, actions);
+  if (homerun) return homerun;
 
   // 第7弾 RS-474〜RS-494 の選択（rules/legend1/set7NamedEffectsC.ts）。
   if (isSet7CChoiceEffect(pending.effectId)) {
@@ -1607,7 +1720,7 @@ export function pickEffectChoice(
   }
 
   if (pending.kind === "select_unit" || pending.kind === "select_unit_step") {
-    return pickWeakestEffectTarget(state, actions);
+    return pickWeakestEffectTarget(state, actions) ?? pickChoiceByEvaluation(state, pending, actions);
   }
 
   // RS-029【勇気の魔法】「リリースしてもよい」— ホールド状態のコマンドのリリースは常に得なのでする。
