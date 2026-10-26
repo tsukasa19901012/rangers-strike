@@ -334,7 +334,9 @@ export function planEffectRush(
   if (needsOpponentDrawCost(state.definitions, card.cardId)) return { kind: "none", opponentDraw: true };
   if (needsHoldExtraCommand(state.definitions, card.cardId)) {
     const needed = condition?.unitCount ?? 1;
-    const holdIds = collectHoldExtraCommandCandidates(player, state.definitions).map((c) => c.instanceId);
+    const holdIds = collectHoldExtraCommandCandidates(player, state.definitions)
+      .map((c) => c.instanceId)
+      .filter((id) => id !== card.instanceId); // コマンドゾーンから出すこれ自身はホールドに使えない
     return holdIds.length >= needed ? { kind: "hold", holdIds, needed } : null;
   }
   if (needsZordExtendedMaterial(state.definitions, card.cardId)) {
