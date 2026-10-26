@@ -1309,7 +1309,7 @@ export function pickDeckStackChoice(
 
 /**
  * RS-257 野球仮面【予告ホームラン】: 敵軍山札の上をオモテにするか。同じ必要パワーの自軍コマンドをホールドできればダメージ、
- * できなければ相手の手札が増える。オモテにする前なので上のカードは見ず、相手の山札の必要パワーの割合で、半分以上の見込みで
+ * できなければ相手の手札が増える。オモテにする前なので上のカードは見ず、相手の見えていないカードの必要パワーの割合で、半分以上の見込みで
  * ホールドできるならオモテにする。ホールドできるなら必ずする（しなければ相手の手札に加わるだけ）。
  * 以前は「1 枚選ぶ」形の選択として簡易の選び方が見送り、一度も使わなかった（2026-10-26 の見直し）。
  */
@@ -1321,12 +1321,14 @@ export function pickHomerunChoice(state: GameState, pending: PendingEffectChoice
       .filter((c) => !c.commandHeld)
       .map((c) => parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost)),
   );
-  const deck = state.players[opponent(pending.playerId)].deck;
-  if (deck.length === 0 || costs.size === 0) return actions.find((a) => a.type === "skip_effect_choice") ?? null;
-  const hits = deck.filter((c) => costs.has(parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost))).length;
+  // 相手の山札の並びも中身も見ない。見えていないカード（山札と手札を合わせたもの。Lv5 の hideOpponentHand と同じ見方）の割合で決める。
+  const enemy = state.players[opponent(pending.playerId)];
+  const unseen = [...enemy.deck, ...enemy.hand];
+  if (enemy.deck.length === 0 || costs.size === 0) return actions.find((a) => a.type === "skip_effect_choice") ?? null;
+  const hits = unseen.filter((c) => costs.has(parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost))).length;
   const reveal = actions.find((a) => a.type === "resolve_effect_choice");
   const skip = actions.find((a) => a.type === "skip_effect_choice");
-  return (hits * 2 >= deck.length ? reveal : skip) ?? skip ?? reveal ?? null;
+  return (hits * 2 >= unseen.length ? reveal : skip) ?? skip ?? reveal ?? null;
 }
 
 /** pickChoiceByEvaluation の入れ子の深さ（選んだ後に続く選択も同じ選び方で済ませるが、その先は読まない）。 */
@@ -1341,6 +1343,10 @@ function pickChoiceByEvaluation(state: GameState, pending: PendingEffectChoice, 
   const playerId = pending.playerId;
   const picks = actions.filter((a) => a.type === "resolve_effect_choice" || a.type === "skip_effect_choice");
   if (picks.length === 0 || evaluationChoiceDepth > 1) return null;
+  // 相手の手札・山札（見えていないカード）から選ぶ選択は、選んで評価すると中身を見ることになるので扱わない。
+  const enemy = state.players[opponent(playerId)];
+  const hidden = new Set([...enemy.hand, ...enemy.deck].map((c) => c.instanceId));
+  if (picks.some((a) => a.type === "resolve_effect_choice" && hidden.has(a.instanceId))) return null;
   evaluationChoiceDepth++;
   try {
     let best: GameAction | null = null;
