@@ -586,7 +586,9 @@ function pickCpuActionInner(
       }
     }
 
-    if (enableSearch && (pending.optional || pending.mayConfirm) && pending.kind !== "scry_keep_one") {
+    // BP の合計の上限まで何体か選ぶ選択（RS-106【ジュウクンドー】等）は、選ぶたびに印が付くだけで盤面が変わらず、読みで比べると
+    // 選んでは外すのを繰り返したので、簡易の選び方（上限まで選んで確定）に任せる。
+    if (enableSearch && (pending.optional || pending.mayConfirm) && pending.kind !== "scry_keep_one" && pending.kind !== "select_units_bp_budget") {
       // 「～してもよい」の確認（confirm_effect_choice）も「行う」の手として比べる（以前は候補に無く、一度も選ばれなかった）。
       const pay = actions.filter((a) => a.type === "resolve_effect_choice" || a.type === "confirm_effect_choice");
       const skip = actions.find((a) => a.type === "skip_effect_choice");
