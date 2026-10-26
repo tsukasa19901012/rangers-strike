@@ -20,6 +20,7 @@ import {
   pickCommandPaymentResolve,
   pickDamagePayment,
   pickDeckStackChoice,
+  pickHomerunChoice,
   pickEffectChoice,
   pickBeginZordSetup,
   pickZordSetupStep,
@@ -555,6 +556,9 @@ function pickCpuActionInner(
     if (deckStack) return deckStack;
     const mirrorStack = pickMirrorWorldChoice(state, playerId);
     if (mirrorStack) return mirrorStack;
+    // RS-257【予告ホームラン】は読まずに決める（読みで比べると、ホールドできるのに見送っていた）。
+    const homerun = pickHomerunChoice(state, pending, actions);
+    if (homerun) return homerun;
 
     if (enableSearch && pending.kind === "deck_top_or_bottom") {
       const placements = actionsOfType(actions, "resolve_ruin_survey");
@@ -582,7 +586,9 @@ function pickCpuActionInner(
       }
     }
 
-    if (enableSearch && (pending.optional || pending.mayConfirm) && pending.kind !== "scry_keep_one") {
+    // BP の合計の上限まで何体か選ぶ選択（RS-106【ジュウクンドー】等）は、選ぶたびに印が付くだけで盤面が変わらず、読みで比べると
+    // 選んでは外すのを繰り返したので、簡易の選び方（上限まで選んで確定）に任せる。
+    if (enableSearch && (pending.optional || pending.mayConfirm) && pending.kind !== "scry_keep_one" && pending.kind !== "select_units_bp_budget") {
       // 「～してもよい」の確認（confirm_effect_choice）も「行う」の手として比べる（以前は候補に無く、一度も選ばれなかった）。
       const pay = actions.filter((a) => a.type === "resolve_effect_choice" || a.type === "confirm_effect_choice");
       const skip = actions.find((a) => a.type === "skip_effect_choice");
@@ -624,11 +630,15 @@ function pickCpuActionInner(
       (a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === state.pendingBattleEntry!.instanceId,
     );
     if (entryActivation) return entryActivation;
+    // 【ジュウクンドー】（アタックするかわりに敵ラッシュユニットを撃破。RS-106）も比べる（候補に無く、出た直後には一度も使わなかった）。
+    // 撃破できるユニットがなく、発動して選ばずに終わると局面が戻る手は外す（外さないと発動と見送りを何千回も繰り返した）。
+    const juuKunDo = () => actionsOfType(actions, "use_juu_kun_do").filter((a) => !isNoOpForCpu(state, playerId, a, options));
 
     if (plans("entry")) {
       const planned = pickBestByRollout(state, playerId, [
         ...actionsOfType(actions, "strike"),
         ...actionsOfType(actions, "battle"),
+        ...juuKunDo(),
         ...actions.filter((a) => a.type === "pass_battle_entry"),
       ], plans("entry"), options.planTurns);
       if (planned) return planned;
@@ -638,6 +648,7 @@ function pickCpuActionInner(
       const candidates = [
         ...actionsOfType(actions, "strike"),
         ...actionsOfType(actions, "battle"),
+        ...juuKunDo(),
         ...actions.filter((a) => a.type === "pass_battle_entry"),
       ];
       const searched = pickBestBySearch(state, playerId, candidates, simTactical(actions));

@@ -43,6 +43,7 @@ import {
 } from "./RS2-097-122.helpers";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { canMoveUnitToBattle } from "../rules/restrictions";
+import { pickCpuAction } from "../ai/index";
 
 function canJuu(s: GameState, attacker: string, playerId: PlayerId = "player1"): boolean {
   return legal(s).some(
@@ -278,6 +279,22 @@ describe("RS-106 デカレッド", () => {
     if (s.pendingEffectChoice?.playerId === "player1") s = act(s, { type: "skip_effect_choice", playerId: "player1" });
     expect(zoneOf(s, "player2", "RS-106:dr")).toBe("battle");
   });
+
+  // CPU: 出た直後の行動（アタック・ストライク・何もしない）の候補に【ジュウクンドー】が無く、出た直後には一度も使わなかった（2026-10-26 の見直し）。
+  it("RS-106: CPU（Lv2・Lv5）は、アタックすると負けるとき、出た直後に【ジュウクンドー】で敵軍ラッシュエリアのユニットを撃破する", () => {
+    const s = redFirst({ battle: [inst("SPEC-E4K", "wall")], rush: [inst("SPEC-E1K", "a"), inst("SPEC-E2K", "b")] });
+    expect(s.pendingBattleEntry).toBeDefined();
+    for (const level of [2, 5] as const) {
+      expect(pickCpuAction(s, "player1", level)).toMatchObject({ type: "use_juu_kun_do", attackerInstanceId: "RS-106:dr" });
+    }
+  }, 120_000);
+  it("RS-106: CPU は、撃破できるユニットがないとき【ジュウクンドー】を使わない（発動して選ばずに終わると元の局面に戻り、繰り返して対局が終わらなかった）", () => {
+    const s = redFirst({ battle: [inst("SPEC-E4K", "wall")], rush: [inst("SPEC-E4K", "big")] });
+    expect(canJuu(s, "RS-106:dr")).toBe(true);
+    for (const level of [2, 5] as const) {
+      expect(pickCpuAction(s, "player1", level)?.type).not.toBe("use_juu_kun_do");
+    }
+  }, 120_000);
 });
 
 // ===========================================================================

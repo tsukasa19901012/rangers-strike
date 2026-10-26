@@ -1559,8 +1559,8 @@ function resolveChokiScissors(state: GameState, playerId: PlayerId, instanceId: 
 // ---------------------------------------------------------------------------
 // RK-022 ライダーパス（常駐。起動は rules/permanentOperation.ts の activate_resident_operation）
 
-const RIDER_PASS_CARD = "rider_pass_card";
-const RIDER_PASS_UNIT = "rider_pass_unit";
+export const RIDER_PASS_CARD = "rider_pass_card";
+export const RIDER_PASS_UNIT = "rider_pass_unit";
 
 /**
  * 出典: atwiki/page-128 — 自軍ラッシュフェイズに重ねたカードから1枚選び、本来の特徴に「DEN-O」を持つ自軍ユニットと

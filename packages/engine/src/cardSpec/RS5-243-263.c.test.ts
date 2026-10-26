@@ -12,6 +12,10 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { pickEffectChoice } from "../ai/helpers";
+import { applyAction } from "../core/applyAction";
+import { getLegalActions } from "../core/legalActions";
+import { HOMERUN_HOLD_EFFECT_ID, HOMERUN_REVEAL_EFFECT_ID } from "../rules/legend1/set5NamedEffectsA";
 import { deckCopyUnlimited, validateDeckEntries, type CardDefinition } from "@rangers-strike/cards";
 import {
   act,
@@ -146,6 +150,40 @@ describe("RS-257 野球仮面", () => {
     s = settle(s);
     expect(s.players.player1.command[0]?.commandHeld).toBe(false);
     expect(zoneOf(s, "player2", "TST-UNIT-2:top")).toBe("hand");
+  });
+});
+
+// CPU: 以前は「1 枚選ぶ」形の選択として簡易の選び方がいつも見送り、一度もオモテにしなかった（2026-10-26 の見直し）。
+describe("RS-257 野球仮面（CPU）", () => {
+  const reveal = (enemyDeck: CardInstance[]) => {
+    const s = enter(
+      st({
+        player1: { rush: [inst("RS-257", "y")], command: [released("TST-UNIT-2", "c2")], deck: deckCards(3) },
+        player2: { deck: enemyDeck },
+      }),
+      "RS-257:y",
+    );
+    expect(s.pendingEffectChoice?.effectId).toBe(HOMERUN_REVEAL_EFFECT_ID);
+    return s;
+  };
+  const cpu = (s: GameState) => pickEffectChoice(s, s.pendingEffectChoice!, getLegalActions(s));
+
+  it("RS-257: CPU は、相手の山札の半分以上が自軍コマンドと同じ必要パワーならオモテにし、ホールドしてダメージにする", () => {
+    let s = reveal([inst("TST-UNIT-2", "a"), inst("TST-UNIT-2", "b"), inst("TST-OP-ET", "c")]);
+    const first = cpu(s);
+    expect(first?.type).toBe("resolve_effect_choice");
+    let r = applyAction(s, first!);
+    expect(r.ok).toBe(true);
+    s = r.state;
+    expect(s.pendingEffectChoice?.effectId).toBe(HOMERUN_HOLD_EFFECT_ID);
+    r = applyAction(s, cpu(s)!);
+    expect(r.ok).toBe(true);
+    expect(zoneOf(settle(r.state), "player2", "TST-UNIT-2:a")).toBe("power");
+  });
+
+  it("RS-257: CPU は、同じ必要パワーの見込みが半分未満ならオモテにしない（相手の手札を増やすだけになりやすい）", () => {
+    const s = reveal([inst("TST-UNIT-2", "a"), inst("TST-OP-ET", "b"), inst("TST-OP-ET", "c")]);
+    expect(cpu(s)?.type).toBe("skip_effect_choice");
   });
 });
 

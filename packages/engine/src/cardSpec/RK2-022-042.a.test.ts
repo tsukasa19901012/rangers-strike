@@ -18,6 +18,7 @@
  */
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
+import { pickEffectChoice } from "../ai/helpers";
 import {
   act,
   attack,
@@ -210,6 +211,22 @@ describe("RK-022 ライダーパス", () => {
     expect(zoneOf(s, "player1", "SPEC-DENO2:s")).toBe("rush");
     expect(zoneOf(s, "player1", "RK-013:jp")).toBe("discard");
     expect(cardIn(s, "player1", "SPEC-DENO2:s")?.stackedCards ?? []).toHaveLength(0);
+  });
+
+  // CPU: 重ねたカードを選ぶ選択で、以前は簡易の選び方がいつも見送り、起動しても置き換えなかった（2026-10-26 の見直し）。
+  const cpuPickAfterActivate = (s: GameState) => {
+    const a = legal(s).find((x) => x.type === "activate_resident_operation" && x.operationInstanceId === "RK-022:pass");
+    expect(a).toBeDefined();
+    const opened = act(s, a!);
+    return pickEffectChoice(opened, opened.pendingEffectChoice!, legal(opened));
+  };
+  it("RK-022: CPU は、重ねたカードの方が強ければ置き換える", () => {
+    const choice = cpuPickAfterActivate(passBoard([inst("SPEC-DENO", "u")], [inst("SPEC-DENO2", "s")]));
+    expect(choice).toMatchObject({ type: "resolve_effect_choice", instanceId: "SPEC-DENO2:s" });
+  });
+  it("RK-022: CPU は、重ねたカードの方が弱ければ置き換えない", () => {
+    const choice = cpuPickAfterActivate(passBoard([inst("SPEC-DENO2", "u")], [inst("SPEC-DENO", "s")]));
+    expect(choice?.type).toBe("skip_effect_choice");
   });
 
   it("RK-022: 自軍ラッシュフェイズ以外（自軍バトルフェイズ）には置き換えられない（出典: atwiki/page-128「自軍ラッシュフェイズに」）", () => {

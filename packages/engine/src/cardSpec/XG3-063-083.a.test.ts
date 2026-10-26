@@ -11,6 +11,9 @@
  */
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
+import { pickEffectChoice } from "../ai/helpers";
+import { applyAction } from "../core/applyAction";
+import { getLegalActions } from "../core/legalActions";
 import {
   act,
   activateField,
@@ -275,6 +278,16 @@ describe("XG3-068 仮面ライダーディケイド", () => {
     const s = resolveAll(useRef(s0, "XG3-068:d"), ["TST-OP:h", "SPEC-FFR:ffr"]);
     expect(zoneOf(s, "player1", "SPEC-FFR:ffr")).toBe("rush");
     expect(refsOf(s, "XG3-068:d")).toEqual([]);
+  });
+
+  // CPU: 山札から出すカードの選択に CPU の選び方が無く（場のユニットしか見ていなかった）、「行う」が選ばれなかった（2026-10-26 の見直し）。
+  it("XG3-068: CPU は、手札を捨てた後に山札の「FFR」のカードを選ぶ", () => {
+    const s0 = useRef(rushPhase(), "XG3-068:d");
+    const r = applyAction(s0, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP:h" });
+    expect(r.ok).toBe(true);
+    const s = r.state;
+    expect(s.pendingEffectChoice?.effectId).toBe("xg3068_sekai_pick");
+    expect(pickEffectChoice(s, s.pendingEffectChoice!, getLegalActions(s))).toMatchObject({ type: "resolve_effect_choice", instanceId: "SPEC-FFR:ffr" });
   });
 });
 
