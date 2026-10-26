@@ -3,7 +3,7 @@
 手書きの盤面評価（`src/ai/scoring.ts` の `evaluateState`）を、自己対戦で学習した価値ネットワークに置き換えるための道具です。
 データ作り（ロードマップの Phase 0〜2）、学習・対戦台での比較（Phase 3〜4）、ゲームへの同梱、学習版で集め直す（Phase 5）ための道具があります。
 今の Lv5 は、手書きの評価に同梱のネット（`src/ai/weights/valueNetV1.ts`）の評価を 0.5 倍して足しています。
-同梱しているのは Phase 5 の 2 周目で学習した v3b です（2026-10-22）。
+同梱しているのは、スターターとブログ・wiki 等のデッキの自己対戦を足して学習した v5r です（2026-10-27）。
 
 | 版 | 学習データ | v1 の Lv5 との対戦 |
 |---|---|---|
@@ -13,6 +13,16 @@
 | **v3b** | **run3・run4 だけ（新しい Lv5 中心の 16 万試合）** | **54.3%（6 seed 2,154 試合、±2.1%）。手書きだけの Lv5 には 65.2%** |
 
 古い CPU の試合を混ぜた v2・v3a は検証 logloss では同等以上でも、対戦では v1 と差がありませんでした。強くなった CPU 同士の試合だけで学び直すのが効きます。
+
+v3b のあとは、デッキを `--decks starters,arena`（スターター 46 個＋ブログ・wiki 等 135 個）にして集め直しました。比べた相手は v3b の Lv5（Lv5 同士、ミラー、starters と arena × seed 2 つ × 920 試合）。
+
+| 版 | 学習データ | v3b の Lv5 との対戦 |
+|---|---|---|
+| v4 / v4r | run3・run4・run6（run6 は starters,arena の 10 万試合。v4r は同じデータで学習し直したもの） | 53.2% / 54.9%（各 3,670 試合、±1.6%） |
+| **v5r** | **run3・run4・run6・run7（run7 も starters,arena の 10 万試合、2026-10-26 の CPU）** | **53.8%（3,671 試合、±1.6%）。v4r には 50.4%（v5・v5r の 7,338 試合、±1.1%）** |
+
+- run6 を 1/4・1/2・全部と増やすと v3b への勝率は 50.4%・52.6%・54.0% と上がりましたが、run7 でさらに 10 万試合足しても v4r との差はほぼありませんでした（今の幅 256,128 では、このデータの足し方では頭打ち）。
+- 同じデータで学習し直すと、勝率は 2 ポイントほどぶれます（v4 と v4r）。
 
 | ファイル | 役割 |
 |---|---|
@@ -89,7 +99,7 @@ python3 scripts/nn/train.py .cache/selfplay/run1 --out .cache/nn/value-v1.json
 - 複数の run をまとめて学習できます: `train.py .cache/selfplay/run1 .cache/selfplay/run2 ...`
 - `features.json` の無いフォルダを渡すと、その下の run（`run2/chunk-0` など、小分けにして回したもの）をまとめて読みます。
 - 途中で止めたシャードの最後の欠けた行は、読むときに切り捨てます。
-- run3・run4 は `--mix 5:5=50,5:3=20,3:3=15,2:2=15` で集めたものです。v3b は `train.py .cache/selfplay/run3 .cache/selfplay/run4 --out .cache/nn/value-v3b.json`。
+- run3・run4 は `--mix 5:5=50,5:3=20,3:3=15,2:2=15` で集めたものです。v3b は `train.py .cache/selfplay/run3 .cache/selfplay/run4 --out .cache/nn/value-v3b.json`。run6・run7 は同じ `--mix` に `--decks starters,arena` を足したもので、v5r は `train.py .cache/selfplay/run3 .cache/selfplay/run4 .cache/selfplay/run6 .cache/selfplay/run7 --out .cache/nn/value-v5r.json`。
 - `--run-weights 1,1,4` のように、run ごとに学習での重みを付けられます（run と同じ順）。新しい CPU の試合を重く見たいときに使います。run を 2 つ以上渡すと、最後に run ごとの検証 logloss も出します。
 - データは CPU のメモリに置き、バッチごとに GPU へ送ります。MPS は 1 つのテンソルに約 21 億要素までしか載らないので、以前は 500 万行を超えると落ちていました。
 - 2026-10-22 の value-v1（21.8 万試合、513 万行）は、MPS で 11 エポック約 100 秒でした。検証 logloss は 0.4145 で、手書き評価だけだと 0.5590 です。
@@ -119,7 +129,7 @@ scripts/selfplay-par.sh --games 2000 --seed 500000 --mix 5:5=50,5:3=20,3:3=15,2:
 Lv5 は、手書きの評価に同梱のネットの評価を 0.5 倍して足す（`ai/types.ts` の `valueNetBlend`）。重みを入れ替えるときは:
 
 ```bash
-python3 scripts/nn/pack.py .cache/nn/value-v3b.json --out src/ai/weights/valueNetV1.ts
+python3 scripts/nn/pack.py .cache/nn/value-v5r.json --out src/ai/weights/valueNetV1.ts
 ```
 
 - 層の重みは float16 を base64 にした文字列になる（2.9 MB の JSON が 400 KB ほど）。詰める前後の logit の差の最大値も出す。
