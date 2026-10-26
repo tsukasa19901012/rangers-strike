@@ -342,6 +342,28 @@ describe("strike reactions", () => {
     expect(state.players.player2.discard.some((c) => c.cardId === "RS-067")).toBe(true);
   });
 
+  it("logs plasma energy even when the defender then chooses which power cards to flip", () => {
+    // CPU がプラズマエネルギーを使ってもログに出なかった: ダメージの支払い選択で止まると反応のログが捨てられていた。
+    const attacker = inst("TST-UNIT-2", "a1");
+    const plasma = inst("RS-067", "plasma");
+    let state = createTestState({
+      phase: "battle",
+      player1: { battle: [attacker] },
+      player2: {
+        operation: [plasma],
+        power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3"), inst("TST-P", "p4")],
+      },
+    });
+    state = unwrap(
+      applyAction(state, { type: "strike", playerId: "player1", instanceId: attacker.instanceId }),
+    );
+    const before = state.log.length;
+    state = unwrap(applyAction(state, getActions(state).find((a) => a.type === "use_plasma_energy")!));
+
+    expect(state.pendingDamagePayment).toBeDefined();
+    expect(state.log.slice(before).filter((l) => l.split("|")[1] === "plasma_energy")).toHaveLength(1);
+  });
+
   it("does not open reaction window when only the striker has plasma", () => {
     const attacker = inst("TST-UNIT-2", "a1");
     const plasma = inst("RS-067", "plasma");
