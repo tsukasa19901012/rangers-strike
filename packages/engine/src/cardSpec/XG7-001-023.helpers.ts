@@ -21,6 +21,7 @@ import {
   legal,
   p1Battle,
   powerCards,
+  released,
   releasedCat,
   rushFromHand,
   spOf,
@@ -106,6 +107,20 @@ export function extraHoldTests(id: string, cats: Cat[], cost: number | string, p
       expect(canStartRush(s, "player1", `${id}:h`)).toBe(false);
     }, gaps.hold_one);
   }
+
+  // コマンドはコマンドゾーンにあるカードすべて（atwiki/page-151）。チャージしたユニットのカードも追加分になる。
+  // 以前はオペレーションのカードしか追加分に数えず、ユニットのカードばかりのコマンドゾーンではラッシュできなかった。
+  if (cats.length !== 1) return;
+  const otherCat = (["WB", "MA", "OT", "ET", "DA"] as Cat[]).find((c) => !cats.includes(c))!;
+  const UNIT_CMD = sUnit("SPEC-HOLD-UNIT-CMD", { category: otherCat, bp: 1000, powerCost: 0 });
+  specIt(id, `${id}: 追加条件 — 追加でホールドするコマンドはユニットのカードでもよい（出典: ${page}「追加で自軍コマンドを1つホールドする」・atwiki/page-151「コマンドゾーンに置かれたカードのこと」）`, () => {
+    const command = [...releasedCat(cats[0]!, 1, "ucat"), released(UNIT_CMD.id, "u")];
+    const s = rushPhaseOf({ hand: [inst(id, "h")], command, power: powerCards(n) }, {}, [...extra, UNIT_CMD]);
+    const r = rushFromHand(s, "player1", `${id}:h`);
+    expect(r.ok, r.error).toBe(true);
+    expect(zoneOf(r.state, "player1", `${id}:h`)).toBe("rush");
+    expect(r.state.players.player1.command.every((c) => c.commandHeld)).toBe(true);
+  }, gaps.hold_unit);
 }
 
 /** ※コール○○ の共通テスト（R-KW-CALL-01、atwiki/page-1293）。cat のユニットのラッシュのコマンドとしてホールドできる。 */

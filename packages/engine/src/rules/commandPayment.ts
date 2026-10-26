@@ -1621,7 +1621,7 @@ export function explainCannotRush(
   if (needsHoldExtraCommand(state.definitions, def.id)) {
     const extraCandidates = collectHoldExtraCommandCandidates(player, state.definitions);
     if (extraCandidates.length === 0) {
-      return `「${unitName}」をラッシュするには、追加でホールドできる自軍コマンド（オペレーション）が必要です。`;
+      return `「${unitName}」をラッシュするには、追加でホールドできるリリース状態の自軍コマンドが必要です。`;
     }
     const condition = resolveRushAdditionalCondition(def.id, def);
     if (condition?.text) {

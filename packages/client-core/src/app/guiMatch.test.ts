@@ -360,6 +360,19 @@ describe("morph order", () => {
   });
 });
 
+describe("rush with an extra command hold", () => {
+  // A shared board: XG7-037 (ET, 「追加で自軍コマンドを1つホールドする」) in hand, power 3, and only unit cards
+  // in the command zone. Commands are any cards there (atwiki/page-151), but only operations used to count as
+  // the extra hold, so the rush was never offered.
+  it("offers XG7-037's rush when the only spare commands are unit cards", () => {
+    const app = startGui(5);
+    const payload = parseSharePayload(JSON.parse(readFileSync(new URL("./fixtures/share-xg7-037-rush.json", import.meta.url), "utf8")))!;
+    app.startSharedMatch(payload);
+    const rushes = app.session!.humanOptions().filter((o) => o.action.type === "initiate_command_payment" && o.action.sourceInstanceId === "XG7-037-1");
+    expect(rushes.length).toBeGreaterThan(0);
+  });
+});
+
 describe("battle phase that cannot end yet", () => {
   // RS-022 アースの力「すべてのユニットは可能なら毎ターンバトルエリアに出る」: ホールドして出せるなら出す義務がある（公式 FAQ1 RS-022）。
   // エンジンは出すまで end_phase を出さないので、以前は終了ボタンが効かず、理由も出ず止まって見えた。

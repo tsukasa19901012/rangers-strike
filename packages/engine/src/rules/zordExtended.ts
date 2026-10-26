@@ -703,11 +703,8 @@ export function collectHoldExtraCommandCandidates(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
 ): CardInstance[] {
-  return player.command.filter((card) => {
-    if (card.commandHeld) return false;
-    const def = getDefinition(definitions, card.cardId);
-    return def !== undefined && isOperation(def);
-  });
+  // コマンドはコマンドゾーンに置かれたカードすべて（atwiki/page-151）。ユニットのカードでもよい。
+  return player.command.filter((card) => !card.commandHeld && getDefinition(definitions, card.cardId) !== undefined);
 }
 
 export function validateHoldExtraCommandPayment(
@@ -724,9 +721,7 @@ export function validateHoldExtraCommandPayment(
   for (const id of holdInstanceIds) {
     if (used.has(id)) return false;
     const card = player.command.find((c) => c.instanceId === id);
-    if (!card || card.commandHeld) return false;
-    const def = getDefinition(definitions, card.cardId);
-    if (!def || !isOperation(def)) return false;
+    if (!card || card.commandHeld || !getDefinition(definitions, card.cardId)) return false;
     used.add(id);
   }
   return true;
