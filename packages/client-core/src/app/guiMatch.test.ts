@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { AppController } from "./controller";
 import { input } from "../input/actions";
 import { hitTestGui } from "../input/devices";
-import { testPlatform } from "../testing/engine";
+import { testEngine, testPlatform } from "../testing/engine";
 import { measureText } from "../text/wrap";
 import { dropCardName, variantLabels, type GuiView } from "./guiMatch";
 import { parseSharePayload } from "./share";
@@ -357,6 +357,41 @@ describe("morph order", () => {
     const session = app.session!;
     expect(session.state.pendingMorph).toBeUndefined();
     expect(session.humanOptions().some((o) => o.action.type === "end_phase")).toBe(true);
+  });
+});
+
+describe("battle phase that cannot end yet", () => {
+  // RS-022 アースの力「すべてのユニットは可能なら毎ターンバトルエリアに出る」: ホールドして出せるなら出す義務がある（公式 FAQ1 RS-022）。
+  // エンジンは出すまで end_phase を出さないので、以前は終了ボタンが効かず、理由も出ず止まって見えた。
+  // CPU 同士（Lv1）で アバレンジャー 対 青のナイン B を seed 1 で進めると、472 手目でこの局面になる。
+  function earthForceBoard() {
+    let state = testEngine.createStarterGame({ player1Starter: "abarenoh", player2Starter: "blue-nine-b", seed: 1 });
+    for (let step = 0; step < 472; step++) {
+      const actor = testEngine.isCpuTurn(state, "player2") ? "player2" : testEngine.getActionPlayerId(state);
+      const action = testEngine.pickCpuAction(state, actor, 1) ?? testEngine.pickCpuFallbackAction(state, actor)!;
+      const result = testEngine.applyAction(state, action);
+      state = (result.ok ? result : testEngine.applyAction(state, testEngine.pickCpuFallbackAction(state, actor)!)).state!;
+    }
+    return state;
+  }
+
+  it("says which units must enter, and R offers their entry instead of the full menu", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    session.state = earthForceBoard();
+    session.version++;
+    const types = session.humanOptions().map((o) => o.action.type);
+    expect(session.state.phase).toBe("battle");
+    expect(types).not.toContain("end_phase");
+    expect(types).toContain("initiate_command_payment");
+    const gui = app.view().gui!;
+    expect(gui.footer).toContain("出すまで終われません");
+    expect(gui.footer).toContain("爆竜ティラノサウルス");
+    expect(gui.endButton.enabled).toBe(true);
+    app.dispatch(input.menu);
+    const popup = app.view().gui!.popup!;
+    expect(popup.title).toContain("バトルエリアに出す");
+    expect(app.view().gui!.toast).toContain("可能ならバトルエリアに出る");
   });
 });
 

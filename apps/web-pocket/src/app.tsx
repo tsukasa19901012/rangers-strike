@@ -133,6 +133,7 @@ function matchFooter(v: GuiView): string {
   if (v.battleEntry) return "クリック: 決定 / 光っている敵ユニットをクリック: そのままアタック / 右クリック・Esc: 閉じて盤面を見る";
   if (v.list || v.popup) return "クリック: 決定 / 右クリック・Esc: 閉じる / ホイール・↑↓: 選ぶ";
   if (v.dialog) return "カードかボタンをクリックして選ぶ / L・枠の外をクリック: 盤面を見る / Tab: すべての操作";
+  if (v.footer.startsWith("「可能なら出る」")) return `${v.footer} / 終了ボタン・Space: 出すユニットを選ぶ`;
   if (v.footerAccent) return `${v.footer.replace(/（[^）]*）$/, "")}（クリック: 決定 / 右クリック・Esc: やめる）`;
   if (v.footer.startsWith("盤面を確認中")) return "盤面を確認中（L・Esc・Space で選択ウィンドウに戻る）";
   if (v.footer === "CPU の手番") return "CPU の手番です…";
@@ -145,6 +146,7 @@ function touchFooter(v: GuiView): string {
   if (v.battleEntry) return "タップ: 決定 / 光る敵をタップ: そのままアタック";
   if (v.list || v.popup) return "タップ: 決定 / 枠の外: 閉じる";
   if (v.dialog) return "タップ: 選ぶ / 長押し: カードの詳細";
+  if (v.footer.startsWith("「可能なら出る」")) return v.footer;
   if (v.footerAccent) return v.footer.replace(/（[^）]*）$/, "");
   if (v.footer === "CPU の手番") return "CPU の手番です… / 長押し: カードの詳細";
   return "タップ: 操作 / 長押し: 詳細 / 左右スワイプ: 送る";

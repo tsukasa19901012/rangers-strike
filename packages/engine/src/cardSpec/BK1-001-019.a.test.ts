@@ -11,6 +11,7 @@
  * レアリティは atwiki の「ノーマル／プロモーションカード」を N／PR として照合する。
  */
 import { describe, expect, it } from "vitest";
+import { setBattleDestroyToPower } from "../rules/turnModifierBridge";
 import type { CardInstance, GameState } from "../types/game";
 import {
   beltUsed,
@@ -327,6 +328,16 @@ describe("BK-006 トルネード", () => {
     const s = resolveAll(pick(pick(pick(used("BK-006", "ET", 4, own(), enemyEq), "air_battle"), "RS-135:jf"), "SPEC-PLAIN:a"));
     expect(zoneOf(s, "player1", "SPEC-PLAIN:a")).toBe("discard");
     expect(zoneOf(s, "player2", "RS-135:jf")).toBe("discard");
+  });
+
+  // RS-182 ジャイアントローラー「選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」は
+  // アタックかどうかを見ない（XG1-058【ワーウルフ化】と同じ。利用者の決定 2026-10-20・questions-all.md U-11、2026-10-26 にこのカードにも広げる）。
+  it("BK-006 × RS-182: ジャイアントローラーで選んだ自軍ユニットとバトルして負けた敵軍ユニットは、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-379「このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」・atwiki/page-719）", () => {
+    const mark = setBattleDestroyToPower({ modifiers: [] } as unknown as GameState["players"]["player1"], "SPEC-PLAIN:a", "RS-182").modifiers;
+    const s = resolveAll(pick(pick(pick(used("BK-006", "ET", 4, { ...own(), modifiers: mark }, enemy()), "air_battle"), "RS-135:jf"), "SPEC-PLAIN:a"));
+    expect(zoneOf(s, "player2", "RS-135:jf")).toBe("power");
+    expect(s.players.player2.power.find((c) => c.instanceId === "RS-135:jf")?.faceDown).toBe(true);
+    expect(s.players.player2.damage).toBe(1);
   });
 
   it("BK-006: ◎2つ目 — 選べる敵軍 M ユニットか自軍 S ユニットがなければ何もしない（出典: atwiki/page-719）", () => {

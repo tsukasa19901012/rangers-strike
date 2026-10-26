@@ -8,6 +8,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { setBattleDestroyToPower } from "../rules/turnModifierBridge";
 import {
   DEFS,
   act,
@@ -596,6 +597,17 @@ describe("RS-494 縁切り忍者シラーンス", () => {
     const s = resolveAll(silence([inst("SPEC-N1", "n1"), inst("SPEC-N2", "n2")]), ["SPEC-N1:n1", "SPEC-N2:n2"]);
     expect(zoneOf(s, "player2", "SPEC-N1:n1")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-N2:n2")).toBe("battle");
+  });
+
+  // RS-182 ジャイアントローラーはアタックかどうかを見ない（XG1-058【ワーウルフ化】と同じ。利用者の決定 2026-10-20・questions-all.md U-11、
+  // 2026-10-26 にこのカードにも広げる）。【縁切り】は敵軍ユニット同士のバトルなので、印が付いた敵軍ユニットを直接置いて確かめる。
+  it("RS-494 × RS-182: ジャイアントローラーで選ばれたユニットと【縁切り】でバトルして負けたユニットは、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-379「このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」・atwiki/page-817）", () => {
+    let s = silence([inst("SPEC-N1", "n1"), inst("SPEC-N2", "n2")]);
+    s = { ...s, players: { ...s.players, player2: setBattleDestroyToPower(s.players.player2, "SPEC-N2:n2", "RS-182") } };
+    s = resolveAll(s, ["SPEC-N1:n1", "SPEC-N2:n2"]);
+    expect(zoneOf(s, "player2", "SPEC-N1:n1")).toBe("power");
+    expect(s.players.player2.power.find((c) => c.instanceId === "SPEC-N1:n1")?.faceDown).toBe(true);
+    expect(s.players.player2.damage).toBe(1);
   });
 
   it("RS-494: 【宇宙忍法・縁切り】CN が連続していない2体（CN1・CN3）だけならバトルは起きない（出典: atwiki/page-817「ＣＮの数字が昇順（例:1、2や3、4など）で隣り合っている」）", () => {

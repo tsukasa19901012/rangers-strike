@@ -64,7 +64,7 @@ import {
   isSmallUnit,
   parsePowerCost,
 } from "../core/catalog";
-import { countReleasedCommands } from "./restrictions";
+import { countReleasedCommands, hasCommandForCardUse } from "./restrictions";
 import { findInZone, opponent, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { drawToDiscardFromDeck } from "./pendingChoices";
 import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
@@ -371,6 +371,9 @@ export function canExecuteHandCounter(
   return (
     isCostWindowSatisfied(ctx.player, "counter_category") &&
     (hasHeldCommandForCategories(ctx.player, state.definitions, categories) ||
+      // リード（XG6-056 ※リードET 等）でホールドしたユニットもカウンターに使える（atwiki/page-2250 A2）。支払いの候補には
+      // 出ていたのに、ここで断って支払いごと失敗していた。
+      hasCommandForCardUse(ctx.player, state.definitions, categories, "lead") ||
       // RK-036: ホールドのかわりに捨札にして支払った（rules/rk/rk2UnitEffects.ts）。
       getCostWindowMetadata(ctx.player, "counter_category")?.raiaDiscard === true)
   );

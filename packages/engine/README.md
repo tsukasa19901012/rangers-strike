@@ -34,6 +34,7 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 ## 効果を書くときの注意
 
 - 「○○を持つ自軍コマンド」のようにコマンドのカテゴリを見るときは、`cardCategories`（印刷されたカテゴリ）ではなく `src/core/catalog.ts` の `commandCategoriesOf(state, playerId, cardId)` を使います。XG7-055〜059 のドーパント（自軍ターン中、コマンドゾーンでもカテゴリが追加される）や XG1-033・XG6-013/060 で増えたカテゴリを含めるためです。
+- 「〜してもよい。そうしたとき…選ぶ」のように選択が続く効果は、CPU の読み（`src/ai/simulation.ts`）が続きの自分の選択を簡易の選び方で済ませてから盤面を評価します（途中の盤面では払った分しか見えず、「行う」が選ばれなかった）。
 - 特定のカード名を見るときは `src/core/cardNames.ts` の `hasNameOrAlias` を使います（「※これは「X」としてつかえる」を含めるため）。
 
 ## テスト
@@ -44,6 +45,8 @@ npm run test:unit -w @rangers-strike/engine   # シミュレーション以外
 npm run test:sim -w @rangers-strike/engine    # src/verticalSlice とモンキーテスト（長時間・直列実行）
 npm run test:monkey -w @rangers-strike/engine # ランダム対戦のモンキーテストだけ
 ```
+
+`src/ai/legalActionsApply.test.ts` は、CPU 同士の対戦を進めながら局面ごとに合法手（`getLegalActions`）を全部 `applyAction` に通し、合法手に出るのに断られる手がないことを確かめます（合法手の一覧と受け付けの判定の食い違いは、画面ではボタンを押してもエラーになり、CPU は指せずに対局が止まります）。合法手や「誰の番か」（`getActionPlayerId`・`isCpuTurn`）を変えたときは、`getLegalActions` と `isLegalAction` の両方に同じ順で入れてください。
 
 CI は `test:sim` を `test:sim:starters`（simulateAllStarters）・`test:sim:monkey`（2 つのモンキーテスト）・`test:sim:rest`（それ以外の `src/verticalSlice`）に分けて並列に流します。
 

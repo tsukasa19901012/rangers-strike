@@ -218,6 +218,20 @@ export function getBattleDestroyToPowerInstanceIds(player: PlayerState): string[
     .filter((id): id is string => !!id);
 }
 
+/**
+ * 効果で2体をバトルさせたとき（XG1-058・BK-006・XG3-017・RS-494）、撃破されるユニットのうち、RS-182 ジャイアントローラーで選ばれた
+ * ユニットとバトルした側（捨札のかわりにダメージにして置く）。RS-182 はアタックかどうかを見ない（xg1cEffects.ts XG1-058 の注）。
+ */
+export function battleDestroyToPowerLosers(
+  state: { players: Record<"player1" | "player2", PlayerState> },
+  aInstanceId: string,
+  bInstanceId: string,
+  losers: string[],
+): string[] {
+  const marked = [...getBattleDestroyToPowerInstanceIds(state.players.player1), ...getBattleDestroyToPowerInstanceIds(state.players.player2)];
+  return losers.filter((id) => marked.includes(id === aInstanceId ? bInstanceId : aInstanceId));
+}
+
 export function setBattleDestroyToPower(
   player: PlayerState,
   instanceId: string,

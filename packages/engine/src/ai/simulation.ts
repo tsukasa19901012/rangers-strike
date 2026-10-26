@@ -4,7 +4,7 @@ import { applyAction } from "../core/applyAction";
 import { getLegalActions } from "../core/legalActions";
 import { memoizeInSearch } from "../core/searchCache";
 import { opponent } from "../core/helpers";
-import { quickActionPriority } from "./helpers";
+import { pickEffectChoice, quickActionPriority } from "./helpers";
 import { isCpuTurn, pickCpuAction, type PickCpuActionOptions } from "./level1";
 import { evaluateState } from "./scoring";
 
@@ -240,6 +240,25 @@ export function rankCandidatesForSearch(
     .slice(0, maxCandidates);
 }
 
+/**
+ * 手の後に自分の選択が続くなら（「〜してもよい。そうしたとき…選ぶ」の後半、常駐の起動で開く重ねたカードの選択など）、簡易の選び方で
+ * 済ませてから評価する。途中の盤面で評価すると、払った分（RS-634 ユガンデの敵軍コマンドのリリース等）だけが見えて得が見えず、
+ * 「行う」が一度も選ばれなかった（RK-080 超変身・RK-082・RK-022 ライダーパスの置き換え、RS-634 など。2026-10-26 の見直し）。
+ */
+const SETTLE_STEPS = 6;
+
+function settleOwnChoices(state: GameState, playerId: PlayerId): GameState {
+  let next = state;
+  for (let i = 0; i < SETTLE_STEPS && !next.winner && next.pendingEffectChoice?.playerId === playerId; i++) {
+    const choice = pickEffectChoice(next, next.pendingEffectChoice, getLegalActions(next));
+    if (!choice) break;
+    const r = applyAction(next, choice);
+    if (!r.ok) break;
+    next = r.state;
+  }
+  return next;
+}
+
 function scoreAfterAction(
   state: GameState,
   playerId: PlayerId,
@@ -248,7 +267,7 @@ function scoreAfterAction(
 ): { ok: true; state: GameState } | { ok: false } {
   const result = applyAction(state, action);
   if (!result.ok) return { ok: false };
-  const resolved = resolveOpponentResponses(result.state, playerId, {
+  const resolved = resolveOpponentResponses(settleOwnChoices(result.state, playerId), playerId, {
     ...options,
     simulationDepth: options?.simulationDepth ?? 0,
   });

@@ -636,9 +636,40 @@ export class GuiMatch {
     );
   }
 
+  /**
+   * バトルフェイズを終えられないのは「可能ならバトルエリアに出る」ユニット（RS-022 アースの力・RS-041 等）がまだ出ていないから:
+   * その出す手（ホールドして出すなら支払いの開始）。エンジンは公式裁定どおり出すまで end_phase を出さないが、画面に理由がなく
+   * 止まって見えた（2026-10-26 の見直し）。終えられるときや、ほかの選択の途中は空。
+   */
+  private mandatoryEntryItems(): MenuItem[] {
+    const state = this.state();
+    if (!this.humanActive() || state.phase !== "battle" || state.activePlayer !== HUMAN || state.pendingBattleEntry) return [];
+    const items = this.allItems();
+    if (items.some((item) => item.option.action.type === "end_phase")) return [];
+    return items.filter((item) => {
+      const a = item.option.action;
+      return a.type === "move_to_battle" || (a.type === "initiate_command_payment" && a.kind === "battle_entry");
+    });
+  }
+
+  private mandatoryEntryNames(): string[] {
+    const names = this.mandatoryEntryItems().map((item) => {
+      const id = actionSubjectId(item.option.action);
+      const found = id ? locateInstance(this.state(), id) : null;
+      return found ? (this.state().definitions[found.card.cardId]?.name ?? found.card.cardId) : "";
+    });
+    return [...new Set(names.filter((n) => n))];
+  }
+
   private endPhase(): StepResult | null {
     const primary = this.primaryItem();
     if (primary) return this.execute(primary);
+    const entries = this.mandatoryEntryItems();
+    if (entries.length > 0) {
+      this.message = `「可能ならバトルエリアに出る」ユニットを出すまでバトルフェイズを終えられません`;
+      this.openPopup("バトルエリアに出す", this.geometry.endButton, entries.map((item) => ({ label: item.option.label, items: [item] })));
+      return null;
+    }
     this.openPopup("全体の操作", this.geometry.endButton, this.globalVerbs(), true);
     return null;
   }
@@ -1367,6 +1398,7 @@ export class GuiMatch {
     const endEnabled = primary !== undefined;
     const endsPhase = primary?.option.action.type === "end_phase";
     const phaseLabel = PHASE_LABELS[state.phase] ?? state.phase;
+    const mustEnter = mode.kind === "board" && !dialogShown ? this.mandatoryEntryNames() : [];
     const footer =
       mode.kind === "target"
         ? `${mode.prompt}（十字:切替 ○:決定 ×:やめる）`
@@ -1378,7 +1410,9 @@ export class GuiMatch {
               ? "盤面を確認中（L / × / R で選択ウィンドウに戻る）"
               : !this.humanActive()
                 ? "CPU の手番"
-                : "十字:カード ○:操作 R:フェイズ終了 ×:全体 L:ログ △:全操作";
+                : mustEnter.length > 0
+                  ? `「可能なら出る」ユニットを出すまで終われません: ${mustEnter.join("・")}`
+                  : "十字:カード ○:操作 R:フェイズ終了 ×:全体 L:ログ △:全操作";
 
     return {
       geometry: g,
@@ -1392,8 +1426,10 @@ export class GuiMatch {
             : [...wrapText(primary!.option.label, { fontPx: g.fontPx, maxWidthPx: g.endButton.w - 2 }).slice(0, 2), "R"]
           : state.activePlayer === CPU
             ? ["CPU", "の番", ""]
-            : ["", "×:操作", ""],
-        enabled: endEnabled,
+            : mustEnter.length > 0
+              ? ["出す", "ユニット", "R"]
+              : ["", "×:操作", ""],
+        enabled: endEnabled || mustEnter.length > 0,
         rect: g.endButton,
       },
       strips: [
@@ -1408,7 +1444,7 @@ export class GuiMatch {
       list,
       dialog,
       footer: fitLine(footer, { fontPx: g.fontPx, maxWidthPx: g.footer.w - 8 }),
-      footerAccent: mode.kind === "target" || dialogShown,
+      footerAccent: mode.kind === "target" || dialogShown || mustEnter.length > 0,
       menuOpen: mode.kind !== "board" || dialogShown || !!reveal,
       battleEntry: mode.kind === "popup" && !!mode.entry,
       startPhase: mode.kind === "popup" && !!mode.start,

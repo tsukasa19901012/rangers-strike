@@ -615,8 +615,22 @@ function collectHandIdsByCardId(
 function collectEnemyRushSmallIds(state: GameState, playerId: PlayerId): string[] {
   const enemyId = opponent(playerId);
   return state.players[enemyId].rush
-    .filter((c) => unitSizeOf(state.definitions, c) === "S")
+    .filter((c) => pitInDiveCanEnter(state, playerId, c.instanceId))
     .map((c) => c.instanceId);
+}
+
+/**
+ * RS-049【ピットインダイブ】等（pit_in_dive_order）で、敵軍ラッシュエリアのこのカードをバトルエリアに出せるか。S の「ユニット」だけで
+ * （S のビークル RK-043 ライドシューター等は出せない）、出るためのホールドができ、出られること（選んだときの判定と同じ）。
+ * 以前は S のビークルも候補に出し、選ぶと cannot_enter_battle で断っていた（2026-10-26 の見直し）。
+ */
+function pitInDiveCanEnter(state: GameState, actorId: PlayerId, instanceId: string): boolean {
+  const enemyId = opponent(actorId);
+  const card = findInZone(state.players[enemyId], "rush", instanceId)?.card;
+  if (!card || getDefinition(state.definitions, card.cardId)?.type !== "unit" || unitSizeOf(state.definitions, card) !== "S") return false;
+  const ready = autoHoldForBattleEntry(state, enemyId, card);
+  if (!ready) return false;
+  return canMoveUnitToBattle({ ...state, ...updatePlayer(state, enemyId, ready) }, enemyId, card, "rush");
 }
 
 export function isValidEffectChoiceTarget(
@@ -652,6 +666,7 @@ export function isValidEffectChoiceTarget(
     );
   }
   if (!pending.validInstanceIds.includes(instanceId)) return false;
+  if (pending.kind === "pit_in_dive_order") return pitInDiveCanEnter(state, pending.playerId, instanceId);
   // RK-016 ミラーワールド: 相手が選ぶには自分自身のコマンドをホールドしなければならない（払えなければ選べない。rules/mirrorWorldSelection.ts）。
   if (!mirrorWorldChoiceAffordable(state, pending, instanceId)) return false;
 

@@ -6,6 +6,7 @@
  * - 他の処理から呼ぶ誘発の起点（NC の発動前・ストライクしたとき・ラッシュされたとき・ターンを終えるとき・撃破時など）。
  * 構成は rules/legend1/set6NamedEffectsB.ts と同じ。
  */
+import { battleDestroyToPowerLosers } from "../turnModifierBridge";
 import { fusionPartnerReturnCount, isSameCardIdentity, requiresFusionPartnerReturn } from "@rangers-strike/cards";
 import { engineRandomInt } from "../../core/rng";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
@@ -122,9 +123,11 @@ function destroyAll(
   phasePlayerId: PlayerId,
   sourceCardId: string,
   effectId: string,
+  discardAsDamageInstanceIds: string[] = [],
 ): GameState {
   if (ids.length === 0) return state;
   const opened = openEffectChoice(state, {
+    ...(discardAsDamageInstanceIds.length ? { discardAsDamageInstanceIds } : {}),
     playerId,
     effectId,
     sourceCardId,
@@ -1308,7 +1311,8 @@ CHOICE_RESOLVERS[EN_GIRI_EFFECT_ID] = (state, playerId, instanceId) => {
   if (bpA <= bpB) losers.push(a.instanceId);
   if (bpB <= bpA) losers.push(b.instanceId);
   let next = close(state, pending);
-  next = destroyAll(next, losers, playerId, pending.phasePlayerId, "RS-494", `${EN_GIRI_EFFECT_ID}_battle`);
+  // RS-182 ジャイアントローラーで選ばれたユニットとバトルした側は、ダメージにして置く。
+  next = destroyAll(next, losers, playerId, pending.phasePlayerId, "RS-494", `${EN_GIRI_EFFECT_ID}_battle`, battleDestroyToPowerLosers(next, a.instanceId, b.instanceId, losers));
   return { state: proceed(next, pending), log: logFor(state, playerId, "RS-494", `${EN_GIRI_EFFECT_ID}:${bpA}vs${bpB}`) };
 };
 CHOICE_SKIPPERS[EN_GIRI_EFFECT_ID] = simpleSkip("RS-494");

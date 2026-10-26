@@ -23,11 +23,11 @@ export type SetHookGate = "XG1" | "XG2" | "XG3" | "XG4" | "XG5" | "XG6" | "XG7";
 export const SET_HOOK_EXTRA_IDS: Record<SetHookGate, readonly string[]> = {
   XG1: ["RK-065", "RK-066", "RK-175", "RK-221", "RS-167", "RS-182", "RS-621", "XG3-084", "XG7-032", "XP-012", "XP-028"],
   XG2: ["RS-018", "XP-005", "XP-009", "XG7-042", "XG7-012", "XG3-045", "XG1-034", "RS-675", "RS-572", "RK-280", "RK-250", "RK-245", "RK-224", "RK-024", "RK-019", "RK-017"],
-  XG3: ["RK-050", "XG7-042", "XG4-056", "XG2-074", "RS-524", "RS-326", "RS-106", "RK-324", "RK-173", "BK-006"],
+  XG3: ["RK-050", "XG7-042", "XG4-056", "XG2-074", "RS-524", "RS-326", "RS-106", "RK-324", "RK-173", "BK-006", "RS-182"],
   XG4: ["XG3-069", "XG2-025", "RS-572", "RS-167", "RM-062", "RM-038", "RM-009", "RK-324", "RK-286", "RK-247", "RK-128", "BP-500"],
   XG5: ["SX-009", "RS-584", "RS-167", "RM-017", "RM-009", "RK-269", "RK-129", "RK-011"],
   XG6: ["RK-189", "RK-179", "RK-104", "XG2-019", "RM-045", "RK-017"],
-  XG7: ["RS-508", "RS-426", "RS-284", "RS-249", "RS-196", "RM-062", "RK-208", "RK-175"],
+  XG7: ["XG6-037", "RS-508", "RS-426", "RS-284", "RS-249", "RS-196", "RM-062", "RK-208", "RK-175"],
 };
 
 const checkMode = typeof process !== "undefined" && process.env?.RS_HOOK_GATE_CHECK === "1";
