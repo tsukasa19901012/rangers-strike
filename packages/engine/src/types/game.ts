@@ -447,7 +447,8 @@ export type SeabedDrawMeta = {
 };
 
 export type DenjiMachineMeta = {
-  step: "reveal";
+  /** "order_bottom" は旧手順（今は rules/deckOrder.ts の選択を使い、この値にはならない。旧 apps/web の表示用に残す）。 */
+  step: "reveal" | "order_bottom";
   /** 公開カードを閲覧できるプレイヤー（PvPでは使用者+相手）。 */
   audiencePlayerIds: PlayerId[];
   revealedInstanceIds: string[];
