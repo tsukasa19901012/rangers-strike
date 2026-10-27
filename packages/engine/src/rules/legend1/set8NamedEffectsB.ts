@@ -19,6 +19,7 @@ import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { appendResumeChoice, applyConfirmEffectChoice, openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
+import { deckOrderChoice } from "../deckOrder";
 import { unitFeatures } from "../addedFeatures";
 import { blockRushAreaEntry } from "./set5NamedEffects";
 import { isSmallUnitNow, turnPlayerOf } from "./set6NamedEffectsB";
@@ -650,10 +651,9 @@ export function set8BDefenderBlocksAttack(state: GameState, defenderPlayerId: Pl
 // RS-556 バトルサルダー【サルダークロー】「SP1」
 // 「敵軍ユニットの数と同じ枚数、敵軍山札の上からオモテにしてもよい。そうしたとき、オモテにしたカードと同じカード名の敵軍ユニットを
 //  全て撃破する。そして相手はオモテにしたカードを山札の下に好きな順で戻す。」（atwiki/page-1178）
-// オモテにしたカードは、戻すまで山札の上に置いたままにする。戻す順番は相手が1枚ずつ選ぶ（先に選んだカードから山札の下に置く）。
+// オモテにしたカードは、戻すまで山札の上に置いたままにする。戻す順番は相手が番号を付けて選ぶ（rules/deckOrder.ts。1番が上）。
 
 export const SALDA_CLAW_EFFECT_ID = "rs556_salda_claw";
-export const SALDA_CLAW_ORDER_EFFECT_ID = "rs556_salda_claw_order";
 
 function applySaldaClaw(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const enemyId = opponent(ctx.playerId);
@@ -674,23 +674,6 @@ function applySaldaClaw(state: GameState, ctx: GrantKeywordContext): GrantKeywor
       optional: true,
     }),
     detail: SALDA_CLAW_EFFECT_ID,
-  };
-}
-
-function saldaOrderChoice(base: PendingEffectChoice, ownerId: PlayerId, ids: string[]): PendingEffectChoice {
-  return {
-    playerId: ownerId,
-    effectId: SALDA_CLAW_ORDER_EFFECT_ID,
-    sourceCardId: base.sourceCardId,
-    sourceInstanceId: base.sourceInstanceId,
-    kind: "select_unit",
-    phasePlayerId: base.phasePlayerId,
-    validInstanceIds: ids,
-    selectedInstanceIds: [],
-    selectCount: 1,
-    optional: false,
-    resumeChoice: base.resumeChoice,
-    set8bMeta: { orderOwner: ownerId },
   };
 }
 
@@ -717,7 +700,14 @@ CHOICE_RESOLVERS[SALDA_CLAW_EFFECT_ID] = (state, playerId) => {
   // そして相手はオモテにしたカードを山札の下に好きな順で戻す（1枚なら選択なしで戻す）。
   let after: PendingEffectChoice | undefined;
   let base = cleared;
-  if (revealedIds.length >= 2) after = saldaOrderChoice(pending, enemyId, revealedIds);
+  if (revealedIds.length >= 2) {
+    after = deckOrderChoice(
+      base,
+      { playerId: enemyId, phasePlayerId: pending.phasePlayerId, sourceCardId: pending.sourceCardId, sourceInstanceId: pending.sourceInstanceId, resumeChoice: pending.resumeChoice },
+      revealedIds,
+      "bottom",
+    );
+  }
   else if (revealedIds.length === 1) base = deckTopToBottom(base, enemyId, revealedIds[0]!);
   const resume = after ?? pending.resumeChoice;
   const destroyed = destroySimultaneously(
@@ -730,19 +720,6 @@ CHOICE_RESOLVERS[SALDA_CLAW_EFFECT_ID] = (state, playerId) => {
   return { state: next, log };
 };
 CHOICE_SKIPPERS[SALDA_CLAW_EFFECT_ID] = simpleSkip();
-
-CHOICE_RESOLVERS[SALDA_CLAW_ORDER_EFFECT_ID] = (state, playerId, instanceId) => {
-  const pending = state.pendingEffectChoice!;
-  const owner = pending.set8bMeta?.orderOwner ?? playerId;
-  const next = deckTopToBottom(state, owner, instanceId);
-  const rest = pending.validInstanceIds.filter((id) => id !== instanceId);
-  const log = logFor(state, playerId, pending.sourceCardId, `${SALDA_CLAW_ORDER_EFFECT_ID}:${instanceId}`);
-  if (rest.length >= 2) {
-    return { state: { ...next, pendingEffectChoice: { ...pending, validInstanceIds: rest } }, log };
-  }
-  const done = rest.length === 1 ? deckTopToBottom(next, owner, rest[0]!) : next;
-  return { state: finish({ ...done, pendingEffectChoice: pending }, pending), log };
-};
 
 // ---------------------------------------------------------------------------
 // RS-557 ビンボーガミ【札束の誘惑】

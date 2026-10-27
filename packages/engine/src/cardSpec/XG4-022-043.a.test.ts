@@ -155,6 +155,17 @@ describe("XG4-023 シュリケンジャーFM（XG4）", () => {
     expect(s.players.player2.deck.slice(-2).map((c) => c.instanceId).sort()).toEqual(["SPEC-E-S2:b", "SPEC-E-S:a"]);
   });
 
+  it("XG4-023: NC — 2体以上戻すときは、相手が番号を付けて山札の下の順を選ぶ（出典: atwiki/page-2145「持ち主の山札の下に好きな順番で戻す」）", () => {
+    let s = pick(pick(nc(), "TST-OP:c1"), "TST-OP:hc0");
+    if (canConfirm(s)) s = confirm(s);
+    s = pickAs(pickAs(s, "player2", "SPEC-E-S:a"), "player2", "SPEC-E-S2:b");
+    expect(choicePlayer(s)).toBe("player2");
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+    s = pickAs(s, "player2", "SPEC-E-S2:b");
+    s = resolveAll(pickAs(s, "player2", "order_done"));
+    expect(s.players.player2.deck.slice(-2).map((c) => c.instanceId)).toEqual(["SPEC-E-S2:b", "SPEC-E-S:a"]);
+  });
+
   it("XG4-023: 公式Q&A — 2つ戻したら、相手は1体だけを選ぶことはできない（可能な限り戻した数だけ選ぶ）（出典: atwiki/page-2045 Q1「戻したコマンドの数まで可能な限り相手はSユニットを戻さなければなりません」）", () => {
     let s = pick(pick(nc(), "TST-OP:c1"), "TST-OP-MA:c2");
     if (canConfirm(s)) s = confirm(s);

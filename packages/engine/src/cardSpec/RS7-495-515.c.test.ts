@@ -574,15 +574,16 @@ describe("RS-515 エンジンオー", () => {
     expect(enemy.slice(2).sort()).toEqual(["TST-UNIT-0:x0", "TST-UNIT-2:x1"]);
   });
 
-  it("RS-515: 【ゴーオンソード】山札の下に戻す順番を選べる — 自軍・敵軍それぞれ、先に選んだカードから山札の下に置く（出典: atwiki/page-760「好きな順番で持ち主の山札の下に戻す」）", () => {
+  it("RS-515: 【ゴーオンソード】山札の下に戻す順番を選べる — 自軍・敵軍それぞれ、番号を付けた順（1番が上）で山札の下に置く（出典: atwiki/page-760「好きな順番で持ち主の山札の下に戻す」）", () => {
     let s = enterEngine(["TST-UNIT-2", "TST-UNIT-0"], ["TST-UNIT-0", "TST-UNIT-2"]);
     s = pick(s, "RS-515:e");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-515");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect([...choiceIds(s)].sort()).toEqual(["TST-UNIT-0:o1", "TST-UNIT-2:o0"]);
-    s = pick(s, "TST-UNIT-0:o1");
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+    s = pick(pick(s, "TST-UNIT-0:o1"), "order_done");
     expect([...choiceIds(s)].sort()).toEqual(["TST-UNIT-0:x0", "TST-UNIT-2:x1"]);
-    s = resolveAll(pick(s, "TST-UNIT-2:x1"));
+    s = resolveAll(pick(pick(s, "TST-UNIT-2:x1"), "order_done"));
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(["TST-OP:od0", "TST-OP:od1", "TST-UNIT-0:o1", "TST-UNIT-2:o0"]);
     expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(["TST-OP:xd0", "TST-OP:xd1", "TST-UNIT-2:x1", "TST-UNIT-0:x0"]);
@@ -593,8 +594,8 @@ describe("RS-515 エンジンオー", () => {
     s = settle(pick(s, "RS-515:e"));
     expect(zoneOf(s, "player1", "RS-515:e")).toBe("discard");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-515");
-    s = pick(s, "TST-UNIT-0:o1");
-    s = resolveAll(pick(s, "TST-UNIT-7:x1"));
+    s = pick(pick(s, "TST-UNIT-0:o1"), "order_done");
+    s = resolveAll(pick(pick(s, "TST-UNIT-7:x1"), "order_done"));
     expect(s.players.player1.deck.map((c) => c.instanceId).slice(2)).toEqual(["TST-UNIT-0:o1", "TST-UNIT-0:o0"]);
     expect(s.players.player2.deck.map((c) => c.instanceId).slice(2)).toEqual(["TST-UNIT-7:x1", "TST-UNIT-7:x0"]);
   });

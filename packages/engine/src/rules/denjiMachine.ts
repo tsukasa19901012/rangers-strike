@@ -10,6 +10,7 @@ import { isSmallUnit } from "../core/catalog";
 import { opponent, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { promoteDeferredBattleEntry } from "./battleEntry";
+import { placeForDeckOrder } from "./deckOrder";
 
 export type ChoiceOutcome =
   | { state: GameState; log?: string; logs?: string[] }
@@ -171,25 +172,21 @@ export function applyConfirmDenjiReveal(
     return finishDenji(nextState, pending, `hand:${handAdds.length},bottom:1`);
   }
 
-  const bottomIds = limboBottom.map((c) => c.instanceId);
+  // 2枚以上は今の順で山札の下に置き、番号を付けて順を選ぶ選択（rules/deckOrder.ts）を開く。
+  nextPlayer = nextState.players[playerId];
   nextState = {
     ...nextState,
-    pendingEffectChoice: {
-      ...pending,
-      validInstanceIds: bottomIds,
-      selectedInstanceIds: [],
-      denjiMachineMeta: {
-        ...meta,
-        step: "order_bottom",
-        limboBottomCards: limboBottom,
-        orderedBottomIds: [],
-      },
-    },
-    activePlayer: playerId,
+    ...updatePlayer(nextState, playerId, { ...nextPlayer, deck: [...nextPlayer.deck, ...limboBottom] }),
   };
+  const { state: placed, order } = placeForDeckOrder(
+    nextState,
+    { playerId, phasePlayerId: pending.phasePlayerId, sourceCardId: pending.sourceCardId },
+    limboBottom.map((c) => c.instanceId),
+    "bottom",
+  );
 
   return {
-    state: nextState,
+    state: { ...placed, pendingEffectChoice: order, activePlayer: playerId },
     log: buildLogEntry(
       playerId,
       "denji_machine",
@@ -198,60 +195,4 @@ export function applyConfirmDenjiReveal(
       `reveal:hand:${handAdds.length}`,
     ),
   };
-}
-
-export function applyDenjiBottomOrderSelect(
-  state: GameState,
-  playerId: PlayerId,
-  instanceId: string,
-): ChoiceOutcome {
-  const pending = state.pendingEffectChoice;
-  if (!pending || pending.kind !== "denji_machine") {
-    return { error: "no_pending_choice" };
-  }
-  if (pending.playerId !== playerId) return { error: "wrong_player" };
-  const meta = pending.denjiMachineMeta;
-  if (!meta || meta.step !== "order_bottom") return { error: "invalid_step" };
-  if (!meta.limboBottomCards) return { error: "invalid_reveal" };
-  if (!pending.validInstanceIds.includes(instanceId)) {
-    return { error: "invalid_target" };
-  }
-
-  const ordered = [...(meta.orderedBottomIds ?? []), instanceId];
-  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
-
-  if (remaining.length > 0) {
-    return {
-      state: {
-        ...state,
-        pendingEffectChoice: {
-          ...pending,
-          validInstanceIds: remaining,
-          selectedInstanceIds: ordered,
-          denjiMachineMeta: {
-            ...meta,
-            orderedBottomIds: ordered,
-          },
-        },
-        activePlayer: playerId,
-      },
-    };
-  }
-
-  const player = state.players[playerId];
-  const limboById = new Map(meta.limboBottomCards!.map((c) => [c.instanceId, c]));
-  const bottomStack = ordered
-    .map((id) => limboById.get(id))
-    .filter((c): c is CardInstance => !!c);
-
-  const nextPlayer = {
-    ...player,
-    deck: [...player.deck, ...bottomStack],
-  };
-
-  return finishDenji(
-    { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-    pending,
-    `hand:${meta.toHandInstanceIds.length},bottom:${bottomStack.length}`,
-  );
 }

@@ -357,16 +357,19 @@ describe("RK-089 乗車拒否", () => {
   });
 
   it("RK-089: 戻す順番は、先に選んだカードから山札の下に置く（出典: atwiki/page-667「それ以外は好きな順で自分自身の山札の下に戻す」）", () => {
-    const s = pick(refuse(MY_DECK, ENEMY_DECK), "TST-OP:e2");
+    let s = pick(refuse(MY_DECK, ENEMY_DECK), "TST-OP:e2");
+    // 選んだ順に番号が付き（残り1枚は最後の番号）、確定するとその順で山札の下に置く
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["TST-OP:e2", "TST-OP:e1"]);
+    s = pick(s, "order_done");
     expect(zoneIds(s, "player2", "deck")).toEqual(["TST-OP:e3", "TST-OP:e2", "TST-OP:e1"]);
   });
 
   it("RK-089: その後、自分も同じようにする — M ユニットでない「車両」（S ユニット・ビークル）は山札の下に戻る（出典: atwiki/page-667「特徴「車両」を持つMユニットのカードをすべて」）", () => {
-    let s = pick(refuse(MY_DECK, ENEMY_DECK), "TST-OP:e1");
+    let s = pick(pick(refuse(MY_DECK, ENEMY_DECK), "TST-OP:e1"), "order_done");
     expect(zoneOf(s, "player1", "SPEC-TRAIN:t")).toBe("power");
     expectChoiceFrom(s, "player1", "RK-089");
     expect(choiceIds(s)).toEqual(["RK-095:veh", "SPEC-CAR:car"]);
-    s = settle(pick(s, "RK-095:veh"));
+    s = settle(pick(pick(s, "RK-095:veh"), "order_done"));
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:d3", "RK-095:veh", "SPEC-CAR:car"]);
     expect(zoneOf(s, "player1", "RK-089:jk")).toBe("discard");
   });

@@ -817,6 +817,16 @@ export function MatchView(props: {
               {(card) => (
                 <>
                   <Tile tile={card()} rect={card().rect} focused={card().focused} targetable={!card().focused && !card().note} dimmed={false} actionable={false} />
+                  <Show when={card().order}>
+                    {(n) => (
+                      <View
+                        class="absolute w-[30] h-[30] items-center justify-center rounded-full bg-amber-400 border-[2] border-[#0b1220]"
+                        style={at({ x: card().rect.x + card().rect.w / 2 - 15, y: card().rect.y + card().rect.h / 2 - 15, w: 30, h: 30 })}
+                      >
+                        <Text class="text-base text-[#0b1220] font-bold">{n()}</Text>
+                      </View>
+                    )}
+                  </Show>
                   <View class="absolute flex-row justify-center" style={at(card().captionRect)}>
                     <Text class={card().note ? "text-xs text-amber-200" : "text-xs text-slate-400"}>{card().note ?? caption(card().instanceId) ?? card().caption}</Text>
                   </View>

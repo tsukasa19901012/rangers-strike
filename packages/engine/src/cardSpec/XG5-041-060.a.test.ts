@@ -360,6 +360,13 @@ describe("XG5-047 キューユソウル", () => {
     expect(s.players.player1.power.filter((c) => c.faceDown).length).toBe(3);
   });
 
+  it("XG5-047: 2枚戻すときは、番号を付けて山札の上の順を選ぶ（1番が一番上）（出典: atwiki/page-2206「自軍山札の上に好きな順で戻す」）", () => {
+    let s = pickAll(beltUsed("XG5-047", "OT", 7, { power: POWER() }), ["TST-P:d0", "TST-P:d1"]);
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_top_order");
+    s = resolveAll(pick(pick(s, "TST-P:d1"), "order_done"), []);
+    expect(s.players.player1.deck.slice(0, 2).map((c) => c.instanceId)).toEqual(["TST-P:d1", "TST-P:d0"]);
+  });
+
   it("XG5-047: オモテ向きのカードがなければ（すべてダメージ）、ダメージは戻らない（出典: atwiki/page-2206「そうしたとき」）", () => {
     const s = resolveAll(beltUsed("XG5-047", "OT", 7, { power: damageCards(7, "d") }));
     expect(s.players.player1.power.length).toBe(7);

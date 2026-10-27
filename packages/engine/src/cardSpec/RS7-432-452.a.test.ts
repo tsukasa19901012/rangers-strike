@@ -187,6 +187,18 @@ describe("RS-433 ネコマル", () => {
     expect(s.players.player1.hand.map((c) => c.instanceId).sort()).toEqual(["TST-OP:dk0", "TST-OP:h2"]);
   });
 
+  it("RS-433: 2枚以上戻すときは番号を付けて山札の下の順を選び、その後ドローする（出典: atwiki/page-737「好きな順で」）", () => {
+    const r = rushFromHand(rushPhase([inst("SPEC-NIN", "n"), inst("TST-OP", "h1"), inst("TST-OP", "h2")]), "player1", "SPEC-NIN:n");
+    let s = pick(pick(r.state, "TST-OP:h1"), "TST-OP:h2");
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+    expect(s.players.player1.hand.map((c) => c.instanceId)).toEqual([]);
+    s = pick(s, "TST-OP:h2");
+    s = resolveAll(pick(s, "order_done"));
+    const deck = s.players.player1.deck.map((c) => c.instanceId);
+    expect(deck.slice(-2)).toEqual(["TST-OP:h2", "TST-OP:h1"]);
+    expect(s.players.player1.hand.map((c) => c.instanceId).sort()).toEqual(["TST-OP:dk0", "TST-OP:dk1"]);
+  });
+
   it("RS-433: 「戻してもよい」— 見送ることができ、手札・山札は変わらない（出典: atwiki/page-737「戻してもよい」）", () => {
     const r = rushFromHand(rushPhase([inst("SPEC-NIN", "n"), inst("TST-OP", "h1")]), "player1", "SPEC-NIN:n");
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-433");

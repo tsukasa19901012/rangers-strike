@@ -50,8 +50,8 @@ import {
 import { canPlayHandCounter } from "../operationCounters";
 import { opponentInfiniteChainBlocks } from "../turnModifiers";
 import { printedCostNumber, xg5CostNumber, xg5Flags, xg5TurnPlayer } from "./xg5Fields";
-import { multiChoice, registerMulti } from "./xg5bEffects";
 import { addFlag, defOf, newBattleUnits, opp, patchXg5, printedCategories, printedFeatures, selectOne, setFieldHeld, sizeOf, xg5Busy } from "./xg5Shared";
+import { deckOrderChoice } from "../deckOrder";
 
 const PLAYERS: PlayerId[] = ["player1", "player2"];
 
@@ -380,11 +380,10 @@ XG5_KEYWORDS["XG5-071::kitaetemasu"] = (state, ctx) => {
 // ---------------------------------------------------------------------------
 // XG5-072 仮面ライダー威吹鬼【挫けぬ疾風】（RC）
 // 「敵軍山札をシャッフルしてもよい。そうしたとき、敵軍山札の上から3枚をオモテにし、その中にDAを持つカードがあれば、このユニットをリリースする。その後、
-//  オモテにしたカードを山札の上に好きな順で戻す。」（atwiki/page-2278）。発動するかは「シャッフルする」を選ぶか見送るかで表す。戻す順は選んだ順（最初が一番上）。
+//  オモテにしたカードを山札の上に好きな順で戻す。」（atwiki/page-2278）。発動するかは「シャッフルする」を選ぶか見送るかで表す。戻す順は番号を付けて選ぶ（rules/deckOrder.ts。1番が一番上）。
 // XG5-079【ライダーカード】から発動したときは、選択の発生源を XG5-079 にする（ctx.sourceCardId）。
 
 const IBUKI = "xg5_072_ibuki";
-const IBUKI_ORDER = "xg5_072_ibuki_order";
 XG5_KEYWORDS["XG5-072::ibuki"] = (state, ctx) => {
   if (state.players[opp(ctx.playerId)].deck.length === 0) return { state, detail: "xg5_072:empty_deck" };
   const source = ctx.sourceCardId === "XG5-079" ? "XG5-079" : "XG5-072";
@@ -398,16 +397,10 @@ CHOICE_RESOLVERS[IBUKI] = (state, playerId) => {
   if (top.some((c) => printedCategories(next, c.cardId).includes("DA")) && pending.sourceInstanceId) next = setFieldHeld(next, playerId, pending.sourceInstanceId, false);
   const log = logFor(state, playerId, pending.sourceCardId, `${IBUKI}:shuffle`);
   if (top.length <= 1) return { state: proceed(next, pending), log };
-  return { state: openNext(next, pending, { ...multiChoice(pendingBase(pending), pending.sourceCardId, IBUKI_ORDER, top.map((c) => c.instanceId), top.length), optional: false, mayConfirm: false }), log };
+  const order = deckOrderChoice(next, { playerId, phasePlayerId: pending.phasePlayerId, sourceCardId: pending.sourceCardId, sourceInstanceId: pending.sourceInstanceId }, top.map((c) => c.instanceId), "top")!;
+  return { state: openNext(next, pending, order), log };
 };
 CHOICE_SKIPPERS[IBUKI] = simpleSkip();
-registerMulti(IBUKI_ORDER, (state, pending, ids) =>
-  patch(state, opp(pending.playerId), (p) => {
-    const set = new Set(ids);
-    const picked = ids.map((id) => p.deck.find((c) => c.instanceId === id)).filter((c): c is CardInstance => !!c);
-    return { ...p, deck: [...picked, ...p.deck.filter((c) => !set.has(c.instanceId))] };
-  }),
-);
 
 // ---------------------------------------------------------------------------
 // XG5-073 仮面ライダー電王SF【俺の必殺技】（RC）

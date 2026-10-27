@@ -310,6 +310,18 @@ describe("RS-455 ニンジャブラック", () => {
     expect(deck.slice(3).sort()).toEqual(["TST-UNIT-0:e1", "TST-UNIT-0:e3"]);
   });
 
+  it("RS-455: 【岩地獄の術】2体以上戻すときは番号を付けて山札の下の順を選ぶ（出典: atwiki/page-800「好きな順で戻してもよい」）", () => {
+    let s = iwaJigoku();
+    s = pick(s, "TST-UNIT-0:e1");
+    s = pick(s, "TST-UNIT-0:e3");
+    if (s.pendingEffectChoice?.sourceCardId === "RS-455" && s.pendingEffectChoice.effectId !== "deck_bottom_order") s = confirm(s);
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    s = pick(s, "TST-UNIT-0:e3");
+    s = resolveAll(pick(s, "order_done"));
+    expect(s.players.player2.deck.map((c) => c.instanceId).slice(3)).toEqual(["TST-UNIT-0:e3", "TST-UNIT-0:e1"]);
+  });
+
   it("RS-455: 【岩地獄の術】選べる数の上限は自分の手札の枚数（手札1枚なら1体まで）（出典: atwiki/page-800「自分の手札の枚数と同じ数まで選び」）", () => {
     const s = iwaJigoku([inst("TST-OP", "h1")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-455");
@@ -457,6 +469,19 @@ describe("RS-457 ニンジャレッド", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:d1")).toBe("hand");
     expect(s.players.player2.hand.length).toBeLessThanOrEqual(2);
     expect(s.players.player2.deck[0]?.instanceId).toBe("TST-OP:d4");
+  });
+
+  it("RS-457: 【火炎つむじの術】手札に加えなかったカードは、相手が番号を付けて山札の下の順を選ぶ（出典: atwiki/page-802「それ以外を山札の下に好きな順で戻す」）", () => {
+    let s = kaen();
+    if (s.pendingEffectChoice?.sourceCardId === "RS-457" && s.pendingEffectChoice.kind === "confirm") s = confirm(s);
+    expect(s.pendingEffectChoice?.effectId).toBe("rs457_kaen_tsumuji_pick");
+    s = pick(s, "TST-UNIT-0:d1");
+    s = skip(s);
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    s = pick(s, "TST-OP:d3");
+    s = resolveAll(pick(s, "order_done"));
+    expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(["TST-OP:d4", "TST-OP:d3", "TST-OP:d2"]);
   });
 
   it("RS-457: 【火炎つむじの術】NC 不成立なら山札はオモテにならず、敵軍ユニットも撃破されない（出典: atwiki/page-802・R-CN-02）", () => {

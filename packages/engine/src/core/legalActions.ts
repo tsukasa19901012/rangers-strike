@@ -1357,6 +1357,12 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (pending.deckOrderMeta) {
+    // 「好きな順で山札の下（上）に戻す」の順（rules/deckOrder.ts）: カード・確定・選び直すは選択側で絞り込み済み。
+    for (const instanceId of choiceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    return;
+  }
+
   if (isRk3ChoiceEffect(pending.effectId)) {
     // ライダーEXP vol.1 RK-043〜RK-063 の選択（rules/rk/rk3UnitEffects.ts）。候補はモジュール側で絞り込み済み。
     for (const instanceId of choiceIds) {
@@ -1765,12 +1771,6 @@ function appendEffectChoiceActions(
   if (pending.kind === "denji_machine") {
     if (pending.denjiMachineMeta?.step === "reveal") {
       actions.push({ type: "confirm_denji_reveal", playerId });
-      return;
-    }
-    if (pending.denjiMachineMeta?.step === "order_bottom") {
-      for (const instanceId of choiceIds) {
-        actions.push({ type: "resolve_effect_choice", playerId, instanceId });
-      }
       return;
     }
     return;

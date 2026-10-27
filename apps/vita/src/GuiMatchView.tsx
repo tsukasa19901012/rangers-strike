@@ -262,7 +262,7 @@ export function GuiMatchView(props: { view: GuiView }) {
                 <>
                   <Tile tile={card()} rect={card().rect} focused={card().focused} targetable={!card().focused} dimmed={false} />
                   <View class="absolute" style={at(card().captionRect)}>
-                    <Text class="text-xs text-slate-400">{card().caption}</Text>
+                    <Text class={card().order ? "text-xs text-amber-300" : "text-xs text-slate-400"}>{card().order ? card().note : card().caption}</Text>
                   </View>
                 </>
               )}

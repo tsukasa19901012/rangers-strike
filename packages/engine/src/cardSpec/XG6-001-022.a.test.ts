@@ -136,6 +136,19 @@ describe("XG6-001 火の山、吠える", () => {
     },
   );
 
+  it(
+    `XG6-001: 山札の下に戻すカードが2枚以上なら、番号を付けて順を選ぶ（出典: ${PAGE}「残りのカードを山札の下に好きな順番で戻す」）`,
+    () => {
+      let s = fireMountain([inst("SPEC-ET-M3", "et"), inst("SPEC-WB-S", "s"), inst("SPEC-WB-M7", "m7")], 3, 0);
+      s = accept(s);
+      while (s.pendingEffectChoice && s.pendingEffectChoice.effectId !== "deck_bottom_order") s = resolveAll(s, [], 1);
+      expect(s.pendingEffectChoice?.playerId).toBe("player1");
+      s = pick(pick(s, "SPEC-WB-M7:m7"), "SPEC-ET-M3:et");
+      s = resolveAll(pick(s, "order_done"));
+      expect(deckOrder(s).slice(-3)).toEqual(["SPEC-WB-M7:m7", "SPEC-ET-M3:et", "SPEC-WB-S:s"]);
+    },
+  );
+
   it(`XG6-001: 自軍ターン中に自軍ユニットが撃破されても発動しない（出典: ${PAGE}「敵軍ターン中、」）`, () => {
     let s = p1Battle(
       { battle: [inst("SPEC-WB-S", "v")], operation: [faceUpResident("XG6-001", "op")], ...withDamage(2, powerCards(1)), deck: [inst("SPEC-WB-M5", "m"), ...deckCards(3)] },
@@ -549,6 +562,23 @@ describe("XG6-008 炎神剣", () => {
       expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
       expect(deckOrder(s).slice(-2).sort()).toEqual(["XG6-020:d1", "XG6-020:d2"]);
       expect(deckOrder(s, "player2").slice(-2).sort()).toEqual(["TST-OP:ed0", "TST-OP:ed1"]);
+    },
+  );
+
+  it(
+    `XG6-008: 撃破の後で、持ち主ごとに番号を付けて山札の下の順を選ぶ（出典: ${PAGE}「その後、オモテにしたカードは、好きな順番で持ち主の山札の下に戻す」）`,
+    () => {
+      let s = sword([inst("XG6-020", "d1"), inst("XG6-020", "d2")]);
+      s = pick(s, "TST-UNIT-0:e");
+      expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
+      expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+      expect(choiceIds(s)).toEqual(expect.arrayContaining(["XG6-020:d1", "XG6-020:d2"]));
+      s = pick(pick(s, "XG6-020:d2"), "order_done");
+      expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+      expect(s.pendingEffectChoice?.playerId).toBe("player1");
+      s = pick(pick(s, "TST-OP:ed1"), "order_done");
+      expect(deckOrder(s).slice(-2)).toEqual(["XG6-020:d2", "XG6-020:d1"]);
+      expect(deckOrder(s, "player2").slice(-2)).toEqual(["TST-OP:ed1", "TST-OP:ed0"]);
     },
   );
 

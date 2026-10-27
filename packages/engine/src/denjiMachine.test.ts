@@ -79,7 +79,7 @@ describe("RS-004 denji machine", () => {
     state = confirmed.state;
 
     expect(state.players.player1.hand.some((c) => c.instanceId === sUnit.instanceId)).toBe(true);
-    expect(state.pendingEffectChoice?.denjiMachineMeta?.step).toBe("order_bottom");
+    expect(state.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
 
     const order1 = applyAction(state, {
       type: "resolve_effect_choice",
@@ -90,10 +90,12 @@ describe("RS-004 denji machine", () => {
     if (!order1.ok) return;
     state = order1.state;
 
+    // 1枚選ぶと残りの1枚に最後の番号が付く。
+    expect(state.pendingEffectChoice?.selectedInstanceIds).toEqual([bottomSecond.instanceId, bottomFirst.instanceId]);
     const order2 = applyAction(state, {
       type: "resolve_effect_choice",
       playerId: "player1",
-      instanceId: bottomFirst.instanceId,
+      instanceId: "order_done",
     });
     expect(order2.ok).toBe(true);
     if (!order2.ok) return;

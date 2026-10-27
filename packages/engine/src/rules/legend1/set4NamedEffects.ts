@@ -31,6 +31,7 @@ import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 import { registerChoiceRefresher } from "../choiceRefreshers";
 import { destroyTriggerTimingOfNamedEffect, openDestroyTimedChoice } from "../destroyTriggerTiming";
+import { deckOrderChoice } from "../deckOrder";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -578,7 +579,8 @@ function resolveCarNavic(state: GameState, playerId: PlayerId, instanceId: strin
 // RS-186 プロバイダーベース（オペレーション）
 // 「自軍山札を見て、Sユニット以外の特徴「メカ」を持つユニットのカードを5枚まで選び、相手に見せる。
 //  その後、山札をシャッフルし、選んだカードを好きな順で山札の上に戻す。」
-// 1枚ずつ選び（選んだ順に山札の上から並ぶ）、確定（confirm）で終える。5枚選ぶか候補が尽きたら自動で終える。
+// 1枚ずつ選び、確定（confirm）で終える（5枚選ぶか候補が尽きたら自動で終える）。シャッフルの後、2枚以上なら番号を付けて
+// 山札の上の順を選ぶ（rules/deckOrder.ts。1番が一番上）。
 
 export const PROVIDER_BASE_EFFECT_ID = "purobaidabesu_deck_top";
 const PROVIDER_BASE_MAX = 5;
@@ -633,8 +635,14 @@ function finishProviderBase(state: GameState, playerId: PlayerId): ChoiceOutcome
     .map((id) => state.players[playerId].deck.find((c) => c.instanceId === id))
     .map((c) => (c ? cardName(state.definitions, c.cardId) : ""))
     .join(",");
+  const order = deckOrderChoice(
+    next,
+    { playerId, phasePlayerId: pending.phasePlayerId, sourceCardId: "RS-186", sourceInstanceId: pending.sourceInstanceId, resumeChoice: pending.resumeChoice },
+    selected,
+    "top",
+  );
   return {
-    state: finish(next, pending.phasePlayerId, state),
+    state: order ? openEffectChoice(clearPending(next, pending.phasePlayerId), order) : finish(next, pending.phasePlayerId, state),
     log: logFor(state, playerId, "RS-186", `${PROVIDER_BASE_EFFECT_ID}:${names || "none"}`),
   };
 }

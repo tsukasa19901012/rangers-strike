@@ -39,6 +39,7 @@ import {
 import { unitFeatures } from "../addedFeatures";
 import { XG4_CONFIRMERS, XG4_KEYWORDS, XG4_RESOLVERS, XG4_SKIPPERS, addTurnRecord, hasTurnRecordFor, isCard, noop } from "./xg4Common";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
+import { returnToDeckInOrder } from "../deckOrder";
 
 function costNumber(state: GameState, cardId: string): number {
   return rm1CostNumber(state, cardId);
@@ -477,7 +478,7 @@ registerDamagePick(ARABURU_EFFECT_ID, "XG4-037");
 // ---------------------------------------------------------------------------
 // XG4-038 モウギュウダイオー【猛牛大回転砲】（自軍ターン中、バトルエリアに出たとき・任意）
 // 「必要パワーの数字が2以下の敵軍Sユニットすべてを、持ち主の山札の下に好きな順で戻す。」（atwiki/page-2147）。エリアを問わない。数字は「+」「-」を除く。
-// 順番は場の並び（バトルエリア、ラッシュエリアの順）。
+// 2体以上なら、番号を付けて山札の下の順を選ぶ（rules/deckOrder.ts。持ち主ごとの山札へ）。
 
 const MOUGYUU_EFFECT_ID = "xg4038_mougyuu_confirm";
 
@@ -500,7 +501,7 @@ XG4_CONFIRMERS[MOUGYUU_EFFECT_ID] = (state, playerId) => {
     .map((c) => c.instanceId);
   let next = close(state, pending);
   for (const id of ids) next = moveFieldUnit(next, enemyId, id, pending.phasePlayerId, "deck_bottom");
-  return { state: proceed(next, pending), log: logFor(state, playerId, "XG4-038", `xg4038:${ids.length}`) };
+  return { state: returnToDeckInOrder(next, pending, ids), log: logFor(state, playerId, "XG4-038", `xg4038:${ids.length}`) };
 };
 
 // ---------------------------------------------------------------------------

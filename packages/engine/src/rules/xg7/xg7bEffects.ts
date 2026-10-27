@@ -21,6 +21,7 @@ import { unitFeatures } from "../addedFeatures";
 import { startEffectRush } from "../effectRush";
 import { applyDamageToPlayer } from "../damagePayment";
 import { recordReveal, revealedCards } from "../revealNotice";
+import { returnToDeckInOrder } from "../deckOrder";
 import { rk1IsSmallNow } from "../rk/rk1Features";
 import {
   base,
@@ -811,7 +812,8 @@ function applyGoldenHope(state: GameState, ctx: GrantKeywordContext): GrantKeywo
 // ---------------------------------------------------------------------------
 // XG7-042 仮面ライダークウガ×仮面ライダーディケイド【ライダー大戦の世界】（自分がターンを終えるとき。rules/turnEndingEffects.ts）
 // 「次の効果を発動できる⇒自軍山札の上から5枚をオモテにして、その中から1枚を選び手札に加える。その後、残りのカードとこのユニットを好きな順で
-//  山札の下に戻す。」選ぶ選択を見送れば発動しない。残りは山札の上からの順のまま、その後にこのユニット。
+//  山札の下に戻す。」選ぶ選択を見送れば発動しない。手札に加えた後、残りのカードとこのユニットをいったん山札の下に置き（ユニットの離場はここで処理）、
+//  2枚以上あれば山札の下に戻す順を1枚ずつ選ぶ（rules/deckOrder.ts）。
 
 const RIDER_WAR_EFFECT_ID = "xg7042_rider_war";
 
@@ -852,7 +854,11 @@ CHOICE_RESOLVERS[RIDER_WAR_EFFECT_ID] = (state, playerId, instanceId) => {
   const rest = revealed.filter((c) => c.instanceId !== instanceId);
   next = patchPlayer(next, playerId, (p) => ({ ...p, deck: [...p.deck.slice(revealed.length), ...rest], hand: [...p.hand, stripForZone(picked)] }));
   if (self) next = moveFieldUnit(next, playerId, self.instanceId, pending.phasePlayerId, "deck_bottom");
-  return { state: next, log: logFor(state, playerId, "XG7-042", `${RIDER_WAR_EFFECT_ID}:${cardName(state.definitions, picked.cardId)}`) };
+  const ids = [...rest.map((c) => c.instanceId), ...(self ? [self.instanceId] : [])];
+  return {
+    state: returnToDeckInOrder(next, pending, ids),
+    log: logFor(state, playerId, "XG7-042", `${RIDER_WAR_EFFECT_ID}:${cardName(state.definitions, picked.cardId)}`),
+  };
 };
 CHOICE_SKIPPERS[RIDER_WAR_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;

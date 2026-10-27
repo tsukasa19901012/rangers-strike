@@ -391,7 +391,8 @@ describe("RS-004 デンジマシーン", () => {
     s = act(s, { type: "confirm_denji_reveal", playerId: "player1" });
     expect(zoneOf(s, "player1", sA.instanceId)).toBe("hand");
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: op2.instanceId });
-    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: m.instanceId });
+    // 1枚選ぶと残りの1枚に最後の番号が付き、「この順で戻す」で確定する。
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "order_done" });
     expect(zoneIds(s, "player1", "deck")).toEqual([rest.instanceId, op2.instanceId, m.instanceId]);
   });
 

@@ -18,6 +18,8 @@ import type { DamagePaymentResume } from "../../types/game";
 import type { GrantKeywordContext } from "../../dsl/grantKeyword";
 import { unitFeatures } from "../addedFeatures";
 import { patchPlayer } from "../playerPatches";
+import { recordReveal, revealedCards } from "../revealNotice";
+import { returnToDeckInOrder } from "../deckOrder";
 import { openEffectChoice } from "../pendingChoices";
 import { rk1IsSmallNow } from "../rk/rk1Features";
 import { RK11_RELEASE_AT_END_RULE, RK11_SP1_RULE } from "../rk/rk11Fields";
@@ -510,7 +512,8 @@ XG1_SKIPPERS[DECADRIVER_POWER_EFFECT_ID] = simpleSkip((s, pending) => shuffleDec
 // 「自軍山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中から、特徴「仮面ライダー」を持つユニットカードを1枚選び、自軍パワー
 //  ゾーンに置く。その後、それ以外のカードは好きな順で山札の下に戻す。」（atwiki/page-1542）
 // オモテにする（任意）と置くカードを選ぶ（あれば必ず）を1つの選択にまとめる（XG1-054 と同じ）: 該当するカードがあればその中から選ぶ（選ぶ＝オモテに
-// する）、なければ「オモテにする」を選ぶ。残りは山札の上にあった順で山札の下に戻す。
+// する）、なければ「オモテにする」を選ぶ。オモテにした3枚は公開表示に出す（lastReveal）。残りが2枚以上なら山札の下に戻す順を1枚ずつ選ぶ
+// （rules/deckOrder.ts）。
 
 const RIDE_BOOKER_EFFECT_ID = "xg1_077_ride_booker";
 
@@ -525,14 +528,25 @@ XG1_KEYWORDS["XG1-077::ride_booker"] = (state, ctx) => {
 
 XG1_RESOLVERS[RIDE_BOOKER_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  const revealed = pending.xg1Meta?.steps ?? [];
-  const next = patchPlayer(close(state, pending), playerId, (p) => {
-    const picked = p.deck.find((c) => c.instanceId === instanceId);
-    const rest = p.deck.filter((c) => revealed.includes(c.instanceId) && c.instanceId !== instanceId);
-    const deck = p.deck.filter((c) => !revealed.includes(c.instanceId));
-    return { ...p, deck: [...deck, ...rest.map(stripForZone)], power: picked ? [...p.power, stripForZone(picked)] : p.power };
+  const revealedIds = pending.xg1Meta?.steps ?? [];
+  const revealed = state.players[playerId].deck.filter((c) => revealedIds.includes(c.instanceId));
+  const picked = revealed.find((c) => c.instanceId === instanceId);
+  let next = recordReveal(close(state, pending), {
+    playerId,
+    ownerId: playerId,
+    sourceCardId: "XG1-077",
+    effectLabel: "ライドブッカー",
+    from: "deck_top",
+    cards: revealedCards(revealed, (c) => (c.instanceId === instanceId ? "power" : "deck_bottom")),
   });
-  return { state: proceed(next, pending), log: logFor(state, playerId, "XG1-077", `${RIDE_BOOKER_EFFECT_ID}:${instanceId}`) };
+  if (picked) {
+    next = patchPlayer(next, playerId, (p) => ({ ...p, deck: p.deck.filter((c) => c.instanceId !== instanceId), power: [...p.power, stripForZone(picked)] }));
+  }
+  const rest = revealed.filter((c) => c.instanceId !== instanceId).map((c) => c.instanceId);
+  return {
+    state: returnToDeckInOrder(next, pending, rest),
+    log: logFor(state, playerId, "XG1-077", `${RIDE_BOOKER_EFFECT_ID}:${instanceId}`),
+  };
 };
 XG1_SKIPPERS[RIDE_BOOKER_EFFECT_ID] = simpleSkip();
 

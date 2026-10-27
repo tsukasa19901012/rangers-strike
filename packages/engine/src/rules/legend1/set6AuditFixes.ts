@@ -6,6 +6,7 @@
  *   このモジュールが開いた選択の解決。
  * - `applySet6TurnEnd`: 「自分がターンを終えるとき」の処理（RS-371【マスキーリボン】の後半）。
  */
+import { placeForDeckOrder } from "../deckOrder";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -65,7 +66,6 @@ function damageCount(player: PlayerState): number {
 // - 選択肢は「次の1枚をオモテにする」（山札の次のカード）。見送り＝そこで止める。
 
 export const FIGHTER_CHANGE_EFFECT_ID = "rs353_fighter_change_reveal";
-export const FIGHTER_CHANGE_ORDER_EFFECT_ID = "rs353_fighter_change_order";
 
 function beginFighterChange(state: GameState, ctx: GrantKeywordContext): GameState | null {
   const player = state.players[ctx.playerId];
@@ -92,14 +92,6 @@ function isMechaL(state: GameState, card: CardInstance): boolean {
   return def?.type === "unit" && unitSizeOf(state.definitions, card) === "L" && (def.features ?? []).includes("メカ");
 }
 
-function moveDeckCardToBottom(state: GameState, playerId: PlayerId, instanceId: string): GameState {
-  const player = state.players[playerId];
-  const idx = player.deck.findIndex((c) => c.instanceId === instanceId);
-  if (idx < 0) return state;
-  const [card, rest] = removeAt(player.deck, idx);
-  return { ...state, ...updatePlayer(state, playerId, { ...player, deck: [...rest, card] }) };
-}
-
 function finishFighterChange(state: GameState, pending: PendingEffectChoice, revealed: string[]): ChoiceOutcome {
   const playerId = pending.playerId;
   const player = state.players[playerId];
@@ -117,25 +109,15 @@ function finishFighterChange(state: GameState, pending: PendingEffectChoice, rev
   const logs = [
     log(playerId, "RS-353", state, `fighter_change:${toHand.map((c) => cardName(state.definitions, c.cardId)).join(",") || "none"}`),
   ];
+  // 「それ以外は好きな順で山札の下に戻す」— 番号を付けて順を選ぶ（rules/deckOrder.ts）。
   const others = revealed.filter((id) => !handIds.has(id));
-  if (others.length <= 1) {
-    for (const id of others) next = moveDeckCardToBottom(next, playerId, id);
-    return { state: finish(next, pending), logs };
-  }
-  // 「それ以外は好きな順で山札の下に戻す」— 先に選んだカードから順に山札の下へ。
-  return {
-    state: reopen(next, pending, {
-      playerId,
-      effectId: FIGHTER_CHANGE_ORDER_EFFECT_ID,
-      sourceCardId: "RS-353",
-      sourceInstanceId: pending.sourceInstanceId,
-      kind: "select_unit",
-      phasePlayerId: pending.phasePlayerId,
-      validInstanceIds: others,
-      optional: false,
-    }),
-    logs,
-  };
+  const placed = placeForDeckOrder(
+    next,
+    { playerId, phasePlayerId: pending.phasePlayerId, sourceCardId: "RS-353", sourceInstanceId: pending.sourceInstanceId },
+    others,
+    "bottom",
+  );
+  return { state: placed.order ? reopen(placed.state, pending, placed.order) : finish(placed.state, pending), logs };
 }
 
 function resolveFighterChange(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
@@ -172,18 +154,6 @@ function skipFighterChange(state: GameState, _playerId: PlayerId): ChoiceOutcome
     return { state: finish(state, pending), log: log(pending.playerId, "RS-353", state, "fighter_change:skipped") };
   }
   return finishFighterChange(state, pending, revealed);
-}
-
-function resolveFighterChangeOrder(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
-  const pending = state.pendingEffectChoice!;
-  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
-  let next = moveDeckCardToBottom(state, playerId, instanceId);
-  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
-  if (remaining.length > 1) {
-    return { state: { ...next, pendingEffectChoice: { ...pending, validInstanceIds: remaining } } };
-  }
-  for (const id of remaining) next = moveDeckCardToBottom(next, playerId, id);
-  return { state: finish(next, pending) };
 }
 
 // ---------------------------------------------------------------------------
@@ -395,7 +365,6 @@ function applyWaterDischarge(state: GameState, _playerId: PlayerId): ChoiceOutco
 // - 行うかを確認（confirm）→ 持ち主ごとに、2枚以上なら戻す順を選ぶ（先に選んだものから山札の下へ）。
 
 export const EMERGENCY_GUIDE_EFFECT_ID = "rs387_emergency_guide";
-export const EMERGENCY_GUIDE_ORDER_EFFECT_ID = "rs387_emergency_guide_order";
 
 function unriddenSVehicles(state: GameState, ownerId: PlayerId): string[] {
   const player = state.players[ownerId];
@@ -431,52 +400,27 @@ function moveRushToDeckBottom(state: GameState, ownerId: PlayerId, instanceId: s
   return { ...state, ...updatePlayer(state, ownerId, { ...player, rush, deck: [...player.deck, card] }) };
 }
 
-/** ownerIndex の持ち主から順に戻す。2枚以上なら順番の選択を開く。 */
-function continueEmergencyGuide(state: GameState, pending: PendingEffectChoice, ownerIndex: number): GameState {
-  const owners: PlayerId[] = ["player1", "player2"];
-  let next = state;
-  for (let i = ownerIndex; i < owners.length; i++) {
-    const ownerId = owners[i]!;
-    const ids = unriddenSVehicles(next, ownerId);
-    if (ids.length >= 2) {
-      return reopen(next, pending, {
-        playerId: pending.playerId,
-        effectId: EMERGENCY_GUIDE_ORDER_EFFECT_ID,
-        sourceCardId: "RS-387",
-        sourceInstanceId: pending.sourceInstanceId,
-        kind: "select_unit",
-        phasePlayerId: pending.phasePlayerId,
-        validInstanceIds: ids,
-        // 処理中の持ち主（own: 自分 / enemy: 相手）。
-        step: ownerId === pending.playerId ? "own" : "enemy",
-        optional: false,
-      });
-    }
-    for (const id of ids) next = moveRushToDeckBottom(next, ownerId, id);
-  }
-  return finish(next, pending);
-}
-
 function applyEmergencyGuide(state: GameState, _playerId: PlayerId): ChoiceOutcome {
   const pending = state.pendingEffectChoice!;
+  // 両軍のライドされていない S ビークルを持ち主の山札の下に置き、2枚以上なら戻す順を選ぶ（rules/deckOrder.ts。使ったプレイヤーが選ぶ）。
+  let next = state;
+  const ids: string[] = [];
+  for (const ownerId of ["player1", "player2"] as const) {
+    for (const id of unriddenSVehicles(next, ownerId)) {
+      next = moveRushToDeckBottom(next, ownerId, id);
+      ids.push(id);
+    }
+  }
+  const placed = placeForDeckOrder(
+    next,
+    { playerId: pending.playerId, phasePlayerId: pending.phasePlayerId, sourceCardId: "RS-387", sourceInstanceId: pending.sourceInstanceId },
+    ids,
+    "bottom",
+  );
   return {
-    state: continueEmergencyGuide(state, pending, 0),
+    state: placed.order ? reopen(placed.state, pending, placed.order) : finish(placed.state, pending),
     log: log(pending.playerId, "RS-387", state, "emergency_guide"),
   };
-}
-
-function resolveEmergencyGuideOrder(state: GameState, _playerId: PlayerId, instanceId: string): ChoiceOutcome {
-  const pending = state.pendingEffectChoice!;
-  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
-  const ownerId: PlayerId = pending.step === "enemy" ? opponent(pending.playerId) : pending.playerId;
-  const ownerIndex = ownerId === "player1" ? 0 : 1;
-  let next = moveRushToDeckBottom(state, ownerId, instanceId);
-  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
-  if (remaining.length > 1) {
-    return { state: { ...next, pendingEffectChoice: { ...pending, validInstanceIds: remaining } } };
-  }
-  for (const id of remaining) next = moveRushToDeckBottom(next, ownerId, id);
-  return { state: continueEmergencyGuide(next, pending, ownerIndex + 1) };
 }
 
 // ---------------------------------------------------------------------------
@@ -972,12 +916,10 @@ registerChoiceRefresher(STRING_FIST_SECOND_STEP_REFRESH, (state, choice) => {
 
 const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [FIGHTER_CHANGE_EFFECT_ID]: resolveFighterChange,
-  [FIGHTER_CHANGE_ORDER_EFFECT_ID]: resolveFighterChangeOrder,
   [MASKY_RIBBON_EFFECT_ID]: resolveMaskyRibbon,
   [MASKY_RIBBON_DEPLOY_EFFECT_ID]: resolveMaskyRibbonDeploy,
   [WATER_DISCHARGE_EFFECT_ID]: (s, p) => applyWaterDischarge(s, p),
   [EMERGENCY_GUIDE_EFFECT_ID]: (s, p) => applyEmergencyGuide(s, p),
-  [EMERGENCY_GUIDE_ORDER_EFFECT_ID]: resolveEmergencyGuideOrder,
   [LIFE_SEARCH_EFFECT_ID]: (s, p) => applyLifeSearch(s, p),
   [LIFE_SEARCH_PICK_EFFECT_ID]: resolveLifeSearchPick,
   [SOUL_COLLECTION_EFFECT_ID]: resolveSoulCollection,

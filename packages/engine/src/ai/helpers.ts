@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { DECK_ORDER_RESET } from "../rules/deckOrder";
 import { pickSet8BCpuChoice } from "../rules/legend1/set8NamedEffectsB";
 import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
 import { pickSet7DCpuChoice } from "../rules/legend1/set7NamedEffectsD";
@@ -1428,6 +1429,11 @@ export function pickEffectChoice(
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
 
+  // 「好きな順で山札の下（上）に戻す」（rules/deckOrder.ts）: 選び直さず、並びどおりに番号を付けて確定する。
+  if (pending.deckOrderMeta) {
+    return actions.find((a) => a.type === "resolve_effect_choice" && a.instanceId !== DECK_ORDER_RESET) ?? null;
+  }
+
   const deckStack = pickDeckStackChoice(state, pending, actions);
   if (deckStack) return deckStack;
   const residentSwap = pickResidentSwapChoice(state, pending, actions);
@@ -1604,10 +1610,6 @@ export function pickEffectChoice(
   if (pending.kind === "denji_machine") {
     if (pending.denjiMachineMeta?.step === "reveal") {
       return actions.find((a) => a.type === "confirm_denji_reveal") ?? null;
-    }
-    if (pending.denjiMachineMeta?.step === "order_bottom") {
-      const pick = actions.find((a) => a.type === "resolve_effect_choice");
-      return pick ?? null;
     }
     return null;
   }

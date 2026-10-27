@@ -16,6 +16,7 @@ import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
+import { closeWithDeckOrder, placeForDeckOrder } from "../deckOrder";
 import { addTurnFeatureModifier, KIRIGAKURE_RULE_ID, unitFeatures } from "../addedFeatures";
 import { applyDamageToPlayer } from "../damagePayment";
 import { grantSp1ToBattleUnit, markBattleNcEffect } from "../namedUnitEffects";
@@ -449,7 +450,7 @@ export function trySet7BNcEffect(state: GameState, playerId: PlayerId, card: Car
 // ---------------------------------------------------------------------------
 // RS-455 ニンジャブラック【岩地獄の術】
 // 「SPが空欄ではない敵軍Sユニットを自分の手札の枚数と同じ数まで選び、持ち主の山札の下に好きな順で戻してもよい。」（atwiki/page-800）
-// 1体ずつ選び（選んだ順に山札の下へ）、手札の枚数まで選んだか確定で終える。
+// 1体ずつ選び、手札の枚数まで選んだか確定で山札の下へ。2体以上なら番号を付けて順を選ぶ（rules/deckOrder.ts）。
 
 const IWA_JIGOKU = "rs455_iwa_jigoku";
 
@@ -501,7 +502,7 @@ function finishIwaJigoku(state: GameState, playerId: PlayerId): ChoiceOutcome {
     }
   }
   const log = logFor(state, playerId, pending.sourceCardId, `${IWA_JIGOKU}:${selected.length}`);
-  return { state: finish(next, pending), log };
+  return { state: closeWithDeckOrder(next, pending, selected), log };
 }
 
 CHOICE_RESOLVERS[IWA_JIGOKU] = (state, playerId, instanceId) => {
@@ -585,7 +586,14 @@ registerOptionalEffect(KAEN_REVEAL, {
     }
     const revealedIds = revealed.map((c) => c.instanceId);
     if (destroyed === 0) {
-      next = moveRevealedToBottom(next, enemyId, revealedIds);
+      // 相手が、オモテにしたカードを番号を付けて好きな順で山札の下に戻す（rules/deckOrder.ts）。
+      const placed = placeForDeckOrder(
+        next,
+        { playerId: enemyId, phasePlayerId: pending.phasePlayerId, sourceCardId: pending.sourceCardId, sourceInstanceId: pending.sourceInstanceId },
+        revealedIds,
+        "bottom",
+      );
+      next = placed.order ? openEffectChoice(placed.state, placed.order) : placed.state;
     } else {
       next = openEffectChoice(next, {
         playerId: enemyId,
@@ -605,24 +613,19 @@ registerOptionalEffect(KAEN_REVEAL, {
   },
 });
 
-/** オモテにしたカード（山札の上にある）のうち手札に加えなかったものを、山札の下に（オモテにした順で）戻す。 */
-function moveRevealedToBottom(state: GameState, ownerId: PlayerId, revealedIds: string[]): GameState {
-  return patchPlayer(state, ownerId, (p) => {
-    const rest = p.deck.filter((c) => revealedIds.includes(c.instanceId));
-    return { ...p, deck: [...p.deck.filter((c) => !revealedIds.includes(c.instanceId)), ...rest] };
-  });
-}
-
 function finishKaenPick(state: GameState, playerId: PlayerId): ChoiceOutcome {
   const pending = state.pendingEffectChoice!;
   const selected = pending.selectedInstanceIds ?? [];
   const revealed = pending.viewedInstanceIds ?? [];
-  let next = patchPlayer(state, playerId, (p) => {
+  const next = patchPlayer(state, playerId, (p) => {
     const taken = p.deck.filter((c) => selected.includes(c.instanceId));
     return { ...p, deck: p.deck.filter((c) => !selected.includes(c.instanceId)), hand: [...p.hand, ...taken] };
   });
-  next = moveRevealedToBottom(next, playerId, revealed.filter((id) => !selected.includes(id)));
-  return { state: finish(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${KAEN_PICK}:${selected.length}`) };
+  // 残りは相手が番号を付けて好きな順で山札の下に戻す（rules/deckOrder.ts）。
+  return {
+    state: closeWithDeckOrder(next, pending, revealed.filter((id) => !selected.includes(id))),
+    log: logFor(state, playerId, pending.sourceCardId, `${KAEN_PICK}:${selected.length}`),
+  };
 }
 
 CHOICE_RESOLVERS[KAEN_PICK] = (state, playerId, instanceId) => {

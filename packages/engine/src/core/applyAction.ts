@@ -392,10 +392,7 @@ import {
 import { applyLionDance, applyUseJuuKunDo, isLionDanceCard } from "../rules/juuKunDo";
 import { applyResolveRuinSurvey } from "../rules/ruinSurvey";
 import { applySeabedDrawPlacement, openEffectChoice, SUPER_BRAIN_KEEP_EFFECT_ID } from "../rules/pendingChoices";
-import {
-  applyConfirmDenjiReveal,
-  applyDenjiBottomOrderSelect,
-} from "../rules/denjiMachine";
+import { applyConfirmDenjiReveal } from "../rules/denjiMachine";
 import {
   applyConfirmShironReveal,
   applyShironPickSelect,
@@ -3418,11 +3415,6 @@ function applyActionCore(
           return ok(held.state, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId));
         }
         return continueAttackAfterDeclaration(held.state, held.battle, held.wingAttackFromRush);
-      }
-      if (pending?.kind === "denji_machine") {
-        const result = applyDenjiBottomOrderSelect(state, playerId, action.instanceId);
-        if ("error" in result) return fail(result.error);
-        return ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice"));
       }
       if (pending?.kind === "shiron_light") {
         const result = applyShironPickSelect(state, playerId, action.instanceId);

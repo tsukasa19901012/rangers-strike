@@ -448,6 +448,17 @@ describe("RS-556 バトルサルダー", () => {
     expect(deck.slice(2).sort()).toEqual(["TST-OP:d1", "TST-OP:d2", "TST-UNIT-0:d0"]);
   });
 
+  it("RS-556: 【サルダークロー】戻す順は相手が番号を付けて選び、確定するまでオモテにしたカードは山札の上に残る（出典: atwiki/page-1178「相手は…好きな順で戻す」）", () => {
+    let s = ncEnter("RS-556", 3, p2());
+    s = pick(s, "RS-556:g");
+    while (s.pendingEffectChoice && s.pendingEffectChoice.effectId !== "deck_bottom_order") s = pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(s.players.player2.deck.map((c) => c.instanceId).slice(0, 3)).toEqual(["TST-UNIT-0:d0", "TST-OP:d1", "TST-OP:d2"]);
+    s = pick(pick(s, "TST-OP:d2"), "TST-UNIT-0:d0");
+    s = resolveAll(pick(s, "order_done"));
+    expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(["TST-UNIT-2:d3", "TST-OP:d4", "TST-OP:d2", "TST-UNIT-0:d0", "TST-OP:d1"]);
+  });
+
   it("RS-556: 【サルダークロー】任意 — オモテにしないことを選べる（出典: atwiki/page-1178「オモテにしてもよい」）", () => {
     const s = ncEnter("RS-556", 3, p2());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-556");

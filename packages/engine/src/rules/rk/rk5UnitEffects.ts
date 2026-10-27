@@ -10,6 +10,8 @@
  * - BP・SP・カテゴリ・アタック先・イマジンの撃破テキストの継続効果は rules/rk/rk5Fields.ts。
  * 構成は rules/rk/rk4UnitEffects.ts と同じ。
  */
+import { placeForDeckOrder } from "../deckOrder";
+import { DECK_ORDER_THEN } from "../deckOrderThen";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
@@ -452,19 +454,11 @@ CHOICE_RESOLVERS[IMAGIN_CONTRACT_EFFECT_ID] = (state, playerId, instanceId) => {
 // 「次の効果を、相手、自分の順に行う。 自分自身の山札の上から3枚をオモテにして相手に見せる。その中から特徴「車両」を持つMユニットのカードを
 //  すべて自分自身のパワーゾーンに置き、それ以外は好きな順で自分自身の山札の下に戻す。」（atwiki/page-667）
 // - オモテにしたカードは戻すまで山札の上に置いたままにする。パワーゾーンにはオモテ向きで1枚ずつ置く（grnrngr/faq-rider-2 RK-089 Q2）。
-// - 戻す順番は、そのカードの持ち主が1枚ずつ選ぶ（先に選んだカードから山札の下に置く。最後の1枚は選ばずに置く）。
+// - 戻す順番は、そのカードの持ち主が番号を付けて選ぶ（rules/deckOrder.ts）。相手の分を確定してから自分の分をオモテにする。
 
 export const BOARDING_REFUSAL_EFFECT_ID = "rk089_boarding_refusal_order";
 
-function deckTopToBottom(state: GameState, ownerId: PlayerId, instanceId: string): GameState {
-  return patchPlayer(state, ownerId, (p) => {
-    const card = p.deck.find((c) => c.instanceId === instanceId);
-    if (!card) return p;
-    return { ...p, deck: [...p.deck.filter((c) => c.instanceId !== instanceId), stripForZone(card)] };
-  });
-}
-
-/** owner の分を行う。並べる選択が開けばその state、終われば次（rest の先頭）へ進む。 */
+/** owners の分を順に行う。並べる選択が開けば、確定した後に残りの owners を行う（DECK_ORDER_THEN rk089）。 */
 function runBoardingRefusal(state: GameState, owners: PlayerId[], template: PendingEffectChoice): GameState {
   let next = state;
   for (let i = 0; i < owners.length; i++) {
@@ -492,23 +486,28 @@ function runBoardingRefusal(state: GameState, owners: PlayerId[], template: Pend
       });
     }
     const others = revealed.filter((c) => !trainIds.has(c.instanceId)).map((c) => c.instanceId);
-    if (others.length === 1) next = deckTopToBottom(next, owner, others[0]!);
-    if (others.length >= 2) {
-      return openEffectChoice(next, {
-        ...template,
+    const placed = placeForDeckOrder(
+      next,
+      {
         playerId: owner,
-        effectId: BOARDING_REFUSAL_EFFECT_ID,
-        kind: "select_unit",
-        validInstanceIds: others,
-        selectedInstanceIds: [],
-        selectCount: 1,
-        optional: false,
-        rk5Meta: { owners: owners.slice(i + 1) },
-      });
-    }
+        phasePlayerId: template.phasePlayerId,
+        sourceCardId: template.sourceCardId,
+        sourceInstanceId: template.sourceInstanceId,
+        then: { key: BOARDING_REFUSAL_EFFECT_ID, data: { owners: owners.slice(i + 1), template } },
+      },
+      others,
+      "bottom",
+    );
+    next = placed.state;
+    if (placed.order) return openEffectChoice(next, placed.order);
   }
   return proceed(next, template);
 }
+
+DECK_ORDER_THEN[BOARDING_REFUSAL_EFFECT_ID] = (state, _pending, data) => {
+  const { owners, template } = data as { owners: PlayerId[]; template: PendingEffectChoice };
+  return runBoardingRefusal(state, owners, template);
+};
 
 function applyBoardingRefusal(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const template: PendingEffectChoice = {
@@ -520,19 +519,6 @@ function applyBoardingRefusal(state: GameState, ctx: GrantKeywordContext): Grant
   };
   return { state: runBoardingRefusal(state, [opponent(ctx.playerId), ctx.playerId], template), detail: "rk089" };
 }
-
-CHOICE_RESOLVERS[BOARDING_REFUSAL_EFFECT_ID] = (state, playerId, instanceId) => {
-  const pending = state.pendingEffectChoice!;
-  const log = logFor(state, playerId, pending.sourceCardId, `${BOARDING_REFUSAL_EFFECT_ID}:${instanceId}`);
-  let next = deckTopToBottom(state, playerId, instanceId);
-  const rest = pending.validInstanceIds.filter((id) => id !== instanceId);
-  if (rest.length >= 2) return { state: { ...next, pendingEffectChoice: { ...pending, validInstanceIds: rest } }, log };
-  if (rest.length === 1) next = deckTopToBottom(next, playerId, rest[0]!);
-  const cleared = close({ ...next, pendingEffectChoice: pending }, pending);
-  // 続きは使ったプレイヤーの手番に戻して行う。
-  const template: PendingEffectChoice = { ...pending, playerId: pending.phasePlayerId === playerId ? playerId : opponent(playerId) };
-  return { state: runBoardingRefusal(cleared, pending.rk5Meta?.owners ?? [], template), log };
-};
 
 // ---------------------------------------------------------------------------
 // RK-093 蜘蛛男【要人の暗殺】（NC）

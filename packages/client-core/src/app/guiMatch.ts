@@ -80,7 +80,8 @@ export type GuiDialogView = {
   rect: Rect;
   titleLines: PanelLine[];
   /** `note`: a caption that is not where the card is (「見ている」, a revealed card's destination); the card can't be picked. */
-  cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect; note?: string })[];
+  /** `order`: the number the card got in a deck-bottom order choice. */
+  cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect; note?: string; order?: number })[];
   buttons: MenuRowView[];
   /** Index of the first visible button among all buttons. */
   buttonOffset: number;
@@ -457,7 +458,11 @@ export class GuiMatch {
     const viewed = viewedCardIds(this.state())
       .filter((id) => !cards.has(id))
       .map((id) => ({ kind: "card" as const, id, items: [] as MenuItem[] }));
-    return [...[...cards].map(([id, items]) => ({ kind: "card" as const, id, items })), ...viewed, ...buttons, ...pass];
+    const items = [...[...cards].map(([id, items]) => ({ kind: "card" as const, id, items })), ...viewed];
+    // Choosing the order to put cards on the deck bottom: the cards keep their places as they get numbers.
+    const orderIds = this.state().pendingEffectChoice?.deckOrderMeta?.ids;
+    if (orderIds) items.sort((a, b) => orderIds.indexOf(a.id) - orderIds.indexOf(b.id));
+    return [...items, ...buttons, ...pass];
   }
 
   // ------------------------------------------------------------ popups
@@ -1174,14 +1179,14 @@ export class GuiMatch {
       const base = this.dialogRect();
       const pending = this.pendingView();
       const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: base.w - 8 };
-      const titleTexts = pending
-        ? [...wrapText(pending.title, { ...wrap, maxLines: 2 }), ...(pending.source ? [fitLine(`カード: ${pending.source}`, wrap)] : [])]
-        : ["選択"];
+      // Every line of the (wrapped) question is accent; only the source card line is dim.
+      const questionLines = pending ? wrapText(pending.title, { ...wrap, maxLines: 2 }) : ["選択"];
+      const titleTexts = [...questionLines, ...(pending?.source ? [fitLine(`カード: ${pending.source}`, wrap)] : [])];
       // What the effect does, so a lone 「使う / 選ばない」 says what it asks (the side panel is off on a phone).
       const effectTexts = pending?.detail ? wrapText(pending.detail, { ...wrap, maxLines: this.dialogEffectLines() }) : [];
       let y = base.y + 4;
       const titleLines: PanelLine[] = [
-        ...titleTexts.map((text, i) => ({ text, tone: (i === 0 ? "accent" : "dim") as PanelTone })),
+        ...titleTexts.map((text, i) => ({ text, tone: (i < questionLines.length ? "accent" : "dim") as PanelTone })),
         ...effectTexts.map((text) => ({ text, tone: "body" as PanelTone })),
       ].map((line) => {
         const placed = { ...line, rect: { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight } };
@@ -1195,6 +1200,8 @@ export class GuiMatch {
       const cards: GuiDialogView["cards"] = [];
       const marks: ScrollMark[] = [];
       const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
+      const orderChoice = state.pendingEffectChoice?.deckOrderMeta ? state.pendingEffectChoice : undefined;
+      const orderOf = (id: string) => (orderChoice?.selectedInstanceIds ?? []).indexOf(id) + 1;
       if (cardItems.length > 0) {
         y += 2;
         const shown = cardItems.slice(this.dialogOffset, this.dialogOffset + visible);
@@ -1211,6 +1218,8 @@ export class GuiMatch {
             focused: index === this.dialogCursor,
             caption: clipLine(viewing ? "見ている" : `${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`, fitTile),
             ...(viewing ? { note: "見ている" } : {}),
+            // The number a card got in a deck-bottom order choice (1 = upper, the last = the very bottom).
+            ...(orderOf(item.id) > 0 ? { order: orderOf(item.id), note: clipLine(`${orderOf(item.id)}番目`, fitTile) } : {}),
             captionRect: { x: rect.x, y: rect.y + rect.h, w: rect.w, h: g.lineHeight },
           });
           if (index === this.dialogCursor) detailCard = { cardId: tile.kind === "hidden" ? null : at.card.cardId, hidden: tile.kind === "hidden" };

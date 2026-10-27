@@ -225,6 +225,33 @@ describe("XG7-042 仮面ライダークウガ×仮面ライダーディケイド
     const deck = s.players.player1.deck.map((c) => c.instanceId);
     expect(deck.slice(0, 1)).toEqual(["TST-OP:k5"]);
   });
+
+  it("XG7-042: 【ライダー大戦の世界】残り4枚とこのユニットを山札の下に戻す順を1枚ずつ選べる（出典: atwiki/page-2439「残りのカードとこのユニットを好きな順で山札の下に戻す」）", () => {
+    let s = settle(endTurn(p1Battle({ battle: [inst("XG7-042", "kd")], deck: deckCards(6, "k") }, {}, EXTRA)));
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP:k2" });
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+    expect(s.pendingEffectChoice?.optional).toBe(false);
+    expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(["TST-OP:k0", "TST-OP:k1", "TST-OP:k3", "TST-OP:k4", "XG7-042:kd"]);
+    // 選んだ順に番号が付き、残り1枚には最後の番号が付く。確定するまで山札の並びは変えない
+    for (const id of ["TST-OP:k1", "TST-OP:k3"]) s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["TST-OP:k1", "TST-OP:k3"]);
+    expect(s.pendingEffectChoice?.validInstanceIds).toContain("order_reset");
+    // 番号の付いたカードをもう一度選ぶと番号が外れ、後ろの番号が詰まる
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP:k1" });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["TST-OP:k3"]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP:k1" });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["TST-OP:k3", "TST-OP:k1"]);
+    // 選び直すと番号がすべて外れる
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "order_reset" });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual([]);
+    for (const id of ["XG7-042:kd", "TST-OP:k4", "TST-OP:k0", "TST-OP:k3"]) s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["XG7-042:kd", "TST-OP:k4", "TST-OP:k0", "TST-OP:k3", "TST-OP:k1"]);
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["order_done", "XG7-042:kd", "TST-OP:k4", "TST-OP:k0", "TST-OP:k3", "TST-OP:k1", "order_reset"]);
+    s = resolveAll(act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "order_done" }));
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(["TST-OP:k5", "XG7-042:kd", "TST-OP:k4", "TST-OP:k0", "TST-OP:k3", "TST-OP:k1"]);
+    expect(s.players.player1.hand.map((c) => c.instanceId)).toContain("TST-OP:k2");
+  });
 });
 
 // ===========================================================================

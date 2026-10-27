@@ -1,4 +1,5 @@
 import { recordReveal } from "./revealNotice";
+import { closeWithDeckOrder, deckOrderChoice, resolveDeckOrderPick } from "./deckOrder";
 import { hasNameOrAlias } from "../core/cardNames";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import { redRacerPowerCostBonus } from "../core/power";
@@ -3085,6 +3086,12 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
+  if (pending.pickThenDeckOrder) {
+    return {
+      state: closeWithDeckOrder(state, pending, pending.processedInstanceIds ?? [], pending.pickThenDeckOrder),
+      log: buildLogEntry(playerId, "skip_effect_choice", pending.sourceCardId, state.definitions, pending.effectId),
+    };
+  }
   const errata = trySkipErrataChoice(state, playerId);
   if (errata) return errata;
   const set4 = trySkipSet4Choice(state, playerId);
@@ -3436,6 +3443,9 @@ export function applyEffectChoiceSelect(
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
+
+  // 「好きな順で山札の下（上）に戻す」の順（rules/deckOrder.ts）。どのカードの効果でも同じ選択。
+  if (pending.deckOrderMeta) return resolveDeckOrderPick(state, playerId, instanceId);
 
   const errata = tryResolveErrataChoice(state, playerId, instanceId);
   if (errata) return errata;
@@ -5726,6 +5736,14 @@ export function applyEffectChoiceSelect(
             }),
           };
         }
+        // 持ち主が番号を付けて山札の上の順を選ぶ（rules/deckOrder.ts。1番が一番上）。選んだ後で元の効果の続き（resumeChoice）へ。
+        const order = deckOrderChoice(
+          nextState,
+          { playerId: deckOwnerId, phasePlayerId: pending.phasePlayerId, sourceCardId: pending.sourceCardId, sourceInstanceId: pending.sourceInstanceId },
+          top3,
+          "top",
+        );
+        if (order) nextState = openEffectChoice({ ...nextState, pendingEffectChoice: undefined }, order);
         return finishChoice(nextState, pending, deckOwnerId);
       }
       if (pending.effectId === "arino" && instanceId === "reveal_top") {

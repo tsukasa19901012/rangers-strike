@@ -152,6 +152,9 @@ const VALUE_LABELS: Record<string, string> = {
   reveal_draw: "敵軍山札の上をオモテにする",
   recruit_abaredo_on_destroy: "「アバレッド」を出す効果を先に処理",
   xg6_done: "選ぶのを終える",
+  // 「好きな順で山札の下に戻す」（engine rules/deckOrder.ts）
+  order_done: "この順で戻す",
+  order_reset: "選び直す",
   plasma_done: "撃破するのを終える",
   __none__: "発動しない",
   __set9a_done__: "選ぶのを終える",
