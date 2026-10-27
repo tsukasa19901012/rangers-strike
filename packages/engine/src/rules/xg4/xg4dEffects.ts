@@ -36,6 +36,7 @@ import {
 } from "../rm/rm1Effects";
 import { XG4_CONFIRMERS, XG4_KEYWORDS, XG4_RESOLVERS, XG4_SKIPPERS, addTurnRecord, allFieldUnits, hasTurnRecordFor, isCard, noop, printedFeatures } from "./xg4Common";
 import { XG4_ATTACKRIDE_RULE, XG4_HARDSHOT_RULE, XG4_LIGHTNING_RULE, XG4_RIDOL_RULE } from "./xg4Fields";
+import { deckOrderChoice } from "../deckOrder";
 
 const COMMAND_LIMIT = 5;
 
@@ -146,10 +147,9 @@ XG4_RESOLVERS[HANGER_FIELD_EFFECT_ID] = (state, playerId, instanceId) => {
 // ---------------------------------------------------------------------------
 // XG4-066 マシンハードスプラッシャー【水中魚雷】（ラッシュしたとき）
 // 「敵軍山札の上から3枚をオモテにしてよい。そうしたとき、オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す。」（atwiki/page-2095）。
-// 1枚ずつ選んだ順に山札の下へ（最後の1枚は自動）。
+// 2枚以上なら、確定するまで山札の上に置いたまま、番号を付けて山札の下の順を選ぶ（rules/deckOrder.ts）。
 
 const TORPEDO_EFFECT_ID = "xg4066_torpedo";
-const TORPEDO_ORDER_EFFECT_ID = "xg4066_torpedo_order";
 
 XG4_KEYWORDS["XG4-066::mizukami"] = (state, ctx) => {
   if (state.players[opponent(ctx.playerId)].deck.length === 0) return { state, detail: "xg4066:empty_deck" };
@@ -175,19 +175,8 @@ XG4_CONFIRMERS[TORPEDO_EFFECT_ID] = (state, playerId) => {
     for (const id of ids) next = torpedoToBottom(next, enemyId, id);
     return { state: proceed(next, pending), log };
   }
-  return { state: openNext(next, pending, { ...base(pendingBase(pending), "XG4-066"), effectId: TORPEDO_ORDER_EFFECT_ID, kind: "pick_effect_branch", validInstanceIds: ids, selectCount: 1, optional: false }), log };
-};
-
-XG4_RESOLVERS[TORPEDO_ORDER_EFFECT_ID] = (state, playerId, instanceId) => {
-  const pending = state.pendingEffectChoice!;
-  const enemyId = opponent(playerId);
-  let next = torpedoToBottom(state, enemyId, instanceId);
-  const rest = pending.validInstanceIds.filter((id) => id !== instanceId);
-  const log = logFor(state, playerId, "XG4-066", `${TORPEDO_ORDER_EFFECT_ID}:${instanceId}`);
-  if (rest.length > 1) return { state: { ...next, pendingEffectChoice: { ...pending, validInstanceIds: rest } }, log };
-  next = close(next, pending);
-  for (const id of rest) next = torpedoToBottom(next, enemyId, id);
-  return { state: proceed(next, pending), log };
+  const order = deckOrderChoice(next, { playerId, phasePlayerId: pending.phasePlayerId, sourceCardId: "XG4-066", sourceInstanceId: pending.sourceInstanceId }, ids, "bottom")!;
+  return { state: openNext(next, pending, order), log };
 };
 
 // ---------------------------------------------------------------------------

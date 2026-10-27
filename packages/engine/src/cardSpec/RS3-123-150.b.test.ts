@@ -561,6 +561,19 @@ describe("RS-137 アクアドルフィン", () => {
     expect(deck.indexOf("TST-UNIT-0:u4")).toBeLessThan(deck.indexOf("TST-UNIT-0:u1"));
   });
 
+  it("RS-137: 選び終えたら（見送っても）番号を付けて戻す順を選び直せる（出典: atwiki/page-352「好きな順で」）", () => {
+    let s = rushDolphin();
+    s = pick(s, "TST-UNIT-0:u4");
+    s = pick(s, "TST-UNIT-0:u1");
+    s = skip(s);
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+    s = pick(s, "TST-UNIT-0:u1");
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["TST-UNIT-0:u1", "TST-UNIT-0:u4"]);
+    s = settle(pick(s, "order_done"));
+    const deck = zoneIds(s, "player1", "deck");
+    expect(deck.slice(-2)).toEqual(["TST-UNIT-0:u1", "TST-UNIT-0:u4"]);
+  });
+
   // faq-card-3 RS-137 Q1「はい、公開しなければなりません。」
   it.todo(
     "RS-137: 公式Q&A — 山札に戻す順番は相手にも公開する（出典: grnrngr/faq-card-3 RS-137 Q1）— エンジンは非公開情報（相手から見えるか）を持たず、公開の有無を観測できない",

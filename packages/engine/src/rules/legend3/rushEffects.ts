@@ -17,6 +17,7 @@ import {
   startSelectUnitChoice,
 } from "../pendingChoices";
 import type { NamedEffectOutcome } from "../namedUnitEffects";
+import { closeWithDeckOrder } from "../deckOrder";
 
 function rushPowerDiscardCount(cardId: string): number {
   const block = getUnitEffectBlock(cardId);
@@ -121,9 +122,7 @@ export function resolveSubmergePick(
   const remaining = pending.validInstanceIds.filter(
     (id) => id !== instanceId && next.players[pending.playerId].discard.some((c) => c.instanceId === id),
   );
-  if (processed.length >= 3 || remaining.length === 0) {
-    return { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
-  }
+  if (processed.length >= 3 || remaining.length === 0) return closeWithDeckOrder(next, pending, processed);
   return {
     ...next,
     pendingEffectChoice: { ...pending, validInstanceIds: remaining, processedInstanceIds: processed },
@@ -269,7 +268,7 @@ export function resolveLegend3OnRushEffects(
     case "submerge": {
       const rusher = nextState.players[rusherPlayerId];
       // 「ユニットのカードを3枚まで選んで、山札の下に好きな順で戻してもよい」（atwiki/page-352）。
-      // 1枚ずつ選び、選んだ順に山札の下へ置く（見送ればそこで終える）。
+      // 1枚ずつ選んで山札の下へ置き、選び終えたら（見送ったときも）2枚以上なら番号を付けて順を選ぶ（rules/deckOrder.ts）。
       const units = rusher.discard
         .filter((c) => getDefinition(nextState.definitions, c.cardId)?.type === "unit")
         .map((c) => c.instanceId);
@@ -285,6 +284,7 @@ export function resolveLegend3OnRushEffects(
           selectCount: 1,
           processedInstanceIds: [],
           optional: true,
+          pickThenDeckOrder: "bottom",
         });
       }
       break;

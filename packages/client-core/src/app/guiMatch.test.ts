@@ -531,14 +531,14 @@ describe("choosing the order to put cards on the deck bottom", () => {
       pendingEffectChoice: {
         playerId: "player1",
         phasePlayerId: "player1",
-        effectId: "xg1_077_ride_booker_order",
+        effectId: "deck_bottom_order",
         sourceCardId: "XG1-077",
         kind: "select_unit",
         validInstanceIds: bottom,
         selectedInstanceIds: [],
         selectCount: 3,
         optional: false,
-        deckBottomOrderMeta: { ids: bottom, undos: 0 },
+        deckOrderMeta: { ids: bottom, undos: 0, to: "bottom" },
       },
     };
     session.version++;
@@ -564,14 +564,14 @@ describe("choosing the order to put cards on the deck bottom", () => {
       pendingEffectChoice: {
         playerId: "player1",
         phasePlayerId: "player1",
-        effectId: "xg1_077_ride_booker_order",
+        effectId: "deck_bottom_order",
         sourceCardId: "XG1-077",
         kind: "select_unit",
         validInstanceIds: ["order_done", bottom[2]!, bottom[0]!, bottom[1]!, "order_reset"],
         selectedInstanceIds: [bottom[2]!, bottom[0]!, bottom[1]!],
         selectCount: 3,
         optional: false,
-        deckBottomOrderMeta: { ids: bottom, undos: 0 },
+        deckOrderMeta: { ids: bottom, undos: 0, to: "bottom" },
       },
     };
     session.version++;
@@ -580,7 +580,7 @@ describe("choosing the order to put cards on the deck bottom", () => {
     expect(dialog.cards.map((c) => c.order)).toEqual([2, 3, 1]);
     // A numbered card can be picked again to take its number off.
     expect(dialog.cards.every((c) => c.actionable)).toBe(true);
-    expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: この順で山札の下に戻す", "選ぶ: 選び直す"]);
+    expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: この順で戻す", "選ぶ: 選び直す"]);
   });
 
   it("draws every line of a two-line question in the accent colour", () => {
@@ -593,14 +593,14 @@ describe("choosing the order to put cards on the deck bottom", () => {
       pendingEffectChoice: {
         playerId: "player1",
         phasePlayerId: "player1",
-        effectId: "xg7042_rider_war_order",
+        effectId: "deck_bottom_order",
         sourceCardId: "XG7-042",
         kind: "select_unit",
         validInstanceIds: bottom,
         selectedInstanceIds: [],
         selectCount: 3,
         optional: false,
-        deckBottomOrderMeta: { ids: bottom, undos: 0 },
+        deckOrderMeta: { ids: bottom, undos: 0, to: "bottom" },
       },
     };
     session.version++;

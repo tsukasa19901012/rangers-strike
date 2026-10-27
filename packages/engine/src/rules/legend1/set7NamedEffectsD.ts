@@ -17,6 +17,8 @@ import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
+import { deckOrderChoice, placeForDeckOrder } from "../deckOrder";
+import { DECK_ORDER_THEN } from "../deckOrderThen";
 import { addTurnFeatureModifier, KIRIGAKURE_RULE_ID, unitFeatures } from "../addedFeatures";
 import { grantBpBoostToBattleUnit, grantSp1ToBattleUnit, markBattleNcEffect } from "../namedUnitEffects";
 import { spBecomesInZone } from "../fractionalSp";
@@ -845,7 +847,7 @@ CHOICE_RESOLVERS[DAI_ROUROU_KICK_EFFECT_ID] = (state, playerId, instanceId) => {
 //  比べる勝負を2回繰り返す。数字の大きい方を勝ちとして、自分が2回連続で勝ったなら、このターン、これは「SP3」になる。
 //  2回連続で負けたなら、これは撃破される。その後、オモテにしたカードは、好きな順番で持ち主の山札の下に戻す。」
 // （atwiki/page-760。コメント欄の修正後「次の効果を発動できる」）
-// 山札の下に戻す順番は、カードが2枚ならどちらを先に山札の下に置くかを選ぶ（持ち主ごと。効果を使ったプレイヤーが選ぶ）。
+// 山札の下に戻す順番は、持ち主ごとに番号を付けて選ぶ（rules/deckOrder.ts。効果を使ったプレイヤーが選ぶ）。
 
 export const GO_ON_SWORD_EFFECT_ID = "rs515_go_on_sword";
 
@@ -914,17 +916,9 @@ CHOICE_RESOLVERS[GO_ON_SWORD_EFFECT_ID] = (state, playerId, instanceId) => {
 
 export const GO_ON_SWORD_ORDER_EFFECT_ID = "rs515_go_on_sword_order";
 
-/** 持ち主の山札の上にあるオモテにしたカードを、山札の下へ移す。 */
-function revealedToDeckBottom(state: GameState, ownerId: PlayerId, instanceId: string): GameState {
-  return patchPlayer(state, ownerId, (p) => {
-    const card = p.deck.find((c) => c.instanceId === instanceId);
-    if (!card) return p;
-    return { ...p, deck: [...p.deck.filter((c) => c.instanceId !== instanceId), stripForZone(card)] };
-  });
-}
-
 /**
- * オモテにしたカードを持ち主ごとに山札の下へ戻す。1枚ならそのまま戻し、2枚以上なら先に山札の下に置くカードを選ぶ選択を返す。
+ * オモテにしたカードを持ち主ごとに山札の下へ戻す。2枚以上の持ち主には、番号を付けて順を選ぶ選択（rules/deckOrder.ts）を返し、
+ * 確定したら残りの持ち主へ続ける（DECK_ORDER_THEN）。
  */
 function continueGoOnSwordOrder(
   state: GameState,
@@ -935,46 +929,27 @@ function continueGoOnSwordOrder(
   const queue = [...groups];
   while (queue.length > 0) {
     const group = queue.shift()!;
-    const ids = group.instanceIds.filter((id) => next.players[group.playerId].deck.some((c) => c.instanceId === id));
-    if (ids.length >= 2) {
-      const choice: PendingEffectChoice = {
-        playerId: base.playerId,
-        effectId: GO_ON_SWORD_ORDER_EFFECT_ID,
-        sourceCardId: "RS-515",
-        sourceInstanceId: base.sourceInstanceId,
-        kind: "select_unit",
-        phasePlayerId: base.phasePlayerId,
-        validInstanceIds: ids,
-        selectCount: 1,
-        selectedInstanceIds: [],
-        optional: false,
-        resumeChoice: base.resumeChoice,
-        set7dMeta: { orderOwner: group.playerId, orderGroups: queue },
-      };
-      return { state: next, choice };
-    }
-    for (const id of ids) next = revealedToDeckBottom(next, group.playerId, id);
+    const ctx = {
+      playerId: base.playerId,
+      phasePlayerId: base.phasePlayerId,
+      sourceCardId: "RS-515",
+      sourceInstanceId: base.sourceInstanceId,
+      resumeChoice: base.resumeChoice,
+      then: { key: GO_ON_SWORD_ORDER_EFFECT_ID, data: [...queue] },
+    };
+    // 2枚以上なら、確定するまで山札の上に置いたまま順を選ぶ。
+    const choice = deckOrderChoice(next, ctx, group.instanceIds, "bottom");
+    if (choice) return { state: next, choice };
+    next = placeForDeckOrder(next, ctx, group.instanceIds, "bottom").state;
   }
   return { state: next };
 }
 
-CHOICE_RESOLVERS[GO_ON_SWORD_ORDER_EFFECT_ID] = (state, playerId, instanceId) => {
-  const pending = state.pendingEffectChoice!;
-  const owner = pending.set7dMeta?.orderOwner;
-  if (!owner) return { error: "invalid_choice" };
-  let next = revealedToDeckBottom(state, owner, instanceId);
-  const rest = pending.validInstanceIds.filter((id) => id !== instanceId);
-  const log = logFor(state, playerId, "RS-515", `${GO_ON_SWORD_ORDER_EFFECT_ID}:${cardName(state.definitions, findDeckCardId(state, owner, instanceId))}`);
-  const groups = [...(rest.length > 0 ? [{ playerId: owner, instanceIds: rest }] : []), ...(pending.set7dMeta?.orderGroups ?? [])];
-  const ordered = continueGoOnSwordOrder({ ...next, pendingEffectChoice: undefined }, pending, groups);
-  next = ordered.state;
-  if (ordered.choice) return { state: { ...next, pendingEffectChoice: ordered.choice }, log };
-  return { state: finish({ ...next, pendingEffectChoice: pending }, pending), log };
+DECK_ORDER_THEN[GO_ON_SWORD_ORDER_EFFECT_ID] = (state, pending, data) => {
+  const ordered = continueGoOnSwordOrder(state, pending, data as { playerId: PlayerId; instanceIds: string[] }[]);
+  return ordered.choice ? openEffectChoice(ordered.state, ordered.choice) : finish(ordered.state, pending);
 };
 
-function findDeckCardId(state: GameState, ownerId: PlayerId, instanceId: string): string {
-  return state.players[ownerId].deck.find((c) => c.instanceId === instanceId)?.cardId ?? instanceId;
-}
 CHOICE_SKIPPERS[GO_ON_SWORD_EFFECT_ID] = simpleSkip();
 
 // ---------------------------------------------------------------------------

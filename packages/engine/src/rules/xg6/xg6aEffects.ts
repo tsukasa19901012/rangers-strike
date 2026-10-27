@@ -26,6 +26,7 @@ import { unitFeatures } from "../addedFeatures";
 import { planEffectRush, startEffectRush } from "../effectRush";
 import { applyDamageToPlayer } from "../damagePayment";
 import { recordReveal } from "../revealNotice";
+import { placeForDeckOrder, returnToDeckInOrder } from "../deckOrder";
 import { isValidFusionMaterial, requiresAllFusionPartners } from "../zord";
 import { rm1ResidentActive } from "../rm/rm1Fields";
 import {
@@ -47,6 +48,7 @@ import {
   selectableEnemy,
   shuffleDeck,
   simpleSkip,
+  skipLog,
   stripForZone,
   zoneOfField,
 } from "../rm/rm1Effects";
@@ -227,7 +229,7 @@ function jcPartner(state: GameState, playerId: PlayerId, selfInstanceId: string,
 //  ユニットと同じカテゴリを持つ、Sユニット以外のカードを１枚まで選び自軍ラッシュエリアに出す。ただし、自軍ダメージの数だけ必要パワーを少なくした上で、
 //  必要パワーと追加条件は満たすこと。その後、残りのカードを山札の下に好きな順番で戻す。」（atwiki/page-2332）
 // オモテにするのは山札の上からダメージの数（山札が少なければ全部）。選べるのはユニットカード（Q1: オペレーションは選べない）。カテゴリは撃破された
-// ユニットの印刷のカテゴリ。残りは今の順で山札の下に戻す。
+// ユニットの印刷のカテゴリ。残りは、2枚以上なら番号を付けて山札の下の順を選ぶ（rules/deckOrder.ts）。
 
 const FIRE_MOUNTAIN_CONFIRM = "xg6001_fire_mountain_confirm";
 const FIRE_MOUNTAIN_PICK = "xg6001_fire_mountain_pick";
@@ -278,10 +280,7 @@ CHOICE_CONFIRMERS[FIRE_MOUNTAIN_CONFIRM] = (state, playerId) => {
     })
     .map((c) => c.instanceId);
   const log = logFor(state, playerId, "XG6-001", `${FIRE_MOUNTAIN_CONFIRM}:${revealed.length}`);
-  if (ids.length === 0) {
-    next = revealed.reduce((s, c) => moveZoneCard(s, playerId, "deck", c.instanceId, "deck_bottom"), next);
-    return { state: proceed(next, pending), log };
-  }
+  if (ids.length === 0) return { state: returnToDeckInOrder(next, pending, revealed.map((c) => c.instanceId)), log };
   return {
     state: openNext(next, pending, {
       ...choice(pendingBase(pending), "XG6-001", FIRE_MOUNTAIN_PICK, "select_hand", ids, true),
@@ -291,19 +290,20 @@ CHOICE_CONFIRMERS[FIRE_MOUNTAIN_CONFIRM] = (state, playerId) => {
   };
 };
 
+/** 残りのカード（keep 以外）を山札の下に戻す（2枚以上なら順を選ぶ）。 */
 function fireMountainRest(state: GameState, pending: PendingEffectChoice, keep?: string): GameState {
-  return (pending.xg6Meta?.ids ?? [])
-    .filter((id) => id !== keep)
-    .reduce((s, id) => moveZoneCard(s, pending.playerId, "deck", id, "deck_bottom"), state);
+  return returnToDeckInOrder(state, pending, (pending.xg6Meta?.ids ?? []).filter((id) => id !== keep));
 }
 
 CHOICE_RESOLVERS[FIRE_MOUNTAIN_PICK] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  let next = fireMountainRest(close(state, pending), pending, instanceId);
-  next = effectRush(next, pending, playerId, instanceId, "deck", true);
-  return { state: proceed(next, pending), log: logFor(state, playerId, "XG6-001", `${FIRE_MOUNTAIN_PICK}:${instanceId}`) };
+  const next = effectRush(close(state, pending), pending, playerId, instanceId, "deck", true);
+  return { state: fireMountainRest(next, pending, instanceId), log: logFor(state, playerId, "XG6-001", `${FIRE_MOUNTAIN_PICK}:${instanceId}`) };
 };
-CHOICE_SKIPPERS[FIRE_MOUNTAIN_PICK] = (state) => skipped(state, state.pendingEffectChoice!, (s) => fireMountainRest(s, state.pendingEffectChoice!));
+CHOICE_SKIPPERS[FIRE_MOUNTAIN_PICK] = (state) => {
+  const pending = state.pendingEffectChoice!;
+  return { state: fireMountainRest(close(state, pending), pending), log: skipLog(state, pending.playerId, "XG6-001", pending.effectId) };
+};
 
 // ---------------------------------------------------------------------------
 // XG6-002 銀河超越・三神合体（オペレーション）
@@ -698,7 +698,8 @@ CHOICE_RESOLVERS[ZAN_TARGET] = (state, playerId, instanceId) => {
 //  １体選び撃破する。２回連続で負けたなら、相手に自軍ユニットを１体選ばせて、選ばれたユニットを撃破する。その後、オモテにしたカードは、好きな順番で持ち主の
 //  山札の下に戻す。（これが自軍コマンドゾーンにある間、OTを持つ自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの
 //  効果を発動する）」（atwiki/page-2345）
-// 同じ数字は引き分け（勝ちでも負けでもない）。山札がなければその勝負はしない。撃破の選択の前に、オモテにしたカードを山札の下に戻す（選択の結果に影響しない）。
+// 同じ数字は引き分け（勝ちでも負けでもない）。山札がなければその勝負はしない。撃破の選択の前に、オモテにしたカードを山札の下に置き（選択の結果に影響しない）、
+// 撃破の後で、2枚以上ある持ち主ごとに番号を付けて山札の下の順を選ぶ（rules/deckOrder.ts。効果を使ったプレイヤーが選ぶ）。
 
 const SWORD_WIN = "xg6008_sword_win";
 const SWORD_LOSE = "xg6008_sword_lose";
@@ -722,10 +723,13 @@ function runSword(state: GameState, ctx: BaseCtx): GameState {
     if (a > b) wins++;
     else if (a < b) losses++;
   }
+  const orders: PendingEffectChoice[] = [];
   for (const pid of [me, enemyId] as const) {
     if (shown[pid].length === 0) continue;
     next = recordReveal(next, { playerId: me, ownerId: pid, sourceCardId: "XG6-008", effectLabel: "炎神剣", cards: shown[pid].map(stripForZone) } as never);
-    next = shown[pid].reduce((s, c) => moveZoneCard(s, pid, "deck", c.instanceId, "deck_bottom"), next);
+    const placed = placeForDeckOrder(next, { playerId: me, phasePlayerId: ctx.phasePlayerId, sourceCardId: "XG6-008", sourceInstanceId: ctx.sourceInstanceId }, shown[pid].map((c) => c.instanceId), "bottom");
+    next = placed.state;
+    if (placed.order) orders.push(placed.order);
   }
   if (wins === 2) {
     const ids = enemyUnitsWhere(next, me, "XG6-008", () => true);
@@ -734,7 +738,7 @@ function runSword(state: GameState, ctx: BaseCtx): GameState {
     const ids = fieldUnits(next, me).map((c) => c.instanceId);
     if (ids.length > 0) next = openAfter(next, genericPick({ ...ctx, playerId: enemyId }, "XG6-008", SWORD_LOSE, ids, false, "discard"));
   }
-  return next;
+  return orders.reduce((s, order) => openAfter(s, order), next);
 }
 
 function applySword(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {

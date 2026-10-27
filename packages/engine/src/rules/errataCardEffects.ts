@@ -19,6 +19,7 @@ import {
 import { applyDamageToPlayer } from "./damagePayment";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { sameCardName } from "../core/cardNames";
+import { deckOrderChoice } from "./deckOrder";
 import { isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { isMirrorWorld, takeHybridRevealedToHand } from "./rk/rk1NamedEffects";
 import { swapResidentFeature } from "./rk/rk4UnitEffects";
@@ -517,7 +518,7 @@ function enemyRushSUnits(state: GameState, enemyId: PlayerId): string[] {
 
 /**
  * ルール: R-ERR-XG4-023 — そうしたとき、相手は戻した数と同じ数まで「可能な限り」自分自身のラッシュエリアの
- * Sユニットを選び、持ち主の山札の下に好きな順番で戻す（選んだ順に山札の下へ）。
+ * Sユニットを選び、持ち主の山札の下に好きな順番で戻す（1体ずつ選んで山札の下へ置き、2体以上なら相手が番号を付けて順を選ぶ。rules/deckOrder.ts）。
  */
 function finishSenbonReturn(
   state: GameState,
@@ -606,7 +607,14 @@ function resolveSenbonKnock(state: GameState, playerId: PlayerId, instanceId: st
       };
     }
   }
+  const order = deckOrderChoice(
+    next,
+    { playerId, phasePlayerId: pending.phasePlayerId, sourceCardId: pending.sourceCardId, sourceInstanceId: pending.sourceInstanceId, resumeChoice: pending.resumeChoice },
+    selected,
+    "bottom",
+  );
   next = clearPending(next, pending.phasePlayerId);
+  if (order) next = openEffectChoice(next, order);
   return { state: next, log: logFor(state, playerId, pending.sourceCardId, `${SENBON_BOTTOM}:${selected.length}`) };
 }
 

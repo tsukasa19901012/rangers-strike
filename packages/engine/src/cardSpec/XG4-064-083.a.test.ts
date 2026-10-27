@@ -161,10 +161,16 @@ describe("XG4-066 マシンハードスプラッシャー", () => {
   it("XG4-066:【水中魚雷】— オモテにすると、その3枚は敵軍山札の下に戻る（4枚目が一番上になる）（出典: atwiki/page-2095「オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す」）", () => {
     let s = rushed();
     expectChoiceFrom(s, "player1", "XG4-066");
-    s = resolveAll(pickThrough(confirm(s), "XG4-066", ["TST-UNIT-0:e1", "TST-UNIT-0:e2", "TST-UNIT-0:e3"]));
+    s = confirm(s);
+    // 番号を付けるまでは山札の上に置いたまま。
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+    expect(s.players.player2.deck[0]?.instanceId).toBe("TST-UNIT-0:e1");
+    s = pick(pick(s, "TST-UNIT-0:e3"), "TST-UNIT-0:e1");
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["TST-UNIT-0:e3", "TST-UNIT-0:e1", "TST-UNIT-0:e2"]);
+    s = resolveAll(pick(s, "order_done"));
     const deck = s.players.player2.deck.map((c) => c.instanceId);
     expect(deck[0]).toBe("TST-UNIT-0:e4");
-    expect(deck.slice(-3).sort()).toEqual(["TST-UNIT-0:e1", "TST-UNIT-0:e2", "TST-UNIT-0:e3"]);
+    expect(deck.slice(-3)).toEqual(["TST-UNIT-0:e3", "TST-UNIT-0:e1", "TST-UNIT-0:e2"]);
   });
 });
 

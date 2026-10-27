@@ -152,12 +152,13 @@ export const EFFECT_LABELS: Record<string, string> = {
   dolphin_arrow: "ドルフィンアロー",
   // XG2-055 変身一発（atwiki/page-1764 Q3）
   xg2_055_turn_end_order: "ターン終了時の処理順（選ぶとユニットの置き換えを先に、選ばないと変身一発のコマンド送りを先に処理）",
+  // 「好きな順で山札の下（上）に戻す」の順（engine rules/deckOrder.ts）
+  deck_bottom_order: "山札の下に戻す順（選んだ順に番号が付き、1番が上、最後の番号が一番下）",
+  deck_top_order: "山札の上に戻す順（選んだ順に番号が付き、1番が一番上）",
   // XG7-042 仮面ライダークウガ×仮面ライダーディケイド
   xg7042_rider_war: "ライダー大戦の世界",
-  xg7042_rider_war_order: "ライダー大戦の世界（山札の下に戻す順。選んだ順に番号が付き、1番が上、最後の番号が一番下）",
   // XG1-077 仮面ライダーディケイド
   xg1_077_ride_booker: "ライドブッカー",
-  xg1_077_ride_booker_order: "ライドブッカー（山札の下に戻す順。選んだ順に番号が付き、1番が上、最後の番号が一番下）",
 };
 
 export function getEffectLabel(effectId: string): string {

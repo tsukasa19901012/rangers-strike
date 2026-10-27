@@ -447,7 +447,7 @@ export type SeabedDrawMeta = {
 };
 
 export type DenjiMachineMeta = {
-  step: "reveal" | "order_bottom";
+  step: "reveal";
   /** 公開カードを閲覧できるプレイヤー（PvPでは使用者+相手）。 */
   audiencePlayerIds: PlayerId[];
   revealedInstanceIds: string[];
@@ -455,9 +455,8 @@ export type DenjiMachineMeta = {
   revealedCards?: CardInstance[];
   toHandInstanceIds: string[];
   toBottomInstanceIds: string[];
-  /** デッキから除去された非Sカード、山札下順序待ち。 */
+  /** 旧: 山札下の順を選ぶ途中のカード（今は rules/deckOrder.ts の選択を使う。旧 apps/web の表示用に残す）。 */
   limboBottomCards?: CardInstance[];
-  /** 山札下順序: 先頭は残りデッキの直上、末尾がデッキ最下段。 */
   orderedBottomIds?: string[];
 };
 
@@ -1015,10 +1014,15 @@ export type PendingEffectChoice = {
    */
   mayConfirm?: boolean;
   /**
-   * 「好きな順で山札の下に戻す」の順を選ぶ選択（rules/deckBottomOrder.ts）。ids は戻すカード（表示の並び）、
-   * selectedInstanceIds が選んだ順（1番目が上）。undos は番号を外した・選び直した回数（上限あり）。
+   * 「好きな順で山札の下（上）に戻す」の順を選ぶ選択（rules/deckOrder.ts）。ids は戻すカード（表示の並び）、to は山札の下か上か、
+   * selectedInstanceIds が付けた番号の順（1番から）。undos は番号を外した・選び直した回数（上限あり）。then は確定した後の続き。
    */
-  deckBottomOrderMeta?: { ids: string[]; undos: number };
+  deckOrderMeta?: { ids: string[]; undos: number; to: "top" | "bottom"; then?: { key: string; data?: unknown } };
+  /**
+   * 「N枚まで選んで好きな順で山札の下（上）に戻す」の、戻すカードを1枚ずつ選んでいる選択。選んだカード（processedInstanceIds）は
+   * 山札の下（上）に置いてあり、見送ったときはそれらの順を選ぶ選択（deckOrderMeta）を開く（rules/deckOrder.ts closeWithDeckOrder）。
+   */
+  pickThenDeckOrder?: "top" | "bottom";
   /** RS-303【シティガーディアンズ隊長】: かわりに捨札にするかを選んでいる間、保留している離場。 */
   leaveIntentMeta?: PendingLeave;
   /** mayConfirm が DSL の任意効果（optional）のとき、行う効果の特定情報。 */

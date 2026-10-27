@@ -460,7 +460,7 @@ export class GuiMatch {
       .map((id) => ({ kind: "card" as const, id, items: [] as MenuItem[] }));
     const items = [...[...cards].map(([id, items]) => ({ kind: "card" as const, id, items })), ...viewed];
     // Choosing the order to put cards on the deck bottom: the cards keep their places as they get numbers.
-    const orderIds = this.state().pendingEffectChoice?.deckBottomOrderMeta?.ids;
+    const orderIds = this.state().pendingEffectChoice?.deckOrderMeta?.ids;
     if (orderIds) items.sort((a, b) => orderIds.indexOf(a.id) - orderIds.indexOf(b.id));
     return [...items, ...buttons, ...pass];
   }
@@ -1200,7 +1200,7 @@ export class GuiMatch {
       const cards: GuiDialogView["cards"] = [];
       const marks: ScrollMark[] = [];
       const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
-      const orderChoice = state.pendingEffectChoice?.deckBottomOrderMeta ? state.pendingEffectChoice : undefined;
+      const orderChoice = state.pendingEffectChoice?.deckOrderMeta ? state.pendingEffectChoice : undefined;
       const orderOf = (id: string) => (orderChoice?.selectedInstanceIds ?? []).indexOf(id) + 1;
       if (cardItems.length > 0) {
         y += 2;

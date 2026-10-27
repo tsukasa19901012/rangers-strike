@@ -99,6 +99,15 @@ describe("XG4-038 モウギュウダイオー", () => {
     expect(zoneOf(s, "player2", "SPEC-E-M2:m2")).toBe("rush");
   });
 
+  it("XG4-038:【猛牛大回転砲】— 戻すユニットに番号を付けて、山札の下の順を選べる（出典: atwiki/page-2147「持ち主の山札の下に好きな順で戻す」）", () => {
+    let s = confirm(entered());
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    s = pick(pick(s, "SPEC-E-C2P:c2p"), "SPEC-E-C0:c0");
+    s = resolveAll(pick(s, "order_done"));
+    expect(ids(s.players.player2.deck.slice(-3))).toEqual(["SPEC-E-C2P:c2p", "SPEC-E-C0:c0", "SPEC-E-C2:c2"]);
+  });
+
   it("XG4-038:【猛牛大回転砲】— 発動しなければ何も戻らない（出典: atwiki/page-2147「発動できる」）", () => {
     let s = entered();
     if (s.pendingEffectChoice?.sourceCardId === "XG4-038") s = resolveAll(settle(s));

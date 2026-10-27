@@ -19,7 +19,7 @@ import type { GrantKeywordContext } from "../../dsl/grantKeyword";
 import { unitFeatures } from "../addedFeatures";
 import { patchPlayer } from "../playerPatches";
 import { recordReveal, revealedCards } from "../revealNotice";
-import { resolveDeckBottomOrderPick, returnToDeckBottomInOrder } from "../deckBottomOrder";
+import { returnToDeckInOrder } from "../deckOrder";
 import { openEffectChoice } from "../pendingChoices";
 import { rk1IsSmallNow } from "../rk/rk1Features";
 import { RK11_RELEASE_AT_END_RULE, RK11_SP1_RULE } from "../rk/rk11Fields";
@@ -513,10 +513,9 @@ XG1_SKIPPERS[DECADRIVER_POWER_EFFECT_ID] = simpleSkip((s, pending) => shuffleDec
 //  ゾーンに置く。その後、それ以外のカードは好きな順で山札の下に戻す。」（atwiki/page-1542）
 // オモテにする（任意）と置くカードを選ぶ（あれば必ず）を1つの選択にまとめる（XG1-054 と同じ）: 該当するカードがあればその中から選ぶ（選ぶ＝オモテに
 // する）、なければ「オモテにする」を選ぶ。オモテにした3枚は公開表示に出す（lastReveal）。残りが2枚以上なら山札の下に戻す順を1枚ずつ選ぶ
-// （xg1_077_ride_booker_order。rules/deckBottomOrder.ts）。
+// （rules/deckOrder.ts）。
 
 const RIDE_BOOKER_EFFECT_ID = "xg1_077_ride_booker";
-const RIDE_BOOKER_ORDER_EFFECT_ID = "xg1_077_ride_booker_order";
 
 XG1_KEYWORDS["XG1-077::ride_booker"] = (state, ctx) => {
   const top = state.players[ctx.playerId].deck.slice(0, 3);
@@ -545,11 +544,10 @@ XG1_RESOLVERS[RIDE_BOOKER_EFFECT_ID] = (state, playerId, instanceId) => {
   }
   const rest = revealed.filter((c) => c.instanceId !== instanceId).map((c) => c.instanceId);
   return {
-    state: returnToDeckBottomInOrder(next, pending, RIDE_BOOKER_ORDER_EFFECT_ID, rest),
+    state: returnToDeckInOrder(next, pending, rest),
     log: logFor(state, playerId, "XG1-077", `${RIDE_BOOKER_EFFECT_ID}:${instanceId}`),
   };
 };
-XG1_RESOLVERS[RIDE_BOOKER_ORDER_EFFECT_ID] = resolveDeckBottomOrderPick;
 XG1_SKIPPERS[RIDE_BOOKER_EFFECT_ID] = simpleSkip();
 
 // ---------------------------------------------------------------------------

@@ -229,7 +229,7 @@ describe("XG7-042 仮面ライダークウガ×仮面ライダーディケイド
   it("XG7-042: 【ライダー大戦の世界】残り4枚とこのユニットを山札の下に戻す順を1枚ずつ選べる（出典: atwiki/page-2439「残りのカードとこのユニットを好きな順で山札の下に戻す」）", () => {
     let s = settle(endTurn(p1Battle({ battle: [inst("XG7-042", "kd")], deck: deckCards(6, "k") }, {}, EXTRA)));
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP:k2" });
-    expect(s.pendingEffectChoice?.effectId).toBe("xg7042_rider_war_order");
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
     expect(s.pendingEffectChoice?.optional).toBe(false);
     expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(["TST-OP:k0", "TST-OP:k1", "TST-OP:k3", "TST-OP:k4", "XG7-042:kd"]);
     // 選んだ順に番号が付き、残り1枚には最後の番号が付く。確定するまで山札の並びは変えない

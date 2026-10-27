@@ -402,6 +402,10 @@ describe("XP-031 仮面ライダーオーズ・タトバコンボ×仮面ライ�
     expect(s.players.player1.hand.map((c) => c.instanceId)).toContain("TST-UNIT-7:d1");
     expect(s.players.player1.discard.map((c) => c.instanceId)).not.toContain("XP-026:ac");
     expect(s.players.player1.deck.slice(-2).map((c) => c.instanceId).sort()).toEqual(["TST-OP:d2", "TST-UNIT-0:d3"]);
+    // 残りの2枚は番号を付けて山札の下の順を選ぶ。
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
+    s = settle(pick(pick(s, "TST-UNIT-0:d3"), "order_done"));
+    expect(s.players.player1.deck.slice(-2).map((c) => c.instanceId)).toEqual(["TST-UNIT-0:d3", "TST-OP:d2"]);
   });
 
   it.todo("XP-031: 【メダルと切符と40周年】自軍ラッシュフェイズごとに1度だけ（出典: atwiki/page-2446）— 起動が合法手に出ない（既知の不具合 CARD-XP-031）ため、2度目を確かめる手順を組めない");

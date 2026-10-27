@@ -194,7 +194,7 @@ describe("XG1-077 仮面ライダーディケイド", () => {
       ["XG1-064:ag", "power"],
       ["XG1-066:fz", "deck_bottom"],
     ]);
-    expect(s.pendingEffectChoice?.effectId).toBe("xg1_077_ride_booker_order");
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
     expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(["TST-OP:d0", "XG1-066:fz"]);
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "XG1-066:fz" });
     expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["XG1-066:fz", "TST-OP:d0"]);

@@ -21,6 +21,7 @@ import { base, close, ctxBase, fieldUnits, genericPick, logFor, moveFieldUnit, o
 import { registerPromoAfterAction, registerPromoBpBonus, registerPromoChoice, registerPromoFieldAbility, registerPromoKeyword, registerPromoKeywordGrant, registerPromoStayOnLeave, registerPromoTurnEnd } from "./promoRegistry";
 import { fillsSlot } from "./xpEffects";
 import { registerPromoAttackerBpBonus, registerPromoOperationCostReduction } from "./promoHooks";
+import { returnToDeckInOrder } from "../deckOrder";
 
 // ---------------------------------------------------------------------------
 // XP-017 仮面ライダーディケイド激情態【世界の破壊者】（RC）
@@ -528,7 +529,7 @@ registerPromoChoice(
 //  1枚選び、ゲームから除外してもよい。そうしたとき、自軍山札の上から3枚をオモテにして、その中から1枚選び手札に加え、それ以外は好きな順で
 //  山札の下に戻す。」（atwiki/page-2446）
 // 起動は activate_field_unit_ability（rules/fieldActivatedAbilities.ts の promo 行。1ターンに1度）。捨札を選ぶことが除外（見送れば何もしない）。
-// 特徴は印刷の特徴の部分一致（「仮面ライダー」は「ライダー」を含む）。山札の下に戻す順は今の並び（順を選ぶ手順は省く。XP-gaps.md）。
+// 特徴は印刷の特徴の部分一致（「仮面ライダー」は「ライダー」を含む）。山札の下に戻す2枚は番号を付けて順を選ぶ（rules/deckOrder.ts）。
 
 const MEDAL = "xp031_medal_ticket";
 const MEDAL_PICK = "xp031_medal_ticket_pick";
@@ -580,14 +581,12 @@ registerPromoChoice(
 registerPromoChoice(MEDAL_PICK, (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
   if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
-  const shown = new Set(pending.validInstanceIds);
   const next = patchPlayer(close(state, pending), playerId, (p) => {
     const picked = p.deck.find((c) => c.instanceId === instanceId);
-    const rest = p.deck.filter((c) => shown.has(c.instanceId) && c.instanceId !== instanceId);
-    const remaining = p.deck.filter((c) => !shown.has(c.instanceId));
-    return { ...p, hand: picked ? [...p.hand, picked] : p.hand, deck: [...remaining, ...rest] };
+    return { ...p, hand: picked ? [...p.hand, picked] : p.hand, deck: p.deck.filter((c) => c.instanceId !== instanceId) };
   });
-  return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${MEDAL_PICK}:${instanceId}`) };
+  const rest = pending.validInstanceIds.filter((id) => id !== instanceId);
+  return { state: returnToDeckInOrder(next, pending, rest), log: logFor(state, playerId, pending.sourceCardId, `${MEDAL_PICK}:${instanceId}`) };
 });
 registerPromoKeyword("XP-031::medal_ticket", (state) => ({ state, detail: `${MEDAL}:activated_ability` }));
 

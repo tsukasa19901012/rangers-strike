@@ -29,6 +29,8 @@ import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, requestDrawFromDeck, type ChoiceOutcome } from "../pendingChoices";
 import { buildEffectHoldPayment } from "../commandPayment";
 import { patchPlayer } from "../playerPatches";
+import { placeForDeckOrder } from "../deckOrder";
+import { DECK_ORDER_THEN } from "../deckOrderThen";
 import { findCardInField } from "../fieldLookup";
 import { unitFeatures } from "../addedFeatures";
 import { grantSp1ToBattleUnit, markBattleNcEffect } from "../namedUnitEffects";
@@ -1210,7 +1212,7 @@ export function applySet7ABattlePhaseEnd(state: GameState, endingPlayerId: Playe
 // RS-433 ネコマル（※常駐）
 // 「自軍ラッシュフェイズ中、自分が特徴「忍者」を持つユニットをラッシュしたとき、自分の手札からカードを好きな枚数選び、
 //  自軍山札の下に好きな順で戻してもよい。そうしたとき、戻した枚数と同じ枚数をドローする。」（atwiki/page-737）
-// 選んだ順に山札の下へ置く（1枚ずつ選び、確定で戻した枚数だけドロー）。
+// 1枚ずつ選んで確定すると山札の下へ置き、2枚以上なら番号を付けて順を選んでから（rules/deckOrder.ts）、戻した枚数だけドロー。
 
 const NEKOMARU_RE = /自軍ラッシュフェイズ中、自分が特徴「([^」]+)」を持つユニットをラッシュしたとき、自分の手札からカードを好きな枚数選び、自軍山札の下に好きな順で戻してもよい。そうしたとき、戻した枚数と同じ枚数をドローする/;
 export const NEKOMARU_EFFECT_ID = "rs433_nekomaru";
@@ -1262,13 +1264,23 @@ function finishNekomaru(state: GameState, playerId: PlayerId): ChoiceOutcome {
     const cards = chosen.map((id) => p.hand.find((c) => c.instanceId === id)).filter((c): c is CardInstance => !!c);
     return { ...p, hand: p.hand.filter((c) => !chosen.includes(c.instanceId)), deck: [...p.deck, ...cards.map(strip)] };
   });
-  next = { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
-  next = requestDrawFromDeck(next, playerId, pending.phasePlayerId, { count: chosen.length }).state;
-  return {
-    state: finish(next, pending),
-    log: logFor(state, playerId, pending.sourceCardId, `${NEKOMARU_EFFECT_ID}:${chosen.length}`),
-  };
+  const log = logFor(state, playerId, pending.sourceCardId, `${NEKOMARU_EFFECT_ID}:${chosen.length}`);
+  const placed = placeForDeckOrder(
+    next,
+    { playerId, phasePlayerId: pending.phasePlayerId, sourceCardId: pending.sourceCardId, sourceInstanceId: pending.sourceInstanceId, then: { key: NEKOMARU_EFFECT_ID, data: chosen.length } },
+    chosen,
+    "bottom",
+  );
+  if (placed.order) return { state: reopen(placed.state, pending, placed.order), log };
+  return { state: nekomaruDraw(placed.state, pending, chosen.length), log };
 }
+
+function nekomaruDraw(state: GameState, pending: PendingEffectChoice, count: number): GameState {
+  const closed = state.pendingEffectChoice === pending ? { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId } : state;
+  return finish(requestDrawFromDeck(closed, pending.playerId, pending.phasePlayerId, { count }).state, pending);
+}
+
+DECK_ORDER_THEN[NEKOMARU_EFFECT_ID] = (state, pending, count) => nekomaruDraw(state, pending, count as number);
 
 CHOICE_RESOLVERS[NEKOMARU_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
