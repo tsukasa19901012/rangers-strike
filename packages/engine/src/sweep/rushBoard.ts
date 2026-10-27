@@ -26,15 +26,15 @@ export type RushBoardOptions = {
 /** 盤面を組めなかったとき（必要なカードがカタログに無い・追加条件の文を読めない）。 */
 export class RushBoardSkip extends Error {}
 
-const base = createStarterGame({ player1Starter: "abarenoh", player2Starter: "dekaranger", seed: 1 });
-const all = Object.values(base.definitions) as CardDefinition[];
-const real = (d: CardDefinition) => !/^(TST|SPEC|CS|XX)/.test(d.id);
+export const base = createStarterGame({ player1Starter: "abarenoh", player2Starter: "dekaranger", seed: 1 });
+export const all = Object.values(base.definitions) as CardDefinition[];
+export const real = (d: CardDefinition) => !/^(TST|SPEC|CS|XX)/.test(d.id);
 const cats = (d: CardDefinition) => (Array.isArray(d.category) ? d.category : [d.category]) as string[];
 const norm = (s: string) => s.normalize("NFKC").replace(/\s/g, "");
 const costNumber = (cost: unknown) => Number(/\d+/.exec(String(cost ?? 0))?.[0] ?? 0);
 
 /** 場やコマンドに置いても何も起きない（ゾーンや手札に触れない）1 カテゴリの S ユニットとオペレーション。 */
-const plainUnits = all.filter(
+export const plainUnits = all.filter(
   (d) =>
     real(d) &&
     d.type === "unit" &&
@@ -43,7 +43,7 @@ const plainUnits = all.filter(
     !d.rushAdditionalCondition &&
     !/コマンド|パワー|ラッシュ|手札|捨札|これが|ホールド|ゾーン/.test(d.text ?? ""),
 );
-const plainOperations = all.filter(
+export const plainOperations = all.filter(
   (d) => real(d) && d.type === "operation" && typeof d.category === "string" && !/コマンドゾーン|パワーゾーン|ラッシュ/.test(d.text ?? ""),
 );
 

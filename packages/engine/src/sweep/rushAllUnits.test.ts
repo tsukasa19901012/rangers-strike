@@ -31,28 +31,31 @@ function mismatches(options: RushBoardOptions, expectRush: boolean, only = allUn
   return out;
 }
 
+/** 1 本あたり 2〜5 秒ほど。他のテストと並んで動くと 5 秒（vitest の既定）を超えることがある。 */
+const TIMEOUT = 60_000;
+
 describe("全ユニットのラッシュ", () => {
   it("カードは 1,000 枚以上ある（カタログを読めている）", () => {
     expect(allUnitCards.length).toBeGreaterThan(1000);
-  });
+  }, TIMEOUT);
 
   it("コマンドがユニットのカードだけでもラッシュできる", () => {
     expect(mismatches({ commands: "unit", extraPower: 2 }, true)).toEqual([]);
-  });
+  }, TIMEOUT);
 
   it("コマンドがオペレーションのカードだけでもラッシュできる", () => {
     expect(mismatches({ commands: "operation", extraPower: 2 }, true)).toEqual([]);
-  });
+  }, TIMEOUT);
 
   it("パワーはちょうど、コマンドはカテゴリ分（と追加条件で使う分）だけでもラッシュできる", () => {
     expect(mismatches({ commands: "operation", extraPower: 0, tight: true }, true)).toEqual([]);
-  });
+  }, TIMEOUT);
 
   it("素材のユニットがバトルエリアにいてもラッシュできる", () => {
     expect(mismatches({ commands: "operation", extraPower: 2, materialsInBattle: true }, true)).toEqual([]);
-  });
+  }, TIMEOUT);
 
   it("パワーが 1 足りなければラッシュできない（ゾードダウンと必要パワー 0 は除く）", () => {
     expect(mismatches({ commands: "operation", extraPower: -1 }, false, allUnitCards.filter(needsPrintedPower))).toEqual([]);
-  });
+  }, TIMEOUT);
 });
