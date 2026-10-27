@@ -49,6 +49,14 @@ const REACTION_OPERATIONS: Record<string, string> = {
 
 /** 1 本あたり数秒〜15 秒ほど（起動効果が一番重い）。 */
 const TIMEOUT = 120_000;
+/**
+ * 1 本が十数秒イベントループを止めると、vitest のワーカーの通信（onTaskUpdate）が時間切れになり
+ * 「Unhandled Error」で落ちる（CI で起きた）。カード 20 枚ごとに処理を返す。
+ */
+let sinceYield = 0;
+const breathe = async () => {
+  if (++sinceYield % 20 === 0) await new Promise((resolve) => setImmediate(resolve));
+};
 const POLICIES: ChoicePolicy[] = ["first", "last", "decline"];
 const fired = (o: EffectOutcome) => o.kind === "prompted" || o.kind === "logged" || o.kind === "no-target";
 const why = (o: EffectOutcome) => (o.kind === "error" ? `error: ${o.why}` : o.kind);
@@ -64,27 +72,30 @@ describe("全カードの効果の発動", () => {
   });
 
   for (const policy of POLICIES) {
-    it(`「ラッシュしたとき」は止まらずに発動する（選び方: ${policy}）`, () => {
+    it(`「ラッシュしたとき」は止まらずに発動する（選び方: ${policy}）`, async () => {
       const bad: string[] = [];
       for (const u of onRush) {
+        await breathe();
         const o = checkOnRush(u, policy);
         if (o.kind === "error" || (!fired(o) && !QUIET_ON_THIS_BOARD[`${u.id}:rush`])) bad.push(`${u.id} ${u.name}: ${why(o)}`);
       }
       expect(bad).toEqual([]);
     }, TIMEOUT);
 
-    it(`「バトルエリアに出たとき」は止まらずに発動する（選び方: ${policy}）`, () => {
+    it(`「バトルエリアに出たとき」は止まらずに発動する（選び方: ${policy}）`, async () => {
       const bad: string[] = [];
       for (const u of enter) {
+        await breathe();
         const o = checkEnterBattle(u, policy);
         if (o.kind === "error" || (!fired(o) && !QUIET_ON_THIS_BOARD[`${u.id}:enter`])) bad.push(`${u.id} ${u.name}: ${why(o)}`);
       }
       expect(bad).toEqual([]);
     }, TIMEOUT);
 
-    it(`オペレーションは使えて、止まらない（選び方: ${policy}）`, () => {
+    it(`オペレーションは使えて、止まらない（選び方: ${policy}）`, async () => {
       const bad: string[] = [];
       for (const op of allOperations) {
+        await breathe();
         const o = checkOperation(op, policy);
         const reaction = /※カウンター/.test(op.text ?? "") || REACTION_OPERATIONS[op.id];
         if (o.kind === "error" || (o.kind === "not-offered" && !reaction)) bad.push(`${op.id} ${op.name}: ${why(o)}`);
@@ -92,10 +103,11 @@ describe("全カードの効果の発動", () => {
       expect(bad).toEqual([]);
     }, TIMEOUT);
 
-    it(`起動効果は止まらない（選び方: ${policy}）`, () => {
+    it(`起動効果は止まらない（選び方: ${policy}）`, async () => {
       const bad: string[] = [];
       let count = 0;
       for (const card of allFieldCards) {
+        await breathe();
         for (const { where, outcome } of checkActivations(card, policy)) {
           count++;
           if (outcome.kind === "error") bad.push(`${card.id} ${card.name} (${where}): ${why(outcome)}`);
