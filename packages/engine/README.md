@@ -77,6 +77,7 @@ ARENA_PROCS=4 scripts/cpu-arena-par.sh --a 3 --b 2 --games 40   # 4 プロセス
 
 - CPU の探索の間（`src/ai/index.ts` の `pickCpuAction` の中）は状態を書き換えないので、`src/core/searchCache.ts` の表で合法手・`applyAction` の結果・BP 等を使い回します。状態だけで決まる計算はここに載せます。
 - 弾ごとのフック（`src/rules/xg1`〜`xg7` の BP の補正・`applyAction` の後処理）は、探索の間はその弾のカードが対局に無ければ呼びません（`src/rules/setHookGates.ts`）。フックに他の弾のカードの ID を書いたら `SET_HOOK_EXTRA_IDS` にも足します（`setHookGates.test.ts` が突き合わせます）。呼ばないフックが本当に何もしないかは、`RS_HOOK_GATE_CHECK=1 npm run test:unit -w @rangers-strike/engine` で確かめます（呼ばないことにしたフックも呼んで比べ、違えば例外にします）。
+- 1 回の合法手の列挙の中で何度も呼ぶ重い判定は、`src/core/enumerationMemo.ts` の `memoizeInEnumeration` で列挙の間だけ覚えます。RS-353 デンジファイターは素材の組み合わせごとの支払いの確認でゾードの手順の判定を毎回やり直していて、自軍のユニットが 11 体いると合法手の計算に約 2 分かかっていました（今は 0.5 秒）。
 - 選ぶ手を変えない変更は、変更の前後で `scripts/cpu-move-hash.ts` の出力（同じ seed の対局の手順のハッシュ）を diff して確かめます。
 
 ```bash

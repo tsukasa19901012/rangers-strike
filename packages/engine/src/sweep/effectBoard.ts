@@ -35,14 +35,8 @@ const mixedCards = (n: number, offset: number) =>
     mk((i % 3 === 2 ? plainOperations[(i + offset) % plainOperations.length]! : units[(i * 37 + offset) % units.length]!).id),
   );
 
-/**
- * 素材の組み合わせごとに合法手が出るカード。自軍のユニットを足すと合法手の計算が重くなる
- * （RS-353 は 11 体から 5 体を選ぶ 462 通りを 1 つずつ確かめ、約 2 分かかる）ので、自軍のユニットは足さない。
- */
-const MANY_MATERIAL_COMBINATIONS = new Set(["RS-353"]);
-
-/** 両軍に、効果の対象になりやすいカードを一通り足す（ownUnits: false なら自軍のラッシュ・バトルエリアには足さない）。 */
-export function enrichBoard(s: GameState, ownUnits = true): GameState {
+/** 両軍に、効果の対象になりやすいカードを一通り足す。 */
+export function enrichBoard(s: GameState): GameState {
   const p1 = s.players.player1;
   const p2 = s.players.player2;
   const released = (d: CardDefinition) => mk(d.id, { commandHeld: false });
@@ -61,8 +55,8 @@ export function enrichBoard(s: GameState, ownUnits = true): GameState {
       player1: {
         ...p1,
         command: [...p1.command, ...ownCommands],
-        battle: ownUnits ? [...p1.battle, mk(sUnitWithBp(3000).id), mk(sUnitWithBp(5000).id)] : p1.battle,
-        rush: ownUnits ? [...p1.rush, ...["メカ", "恐竜", "男", "女"].map((f) => mk(sUnitWithFeature(f).id))] : p1.rush,
+        battle: [...p1.battle, mk(sUnitWithBp(3000).id), mk(sUnitWithBp(5000).id)],
+        rush: [...p1.rush, ...["メカ", "恐竜", "男", "女"].map((f) => mk(sUnitWithFeature(f).id))],
         hand: [...p1.hand, ...mixedCards(3, 3)],
         deck: mixedCards(20, 1),
         discard: [...p1.discard, ...mixedCards(6, 2)],
@@ -167,7 +161,7 @@ function guarded(run: () => EffectOutcome): EffectOutcome {
 /** ユニットを手札からラッシュする（「これをラッシュしたとき」）。 */
 export function checkOnRush(unit: CardDefinition, policy: ChoicePolicy): EffectOutcome {
   return guarded(() => {
-    const s = enrichBoard(buildRushBoard(unit, { commands: "operation", extraPower: 2 }), !MANY_MATERIAL_COMBINATIONS.has(unit.id));
+    const s = enrichBoard(buildRushBoard(unit, { commands: "operation", extraPower: 2 }));
     const card = s.players.player1.hand[0]!;
     const first = getLegalActions(s).find(
       (a) => ("sourceInstanceId" in a && a.sourceInstanceId === card.instanceId) || ("zordInstanceId" in a && a.zordInstanceId === card.instanceId),
