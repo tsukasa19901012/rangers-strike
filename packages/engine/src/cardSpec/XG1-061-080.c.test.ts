@@ -196,7 +196,9 @@ describe("XG1-077 仮面ライダーディケイド", () => {
     ]);
     expect(s.pendingEffectChoice?.effectId).toBe("xg1_077_ride_booker_order");
     expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(["TST-OP:d0", "XG1-066:fz"]);
-    s = resolveAll(s, ["XG1-066:fz"]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "XG1-066:fz" });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["XG1-066:fz", "TST-OP:d0"]);
+    s = resolveAll(act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "order_done" }));
     expect(deckIds(s)).toEqual(["TST-OP:dk0", "TST-OP:dk1", "XG1-066:fz", "TST-OP:d0"]);
   });
 
@@ -207,7 +209,8 @@ describe("XG1-077 仮面ライダーディケイド", () => {
     expect(s.lastReveal?.cards.map((c) => c.instanceId)).toEqual(["TST-OP:x0", "TST-OP:x1", "TST-OP:x2"]);
     expect(s.lastReveal?.cards.every((c) => c.destination === "deck_bottom")).toBe(true);
     expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(["TST-OP:x0", "TST-OP:x1", "TST-OP:x2"]);
-    s = resolveAll(s, ["TST-OP:x2", "TST-OP:x0"]);
+    for (const id of ["TST-OP:x2", "TST-OP:x0", "order_done"]) s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+    s = resolveAll(s);
     expect(deckIds(s)).toEqual(["TST-OP:dk0", "TST-OP:dk1", "TST-OP:x2", "TST-OP:x0", "TST-OP:x1"]);
   });
 

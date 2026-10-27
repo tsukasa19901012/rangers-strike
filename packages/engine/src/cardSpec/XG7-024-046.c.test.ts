@@ -232,8 +232,22 @@ describe("XG7-042 仮面ライダークウガ×仮面ライダーディケイド
     expect(s.pendingEffectChoice?.effectId).toBe("xg7042_rider_war_order");
     expect(s.pendingEffectChoice?.optional).toBe(false);
     expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(["TST-OP:k0", "TST-OP:k1", "TST-OP:k3", "TST-OP:k4", "XG7-042:kd"]);
-    // 先に選んだカードほど上、最後のカードが一番下
-    s = resolveAll(s, ["XG7-042:kd", "TST-OP:k4", "TST-OP:k0", "TST-OP:k3", "TST-OP:k1"]);
+    // 選んだ順に番号が付き、残り1枚には最後の番号が付く。確定するまで山札の並びは変えない
+    for (const id of ["TST-OP:k1", "TST-OP:k3"]) s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["TST-OP:k1", "TST-OP:k3"]);
+    expect(s.pendingEffectChoice?.validInstanceIds).toContain("order_reset");
+    // 番号の付いたカードをもう一度選ぶと番号が外れ、後ろの番号が詰まる
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP:k1" });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["TST-OP:k3"]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP:k1" });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["TST-OP:k3", "TST-OP:k1"]);
+    // 選び直すと番号がすべて外れる
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "order_reset" });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual([]);
+    for (const id of ["XG7-042:kd", "TST-OP:k4", "TST-OP:k0", "TST-OP:k3"]) s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+    expect(s.pendingEffectChoice?.selectedInstanceIds).toEqual(["XG7-042:kd", "TST-OP:k4", "TST-OP:k0", "TST-OP:k3", "TST-OP:k1"]);
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["order_done", "XG7-042:kd", "TST-OP:k4", "TST-OP:k0", "TST-OP:k3", "TST-OP:k1", "order_reset"]);
+    s = resolveAll(act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "order_done" }));
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(["TST-OP:k5", "XG7-042:kd", "TST-OP:k4", "TST-OP:k0", "TST-OP:k3", "TST-OP:k1"]);
     expect(s.players.player1.hand.map((c) => c.instanceId)).toContain("TST-OP:k2");

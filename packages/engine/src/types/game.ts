@@ -1014,6 +1014,11 @@ export type PendingEffectChoice = {
    * skip_effect_choice で行わない。行うときの処理は rules/optionalEffects.ts の登録先。
    */
   mayConfirm?: boolean;
+  /**
+   * 「好きな順で山札の下に戻す」の順を選ぶ選択（rules/deckBottomOrder.ts）。ids は戻すカード（表示の並び）、
+   * selectedInstanceIds が選んだ順（1番目が上）。undos は番号を外した・選び直した回数（上限あり）。
+   */
+  deckBottomOrderMeta?: { ids: string[]; undos: number };
   /** RS-303【シティガーディアンズ隊長】: かわりに捨札にするかを選んでいる間、保留している離場。 */
   leaveIntentMeta?: PendingLeave;
   /** mayConfirm が DSL の任意効果（optional）のとき、行う効果の特定情報。 */

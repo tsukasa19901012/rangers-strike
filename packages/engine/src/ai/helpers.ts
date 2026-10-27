@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { DECK_BOTTOM_ORDER_RESET } from "../rules/deckBottomOrder";
 import { pickSet8BCpuChoice } from "../rules/legend1/set8NamedEffectsB";
 import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
 import { pickSet7DCpuChoice } from "../rules/legend1/set7NamedEffectsD";
@@ -1427,6 +1428,11 @@ export function pickEffectChoice(
 ): GameAction | null {
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
+
+  // 「好きな順で山札の下に戻す」（rules/deckBottomOrder.ts）: 選び直さず、並びどおりに番号を付けて確定する。
+  if (pending.deckBottomOrderMeta) {
+    return actions.find((a) => a.type === "resolve_effect_choice" && a.instanceId !== DECK_BOTTOM_ORDER_RESET) ?? null;
+  }
 
   const deckStack = pickDeckStackChoice(state, pending, actions);
   if (deckStack) return deckStack;

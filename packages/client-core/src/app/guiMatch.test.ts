@@ -521,7 +521,7 @@ describe("cards an effect shows", () => {
 });
 
 describe("choosing the order to put cards on the deck bottom", () => {
-  it("shows the cards at the deck bottom as pickable and says what the order means (XG1-077【ライドブッカー】)", () => {
+  it("numbers the cards as they are picked, keeps them in place, then offers to confirm the order (XG1-077【ライドブッカー】)", () => {
     const app = startGui(5);
     const session = app.session!;
     const bottom = session.state.players.player1.deck.slice(-3).map((c) => c.instanceId);
@@ -536,16 +536,79 @@ describe("choosing the order to put cards on the deck bottom", () => {
         kind: "select_unit",
         validInstanceIds: bottom,
         selectedInstanceIds: [],
-        selectCount: 1,
+        selectCount: 3,
         optional: false,
+        deckBottomOrderMeta: { ids: bottom, undos: 0 },
+      },
+    };
+    session.version++;
+    let dialog = app.view().gui!.dialog!;
+    expect(dialog.titleLines.map((l) => l.text).join("")).toContain("山札の下に戻す順");
+    expect(dialog.cards.map((c) => c.instanceId)).toEqual(bottom);
+    expect(dialog.cards.every((c) => c.actionable && !c.order)).toBe(true);
+    app.dispatch(input.confirm);
+    dialog = app.view().gui!.dialog!;
+    expect(dialog.cards.map((c) => c.instanceId)).toEqual(bottom);
+    expect(dialog.cards.map((c) => c.order ?? 0)).toEqual([1, 0, 0]);
+    expect(dialog.cards[0]!.note).toBe("1番目");
+    expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: 選び直す"]);
+  });
+
+  it("keeps numbered cards in place and offers to confirm once every card has a number", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const bottom = session.state.players.player1.deck.slice(-3).map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "xg1_077_ride_booker_order",
+        sourceCardId: "XG1-077",
+        kind: "select_unit",
+        validInstanceIds: ["order_done", bottom[2]!, bottom[0]!, bottom[1]!, "order_reset"],
+        selectedInstanceIds: [bottom[2]!, bottom[0]!, bottom[1]!],
+        selectCount: 3,
+        optional: false,
+        deckBottomOrderMeta: { ids: bottom, undos: 0 },
       },
     };
     session.version++;
     const dialog = app.view().gui!.dialog!;
-    expect(dialog.titleLines.map((l) => l.text).join("")).toContain("山札の下に戻す順");
-    expect(dialog.cards.filter((c) => c.actionable).map((c) => c.instanceId).sort()).toEqual([...bottom].sort());
-    app.dispatch(input.confirm);
-    expect(session.state.pendingEffectChoice?.validInstanceIds).toHaveLength(2);
+    expect(dialog.cards.map((c) => c.instanceId)).toEqual(bottom);
+    expect(dialog.cards.map((c) => c.order)).toEqual([2, 3, 1]);
+    // A numbered card can be picked again to take its number off.
+    expect(dialog.cards.every((c) => c.actionable)).toBe(true);
+    expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: この順で山札の下に戻す", "選ぶ: 選び直す"]);
+  });
+
+  it("draws every line of a two-line question in the accent colour", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const bottom = session.state.players.player1.deck.slice(-3).map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "xg7042_rider_war_order",
+        sourceCardId: "XG7-042",
+        kind: "select_unit",
+        validInstanceIds: bottom,
+        selectedInstanceIds: [],
+        selectCount: 3,
+        optional: false,
+        deckBottomOrderMeta: { ids: bottom, undos: 0 },
+      },
+    };
+    session.version++;
+    const lines = app.view().gui!.dialog!.titleLines;
+    const source = lines.findIndex((l) => l.text.startsWith("カード:"));
+    expect(source).toBeGreaterThan(1);
+    expect(lines.slice(0, source).every((l) => l.tone === "accent")).toBe(true);
+    expect(lines[source]!.tone).toBe("dim");
   });
 });
 
