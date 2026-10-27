@@ -51,6 +51,10 @@ npm run test:monkey -w @rangers-strike/engine # ランダム対戦のモンキ�
 
 `src/ai/legalActionsApply.test.ts` は、CPU 同士の対戦を進めながら局面ごとに合法手（`getLegalActions`）を全部 `applyAction` に通し、合法手に出るのに断られる手がないことを確かめます（合法手の一覧と受け付けの判定の食い違いは、画面ではボタンを押してもエラーになり、CPU は指せずに対局が止まります）。合法手や「誰の番か」（`getActionPlayerId`・`isCpuTurn`）を変えたときは、`getLegalActions` と `isLegalAction` の両方に同じ順で入れてください。
 
+`src/sweep/rushAllUnits.test.ts` は、全ユニット（約 1,500 枚）について、追加条件・必要パワー・カテゴリを満たす盤面を本物のカードで組み（`src/sweep/rushBoard.ts`。素材は追加条件の文から読み取る）、合法手だけでラッシュできるかを確かめます。コマンドがユニットのカードだけ／オペレーションだけ、パワーちょうど、素材がバトルエリア、の盤面で出せること、パワーが 1 足りなければ出せないことを見ます。追加条件の新しい書き方のカードが入って盤面を組めないときは「盤面を組めない」で落ちるので、`buildRushBoard` に読み方を足してください。
+
+`src/sweep/effectsAllCards.test.ts` は、効果の対象になりやすいカードを両軍に置いた盤面（`src/sweep/effectBoard.ts`）で、「これをラッシュしたとき」「これがバトルエリアに出たとき」のユニット・手札のオペレーション・起動効果を全カード分使い、自分の選択を「先頭」「末尾」「見送り」の 3 通りで最後まで進めます（1 分ほど）。途中で止まる・合法手が断られる・例外が出るカード、効果を使えない・発動しないカードがあれば落ちます。効果の結果が正しいかは見ません（カード仕様テストの役目）。この盤面で発動しないのが正しいカードは、テストの `QUIET_ON_THIS_BOARD`・`REACTION_OPERATIONS` に理由と一緒に足してください。
+
 CI は `test:sim` を `test:sim:starters`（simulateAllStarters）・`test:sim:monkey`（2 つのモンキーテスト）・`test:sim:rest`（それ以外の `src/verticalSlice`）に分けて並列に流します。
 
 ## CPU の強さを測る
