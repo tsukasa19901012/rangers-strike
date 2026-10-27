@@ -6,7 +6,8 @@
  * 見ること: 途中で止まらない・合法手が断られない・例外が出ない（全部）。
  * 「ラッシュしたとき」「出たとき」の効果は、選択が出るかログに残る（盤面の条件で発動しないカードは下の一覧）。
  * オペレーションは使える（反応して使うもの・カウンターは除く）。
- * 効果の結果が正しいかは見ない（カード仕様テストの役目）。
+ * 結果は、効果の文の必ず起きる最初の 1 文（条件・分岐の無いもの）だけ、書かれた動詞（撃破する・引く・手札に戻す・
+ * ホールドする等）のとおりにカードが動いたかを見る（effectResult.ts）。BP・能力の付与・細かい数は見ない（カード仕様テストの役目）。
  */
 import { describe, expect, it } from "vitest";
 import {
@@ -21,7 +22,9 @@ import {
   hasOnRushTrigger,
   type ChoicePolicy,
   type EffectOutcome,
+  type DriveResult,
 } from "./effectBoard";
+import { certainSentence, missingVerbs } from "./effectResult";
 
 /** この盤面では発動しない（条件を満たさない・敵軍ターンのみ等）「ラッシュしたとき」「出たとき」。 */
 const QUIET_ON_THIS_BOARD: Record<string, string> = {
@@ -57,6 +60,15 @@ let sinceYield = 0;
 const breathe = async () => {
   if (++sinceYield % 20 === 0) await new Promise((resolve) => setImmediate(resolve));
 };
+/** 文のとおりに動かないのが正しい（この盤面に対象が無い等）カード。 */
+const NO_RESULT_ON_THIS_BOARD: Record<string, string> = {
+  "RK-207": "盤面にホールド状態のユニットがいない",
+  "RS-125": "選べる数が自軍の WB の M ユニットの数までで、盤面にいない",
+};
+
+const RUSH_TRIGGER = /(これ|このユニット)をラッシュした(とき|時)/;
+const ENTER_TRIGGER = /(これ|このユニット)がバトルエリアに出(た|る)(とき|時)/;
+
 const POLICIES: ChoicePolicy[] = ["first", "last", "decline"];
 const fired = (o: EffectOutcome) => o.kind === "prompted" || o.kind === "logged" || o.kind === "no-target";
 const why = (o: EffectOutcome) => (o.kind === "error" ? `error: ${o.why}` : o.kind);
@@ -102,6 +114,35 @@ describe("全カードの効果の発動", () => {
       }
       expect(bad).toEqual([]);
     }, TIMEOUT);
+
+    if (policy === "first") {
+      it("効果の文の必ず起きる最初の 1 文のとおりにカードが動く", async () => {
+        const bad: string[] = [];
+        let count = 0;
+        const check = (card: { id: string; name: string }, sentence: string | null, run: () => DriveResult) => {
+          if (!sentence || NO_RESULT_ON_THIS_BOARD[card.id]) return;
+          const o = run();
+          if (!o.state || !o.start || o.kind === "no-target" || o.kind === "silent") return;
+          count++;
+          const missing = missingVerbs(sentence, o.start, o.state, o.excluded!, o.source!);
+          if (missing.length > 0) bad.push(`${card.id} ${card.name}: ${missing.join("・")}が起きない（${sentence}）`);
+        };
+        for (const u of onRush) {
+          await breathe();
+          check(u, certainSentence(u, RUSH_TRIGGER), () => checkOnRush(u, policy));
+        }
+        for (const u of enter) {
+          await breathe();
+          check(u, certainSentence(u, ENTER_TRIGGER), () => checkEnterBattle(u, policy));
+        }
+        for (const op of allOperations) {
+          await breathe();
+          check(op, certainSentence(op), () => checkOperation(op, policy));
+        }
+        expect(count).toBeGreaterThan(150);
+        expect(bad).toEqual([]);
+      }, TIMEOUT);
+    }
 
     it(`起動効果は止まらない（選び方: ${policy}）`, async () => {
       const bad: string[] = [];
