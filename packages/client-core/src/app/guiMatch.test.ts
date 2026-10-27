@@ -457,6 +457,37 @@ describe("cards an effect shows", () => {
     expect(session.state.pendingEffectChoice?.effectId).toBe("rm017_omedetrophy");
   });
 
+  it("says in the selection window what an optional effect does (XG3-046 撃破されたとき)", () => {
+    for (const viewport of [VITA, { width: 390, height: 844 }]) {
+      const app = new AppController({ platform: testPlatform(), viewport, cpuDelayFrames: 0, seed: () => 5, gui: true });
+      app.dispatch(input.select(3, true));
+      const session = app.session!;
+      session.state = {
+        ...session.state,
+        activePlayer: "player2",
+        pendingEffectChoice: {
+          playerId: "player1",
+          phasePlayerId: "player2",
+          effectId: "xg3046_black_damage",
+          sourceCardId: "XG3-046",
+          kind: "confirm",
+          validInstanceIds: ["accept"],
+          optional: true,
+        } as never,
+      };
+      session.version++;
+      const dialog = app.view().gui!.dialog!;
+      const text = dialog.titleLines.map((l) => l.text).join("");
+      expect(text).toContain("※敵軍ターン中、これが撃破されて");
+      // Only the effect asked about, not the card's other one.
+      expect(text).not.toContain("キングストーンフラッシュ");
+      expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: 使う", "選ばない"]);
+      // The text sits above the buttons, inside the window.
+      const last = dialog.titleLines[dialog.titleLines.length - 1]!;
+      expect(last.rect.y + last.rect.h).toBeLessThanOrEqual(dialog.buttons[0]!.rect.y);
+    }
+  });
+
   it("opens a whole-deck search on the card that can be picked (XG3-061【キャストオフ】)", () => {
     const app = startGui(5);
     const session = app.session!;

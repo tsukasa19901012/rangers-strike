@@ -426,7 +426,7 @@ export class GuiMatch {
    * start-phase bonus draw is asked here: on the board it was only a menu behind
    * the end button and easy to miss (more so once the draw before it is automatic).
    */
-  private pendingView(): { title: string; source?: string } | null {
+  private pendingView(): { title: string; source?: string; detail?: string } | null {
     const pending = buildPendingView(this.engine, this.state());
     if (pending) return pending;
     if (this.options().some((o) => o.action.type === "bonus_draw")) {
@@ -1069,9 +1069,15 @@ export class GuiMatch {
     const per = this.dialogCardsPerRow();
     const g = this.geometry;
     const rowH = g.tileH + g.lineHeight + 2;
-    const room = g.board.y + g.board.h - this.dialogRect().y - g.lineHeight * 6;
+    const room = g.board.y + g.board.h - this.dialogRect().y - g.lineHeight * (6 + this.dialogEffectLines());
     const rows = Math.max(1, Math.min(3, Math.ceil(count / per), Math.floor(room / rowH)));
     return per * rows;
+  }
+
+  /** Lines of effect text the selection window shows: a few on the Vita, more where the board is tall. */
+  private dialogEffectLines(): number {
+    const g = this.geometry;
+    return Math.max(2, Math.min(6, Math.floor(g.board.h / g.lineHeight / 5)));
   }
 
   private dialogCardsPerRow(): number {
@@ -1171,11 +1177,16 @@ export class GuiMatch {
       const titleTexts = pending
         ? [...wrapText(pending.title, { ...wrap, maxLines: 2 }), ...(pending.source ? [fitLine(`カード: ${pending.source}`, wrap)] : [])]
         : ["選択"];
+      // What the effect does, so a lone 「使う / 選ばない」 says what it asks (the side panel is off on a phone).
+      const effectTexts = pending?.detail ? wrapText(pending.detail, { ...wrap, maxLines: this.dialogEffectLines() }) : [];
       let y = base.y + 4;
-      const titleLines: PanelLine[] = titleTexts.map((text, i) => {
-        const line = { text, tone: (i === 0 ? "accent" : "dim") as PanelTone, rect: { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight } };
+      const titleLines: PanelLine[] = [
+        ...titleTexts.map((text, i) => ({ text, tone: (i === 0 ? "accent" : "dim") as PanelTone })),
+        ...effectTexts.map((text) => ({ text, tone: "body" as PanelTone })),
+      ].map((line) => {
+        const placed = { ...line, rect: { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight } };
         y += g.lineHeight;
-        return line;
+        return placed;
       });
       const cardItems = dialogItems.filter((i): i is Extract<DialogItem, { kind: "card" }> => i.kind === "card");
       const buttonItems = dialogItems.filter((i) => i.kind === "button");
