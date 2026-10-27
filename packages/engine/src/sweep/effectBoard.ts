@@ -262,22 +262,8 @@ export function checkEnterBattle(unit: CardDefinition, policy: ChoicePolicy, bra
         (a.type === "initiate_command_payment" && a.sourceInstanceId === card.instanceId),
     );
     if (!first) return { kind: "not-offered" };
-    const out = drive(s, first, card, policy, branch);
-    // 「…を捨札にしなければ出られない」は、払った後にもう一度バトルエリアに出す（エンジンの手順）
-    const again =
-      out.state && out.kind !== "error" && out.state.players.player1.rush.some((c) => c.instanceId === card.instanceId)
-        ? getLegalActions(out.state).find((a) => a.type === "move_to_battle" && a.instanceId === card.instanceId)
-        : undefined;
-    if (!again) return out;
-    const out2 = drive(out.state!, again, card, policy, out.branches ? undefined : branch);
-    if (out2.kind === "error") return out2;
-    return {
-      ...out2,
-      start: s,
-      excluded: new Set([...(out.excluded ?? []), ...(out2.excluded ?? [])]),
-      ...(out.branches ? { branches: out.branches, picked: out.picked, branchState: out.branchState } : {}),
-      ...(out.promptState ? { promptState: out.promptState } : {}),
-    };
+    // 「…を捨札にしなければ出られない」は、捨てるカードを選んだらそのままバトルエリアに出る
+    return drive(s, first, card, policy, branch);
   });
 }
 
