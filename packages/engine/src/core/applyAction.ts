@@ -482,6 +482,18 @@ function hasStartReturnInProgress(state: GameState): boolean {
   );
 }
 
+/** 出るための捨札の選択を開いた move_to_battle を、選び終えたら続ける（GameState.battleEntryResumeMove）。 */
+function withBattleEntryResume(
+  state: GameState,
+  playerId: PlayerId,
+  action: { instanceId: string; vehicleInstanceId?: string; rideOff?: boolean },
+): GameState {
+  return {
+    ...state,
+    battleEntryResumeMove: { playerId, instanceId: action.instanceId, vehicleInstanceId: action.vehicleInstanceId, rideOff: action.rideOff },
+  };
+}
+
 function fail(error: string): ActionResult {
   return { ok: false, error };
 }
@@ -1144,6 +1156,14 @@ function applyActionWithRng(
     next = resumed.ok
       ? { ...resumed.state, rk12GorgomPassedOp: undefined }
       : { ...next, rk12ResumeOperation: undefined, rk12GorgomPassedOp: undefined };
+  }
+  // 「…を捨札にしなければバトルエリアに出られない」の捨てるカードを選んだ後: そのまま move_to_battle を続ける。
+  if (next.battleEntryResumeMove && !next.pendingEffectChoice) {
+    const mv = next.battleEntryResumeMove;
+    const cleared: GameState = { ...next, battleEntryResumeMove: undefined, activePlayer: mv.playerId };
+    const stillInRush = cleared.players[mv.playerId].rush.some((c) => c.instanceId === mv.instanceId);
+    const resumed = stillInRush ? applyAction(cleared, { type: "move_to_battle", ...mv }, { trustLegality: true }) : null;
+    next = resumed?.ok ? resumed.state : cleared;
   }
   // XG1-038【サカナマル】の選択の後: 相手のユニットがまだラッシュエリアにあれば move_to_battle を続ける（rules/xg1/xg1bEffects.ts）。
   if (next.xg1ResumeMove && !next.pendingEffectChoice) {
@@ -2553,7 +2573,7 @@ function applyActionCore(
         const discardChoice = tryStartBattleEntryRushDiscard(state, playerId, found.card);
         if (!discardChoice) return fail("cannot_enter_battle");
         return ok(
-          discardChoice,
+          withBattleEntryResume(discardChoice, playerId, action),
           buildSimpleLogEntry(playerId, "battle_entry_discard_pending"),
         );
       }
@@ -2565,7 +2585,7 @@ function applyActionCore(
         const discardChoice = tryStartBattleEntryHandDiscard(state, playerId, found.card);
         if (!discardChoice) return fail("cannot_enter_battle");
         return ok(
-          discardChoice,
+          withBattleEntryResume(discardChoice, playerId, action),
           buildSimpleLogEntry(playerId, "battle_entry_hand_discard_pending"),
         );
       }
@@ -2579,7 +2599,7 @@ function applyActionCore(
         const discardChoice = tryStartBattleEntryPowerDiscard(state, playerId, found.card);
         if (!discardChoice) return fail("cannot_enter_battle");
         return ok(
-          discardChoice,
+          withBattleEntryResume(discardChoice, playerId, action),
           buildSimpleLogEntry(playerId, "battle_entry_power_discard_pending"),
         );
       }

@@ -1319,6 +1319,8 @@ export type GameState = {
   rk12ResumeOperation?: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string };
   /** RK-251 の選択を済ませたオペレーション（同じ使用で2度は尋ねない）。 */
   rk12GorgomPassedOp?: string;
+  /** 「…を捨札にしなければバトルエリアに出られない」の捨てるカードを選んだ後で続ける move_to_battle（core/applyAction.ts の後処理）。 */
+  battleEntryResumeMove?: { playerId: PlayerId; instanceId: string; vehicleInstanceId?: string; rideOff?: boolean };
   /** XG1-038【サカナマル】の選択の後で続ける相手の move_to_battle（core/applyAction.ts の後処理。rules/xg1/xg1bEffects.ts）。 */
   xg1ResumeMove?: { playerId: PlayerId; instanceId: string; vehicleInstanceId?: string; rideOff?: boolean };
   /** XG1-038【サカナマル】を尋ね終えた相手のユニット（続ける move_to_battle で2度は尋ねない）。 */

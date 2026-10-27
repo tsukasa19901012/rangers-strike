@@ -498,7 +498,8 @@ describe("RS-416 冥府神トード", () => {
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:r1"]);
     expect(canSkip(s)).toBe(false);
     s = pick(s, "TST-UNIT-0:r1");
-    if (zoneOf(s, "player1", "RS-416:td") === "rush") s = enter(s, "RS-416:td");
+    // 捨てるカードを選んだら、もう一度「バトルエリアに出す」を選ばなくてもそのまま出る
+    expect(zoneOf(s, "player1", "RS-416:td")).toBe("battle");
     s = resolveAll(s);
     expect(zoneOf(s, "player1", "RS-416:td")).toBe("battle");
     expect(zoneOf(s, "player1", "TST-UNIT-0:r1")).toBe("discard");

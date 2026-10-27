@@ -4,7 +4,6 @@ import { applyAction, canMoveUnitToBattle, getLegalActions, unitEffectiveCategor
 import { resolveNamedOnRushEffects } from "./rules/namedUnitEffects";
 import { startSagasSniperChoice } from "./rules/pendingChoices";
 import { createTestState, inst, TEST_DEFINITIONS, withCostWindow } from "./testing/fixtures";
-import { isCostWindowSatisfied, getCostWindowMetadata } from "./core/costWindow";
 import { legendDefinitions, moveToBattle } from "./testing/battleEntry";
 import { buildZordRushSetup } from "./testing/gameplayFlow";
 
@@ -100,11 +99,12 @@ describe("legend3 integration", () => {
         instanceId: "RS-079:silver",
       }),
     );
-    expect(isCostWindowSatisfied(paid.players.player1, "battle_entry_rush_discard")).toBe(true);
-    expect(getCostWindowMetadata(paid.players.player1, "battle_entry_rush_discard")?.discardedCardId).toBe("RS-079");
+    expect(paid.players.player1.discard.map((c) => c.cardId)).toEqual(["RS-079"]);
 
-    const entered = moveToBattle(paid, "RS-132:cannon", "player1");
-    const unit = entered.players.player1.battle.find((c) => c.cardId === "RS-132");
+    // 捨てるカードを選んだら、そのままバトルエリアに出る
+    expect(paid.pendingEffectChoice).toBeUndefined();
+    expect(paid.players.player1.rush).toHaveLength(0);
+    const unit = paid.players.player1.battle.find((c) => c.cardId === "RS-132");
     expect(unit?.spModifier).toBe(1);
     expect(unit?.bpModifier).toBe(5000);
   });
@@ -336,11 +336,10 @@ describe("legend3 integration", () => {
         instanceId: "TST-OP:h2",
       }),
     );
-    expect(isCostWindowSatisfied(ready.players.player1, "battle_entry_hand_discard")).toBe(true);
     expect(ready.players.player1.hand).toHaveLength(0);
-
-    const entered = moveToBattle(ready, "RS-165:wolf", "player1");
-    expect(entered.players.player1.battle.some((c) => c.cardId === "RS-165")).toBe(true);
+    // 2枚選んだら、そのままバトルエリアに出る
+    expect(ready.pendingEffectChoice).toBeUndefined();
+    expect(ready.players.player1.battle.some((c) => c.cardId === "RS-165")).toBe(true);
   });
 
   it("RS-166 gains MA category while in battle", () => {
