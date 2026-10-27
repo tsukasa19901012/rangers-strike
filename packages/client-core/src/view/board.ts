@@ -121,6 +121,68 @@ function effectLabel(engine: EngineApi, state: GameState, effectId: string, sour
   return (sourceCardId && cardName(state, sourceCardId)) || label;
 }
 
+// effectId words -> words of the card text they come from (xg3046_black_damage -> ダメージ).
+const EFFECT_ID_WORDS: Record<string, string[]> = {
+  destroy: ["撃破"],
+  destroyed: ["撃破"],
+  damage: ["ダメージ"],
+  rush: ["ラッシュ"],
+  attack: ["アタック"],
+  strike: ["ストライク"],
+  draw: ["ドロー"],
+  discard: ["捨札"],
+  hold: ["ホールド"],
+  release: ["リリース"],
+  deck: ["山札"],
+  hand: ["手札"],
+  power: ["パワーゾーン"],
+  command: ["コマンド"],
+  start: ["スタートフェイズ"],
+  end: ["エンドフェイズ", "ターン終了"],
+  battle: ["バトル"],
+  bp: ["BP"],
+};
+
+/**
+ * Splits card text into its effects: 「※…」 abilities and 「【名前】…」 combo / named effects.
+ * A keyword alone (「※チェイス」) carries no sentence and is dropped.
+ */
+export function cardTextEffects(text: string): string[] {
+  return text
+    .split(/(?<=[\s。])(?=[※【])/)
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0 && /。|」$/.test(part));
+}
+
+/**
+ * The part of the source card's text a pending effect choice is about, so the selection window can say
+ * what it asks (XG3-046's 撃破 ability rather than its 【キングストーンフラッシュ】). Falls back to the
+ * whole text when the part can't be told apart.
+ */
+export function effectExcerpt(engine: EngineApi, text: string | undefined, effectId: string, optional = false): string | undefined {
+  if (!text) return undefined;
+  const parts = cardTextEffects(text);
+  if (parts.length <= 1) return parts[0] ?? text;
+  const pick = (found: string[]) => (found.length === 1 ? found[0] : undefined);
+  const label = engine.getEffectLabel(effectId).replace(/^【|】$/g, "");
+  const named = label !== effectId ? pick(parts.filter((p) => p.includes(`【${label}】`))) : undefined;
+  if (named) return named;
+  if (optional) {
+    const may = pick(parts.filter((p) => /てもよい|ことができる/.test(p)));
+    if (may) return may;
+  }
+  const words = effectId
+    .toLowerCase()
+    .split(/[^a-z]+/)
+    .flatMap((w) => EFFECT_ID_WORDS[w] ?? []);
+  if (words.length > 0) {
+    const scores = parts.map((p) => words.filter((w) => p.includes(w)).length);
+    const best = Math.max(...scores);
+    if (best > 0 && scores.filter((s) => s === best).length === 1) return parts[scores.indexOf(best)];
+  }
+  return parts.join("\n");
+}
+
 /** Describes the pending choice or reaction window, if any. */
 export function buildPendingView(engine: EngineApi, state: GameState): PendingView | null {
   const index = indexInstances(state);
@@ -171,7 +233,10 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
       actor: who(choice.playerId),
       title: `効果の選択「${effectLabel(engine, state, choice.effectId, choice.sourceCardId)}」${count}${choice.optional ? "（任意）" : ""}`,
       source: choice.sourceCardId === "engine" ? undefined : cardName(state, choice.sourceCardId),
-      detail: choice.sourceCardId === "engine" ? undefined : sourceText(choice.sourceCardId),
+      detail:
+        choice.sourceCardId === "engine"
+          ? undefined
+          : effectExcerpt(engine, sourceText(choice.sourceCardId), choice.effectId, choice.optional),
     };
   }
   const payment = state.pendingCommandPayment;
