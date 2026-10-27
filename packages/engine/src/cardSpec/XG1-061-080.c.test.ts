@@ -187,6 +187,30 @@ describe("XG1-077 仮面ライダーディケイド", () => {
     expect([...deck.slice(2)].sort()).toEqual(["TST-OP:d0", "XG1-066:fz"]);
   });
 
+  it("XG1-077: それ以外の2枚を山札の下に戻す順を選べ、オモテにした3枚は公開表示に出る（出典: atwiki/page-1542「それ以外のカードは好きな順で山札の下に戻す」）", () => {
+    let s = act(rc(), { type: "resolve_effect_choice", playerId: "player1", instanceId: "XG1-064:ag" });
+    expect(s.lastReveal?.cards.map((c) => [c.instanceId, c.destination])).toEqual([
+      ["TST-OP:d0", "deck_bottom"],
+      ["XG1-064:ag", "power"],
+      ["XG1-066:fz", "deck_bottom"],
+    ]);
+    expect(s.pendingEffectChoice?.effectId).toBe("xg1_077_ride_booker_order");
+    expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(["TST-OP:d0", "XG1-066:fz"]);
+    s = resolveAll(s, ["XG1-066:fz"]);
+    expect(deckIds(s)).toEqual(["TST-OP:dk0", "TST-OP:dk1", "XG1-066:fz", "TST-OP:d0"]);
+  });
+
+  it("XG1-077: 特徴「仮面ライダー」のユニットカードがなくても、オモテにした3枚が公開表示に出て、3枚を山札の下に戻す順を選べる（出典: atwiki/page-1542「それ以外のカードは好きな順で山札の下に戻す」）", () => {
+    let s = rcAt("XG1-077:dc", { deck: [inst("TST-OP", "x0"), inst("TST-OP", "x1"), inst("TST-OP", "x2"), ...deckCards(2)] }, {}, EXTRA);
+    expect(choiceIds(s)).toEqual(["accept"]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "accept" });
+    expect(s.lastReveal?.cards.map((c) => c.instanceId)).toEqual(["TST-OP:x0", "TST-OP:x1", "TST-OP:x2"]);
+    expect(s.lastReveal?.cards.every((c) => c.destination === "deck_bottom")).toBe(true);
+    expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(["TST-OP:x0", "TST-OP:x1", "TST-OP:x2"]);
+    s = resolveAll(s, ["TST-OP:x2", "TST-OP:x0"]);
+    expect(deckIds(s)).toEqual(["TST-OP:dk0", "TST-OP:dk1", "TST-OP:x2", "TST-OP:x0", "TST-OP:x1"]);
+  });
+
   it("XG1-077: オモテにしなければ山札はそのまま（出典: atwiki/page-1542「してもよい」）", () => {
     const s = resolveAll(skip(rc()));
     expect(deckIds(s)).toEqual(["TST-OP:d0", "XG1-064:ag", "XG1-066:fz", "TST-OP:dk0", "TST-OP:dk1"]);

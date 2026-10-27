@@ -489,6 +489,35 @@ describe("cards an effect shows", () => {
   });
 });
 
+describe("choosing the order to put cards on the deck bottom", () => {
+  it("shows the cards at the deck bottom as pickable and says what the order means (XG1-077【ライドブッカー】)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const bottom = session.state.players.player1.deck.slice(-3).map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "xg1_077_ride_booker_order",
+        sourceCardId: "XG1-077",
+        kind: "select_unit",
+        validInstanceIds: bottom,
+        selectedInstanceIds: [],
+        selectCount: 1,
+        optional: false,
+      },
+    };
+    session.version++;
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog.titleLines.map((l) => l.text).join("")).toContain("山札の下に戻す順");
+    expect(dialog.cards.filter((c) => c.actionable).map((c) => c.instanceId).sort()).toEqual([...bottom].sort());
+    app.dispatch(input.confirm);
+    expect(session.state.pendingEffectChoice?.validInstanceIds).toHaveLength(2);
+  });
+});
+
 describe("windows that keep cards or rows out of view", () => {
   it("pages the selection window's cards and buttons with ▲▼ marks (a phone has no wheel)", () => {
     const app = startGui(5);

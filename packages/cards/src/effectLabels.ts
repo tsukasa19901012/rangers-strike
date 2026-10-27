@@ -152,6 +152,12 @@ export const EFFECT_LABELS: Record<string, string> = {
   dolphin_arrow: "ドルフィンアロー",
   // XG2-055 変身一発（atwiki/page-1764 Q3）
   xg2_055_turn_end_order: "ターン終了時の処理順（選ぶとユニットの置き換えを先に、選ばないと変身一発のコマンド送りを先に処理）",
+  // XG7-042 仮面ライダークウガ×仮面ライダーディケイド
+  xg7042_rider_war: "ライダー大戦の世界",
+  xg7042_rider_war_order: "ライダー大戦の世界（山札の下に戻す順。先に選んだカードほど上、最後のカードが一番下）",
+  // XG1-077 仮面ライダーディケイド
+  xg1_077_ride_booker: "ライドブッカー",
+  xg1_077_ride_booker_order: "ライドブッカー（山札の下に戻す順。先に選んだカードほど上、最後のカードが一番下）",
 };
 
 export function getEffectLabel(effectId: string): string {
