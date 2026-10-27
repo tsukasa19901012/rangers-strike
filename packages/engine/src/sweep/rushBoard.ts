@@ -19,6 +19,8 @@ export type RushBoardOptions = {
   extraPower: number;
   /** カテゴリ分（と追加条件で使う分）のコマンドだけにする。省くと予備を 2 つ足す。 */
   tight?: boolean;
+  /** コマンドだけ tight と同じにする（パワーは extraPower のまま）。 */
+  minimalCommands?: boolean;
   /** 素材のユニットをラッシュエリアではなくバトルエリアに置く。 */
   materialsInBattle?: boolean;
 };
@@ -79,7 +81,7 @@ export function buildRushBoard(unit: CardDefinition, options: RushBoardOptions):
     if (!d) throw new RushBoardSkip(`${options.commands} のコマンドに ${cat} のカードが無い`);
     command.push(mk(d.id, { commandHeld: false }));
   }
-  const extraCommands = !options.tight ? 2 : cid === "hold_extra_command" || cid === "discard_command_card" ? count : 0;
+  const extraCommands = !options.tight && !options.minimalCommands ? 2 : cid === "hold_extra_command" || cid === "discard_command_card" ? count : 0;
   for (let i = 0; i < extraCommands; i++) command.push(mk(pool[i]!.id, { commandHeld: false }));
 
   const text = (cond?.text ?? "").normalize("NFKC");

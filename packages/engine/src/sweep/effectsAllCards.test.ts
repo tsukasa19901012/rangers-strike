@@ -8,7 +8,10 @@
  * オペレーションは使える（反応して使うもの・カウンターは除く）。
  * 結果は、効果の文の必ず起きる最初の 1 文（条件・分岐の無いもの）だけ、書かれた動詞（撃破する・引く・手札に戻す・
  * ホールドする等）のとおりにカードが動いたかを見る（effectResult.ts）。BP・能力の付与・細かい数は見ない（カード仕様テストの役目）。
+ * 分岐は、「〜してもよい」「◎選択肢」「相手は A か B かを選ぶ」の選択を候補ごとに選び分けて、それぞれの動きを見る（effectBranches.ts）。
+ * 条件は、「敵軍ビークルが2体以上あれば」等の盤面で決まる条件を、満たす盤面と満たさない盤面で比べる（effectConditions.ts）。
  */
+import type { CardDefinition } from "@rangers-strike/cards";
 import { describe, expect, it } from "vitest";
 import {
   allEffectUnits,
@@ -24,7 +27,9 @@ import {
   type EffectOutcome,
   type DriveResult,
 } from "./effectBoard";
-import { certainSentence, missingVerbs } from "./effectResult";
+import { certainSentence, missingVerbs, verbCounts } from "./effectResult";
+import { branchPlan, checkBranches } from "./effectBranches";
+import { conditionPlan } from "./effectConditions";
 
 /** この盤面では発動しない（条件を満たさない・敵軍ターンのみ等）「ラッシュしたとき」「出たとき」。 */
 const QUIET_ON_THIS_BOARD: Record<string, string> = {
@@ -62,7 +67,6 @@ const breathe = async () => {
 };
 /** 文のとおりに動かないのが正しい（この盤面に対象が無い等）カード。 */
 const NO_RESULT_ON_THIS_BOARD: Record<string, string> = {
-  "RK-207": "盤面にホールド状態のユニットがいない",
   "RS-125": "選べる数が自軍の WB の M ユニットの数までで、盤面にいない",
 };
 
@@ -123,8 +127,13 @@ describe("全カードの効果の発動", () => {
           if (!sentence || NO_RESULT_ON_THIS_BOARD[card.id]) return;
           const o = run();
           if (!o.state || !o.start || o.kind === "no-target" || o.kind === "silent") return;
+          // 「〜してもよい」は選択が出たときだけ（対象が無いと選択が出ない）。相手の「してもよい」は相手が見送る
+          if (/てもよい/.test(sentence) && (o.kind !== "prompted" || /^相手は/.test(sentence))) return;
           count++;
-          const missing = missingVerbs(sentence, o.start, o.state, o.excluded!, o.source!);
+          // 支払いでホールドしたコマンド等を効果が選ぶこともあるので、効果の選択が出た盤面からも比べる
+          const fromStart = missingVerbs(sentence, o.start, o.state, o.excluded!, o.source!);
+          const fromPrompt = o.promptState ? missingVerbs(sentence, o.promptState, o.state, new Set([o.source!]), o.source!) : fromStart;
+          const missing = fromStart.filter((v) => fromPrompt.includes(v));
           if (missing.length > 0) bad.push(`${card.id} ${card.name}: ${missing.join("・")}が起きない（${sentence}）`);
         };
         for (const u of onRush) {
@@ -140,6 +149,66 @@ describe("全カードの効果の発動", () => {
           check(op, certainSentence(op), () => checkOperation(op, policy));
         }
         expect(count).toBeGreaterThan(150);
+        expect(bad).toEqual([]);
+      }, TIMEOUT);
+    }
+
+    if (policy === "first") {
+      it("効果の分岐（してもよい・◎選択肢・相手の選択）ごとに書かれた動きが起きる", async () => {
+        const bad: string[] = [];
+        let count = 0;
+        const check = (card: { id: string; name: string }, plan: ReturnType<typeof branchPlan>, run: Parameters<typeof checkBranches>[1]) => {
+          if (!plan) return;
+          const problems = checkBranches(plan, run);
+          if (problems === null) return; // 選択が出なかった（対象が無い等）
+          count++;
+          if (problems.length > 0) bad.push(`${card.id} ${card.name}: ${problems.join(" / ")}`);
+        };
+        for (const u of onRush) {
+          await breathe();
+          check(u, branchPlan(u, RUSH_TRIGGER), (b) => checkOnRush(u, policy, b));
+        }
+        for (const u of enter) {
+          await breathe();
+          check(u, branchPlan(u, ENTER_TRIGGER), (b) => checkEnterBattle(u, policy, b));
+        }
+        for (const op of allOperations) {
+          await breathe();
+          check(op, branchPlan(op), (b) => checkOperation(op, policy, b));
+        }
+        expect(count).toBeGreaterThan(60);
+        expect(bad).toEqual([]);
+      }, TIMEOUT);
+
+      it("盤面で決まる条件（〜があれば・〜なら）を満たすときだけ書かれた動きが起きる", async () => {
+        const bad: string[] = [];
+        let count = 0;
+        const cases: Array<[CardDefinition, RegExp | undefined, typeof checkOnRush]> = [
+          ...onRush.map((u) => [u, RUSH_TRIGGER, checkOnRush] as [CardDefinition, RegExp, typeof checkOnRush]),
+          ...enter.map((u) => [u, ENTER_TRIGGER, checkEnterBattle] as [CardDefinition, RegExp, typeof checkOnRush]),
+          ...allOperations.map((op) => [op, undefined, checkOperation] as [CardDefinition, undefined, typeof checkOnRush]),
+        ];
+        for (const [card, trigger, run] of cases) {
+          await breathe();
+          const plan = conditionPlan(card, trigger);
+          if (!plan) continue;
+          const sat = plan.tweak(true);
+          const unsat = plan.tweak(false);
+          if (!sat || !unsat) continue;
+          count++;
+          const [yes, no] = [run(card, policy, undefined, sat), run(card, policy, undefined, unsat)];
+          if (yes.kind === "error" || no.kind === "error") {
+            bad.push(`${card.id} ${card.name}: ${why(yes.kind === "error" ? yes : no)}`);
+            continue;
+          }
+          // 支払い・追加条件の動きは両方の盤面で同じなので、満たす盤面のほうが多く動くかで見る
+          const counts = (o: DriveResult) => (o.state && o.start ? verbCounts(o.start, o.state, o.excluded!) : new Map<string, number>());
+          const [cy, cn] = [counts(yes), counts(no)];
+          for (const v of plan.verbs) {
+            if ((cy.get(v) ?? 0) <= (cn.get(v) ?? 0)) bad.push(`${card.id} ${card.name}: 「${plan.condition}」を満たしても満たさなくても${v}の数が同じ`);
+          }
+        }
+        expect(count).toBeGreaterThan(5);
         expect(bad).toEqual([]);
       }, TIMEOUT);
     }
