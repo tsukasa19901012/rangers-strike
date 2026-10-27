@@ -145,8 +145,9 @@ function touchFooter(v: GuiView): string {
   if (v.startPhase) return "タップ: 決定 / 枠の外: 閉じて盤面を見る";
   if (v.battleEntry) return "タップ: 決定 / 光る敵をタップ: そのままアタック";
   if (v.list || v.popup) return "タップ: 決定 / 枠の外: 閉じる";
-  if (v.dialog) return "タップ: 選ぶ / 長押し: カードの詳細";
+  if (v.dialog) return "タップ: 選ぶ / 長押し: 詳細 / 枠の外: 盤面を見る";
   if (v.footer.startsWith("「可能なら出る」")) return v.footer;
+  if (v.footer.startsWith("盤面を確認中")) return "盤面を確認中（空いた所かログをタップで選択に戻る）";
   if (v.footerAccent) return v.footer.replace(/（[^）]*）$/, "");
   if (v.footer === "CPU の手番") return "CPU の手番です… / 長押し: カードの詳細";
   return "タップ: 操作 / 長押し: 詳細 / 左右スワイプ: 送る";
@@ -711,9 +712,15 @@ export default function App() {
     if (inside(buttons.all, p)) return dispatch(input.allActions);
     if (inside(buttons.log, p)) return dispatch(input.toggleLog);
     const hit = hitTestGui(gui, p);
-    // On a phone only the ログ button opens the log: the core's hit test also opens it on a tap
-    // over the top bar, the lower board (where the log is drawn) or outside a window, which there is empty space.
-    if (isPortrait(gui.geometry) && hit?.type === "toggleLog") return false;
+    if (isPortrait(gui.geometry)) {
+      // A tap outside the selection window puts it away to look at the board (CPU rows sit under it),
+      // and a tap on empty space while it is away brings it back, as L does on the PC.
+      if (gui.dialog && hit?.type === "toggleLog") return dispatch(hit);
+      if (!gui.dialog && gui.footer.startsWith("盤面を確認中") && (hit === null || hit.type === "toggleLog")) return dispatch(input.toggleLog);
+      // Otherwise only the ログ button opens the log: the core's hit test also opens it on a tap
+      // over the top bar or the lower board (where the log is drawn), which there is empty space.
+      if (hit?.type === "toggleLog") return false;
+    }
     return dispatch(hit);
   }
 
