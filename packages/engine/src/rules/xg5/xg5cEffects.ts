@@ -64,6 +64,7 @@ import {
   xg5Busy,
 } from "./xg5Shared";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
+import { deckOrderChoice } from "../deckOrder";
 
 const PLAYERS: PlayerId[] = ["player1", "player2"];
 
@@ -182,7 +183,7 @@ CHOICE_RESOLVERS[MASTER_HEAD] = (state, playerId) => {
 // ---------------------------------------------------------------------------
 // XG5-047 キューユソウル（オペレーション）
 // 「自軍パワーゾーンのダメージ以外のカードをすべて捨札にする。そうしたとき、捨札にしたカードと同じ枚数まで、自軍パワーゾーンからダメージになっているカードを選び、
-//  自軍山札の上に好きな順で戻す。」（atwiki/page-2206）。選んだ順に山札の上から並べる（最初に選んだカードがいちばん上）。
+//  自軍山札の上に好きな順で戻す。」（atwiki/page-2206）。2枚以上なら、番号を付けて山札の上の順を選ぶ（rules/deckOrder.ts。1番が一番上）。
 
 const KYUYU = "xg5_047_kyuyu_soul";
 XG5_KEYWORDS["XG5-047::kyuyu_soul"] = (state, ctx) => {
@@ -195,13 +196,15 @@ XG5_KEYWORDS["XG5-047::kyuyu_soul"] = (state, ctx) => {
   if (ids.length === 0) return { state: next, detail: "xg5_047:no_damage" };
   return { state: openAfter(next, multiChoice(ctxBase(ctx), "XG5-047", KYUYU, ids, up.length)), detail: KYUYU };
 };
-registerMulti(KYUYU, (state, pending, ids) =>
-  patchPlayer(state, pending.playerId, (p) => {
+registerMulti(KYUYU, (state, pending, ids) => {
+  const placed = patchPlayer(state, pending.playerId, (p) => {
     const picked = ids.map((id) => p.power.find((c) => c.instanceId === id)).filter((c): c is CardInstance => !!c);
     const set = new Set(picked.map((c) => c.instanceId));
     return { ...p, power: p.power.filter((c) => !set.has(c.instanceId)), deck: [...picked.map(stripForZone), ...p.deck], damage: Math.max(0, p.damage - picked.length) };
-  }),
-);
+  });
+  const order = deckOrderChoice(placed, { playerId: pending.playerId, phasePlayerId: pending.phasePlayerId, sourceCardId: "XG5-047", sourceInstanceId: pending.sourceInstanceId }, ids, "top");
+  return order ? openAfter(placed, order) : placed;
+});
 
 // ---------------------------------------------------------------------------
 // XG5-048 パーフェクター（オペレーション）

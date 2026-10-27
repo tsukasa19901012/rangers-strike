@@ -36,6 +36,7 @@ import { rk1IsSmallNow } from "./rk1Features";
 import { tryLeaveField } from "../operationCounters";
 import { destroyStriker } from "../strikeReactions";
 import { recordReveal, revealedCards } from "../revealNotice";
+import { deckOrderChoice } from "../deckOrder";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -409,9 +410,7 @@ const VEHICLE_ENTER: Record<string, (state: GameState, playerId: PlayerId, vehic
 // RK-025 電波人間タックル（RC）
 // 「敵軍山札の上から2枚をオモテにする。オモテにしたカードの中から、特徴「男」を持つユニットカードを持ち主のコマンドゾーンに
 //  ホールド状態で置く。置けなかったカードと、それ以外のカードは、相手が好きな順で山札の上に戻す。」（atwiki/page-200）。強制。
-// 戻すカードが2枚以上なら、相手が上に置くカードから1枚ずつ選ぶ。
-
-export const DENPA_ORDER_EFFECT_ID = "rk025_denpa_order";
+// 戻すカードが2枚なら、相手が番号を付けて山札の上の順を選ぶ（rules/deckOrder.ts。1番が一番上）。
 
 function applyDenpaNage(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const enemyId = opponent(ctx.playerId);
@@ -441,38 +440,14 @@ function applyDenpaNage(state: GameState, ctx: GrantKeywordContext): GrantKeywor
     from: "deck_top",
     cards: revealedCards(revealed, (c) => (backIds.has(c.instanceId) ? "deck_top" : "command")),
   });
-  if (back.length < 2) return { state: next, detail: "rk025:denpa_nage" };
-  return {
-    state: openOrQueue(next, {
-      ...base({ playerId: enemyId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: ctx.triggerSourceInstanceId }, "RK-025"),
-      effectId: DENPA_ORDER_EFFECT_ID,
-      kind: "select_unit",
-      validInstanceIds: back.map((c) => c.instanceId).sort(),
-      viewedInstanceIds: back.map((c) => c.instanceId),
-      selectCount: 1,
-      optional: false,
-    }),
-    detail: "rk025:denpa_nage",
-  };
+  const order = deckOrderChoice(
+    next,
+    { playerId: enemyId, phasePlayerId: ctx.phasePlayerId, sourceCardId: "RK-025", sourceInstanceId: ctx.triggerSourceInstanceId },
+    back.map((c) => c.instanceId),
+    "top",
+  );
+  return { state: order ? openOrQueue(next, order) : next, detail: "rk025:denpa_nage" };
 }
-
-CHOICE_RESOLVERS[DENPA_ORDER_EFFECT_ID] = (state, playerId, instanceId) => {
-  const pending = state.pendingEffectChoice!;
-  const placedIds = [...(pending.selectedInstanceIds ?? []), instanceId];
-  const rest = pending.validInstanceIds.filter((id) => id !== instanceId);
-  const log = logFor(state, playerId, "RK-025", `${DENPA_ORDER_EFFECT_ID}:${instanceId}`);
-  if (rest.length > 1) {
-    return { state: { ...state, pendingEffectChoice: { ...pending, validInstanceIds: rest, selectedInstanceIds: placedIds } }, log };
-  }
-  // 選んだ順に上から並べる（最後の1枚はその下）。
-  const order = [...placedIds, ...rest];
-  const reordered = patchPlayer(state, playerId, (p) => {
-    const cards = order.map((id) => p.deck.find((c) => c.instanceId === id)).filter((c): c is CardInstance => !!c);
-    const others = p.deck.filter((c) => !order.includes(c.instanceId));
-    return { ...p, deck: [...cards, ...others] };
-  });
-  return { state: proceed(close(reordered, pending), pending), log };
-};
 
 // ---------------------------------------------------------------------------
 // RK-026 がんがんじい

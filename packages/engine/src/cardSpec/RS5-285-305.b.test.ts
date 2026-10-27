@@ -168,6 +168,15 @@ describe("RS-293 気伝獣ウォンタイガー", () => {
     expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(["SPEC-OT-S:o1", "TST-OP:x"]);
   });
 
+  it("RS-293: 【吼新星・大咆哮】残りが2枚以上なら、番号を付けて山札の上の順を選ぶ（1番が一番上）（出典: atwiki/page-477「それ以外を山札の上に好きな順で戻す」）", () => {
+    const deck = [inst("SPEC-OT-S", "o1"), inst("SPEC-DA-S", "d1"), inst("TST-OP", "x"), inst("TST-OP", "y")];
+    let s = enterHold(st({ player1: { rush: [inst("RS-293", "w")], command: releasedN(1) }, player2: { deck } }, SPECS), "RS-293:w");
+    s = settle(confirm(s));
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_top_order");
+    s = settle(pick(pick(s, "TST-OP:x"), "order_done"));
+    expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(["TST-OP:x", "SPEC-OT-S:o1", "TST-OP:y"]);
+  });
+
   it("RS-293: 【吼新星・大咆哮】オモテにしないことを選べる（任意）（出典: atwiki/page-477「オモテにしてもよい」）", () => {
     let s = wonEnters();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-293");

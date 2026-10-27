@@ -33,6 +33,7 @@ import { findCardInField } from "../fieldLookup";
 import { startEffectRush } from "../effectRush";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
+import { deckOrderChoice } from "../deckOrder";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -522,7 +523,6 @@ function resolveDaikaen(state: GameState, playerId: PlayerId, instanceId: string
 //  中から「DA」のカードをすべて捨札にし、それ以外を山札の上に好きな順で戻す。」（DA はマルチカテゴリを含む）
 
 export const ROAR_CONFIRM_EFFECT_ID = "daihoukou_reveal";
-export const ROAR_ORDER_EFFECT_ID = "daihoukou_order";
 
 registerOptionalEffect(ROAR_CONFIRM_EFFECT_ID, {
   apply: (state, pending) => {
@@ -547,40 +547,16 @@ registerOptionalEffect(ROAR_CONFIRM_EFFECT_ID, {
       ],
     };
     if (rest.length < 2) return promoteDeferredBattleEntry(next);
-    // 残りを山札の上に好きな順で戻す: 上から順に選ぶ（最後の1枚は自動）。
-    return openEffectChoice(next, {
-      playerId: pending.playerId,
-      effectId: ROAR_ORDER_EFFECT_ID,
-      sourceCardId: "RS-293",
-      sourceInstanceId: pending.sourceInstanceId,
-      kind: "scry_keep_one",
-      phasePlayerId: pending.phasePlayerId,
-      validInstanceIds: rest.map((c) => c.instanceId),
-      viewedInstanceIds: rest.map((c) => c.instanceId),
-      selectedInstanceIds: [],
-      optional: false,
-    });
+    // 残りを山札の上に好きな順で戻す: 番号を付けて順を選ぶ（rules/deckOrder.ts。1番が一番上）。
+    const order = deckOrderChoice(
+      next,
+      { playerId: pending.playerId, phasePlayerId: pending.phasePlayerId, sourceCardId: "RS-293", sourceInstanceId: pending.sourceInstanceId },
+      rest.map((c) => c.instanceId),
+      "top",
+    );
+    return order ? openEffectChoice(next, order) : promoteDeferredBattleEntry(next);
   },
 });
-
-function resolveRoarOrder(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
-  const pending = state.pendingEffectChoice!;
-  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
-  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
-  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
-  if (remaining.length > 1) {
-    return { state: { ...state, pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining } } };
-  }
-  const order = [...selected, ...remaining];
-  const enemyId = opponent(playerId);
-  const next = patchPlayer(state, enemyId, (p) => {
-    const top = order
-      .map((id) => p.deck.find((c) => c.instanceId === id))
-      .filter((c): c is CardInstance => !!c);
-    return { ...p, deck: [...top, ...p.deck.filter((c) => !order.includes(c.instanceId))] };
-  });
-  return { state: finish(next, pending.phasePlayerId, state), log: logFor(state, playerId, "RS-293", ROAR_ORDER_EFFECT_ID) };
-}
 
 // ---------------------------------------------------------------------------
 // RS-294 キバレンジャー【吼新星・乱れ山彦】（NC）
@@ -876,7 +852,6 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [HOMERUN_HOLD_EFFECT_ID]: resolveHomerunHold,
   [COSMO_FLASH_EFFECT_ID]: resolveCosmoFlash,
   [DAIKAEN_EFFECT_ID]: resolveDaikaen,
-  [ROAR_ORDER_EFFECT_ID]: resolveRoarOrder,
   [ECHO_OPPONENT_EFFECT_ID]: resolveEchoOpponent,
   [ECHO_DESTROY_EFFECT_ID]: resolveEchoDestroy,
   [REVOLVER_UNIT_EFFECT_ID]: resolveRevolver,

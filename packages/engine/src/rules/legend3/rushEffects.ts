@@ -17,7 +17,7 @@ import {
   startSelectUnitChoice,
 } from "../pendingChoices";
 import type { NamedEffectOutcome } from "../namedUnitEffects";
-import { closeWithDeckOrder } from "../deckOrder";
+import { closeWithDeckOrder, deckOrderChoice, openDeckOrderAfter } from "../deckOrder";
 
 function rushPowerDiscardCount(cardId: string): number {
   const block = getUnitEffectBlock(cardId);
@@ -330,6 +330,16 @@ export function resolveLegend3OnRushEffects(
           deck: [...released.reverse(), ...rusher.deck],
         };
         nextState = { ...nextState, ...updatePlayer(nextState, rusherPlayerId, nextPlayer) };
+        // 「好きな順で」: 2枚以上なら番号を付けて山札の上の順を選ぶ（rules/deckOrder.ts。1番が一番上）。
+        nextState = openDeckOrderAfter(
+          nextState,
+          deckOrderChoice(
+            nextState,
+            { playerId: rusherPlayerId, phasePlayerId, sourceCardId: cardId, sourceInstanceId: rushedInstanceId },
+            released.map((c) => c.instanceId),
+            "top",
+          ),
+        );
       }
       break;
     }

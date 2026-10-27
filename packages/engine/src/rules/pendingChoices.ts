@@ -1,5 +1,5 @@
 import { recordReveal } from "./revealNotice";
-import { closeWithDeckOrder, resolveDeckOrderPick } from "./deckOrder";
+import { closeWithDeckOrder, deckOrderChoice, resolveDeckOrderPick } from "./deckOrder";
 import { hasNameOrAlias } from "../core/cardNames";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import { redRacerPowerCostBonus } from "../core/power";
@@ -5736,6 +5736,14 @@ export function applyEffectChoiceSelect(
             }),
           };
         }
+        // 持ち主が番号を付けて山札の上の順を選ぶ（rules/deckOrder.ts。1番が一番上）。選んだ後で元の効果の続き（resumeChoice）へ。
+        const order = deckOrderChoice(
+          nextState,
+          { playerId: deckOwnerId, phasePlayerId: pending.phasePlayerId, sourceCardId: pending.sourceCardId, sourceInstanceId: pending.sourceInstanceId },
+          top3,
+          "top",
+        );
+        if (order) nextState = openEffectChoice({ ...nextState, pendingEffectChoice: undefined }, order);
         return finishChoice(nextState, pending, deckOwnerId);
       }
       if (pending.effectId === "arino" && instanceId === "reveal_top") {

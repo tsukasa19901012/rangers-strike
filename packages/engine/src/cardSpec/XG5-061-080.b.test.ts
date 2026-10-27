@@ -253,6 +253,16 @@ describe("XG5-072 仮面ライダー威吹鬼", () => {
     expect(s0.pendingEffectChoice?.validInstanceIds.every((id) => !own.includes(id))).toBe(true);
   });
 
+  it("XG5-072: RC【挫けぬ疾風】— オモテにした3枚は、番号を付けて敵軍山札の上の順を選ぶ（1番が一番上）（出典: atwiki/page-2278「オモテにしたカードを山札の上に好きな順で戻す」）", () => {
+    let s = rc("XG5-072:ib", {}, { deck: deckCards(5, "e") });
+    s = pick(s, "shuffle");
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_top_order");
+    const shown = [...(s.pendingEffectChoice?.validInstanceIds ?? [])];
+    expect(shown).toHaveLength(3);
+    s = resolveAll(pick(pick(s, shown[2]!), shown[1]!), ["order_done"]);
+    expect(s.players.player2.deck.slice(0, 3).map((c) => c.instanceId)).toEqual([shown[2], shown[1], shown[0]]);
+  });
+
   it.todo("XG5-072: RC【挫けぬ疾風】— オモテにした中に DA を持つカードがあれば、これをリリースする（出典: atwiki/page-2278「その中にDAを持つカードがあれば、このユニットをリリースする」）— ライドオフ（RC）するときこのユニットはリリース状態で出るため、ホールド状態からのリリースを公開 API で組めない");
 });
 

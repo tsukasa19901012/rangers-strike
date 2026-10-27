@@ -434,11 +434,12 @@ describe("RK-025 電波人間タックル", () => {
     expect(zoneIds(s, "player2", "deck")).toEqual(["TST-OP:b"]);
   });
 
-  it("RK-025: RC — 「男」以外のカードは、相手（持ち主）が順番を選んで山札の上に戻す（出典: atwiki/page-200「それ以外のカードは、相手が好きな順で山札の上に戻す」）", () => {
+  it("RK-025: RC — 「男」以外のカードは、相手（持ち主）が番号を付けて山札の上の順を選ぶ（1番が一番上）（出典: atwiki/page-200「それ以外のカードは、相手が好きな順で山札の上に戻す」）", () => {
     let s = rc([inst("TST-OP", "a"), inst("SPEC-E2000", "b"), inst("TST-OP", "c")]);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
-    expect(choiceIds(s)).toEqual(["SPEC-E2000:b", "TST-OP:a"]);
-    s = settle(pick(s, "SPEC-E2000:b"));
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_top_order");
+    expect([...choiceIds(s)].sort()).toEqual(["SPEC-E2000:b", "TST-OP:a"]);
+    s = settle(pick(pick(s, "SPEC-E2000:b"), "order_done"));
     expect(zoneIds(s, "player2", "deck")).toEqual(["SPEC-E2000:b", "TST-OP:a", "TST-OP:c"]);
   });
 

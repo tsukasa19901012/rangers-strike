@@ -603,9 +603,20 @@ describe("RS-169 ファンクラッシャー", () => {
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("TST-OP:deck0");
   });
 
-  it.todo(
-    "RS-169: 戻す順番は自分で選ぶ（出典: atwiki/page-339「好きな順で戻す」）— 公開アクションで順番を指定する手段（並べ替えの選択）がエンジンに無い",
-  );
+  it("RS-169: 戻す順番は自分で番号を付けて選ぶ（1番が一番上）（出典: atwiki/page-339「好きな順で戻す」）", () => {
+    const r = rushFan([released("TST-OP-DA", "da"), released("TST-OP", "w1"), released("TST-OP", "w2"), held("TST-OP", "h")]);
+    expect(r.ok).toBe(true);
+    let s = r.state;
+    for (let i = 0; i < 6 && s.pendingEffectChoice && s.pendingEffectChoice.effectId !== "deck_top_order"; i++) {
+      const a = legal(s).find((x) => (x.type === "resolve_effect_choice" || x.type === "confirm_effect_choice") && x.playerId === "player1");
+      if (!a) break;
+      s = act(s, a);
+    }
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_top_order");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP:w1" });
+    s = settle(act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "order_done" }));
+    expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(["TST-OP:w1", "TST-OP:w2", "TST-OP:deck0"]);
+  });
 
   it.todo(
     "RS-169: 公式Q&A — 山札に戻す順番は相手にも公開する（出典: grnrngr/faq-card-3 RS-169 Q1・RS-137）— 公開・非公開の情報管理（UI 表示）であり、エンジンの状態遷移として観測できない",

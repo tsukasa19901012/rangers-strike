@@ -773,9 +773,12 @@ describe("RS-186 プロバイダーベース", () => {
   it("RS-186: 「5枚まで」— 6枚あっても5枚までしか山札の上に置けない（出典: atwiki/page-390）", () => {
     const deck = ["a", "b", "c", "d", "e", "f"].map((x) => inst("RS-196", x));
     let s = playOp(base([inst("TST-OP", "z"), ...deck]), "player1", "RS-186:c").state;
-    s = pickEffect(s, "player1", deck.map((c) => c.instanceId));
-    const top5 = s.players.player1.deck.slice(0, 5).map((c) => c.cardId);
-    expect(top5).toEqual(Array(5).fill("RS-196"));
+    s = pickEffect(s, "player1", deck.slice(0, 5).map((c) => c.instanceId));
+    // 5枚選ぶと選び終わり、山札の上の順を番号で選ぶ（「好きな順で山札の上に戻す」）。
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_top_order");
+    expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(deck.slice(0, 5).map((c) => c.instanceId).sort());
+    s = pickEffect(s, "player1", ["RS-196:e", "RS-196:d", "RS-196:c", "RS-196:b", "order_done"]);
+    expect(s.players.player1.deck.slice(0, 5).map((c) => c.instanceId)).toEqual(["RS-196:e", "RS-196:d", "RS-196:c", "RS-196:b", "RS-196:a"]);
     expect(s.pendingEffectChoice).toBeUndefined();
   });
 

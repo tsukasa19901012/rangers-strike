@@ -399,6 +399,16 @@ describe("RS-585 ボウケンシルバー（2nd）", () => {
     expect(s.players.player2.deck.slice(0, 3).map((c) => c.instanceId).sort()).toEqual(["TST-OP:e1", "TST-OP:e2", "TST-UNIT-0:eu"]);
   });
 
+  it("RS-585: 【サガスピアー】戻す順は持ち主（敵軍の山札なら相手）が番号を付けて選ぶ（1番が一番上）（出典: atwiki/page-1141「その持ち主が…好きな順で山札の上に戻す」）", () => {
+    let s = pick(enterSeq(board(NOSP_DECK(), [inst("TST-OP", "e1"), inst("TST-UNIT-0", "eu"), inst("TST-OP", "e2"), inst("TST-OP", "e3")]), ["RS-585:sv"]), "deck_enemy");
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_top_order");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    s = pick(pick(s, "TST-OP:e2"), "TST-UNIT-0:eu");
+    s = resolveAll(pick(s, "order_done"));
+    expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(["TST-OP:e2", "TST-UNIT-0:eu", "TST-OP:e1", "TST-OP:e3"]);
+    expect(spOf(s, "player1", "RS-585:sv")).toBe(1);
+  });
+
   it("RS-585: 【サガスピアー】任意 — オモテにしなければ SP1 にならない（出典: atwiki/page-1141「オモテにしてもよい」）", () => {
     let s = enterSeq(board(SP_DECK()), ["RS-585:sv"]);
     expect(canSkip(s)).toBe(true);
