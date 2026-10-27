@@ -68,7 +68,7 @@ ARENA_PROCS=4 scripts/cpu-arena-par.sh --a 3 --b 2 --games 40   # 4 プロセス
 ```
 
 `--b-src <別の作業ツリーの src/ai/index.ts>` で改良前の AI と比べられます。
-`--decks` には、スターターのほかに [arena-decks/](arena-decks/README.md) の大会のデッキ・atwiki のデッキサンプルから組んだデッキ・ブログ等のデッキ（`zero-one`、`wiki-1716`、`blog-rabbit-9303419` など）も渡せます。まとめて `starters`・`arena`・`wiki`・`blog`・`livedoor` とも書けます（`selfplay.ts` も同じ）。
+`--decks` には、スターターのほかに [arena-decks/](arena-decks/README.md) の大会のデッキ・atwiki のデッキサンプルから組んだデッキ・ブログ等のデッキ（`zero-one`、`wiki-1716`、`blog-rabbit-9303419` など）も渡せます。まとめて `starters`・`arena`・`wiki`・`blog`・`livedoor` とも書けます（`selfplay.ts` も同じ。livedoor の 373 個は `arena`・`blog` に入らず、`livedoor` と書いたときだけ使います）。
 学習した価値ネットワークを試すときは `--nna <重みの JSON> [--nn-blend 0.5]`、レベル設定を片側だけ変えるときは `--oa` / `--ob`（例 `--ob '{"valueNetBlend":0}'` で B を手書きの評価だけの Lv5 にする）を使います。
 自己対戦データの集め方・学習・重みの同梱は [scripts/nn/README.md](scripts/nn/README.md) にまとめています。
 スターター同士の行動の内訳は `npx tsx scripts/starter-sim-stats.ts --p1 w-impact-b --p2 w-impact-a --games 10` で数えられます。

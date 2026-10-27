@@ -25,16 +25,18 @@ export function arenaDeckIds(prefix = ""): string[] {
 
 /**
  * --decks の値をデッキ id の一覧にする。カンマ区切りで、id のほかにまとめて指定する名前も使える:
- * starters（スターター 46 個）、arena（arena-decks の全部）、wiki（atwiki 由来）、blog（ブログ等由来）、
- * livedoor（blog のうち livedoor「letsrenst」由来）。
+ * starters（スターター 46 個）、arena（arena-decks のうち livedoor 以外）、wiki（atwiki 由来）、blog（ブログ等由来、livedoor 以外）、
+ * livedoor（livedoor「letsrenst」由来の 373 個。数が多いので arena・blog には入れず、名指ししたときだけ使う）。
  */
+const LIVEDOOR = "blog-livedoor-";
+
 export function resolveDeckList(spec: string): string[] {
   const groups: Record<string, () => readonly string[]> = {
     starters: () => ALL_STARTER_DECK_IDS,
-    arena: () => arenaDeckIds(),
+    arena: () => arenaDeckIds().filter((id) => !id.startsWith(LIVEDOOR)),
     wiki: () => arenaDeckIds("wiki-"),
-    blog: () => arenaDeckIds("blog-"),
-    livedoor: () => arenaDeckIds("blog-livedoor-"),
+    blog: () => arenaDeckIds("blog-").filter((id) => !id.startsWith(LIVEDOOR)),
+    livedoor: () => arenaDeckIds(LIVEDOOR),
   };
   return spec.split(",").flatMap((s) => (groups[s] ? [...groups[s]!()] : [s]));
 }
