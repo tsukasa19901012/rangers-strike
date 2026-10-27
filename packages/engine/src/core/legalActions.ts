@@ -5,6 +5,7 @@ import { mirrorWorldChoiceAffordable } from "../rules/mirrorWorldSelection";
 import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
 import { runWithStateRng } from "./rng";
 import { engineSideEffectCount } from "./sideEffects";
+import { memoizeInEnumeration, withEnumerationMemo } from "./enumerationMemo";
 import { activeSearchCache } from "./searchCache";
 import { listSet8BHandActivations } from "../rules/legend1/set8NamedEffectsB";
 import { hasTurnRuleModifier } from "./scopedModifiers";
@@ -2051,24 +2052,6 @@ function deepFreeze<T>(value: T): T {
   return value;
 }
 
-/**
- * 1回の合法手の列挙の中で同じ引数で何度も呼ぶ判定の結果を、列挙の間だけ覚える（計算に乱数等を使ったときは覚えない）。
- * - canBeginZordSetup（追加条件の手順を最後まで試す重い判定）: 手札のゾードをラッシュの支払いとゾードの手順の両方から調べる。
- * - canDeclareRush: 手札のユニットをラッシュとラッシュのカテゴリ支払いの両方から調べる。
- */
-let enumerationMemo: { state: GameState; results: Map<string, boolean> } | null = null;
-
-function memoizeInEnumeration(state: GameState, key: string, compute: () => boolean): boolean {
-  const memo = enumerationMemo;
-  if (!memo || memo.state !== state) return compute();
-  const hit = memo.results.get(key);
-  if (hit !== undefined) return hit;
-  const sideEffectsBefore = engineSideEffectCount();
-  const result = compute();
-  if (engineSideEffectCount() === sideEffectsBefore) memo.results.set(key, result);
-  return result;
-}
-
 function canBeginZordSetupInEnumeration(state: GameState, playerId: PlayerId, zordInstanceId: string): boolean {
   return memoizeInEnumeration(state, `zord:${playerId}:${zordInstanceId}`, () =>
     canBeginZordSetup(state, playerId, zordInstanceId),
@@ -2098,13 +2081,7 @@ function canDeclareRushInEnumeration(
 }
 
 function getLegalActionsCoreWithMemo(state: GameState): GameAction[] {
-  const previous = enumerationMemo;
-  enumerationMemo = { state, results: new Map() };
-  try {
-    return getLegalActionsCore(state);
-  } finally {
-    enumerationMemo = previous;
-  }
+  return withEnumerationMemo(state, () => getLegalActionsCore(state));
 }
 
 export function getLegalActions(input: GameState): GameAction[] {

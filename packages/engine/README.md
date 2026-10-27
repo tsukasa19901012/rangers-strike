@@ -53,7 +53,7 @@ npm run test:monkey -w @rangers-strike/engine # ランダム対戦のモンキ�
 
 `src/sweep/rushAllUnits.test.ts` は、全ユニット（約 1,500 枚）について、追加条件・必要パワー・カテゴリを満たす盤面を本物のカードで組み（`src/sweep/rushBoard.ts`。素材は追加条件の文から読み取る）、合法手だけでラッシュできるかを確かめます。コマンドがユニットのカードだけ／オペレーションだけ、パワーちょうど、素材がバトルエリア、の盤面で出せること、パワーが 1 足りなければ出せないことを見ます。追加条件の新しい書き方のカードが入って盤面を組めないときは「盤面を組めない」で落ちるので、`buildRushBoard` に読み方を足してください。
 
-`src/sweep/effectsAllCards.test.ts` は、効果の対象になりやすいカードを両軍に置いた盤面（`src/sweep/effectBoard.ts`）で、「これをラッシュしたとき」「これがバトルエリアに出たとき」のユニット・手札のオペレーション・起動効果を全カード分使い、自分の選択を「先頭」「末尾」「見送り」の 3 通りで最後まで進めます（1 分ほど）。途中で止まる・合法手が断られる・例外が出るカード、効果を使えない・発動しないカードがあれば落ちます。効果の結果が正しいかは見ません（カード仕様テストの役目）。この盤面で発動しないのが正しいカードは、テストの `QUIET_ON_THIS_BOARD`・`REACTION_OPERATIONS` に理由と一緒に足してください。
+`src/sweep/effectsAllCards.test.ts` は、効果の対象になりやすいカードを両軍に置いた盤面（`src/sweep/effectBoard.ts`）で、「これをラッシュしたとき」「これがバトルエリアに出たとき」のユニット・手札のオペレーション・起動効果を全カード分使い、自分の選択を「先頭」「末尾」「見送り」の 3 通りで最後まで進めます（1 分ほど）。途中で止まる・合法手が断られる・例外が出るカード、効果を使えない・発動しないカードがあれば落ちます。結果は、効果の文のうち条件や分岐の無い最初の 1 文（約 210 枚分）について、書かれた動詞（撃破する・引く・手札に戻す・ホールドする・ダメージ等）のとおりにカードが動いたかを、使う前と後のカードの置き場所を比べて確かめます（`src/sweep/effectResult.ts`）。BP・能力の付与・細かい枚数は見ません（カード仕様テストの役目）。この盤面で発動しないのが正しいカードは、テストの `QUIET_ON_THIS_BOARD`・`REACTION_OPERATIONS`・`NO_RESULT_ON_THIS_BOARD` に理由と一緒に足してください。
 
 CI は `test:sim` を `test:sim:starters`（simulateAllStarters）・`test:sim:monkey`（2 つのモンキーテスト）・`test:sim:rest`（それ以外の `src/verticalSlice`）に分けて並列に流します。
 
@@ -77,6 +77,7 @@ ARENA_PROCS=4 scripts/cpu-arena-par.sh --a 3 --b 2 --games 40   # 4 プロセス
 
 - CPU の探索の間（`src/ai/index.ts` の `pickCpuAction` の中）は状態を書き換えないので、`src/core/searchCache.ts` の表で合法手・`applyAction` の結果・BP 等を使い回します。状態だけで決まる計算はここに載せます。
 - 弾ごとのフック（`src/rules/xg1`〜`xg7` の BP の補正・`applyAction` の後処理）は、探索の間はその弾のカードが対局に無ければ呼びません（`src/rules/setHookGates.ts`）。フックに他の弾のカードの ID を書いたら `SET_HOOK_EXTRA_IDS` にも足します（`setHookGates.test.ts` が突き合わせます）。呼ばないフックが本当に何もしないかは、`RS_HOOK_GATE_CHECK=1 npm run test:unit -w @rangers-strike/engine` で確かめます（呼ばないことにしたフックも呼んで比べ、違えば例外にします）。
+- 1 回の合法手の列挙の中で何度も呼ぶ重い判定は、`src/core/enumerationMemo.ts` の `memoizeInEnumeration` で列挙の間だけ覚えます。RS-353 デンジファイターは素材の組み合わせごとの支払いの確認でゾードの手順の判定を毎回やり直していて、自軍のユニットが 11 体いると合法手の計算に約 2 分かかっていました（今は 0.5 秒）。
 - 選ぶ手を変えない変更は、変更の前後で `scripts/cpu-move-hash.ts` の出力（同じ seed の対局の手順のハッシュ）を diff して確かめます。
 
 ```bash

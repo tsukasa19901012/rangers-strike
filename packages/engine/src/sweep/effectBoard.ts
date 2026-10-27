@@ -35,14 +35,8 @@ const mixedCards = (n: number, offset: number) =>
     mk((i % 3 === 2 ? plainOperations[(i + offset) % plainOperations.length]! : units[(i * 37 + offset) % units.length]!).id),
   );
 
-/**
- * 素材の組み合わせごとに合法手が出るカード。自軍のユニットを足すと合法手の計算が重くなる
- * （RS-353 は 11 体から 5 体を選ぶ 462 通りを 1 つずつ確かめ、約 2 分かかる）ので、自軍のユニットは足さない。
- */
-const MANY_MATERIAL_COMBINATIONS = new Set(["RS-353"]);
-
-/** 両軍に、効果の対象になりやすいカードを一通り足す（ownUnits: false なら自軍のラッシュ・バトルエリアには足さない）。 */
-export function enrichBoard(s: GameState, ownUnits = true): GameState {
+/** 両軍に、効果の対象になりやすいカードを一通り足す。 */
+export function enrichBoard(s: GameState): GameState {
   const p1 = s.players.player1;
   const p2 = s.players.player2;
   const released = (d: CardDefinition) => mk(d.id, { commandHeld: false });
@@ -61,8 +55,8 @@ export function enrichBoard(s: GameState, ownUnits = true): GameState {
       player1: {
         ...p1,
         command: [...p1.command, ...ownCommands],
-        battle: ownUnits ? [...p1.battle, mk(sUnitWithBp(3000).id), mk(sUnitWithBp(5000).id)] : p1.battle,
-        rush: ownUnits ? [...p1.rush, ...["メカ", "恐竜", "男", "女"].map((f) => mk(sUnitWithFeature(f).id))] : p1.rush,
+        battle: [...p1.battle, mk(sUnitWithBp(3000).id), mk(sUnitWithBp(5000).id)],
+        rush: [...p1.rush, ...["メカ", "恐竜", "男", "女"].map((f) => mk(sUnitWithFeature(f).id))],
         hand: [...p1.hand, ...mixedCards(3, 3)],
         deck: mixedCards(20, 1),
         discard: [...p1.discard, ...mixedCards(6, 2)],
@@ -114,6 +108,11 @@ const NEVER_PICK = /cancel|end_phase|end_turn/;
 const DECLINE = /^skip_|^pass_|decline/;
 const PLAIN_LOG = /^player\d\|(rush|move_to_battle|zord_setup_pending|command_payment_pending|pass_battle_entry|end_phase)\b/;
 
+/** 支払い・追加条件の素材を指すアクションのキー（効果の対象を指す targetInstanceId 等は入れない）。 */
+const PAYMENT_KEYS = /^(sourceInstanceId|substituteInstanceId|commandInstanceIds|instanceIds|materialInstanceIds|zord\w*|extraHold\w*|holdInstanceIds)$/;
+
+export type DriveResult = EffectOutcome & { state?: GameState; start?: GameState; excluded?: Set<string>; source?: string };
+
 function pendingKeys(s: GameState): string[] {
   return Object.entries(s)
     .filter(([k, v]) => k.startsWith("pending") && v != null && !(Array.isArray(v) && v.length === 0))
@@ -131,7 +130,16 @@ function choose(s: GameState, actions: GameAction[], actor: string, policy: Choi
 }
 
 /** first を適用し、保留中の選択・支払い・反応が無くなるまで合法手で進める。 */
-function drive(start: GameState, first: GameAction, card: CardInstance, policy: ChoicePolicy): EffectOutcome & { state?: GameState } {
+function drive(start: GameState, first: GameAction, card: CardInstance, policy: ChoicePolicy): DriveResult {
+  // 使ったカード自身と、効果の前の支払い・追加条件で動かしたカードは、結果の確認で比べない。
+  const excluded = new Set<string>([card.instanceId]);
+  const exclude = (a: GameAction) => {
+    for (const [k, v] of Object.entries(a)) {
+      if (!PAYMENT_KEYS.test(k)) continue;
+      for (const id of Array.isArray(v) ? v : [v]) if (typeof id === "string") excluded.add(id);
+    }
+  };
+  exclude(first);
   const r0 = applyAction(start, first);
   if (!r0.ok) return { kind: "error", why: `${first.type} refused: ${r0.error}` };
   let s = r0.state!;
@@ -143,12 +151,13 @@ function drive(start: GameState, first: GameAction, card: CardInstance, policy: 
     if (keys.length === 0) {
       const lines = s.log.filter((l) => l.includes(`|${card.cardId}|`) && !PLAIN_LOG.test(l));
       const kind = prompted ? "prompted" : lines.some((l) => /no_target/.test(l)) ? "no-target" : lines.length > 0 ? "logged" : "silent";
-      return { kind, state: s };
+      return { kind, state: s, start, excluded, source: card.instanceId };
     }
     const actor = getActionPlayerId(s);
     const actions = getLegalActions(s).filter((a) => a.playerId === actor && !NEVER_PICK.test(a.type));
     const next = choose(s, actions, actor, policy);
     if (!next) return { kind: "error", why: `stuck at ${keys.join(",")} (${actor} has no action)` };
+    if (!prompted && (s.pendingCommandPayment || s.pendingZordSetup)) exclude(next);
     const r = applyAction(s, next);
     if (!r.ok) return { kind: "error", why: `${next.type} refused: ${r.error}` };
     s = r.state!;
@@ -156,7 +165,7 @@ function drive(start: GameState, first: GameAction, card: CardInstance, policy: 
   return { kind: "error", why: "did not settle in 80 steps" };
 }
 
-function guarded(run: () => EffectOutcome): EffectOutcome {
+function guarded(run: () => DriveResult): DriveResult {
   try {
     return run();
   } catch (e) {
@@ -165,9 +174,9 @@ function guarded(run: () => EffectOutcome): EffectOutcome {
 }
 
 /** ユニットを手札からラッシュする（「これをラッシュしたとき」）。 */
-export function checkOnRush(unit: CardDefinition, policy: ChoicePolicy): EffectOutcome {
+export function checkOnRush(unit: CardDefinition, policy: ChoicePolicy): DriveResult {
   return guarded(() => {
-    const s = enrichBoard(buildRushBoard(unit, { commands: "operation", extraPower: 2 }), !MANY_MATERIAL_COMBINATIONS.has(unit.id));
+    const s = enrichBoard(buildRushBoard(unit, { commands: "operation", extraPower: 2 }));
     const card = s.players.player1.hand[0]!;
     const first = getLegalActions(s).find(
       (a) => ("sourceInstanceId" in a && a.sourceInstanceId === card.instanceId) || ("zordInstanceId" in a && a.zordInstanceId === card.instanceId),
@@ -177,7 +186,7 @@ export function checkOnRush(unit: CardDefinition, policy: ChoicePolicy): EffectO
 }
 
 /** 自軍バトルフェイズに、ラッシュエリアのユニットをバトルエリアに出す（「これがバトルエリアに出たとき」）。 */
-export function checkEnterBattle(unit: CardDefinition, policy: ChoicePolicy): EffectOutcome {
+export function checkEnterBattle(unit: CardDefinition, policy: ChoicePolicy): DriveResult {
   return guarded(() => {
     const b = buildRushBoard(unit, { commands: "operation", extraPower: 2 });
     const card = mk(unit.id);
@@ -197,7 +206,7 @@ export function checkEnterBattle(unit: CardDefinition, policy: ChoicePolicy): Ef
 }
 
 /** 自軍ラッシュフェイズに、手札のオペレーションを使う（常駐は配置する）。 */
-export function checkOperation(op: CardDefinition, policy: ChoicePolicy): EffectOutcome {
+export function checkOperation(op: CardDefinition, policy: ChoicePolicy): DriveResult {
   return guarded(() => {
     const card = mk(op.id);
     const s = ownTurnBoard("rush", { hand: [card] }, costNumber(op.powerCost) + 3);
@@ -214,8 +223,8 @@ export function checkOperation(op: CardDefinition, policy: ChoicePolicy): Effect
 }
 
 /** ラッシュエリア／バトルエリアのユニット・ビークルの起動効果を、ラッシュフェイズとバトルフェイズで全部試す。 */
-export function checkActivations(card: CardDefinition, policy: ChoicePolicy): Array<{ where: string; outcome: EffectOutcome }> {
-  const out: Array<{ where: string; outcome: EffectOutcome }> = [];
+export function checkActivations(card: CardDefinition, policy: ChoicePolicy): Array<{ where: string; outcome: DriveResult }> {
+  const out: Array<{ where: string; outcome: DriveResult }> = [];
   for (const zone of ["rush", "battle"] as const) {
     for (const phase of ["rush", "battle"] as const) {
       const inst = mk(card.id);

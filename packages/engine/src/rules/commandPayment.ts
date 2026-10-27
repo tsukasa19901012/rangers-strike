@@ -108,6 +108,7 @@ import {
   requiresAllFusionPartners,
 } from "./zord";
 import { canBeginZordSetup, hasLegalZordRush } from "./zordSetup";
+import { memoizeInEnumeration } from "../core/enumerationMemo";
 import {
   canInitiateCounterCategoryPayment,
   isCounterReactionActive,
@@ -1427,7 +1428,10 @@ export function isInitiateCommandPaymentLegal(
         isUnit(def) &&
         needsZordMaterial(state.definitions, handFound.card.cardId) &&
         !requiresAllFusionPartners(handFound.card.cardId) &&
-        canBeginZordSetup(state, action.playerId, action.sourceInstanceId)
+        // 合法手の列挙では素材の組み合わせごとに呼ばれるので、列挙の判定（legalActions.ts）と結果を共有する。
+        memoizeInEnumeration(state, `zord:${action.playerId}:${action.sourceInstanceId}`, () =>
+          canBeginZordSetup(state, action.playerId, action.sourceInstanceId),
+        )
       ) {
         return false;
       }
