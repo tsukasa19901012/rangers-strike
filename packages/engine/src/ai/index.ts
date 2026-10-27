@@ -28,7 +28,23 @@ export function pickCpuAction(
     withSearchCache(() => {
       if (!config.hideOpponentHand || !config.enableSearch) return pickCpuActionLevel1(state, playerId, config);
       // 相手の手札を伏せた盤面で選び、本物の盤面で指せない手（相手の手札のカードを指すものなど）なら、本物の盤面で選び直す。
-      const picked = pickCpuActionLevel1(hideOpponentHand(state, playerId), playerId, config);
+      const samples = Number(process.env.CPU_DET ?? 1);
+      let picked = pickCpuActionLevel1(hideOpponentHand(state, playerId), playerId, config);
+      if (samples > 1 && picked && state.players[playerId === "player1" ? "player2" : "player1"].hand.length > 0) {
+        const votes = new Map<string, { action: GameAction; n: number }>();
+        const vote = (a: GameAction | null) => {
+          if (!a) return;
+          const k = JSON.stringify(a);
+          const v = votes.get(k);
+          if (v) v.n++;
+          else votes.set(k, { action: a, n: 1 });
+        };
+        vote(picked);
+        for (let i = 1; i < samples; i++) vote(pickCpuActionLevel1(hideOpponentHand(state, playerId, i), playerId, config));
+        let best = votes.get(JSON.stringify(picked))!;
+        for (const v of votes.values()) if (v.n > best.n) best = v;
+        picked = best.action;
+      }
       return picked && isLegalAction(state, picked) ? picked : pickCpuActionLevel1(state, playerId, config);
     });
   // 対戦台などで評価を外から差し替えているときは、そちらを優先する。
