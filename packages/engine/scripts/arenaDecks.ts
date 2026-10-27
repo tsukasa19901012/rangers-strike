@@ -25,7 +25,8 @@ export function arenaDeckIds(prefix = ""): string[] {
 
 /**
  * --decks の値をデッキ id の一覧にする。カンマ区切りで、id のほかにまとめて指定する名前も使える:
- * starters（スターター 46 個）、arena（arena-decks の全部）、wiki（atwiki 由来）、blog（ブログ等由来）。
+ * starters（スターター 46 個）、arena（arena-decks の全部）、wiki（atwiki 由来）、blog（ブログ等由来）、
+ * livedoor（blog のうち livedoor「letsrenst」由来）。
  */
 export function resolveDeckList(spec: string): string[] {
   const groups: Record<string, () => readonly string[]> = {
@@ -33,6 +34,7 @@ export function resolveDeckList(spec: string): string[] {
     arena: () => arenaDeckIds(),
     wiki: () => arenaDeckIds("wiki-"),
     blog: () => arenaDeckIds("blog-"),
+    livedoor: () => arenaDeckIds("blog-livedoor-"),
   };
   return spec.split(",").flatMap((s) => (groups[s] ? [...groups[s]!()] : [s]));
 }

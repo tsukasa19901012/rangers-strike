@@ -50,7 +50,7 @@ python3 scripts/nn/check_data.py .cache/selfplay/run1
 - 時間の目安は、既定の組み合わせで M1 Max（10 プロセス、ほかの重い処理を止めた状態）が約 7 試合/秒、10 万試合で約 3.5 時間です（2026-10-21 の実測）。Lv5 同士を 50% にした組み合わせでは約 3.7 試合/秒に落ちます。開発用コンテナでは 1 試合あたり約 3〜4 コア秒です。最初に `--games 2000` で測ると確実です。
 - 出力は 1 試合 約 40 KB、10 万試合で約 4 GB です。`.cache/` は git の管理外です。
 - 途中で止めた場合は、`--seed` を変えて別の `--out` に続きを回せば、あとでまとめて学習に使えます。
-- 対戦するデッキは既定でスターター 46 個です。`--decks starters,arena` で [arena-decks/](../../arena-decks/README.md) の大会・atwiki・ブログのデッキも混ぜられます（`wiki`・`blog` だけ、や id の列挙もできます）。
+- 対戦するデッキは既定でスターター 46 個です。`--decks starters,arena` で [arena-decks/](../../arena-decks/README.md) の大会・atwiki・ブログのデッキも混ぜられます（`wiki`・`blog`・`livedoor` だけ、や id の列挙もできます）。
 - エンジンの例外で 1 試合が落ちても、そのシャードの残りは続けます。落ちた試合は `shard-<k>.jsonl` に `error` 付きで残るので、`selfplay.ts --seed <同じ値> --only <試合番号>` で再現できます。
 
 ## 入力に入れているもの
