@@ -1,0 +1,63 @@
+{
+  "id": "octgn-rsxg-42",
+  "name": "ぶっこみデッキ（2011-05-14）",
+  "source": "https://uu.getuploader.com/octgnrsxg/download/42",
+  "entries": [
+    {
+      "cardId": "RS-054",
+      "count": 3
+    },
+    {
+      "cardId": "RS-161",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-067",
+      "count": 3
+    },
+    {
+      "cardId": "RS-041",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-096",
+      "count": 3
+    },
+    {
+      "cardId": "RS-284",
+      "count": 3
+    },
+    {
+      "cardId": "XG6-014",
+      "count": 2
+    },
+    {
+      "cardId": "RS-597",
+      "count": 3
+    },
+    {
+      "cardId": "RS-204",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-045",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-100",
+      "count": 3
+    },
+    {
+      "cardId": "RK-127",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-038",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-083",
+      "count": 2
+    }
+  ]
+}

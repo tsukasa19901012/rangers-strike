@@ -1,0 +1,63 @@
+{
+  "id": "blog-gyorie-30",
+  "name": "サバイブぶんぶんデッキ（2008-08-26）",
+  "source": "http://gyorie.blog114.fc2.com/blog-entry-30.html",
+  "entries": [
+    {
+      "cardId": "RK-033",
+      "count": 3
+    },
+    {
+      "cardId": "RK-333",
+      "count": 3
+    },
+    {
+      "cardId": "RK-038",
+      "count": 3
+    },
+    {
+      "cardId": "SK-003",
+      "count": 3
+    },
+    {
+      "cardId": "RK-243",
+      "count": 3
+    },
+    {
+      "cardId": "RK-068",
+      "count": 3
+    },
+    {
+      "cardId": "RK-163",
+      "count": 3
+    },
+    {
+      "cardId": "RK-039",
+      "count": 2
+    },
+    {
+      "cardId": "RK-201",
+      "count": 1
+    },
+    {
+      "cardId": "RK-034",
+      "count": 3
+    },
+    {
+      "cardId": "RK-083",
+      "count": 2
+    },
+    {
+      "cardId": "RK-085",
+      "count": 2
+    },
+    {
+      "cardId": "RK-084",
+      "count": 3
+    },
+    {
+      "cardId": "RK-043",
+      "count": 6
+    }
+  ]
+}
