@@ -34,6 +34,7 @@ import { startEffectRush } from "../effectRush";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
 import { deckOrderChoice } from "../deckOrder";
+import { gateReveal } from "../revealGate";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -306,7 +307,8 @@ export const HOMERUN_HOLD_EFFECT_ID = "homerun_hold";
 function beginHomerun(state: GameState, ctx: GrantKeywordContext): GameState | null {
   const top = state.players[opponent(ctx.playerId)].deck[0];
   if (!top) return null;
-  return openEffectChoice(state, {
+  // オモテにするかを先に聞く（rules/revealGate.ts）。
+  return openEffectChoice(state, gateReveal({
     playerId: ctx.playerId,
     effectId: HOMERUN_REVEAL_EFFECT_ID,
     sourceCardId: ctx.sourceCardId,
@@ -317,7 +319,7 @@ function beginHomerun(state: GameState, ctx: GrantKeywordContext): GameState | n
     viewedInstanceIds: [top.instanceId],
     selectCount: 1,
     optional: true,
-  });
+  }));
 }
 
 function moveEnemyDeckCard(

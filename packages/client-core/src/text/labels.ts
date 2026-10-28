@@ -313,6 +313,11 @@ export function describeAction(
   action: GameAction,
   index: Map<string, string> = indexInstances(state),
 ): string {
+  // 「山札の上から…をオモテにしてもよい」の発動の確認（engine rules/revealGate.ts）。
+  if (state.pendingEffectChoice?.revealGate) {
+    if (action.type === "confirm_effect_choice") return "発動する";
+    if (action.type === "skip_effect_choice") return "発動しない";
+  }
   const base = ACTION_LABELS[action.type] ?? action.type;
   const record = action as unknown as Record<string, unknown>;
   if (action.type === "battle") {

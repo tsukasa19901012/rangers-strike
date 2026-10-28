@@ -15,6 +15,7 @@
  *  - RK-033 と RK-063（同名・テキスト違い）の枚数制限 — rulesSpec/01-overview-deck.test.ts R-DECK-02/04
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import type { GameState } from "../types/game";
 import {
   attack,
@@ -187,12 +188,12 @@ describe("RK-030 トライチェイサー", () => {
   });
 
   it("RK-030: 見たカードを山札の下に戻せる（出典: atwiki/page-202「山札の下に戻すかを選択する」）", () => {
-    const s = settle(pick(pick(radio(), "TST-OP:dk0"), "deck_bottom"));
+    const s = settle(pick(pick(activate(radio()), "TST-OP:dk0"), "deck_bottom"));
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:dk1", "TST-OP:dk2", "TST-OP:dk3", "TST-OP:dk0"]);
   });
 
   it("RK-030: 見たカードを元に（山札の上に）戻せる（出典: atwiki/page-202「それを元に戻すか」）", () => {
-    const s = settle(pick(pick(radio(), "TST-OP:dk0"), "deck_top"));
+    const s = settle(pick(pick(activate(radio()), "TST-OP:dk0"), "deck_top"));
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:dk0", "TST-OP:dk1", "TST-OP:dk2", "TST-OP:dk3"]);
   });
 

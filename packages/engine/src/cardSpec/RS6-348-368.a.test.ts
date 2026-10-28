@@ -10,6 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import { validateDeckEntries } from "@rangers-strike/cards";
 import {
   canEnter,
@@ -533,7 +534,14 @@ describe("RS-353 デンジファイター", () => {
 
   it("RS-353: 【ファイターチェンジ】パワーゾーンの枚数（5枚）までオモテにし、その中の特徴「メカ」の L ユニットをすべて手札に加え、それ以外は山札の下に戻す（出典: atwiki/page-551）", () => {
     const r = rushFromHand(rushState(fillers(5), deck()), "player1", "RS-353:df");
-    const s = resolveAll(r.state);
+    let s = r.state;
+    // 1枚ごとに「オモテにする」を選んでから、そのカードを見る（rules/revealGate.ts）
+    for (let i = 0; i < 5; i++) {
+      expect(onlyActivateOrSkip(s)).toBe(true);
+      s = activate(s);
+      s = pick(s, s.pendingEffectChoice!.validInstanceIds[0]!);
+    }
+    s = resolveAll(s);
     expect(s.players.player1.hand.map((c) => c.instanceId).sort()).toEqual(["RS-352:l1", "RS-353:l3"]);
     const d = s.players.player1.deck.map((c) => c.instanceId);
     expect(d.slice(0, 2)).toEqual(["TST-OP:o2", "RS-352:l6"]);
@@ -555,8 +563,8 @@ describe("RS-353 デンジファイター", () => {
     const r = rushFromHand(rushState(fillers(5), deck()), "player1", "RS-353:df");
     let s = r.state;
     // 1枚目（オペ）→ 続ける、2枚目（ダイデンジン）→ 止める
-    s = pick(s, "TST-OP:o0");
-    s = pick(s, "RS-352:l1");
+    s = pick(activate(s), "TST-OP:o0");
+    s = pick(activate(s), "RS-352:l1");
     s = resolveAll(skip(s));
     expect(s.players.player1.hand.map((c) => c.instanceId)).toEqual(["RS-352:l1"]);
     expect(s.players.player1.deck[0]?.instanceId).toBe("TST-OP:o1");

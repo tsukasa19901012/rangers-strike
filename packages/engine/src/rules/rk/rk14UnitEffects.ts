@@ -37,6 +37,7 @@ import { turnPlayerOf } from "../legend1/set6NamedEffectsB";
 import { applyMajikiStack } from "../legend1/otherLinesNamedEffects";
 import { rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
 import { RK14_DELTA_MOVER_RULE, rk14ActsAsVehicle } from "./rk14Fields";
+import { gateReveal } from "../revealGate";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -294,7 +295,7 @@ function beatPickChoice(ctx: BaseCtx, remaining: string[], optional: boolean): P
 function openBeatChaser(state: GameState, playerId: PlayerId, vehicle: CardInstance): GameState {
   const seen = state.players[playerId].deck.slice(0, 2).map((c) => c.instanceId);
   if (seen.length === 0) return state;
-  return openOrQueue(state, beatPickChoice({ playerId, phasePlayerId: playerId, sourceInstanceId: vehicle.instanceId }, seen, true));
+  return openOrQueue(state, gateReveal(beatPickChoice({ playerId, phasePlayerId: playerId, sourceInstanceId: vehicle.instanceId }, seen, true)));
 }
 
 CHOICE_RESOLVERS[BEAT_PICK_EFFECT_ID] = (state, playerId, instanceId) => {

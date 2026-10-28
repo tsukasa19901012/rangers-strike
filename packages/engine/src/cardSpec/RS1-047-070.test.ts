@@ -8,6 +8,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-0NN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import {
   DEFS,
   act,
@@ -1676,6 +1677,9 @@ describe("RS-063 ボウケンブラック", () => {
   // 「1枚選んで山札の上に戻し、それ以外を捨札にする」
   it("RS-063: 上から3枚のうち1枚を山札の上に戻し、残り2枚を捨札にする（4枚目は動かない）（出典: atwiki/page-265）", () => {
     let s = black();
+    // 見るかを先に選ぶ（rules/revealGate.ts）
+    expect(onlyActivateOrSkip(s)).toBe(true);
+    s = activate(s);
     expect(s.pendingEffectChoice?.validInstanceIds?.slice().sort()).toEqual(["RS-007:d1", "RS-008:d2", "RS-009:d3"]);
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-008:d2" });
     expect(zoneIds(s, "player1", "deck")).toEqual(["RS-008:d2", "TST-OP:d4"]);
@@ -1909,12 +1913,13 @@ describe("RS-066 ボウケンピンク", () => {
 
   it("RS-066: 2番目で山札の上の1枚を見て、山札の下に戻せる（出典: atwiki/page-270）", () => {
     let s = pink();
-    s = actLegal(s, (a) => a.type === "resolve_ruin_survey" && a.placement === "bottom");
+    expect(onlyActivateOrSkip(s)).toBe(true);
+    s = actLegal(activate(s), (a) => a.type === "resolve_ruin_survey" && a.placement === "bottom");
     expect(zoneIds(s, "player1", "deck")).toEqual(["RS-008:2nd", "RS-009:3rd", "RS-007:top"]);
   });
 
   it("RS-066: 元に戻すことも選べる（山札の順は変わらない）（出典: atwiki/page-270）", () => {
-    let s = pink();
+    let s = activate(pink());
     s = actLegal(s, (a) => a.type === "resolve_ruin_survey" && a.placement === "top");
     expect(zoneIds(s, "player1", "deck")).toEqual(["RS-007:top", "RS-008:2nd", "RS-009:3rd"]);
   });

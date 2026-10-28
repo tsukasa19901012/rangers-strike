@@ -14,6 +14,7 @@
  * RK-275 Q1・RK-276 Q1（= grnrngr/faq-rider-2 RK-160 Q3・Q4）は RK8-148-168.b の it.todo だったものをここで照合する。
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState } from "../types/game";
 import {
@@ -122,12 +123,14 @@ describe("RK-274 ビートチェイサー", () => {
   it("RK-274: 【ニューマシンの性能】自軍ターン中にライドされてバトルエリアに出たとき、発動するかを選べ（任意）、自軍山札の上から2枚を見る（出典: atwiki/page-1371「次の効果を発動できる⇒自軍山札の上から2枚を見て」）", () => {
     const s = chase();
     expectChoiceFrom(s, "player1", "RK-274");
-    expect(choiceIds(s)).toEqual(["TST-OP:dk0", "TST-OP:dk1"]);
     expect(canSkip(s)).toBe(true);
+    // 発動を選ぶまでは見た2枚を選べない（rules/revealGate.ts）
+    expect(onlyActivateOrSkip(s)).toBe(true);
+    expect(choiceIds(activate(s))).toEqual(["TST-OP:dk0", "TST-OP:dk1"]);
   });
 
   it("RK-274: 見た2枚は1枚ずつ山札の上か下を選んで戻せる（1枚は上、1枚は下でもよい）（出典: atwiki/page-1371「そのカードを山札の上か下にそれぞれ好きな順で戻す」・コメント欄「それぞれとあるので一枚ずつ決めることが可能」）", () => {
-    let s = chase();
+    let s = activate(chase());
     s = place(s, "TST-OP:dk0", "deck_bottom");
     s = place(s, "TST-OP:dk1", "deck_top");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-274");
@@ -135,7 +138,7 @@ describe("RK-274 ビートチェイサー", () => {
   });
 
   it("RK-274: 見たカードが選択の間に山札を離れていても、残りの選択を終えて効果を終える（CPU が選択で止まらない）", () => {
-    let s = chase();
+    let s = activate(chase());
     s = place(s, "TST-OP:dk0", "deck_bottom");
     const p1 = s.players.player1;
     s = { ...s, players: { ...s.players, player1: { ...p1, deck: p1.deck.filter((c) => c.instanceId !== "TST-OP:dk1") } } };
@@ -145,7 +148,7 @@ describe("RK-274 ビートチェイサー", () => {
   });
 
   it("RK-274: 2枚とも山札の上に好きな順で戻せる（後から戻したものが上）（出典: atwiki/page-1371「好きな順で戻す」）", () => {
-    let s = chase();
+    let s = activate(chase());
     s = place(s, "TST-OP:dk0", "deck_top");
     s = place(s, "TST-OP:dk1", "deck_top");
     expect(zoneIds(s, "player1", "deck").slice(0, 2)).toEqual(["TST-OP:dk1", "TST-OP:dk0"]);
@@ -157,7 +160,7 @@ describe("RK-274 ビートチェイサー", () => {
   });
 
   it("RK-274: 自軍山札が1枚なら、その1枚だけを見る（出典: atwiki/page-1371・R-TGT-01（できる限り実行する））", () => {
-    expect(choiceIds(chase(deckCards(1)))).toEqual(["TST-OP:dk0"]);
+    expect(choiceIds(activate(chase(deckCards(1))))).toEqual(["TST-OP:dk0"]);
   });
 
   /** 次の自軍バトルフェイズまで進める（任意の選択は見送り、ライドオフはしない）。 */

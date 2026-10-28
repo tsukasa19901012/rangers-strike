@@ -49,6 +49,7 @@ import {
 } from "../rm/rm1Effects";
 import { CHOICE_RESOLVERS, CHOICE_SKIPPERS, XG7_KEYWORDS, addFlag, costNumberOf, hasFlag, isCard, noop } from "./xg7Registry";
 import { addTurnCross, boostBp, registerMultiPick, selectOne, selfUnit } from "./xg7aEffects";
+import { gateReveal } from "../revealGate";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -832,7 +833,8 @@ export function openXg7bTurnEndEntry(state: GameState, endingPlayerId: PlayerId,
   }
   const top = state.players[endingPlayerId].deck.slice(0, 5).map((c) => c.instanceId);
   if (top.length === 0) return state;
-  return openEffectChoice(state, selectOne({ playerId: endingPlayerId, phasePlayerId: endingPlayerId, sourceInstanceId: instanceId }, "XG7-042", RIDER_WAR_EFFECT_ID, top, true));
+  // 発動するかを先に聞き、発動してから山札の上5枚を見せる（rules/revealGate.ts）。
+  return openEffectChoice(state, gateReveal(selectOne({ playerId: endingPlayerId, phasePlayerId: endingPlayerId, sourceInstanceId: instanceId }, "XG7-042", RIDER_WAR_EFFECT_ID, top, true)));
 }
 
 CHOICE_RESOLVERS[RIDER_WAR_EFFECT_ID] = (state, playerId, instanceId) => {

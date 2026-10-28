@@ -286,6 +286,7 @@ import {
   triggerCopiedOnRushFromRush,
   applyMegasuringuEnemyRushSBpDebuff,
 } from "./batch06FieldEffects";
+import { gateReveal } from "./revealGate";
 
 export type RequestDrawResult =
   | { state: GameState; pending: false; drawn: boolean }
@@ -910,7 +911,7 @@ export function startRuinSurveyChoice(
 ): GameState | null {
   const top = state.players[playerId].deck[0];
   if (!top) return null;
-  return openEffectChoice(state, {
+  return openEffectChoice(state, gateReveal({
     playerId,
     effectId: "ruin_survey",
     sourceCardId,
@@ -918,9 +919,9 @@ export function startRuinSurveyChoice(
     phasePlayerId: playerId,
     validInstanceIds: [top.instanceId],
     viewedInstanceIds: [top.instanceId],
-    // 「見てもよい」— 見ない（skip）なら山札は変わらない。出典: RS-066 atwiki/page-270。
+    // 「見てもよい」— 見ない（skip）なら山札は変わらない。出典: RS-066 atwiki/page-270。見るかを先に聞く（rules/revealGate.ts）。
     optional: true,
-  });
+  }));
 }
 
 export function startSelectUnitChoice(
@@ -2517,7 +2518,8 @@ export function startRadialHammerChoice(
   if (player.deck.length === 0) return null;
   const count = Math.min(3, player.deck.length);
   const viewed = player.deck.slice(0, count).map((c) => c.instanceId);
-  return openEffectChoice(state, {
+  // 見るかを先に聞く（rules/revealGate.ts）。
+  return openEffectChoice(state, gateReveal({
     playerId,
     effectId: "radial_hammer",
     sourceCardId,
@@ -2528,7 +2530,7 @@ export function startRadialHammerChoice(
     viewedInstanceIds: viewed,
     selectCount: 1,
     optional: true,
-  });
+  }));
 }
 
 export function startPitInDiveOrderChoice(

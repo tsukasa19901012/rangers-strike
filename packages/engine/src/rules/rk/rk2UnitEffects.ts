@@ -37,6 +37,7 @@ import { tryLeaveField } from "../operationCounters";
 import { destroyStriker } from "../strikeReactions";
 import { recordReveal, revealedCards } from "../revealNotice";
 import { deckOrderChoice } from "../deckOrder";
+import { gateReveal } from "../revealGate";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -347,14 +348,14 @@ function openRadio(state: GameState, playerId: PlayerId, vehicleInstanceId: stri
   if (state.activePlayer !== playerId) return state;
   const top = state.players[playerId].deck[0];
   if (!top) return state;
-  return openOrQueue(state, {
+  return openOrQueue(state, gateReveal({
     ...base({ playerId, phasePlayerId: playerId, sourceInstanceId: vehicleInstanceId }, "RK-030"),
     effectId: RADIO_LOOK_EFFECT_ID,
     kind: "select_unit",
     validInstanceIds: [top.instanceId],
     selectCount: 1,
     optional: true,
-  });
+  }));
 }
 
 CHOICE_RESOLVERS[RADIO_LOOK_EFFECT_ID] = (state, playerId, chosenId) => {

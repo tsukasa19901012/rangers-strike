@@ -55,6 +55,7 @@ import {
   st,
   sUnit,
   targetsOf,
+  tryAct,
   vehicleCard,
   zoneOf,
 } from "./XG7-024-046.helpers";
@@ -213,13 +214,34 @@ describe("XG7-042 仮面ライダークウガ×仮面ライダーディケイド
   /** 自軍バトルフェイズを終えてターンを終える（山札6枚: k0〜k5）。 */
   const ending = () => endTurn(p1Battle({ battle: [inst("XG7-042", "kd")], deck: deckCards(6, "k") }, {}, EXTRA));
 
+  /** 「次の効果を発動できる」の確認で発動する（rules/revealGate.ts）。 */
+  const activate = (s: GameState) => act(s, { type: "confirm_effect_choice", playerId: "player1" });
+
   it("XG7-042: 【ライダー大戦の世界】自分がターンを終えるとき、発動するかを選べ、山札の上から5枚の中から1枚を選ぶ（出典: atwiki/page-2439「自軍山札の上から5枚をオモテにして、その中から1枚を選び手札に加える」）", () => {
     const s = ending();
     expectChoiceFrom(s, "player1", "XG7-042");
+    expect(activate(s).pendingEffectChoice?.validInstanceIds).toEqual(["TST-OP:k0", "TST-OP:k1", "TST-OP:k2", "TST-OP:k3", "TST-OP:k4"]);
+  });
+
+  it("XG7-042: 【ライダー大戦の世界】発動を選ぶ前は山札の上5枚を選べず、発動する・しないだけを選ぶ（ユーザー報告 2026-10-28「効果の発動を選ぶ前に山札の上のカードを見ることができてしまう」）", () => {
+    const s = ending();
+    expect(s.pendingEffectChoice?.revealGate).toBe(true);
+    expect(legal(s).map((a) => a.type).sort()).toEqual(["confirm_effect_choice", "skip_effect_choice"]);
+    expect(tryAct(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP:k2" }).ok).toBe(false);
+    // 発動すると5枚から選び、もう見送れない
+    const opened = activate(s);
+    expect(opened.pendingEffectChoice?.revealGate).toBeUndefined();
+    expect(legal(opened).some((a) => a.type === "skip_effect_choice")).toBe(false);
+  });
+
+  it("XG7-042: 【ライダー大戦の世界】発動しなければ山札もこのユニットもそのまま（出典: atwiki/page-2439「次の効果を発動できる」）", () => {
+    const s = resolveAll(skip(ending()));
+    expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(["TST-OP:k0", "TST-OP:k1", "TST-OP:k2", "TST-OP:k3", "TST-OP:k4", "TST-OP:k5"]);
+    expect(zoneOf(s, "player1", "XG7-042:kd")).toBe("battle");
   });
 
   it("XG7-042: 【ライダー大戦の世界】選んだ1枚を手札に加え、残り4枚とこのユニットを山札の下に戻す（出典: atwiki/page-2439「残りのカードとこのユニットを好きな順で山札の下に戻す」）", () => {
-    const s = resolveAll(ending(), ["TST-OP:k2"]);
+    const s = resolveAll(activate(ending()), ["TST-OP:k2"]);
     expect(zoneOf(s, "player1", "TST-OP:k2")).toBe("hand");
     expect(zoneOf(s, "player1", "XG7-042:kd")).toBe("deck");
     const deck = s.players.player1.deck.map((c) => c.instanceId);
@@ -227,7 +249,7 @@ describe("XG7-042 仮面ライダークウガ×仮面ライダーディケイド
   });
 
   it("XG7-042: 【ライダー大戦の世界】残り4枚とこのユニットを山札の下に戻す順を1枚ずつ選べる（出典: atwiki/page-2439「残りのカードとこのユニットを好きな順で山札の下に戻す」）", () => {
-    let s = settle(endTurn(p1Battle({ battle: [inst("XG7-042", "kd")], deck: deckCards(6, "k") }, {}, EXTRA)));
+    let s = activate(settle(endTurn(p1Battle({ battle: [inst("XG7-042", "kd")], deck: deckCards(6, "k") }, {}, EXTRA))));
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP:k2" });
     expect(s.pendingEffectChoice?.effectId).toBe("deck_bottom_order");
     expect(s.pendingEffectChoice?.optional).toBe(false);

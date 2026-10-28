@@ -60,6 +60,7 @@ import {
   printedFeatures,
   sharedFeatureCount,
 } from "./xg7Registry";
+import { gateReveal } from "../revealGate";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -203,7 +204,7 @@ const RANGER_KEY_EFFECT_ID = "xg7001_ranger_key";
 function applyRangerKey(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const top = state.players[ctx.playerId].deck[0];
   if (!top) return { state, detail: "xg7001:no_deck" };
-  return { state: openAfter(state, selectOne(ctxBase(ctx), "XG7-001", RANGER_KEY_EFFECT_ID, [top.instanceId], true)), detail: RANGER_KEY_EFFECT_ID };
+  return { state: openAfter(state, gateReveal(selectOne(ctxBase(ctx), "XG7-001", RANGER_KEY_EFFECT_ID, [top.instanceId], true))), detail: RANGER_KEY_EFFECT_ID };
 }
 
 CHOICE_RESOLVERS[RANGER_KEY_EFFECT_ID] = (state, playerId, instanceId) => {
