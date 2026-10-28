@@ -19,6 +19,8 @@ UI は Vita 版と同じ [PocketJS](https://github.com/pocket-stack/pocketjs)（
 - デッキ構築: 全 1,832 枚の一覧からクリックで追加・右クリックで削除、保存。種類・カテゴリ・弾・コスト・BP で絞り込み、
   文字列検索（カード名・効果文・特徴・作品名・カード番号。スペース区切りで AND、ひらがな／カタカナ・全角／半角を区別しない）。
   デッキ名は上部の欄で付け替え（検索欄・デッキ名欄はホストページの `<input>` をキャンバスに重ねたもので、スマホの IME が使えます）
+- デッキ一覧: デッキ構築のメニュー「デッキ一覧（カード画像で見る）」で、編集中のデッキをカード画像と「×枚数」の一覧で出します（共有されたデッキを開いたときと同じ見た目）。
+  ボタンは「保存して戻る / 編集を続ける / 共有する」。
 - デッキの共有: デッキ構築のメニュー「共有する（URL・テキスト・QR）」で、QR コード・URL・カードリストのパネルを出します。
   - 「URLをコピー」: 短い URL `/?d=<8文字>`（`api/share.js` が Upstash Redis に期限なしで保存。同じデッキは同じ URL）。
   - 共有されたデッキの一覧: `vercel env pull .env.local` のあと `node scripts/list-shared-decks.mjs [--out shared-decks.json] [--arena ../../packages/engine/arena-decks]`（読むだけ。`--arena` で対戦台のデッキ `shared-<id>.json` にもする）。

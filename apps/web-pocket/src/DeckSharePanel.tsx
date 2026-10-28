@@ -1,7 +1,8 @@
 // Deck sharing panels, drawn over the deck builder or the title screen:
 //   share  the deck as a QR code, its URL and its text list (共有する);
 //   open   a deck from a shared URL, to save and edit or play;
-//   paste  a card list typed or pasted into a text box (テキストから取り込む).
+//   paste  a card list typed or pasted into a text box (テキストから取り込む);
+//   list   the deck in the builder as card images (デッキ一覧), drawn like open.
 // Drawn at fixed rectangles like SettingsPanel; the app hit-tests clicks
 // (deckPanelHit). The copy and save buttons are pressed in the host page
 // itself (host/host.js "rs.actions"): the clipboard and the share sheet only
@@ -23,10 +24,11 @@ export type DeckPanel =
       qr: QrBits | null;
     }
   | { kind: "open"; deck: ImportedDeck; check: { ok: boolean; total: number; errors: string[] } }
-  | { kind: "paste"; text: string; parsed: ImportedDeck };
+  | { kind: "paste"; text: string; parsed: ImportedDeck }
+  | { kind: "list"; name: string; entries: DeckEntry[]; check: { ok: boolean; total: number; errors: string[] } };
 
 /** Buttons the guest handles. */
-export type PanelAction = "close" | "edit" | "play" | "skip" | "import" | "cancel";
+export type PanelAction = "close" | "edit" | "play" | "skip" | "import" | "cancel" | "save" | "share";
 /** Buttons the host page handles inside the click. */
 export type HostActionId = "copyUrl" | "copyText" | "saveQr";
 
@@ -115,16 +117,20 @@ function shareLayout(p: Extract<DeckPanel, { kind: "share" }>, width: number, he
   return { frame, title, lines, buttons, qr, url, cards: [] };
 }
 
-function openLayout(p: Extract<DeckPanel, { kind: "open" }>, width: number, height: number): DeckPanelLayout {
+type GridDeck = { name: string; entries: DeckEntry[]; check: { ok: boolean; errors: string[] }; unreadable: number };
+type LabelRow = [PanelAction, string, boolean, boolean];
+
+/** A deck as card images with ×N counts, then its buttons (a phone stacks them): the open and list panels. */
+function cardGridLayout(p: GridDeck, labels: LabelRow[], width: number, height: number): DeckPanelLayout {
   const portrait = width < height;
   const w = portrait ? width - 24 : Math.min(840, width - 40);
   const iw = w - PAD * 2;
   const gap = 6;
-  const unreadable = p.deck.unreadable.length > 0;
-  const buttonsH = portrait ? BUTTON_H * 3 + 16 : BUTTON_H;
+  const unreadable = p.unreadable > 0;
+  const buttonsH = portrait ? BUTTON_H * labels.length + 8 * (labels.length - 1) : BUTTON_H;
   const fixedH = PAD + 26 + 22 + 20 + (unreadable ? 20 : 0) + 10 + 14 + buttonsH + PAD;
   // As many columns as it takes for every card to fit on the screen.
-  const n = p.deck.entries.length;
+  const n = p.entries.length;
   let cols = portrait ? 5 : 10;
   const tile = () => {
     const tw = Math.floor((iw - gap * (cols - 1)) / cols);
@@ -139,36 +145,58 @@ function openLayout(p: Extract<DeckPanel, { kind: "open" }>, width: number, heig
   let y = frame.y + PAD;
   const title = { x, y, w: iw, h: 26 };
   y += 26;
-  const total = sum(p.deck.entries);
+  const total = sum(p.entries);
   const status = p.check.ok ? "対戦可" : (p.check.errors[0] ?? "このままでは対戦できません");
   const lines: DeckPanelLayout["lines"] = [
-    { rect: { x, y, w: iw, h: 22 }, text: fit(p.deck.name || "名前なし", iw), tone: "head" },
+    { rect: { x, y, w: iw, h: 22 }, text: fit(p.name || "名前なし", iw), tone: "head" },
     { rect: { x, y: y + 22, w: iw, h: 20 }, text: fit(`${total}枚・${n}種類・${status}`, iw, 13), tone: p.check.ok ? "dim" : "warn" },
   ];
   y += 42;
   if (unreadable) {
-    lines.push({ rect: { x, y, w: iw, h: 20 }, text: fit(`この版にないカードを${p.deck.unreadable.length}種類読み飛ばしました`, iw, 13), tone: "warn" });
+    lines.push({ rect: { x, y, w: iw, h: 20 }, text: fit(`この版にないカードを${p.unreadable}種類読み飛ばしました`, iw, 13), tone: "warn" });
     y += 20;
   }
   y += 10;
-  const cards = p.deck.entries.map((e, i) => ({
+  const cards = p.entries.map((e, i) => ({
     cardId: e.cardId,
     count: e.count,
     rect: { x: x + (i % cols) * (t.w + gap), y: y + Math.floor(i / cols) * (t.h + gap), w: t.w, h: t.h },
   }));
   y += gridH + 14;
-  const labels: [PanelAction, string, boolean, boolean][] = [
-    ["edit", "保存してデッキ構築で開く", true, true],
-    ["play", "保存して自分のデッキで対戦", false, p.check.ok],
-    ["skip", "取り込まない", false, true],
-  ];
   const buttons: Button[] = portrait
     ? labels.map(([id, label, primary, enabled], i) => ({ id, label, primary, enabled, rect: { x, y: y + i * (BUTTON_H + 8), w: iw, h: BUTTON_H } }))
     : (() => {
-        const third = Math.floor((iw - 16) / 3);
-        return labels.map(([id, label, primary, enabled], i) => ({ id, label, primary, enabled, rect: { x: x + i * (third + 8), y, w: third, h: BUTTON_H } }));
+        const bw = Math.floor((iw - 8 * (labels.length - 1)) / labels.length);
+        return labels.map(([id, label, primary, enabled], i) => ({ id, label, primary, enabled, rect: { x: x + i * (bw + 8), y, w: bw, h: BUTTON_H } }));
       })();
   return { frame, title, lines, buttons, cards };
+}
+
+function openLayout(p: Extract<DeckPanel, { kind: "open" }>, width: number, height: number): DeckPanelLayout {
+  const deck = { name: p.deck.name, entries: p.deck.entries, check: p.check, unreadable: p.deck.unreadable.length };
+  return cardGridLayout(
+    deck,
+    [
+      ["edit", "保存してデッキ構築で開く", true, true],
+      ["play", "保存して自分のデッキで対戦", false, p.check.ok],
+      ["skip", "取り込まない", false, true],
+    ],
+    width,
+    height,
+  );
+}
+
+function listLayout(p: Extract<DeckPanel, { kind: "list" }>, width: number, height: number): DeckPanelLayout {
+  return cardGridLayout(
+    { ...p, unreadable: 0 },
+    [
+      ["save", "保存して戻る", true, true],
+      ["close", "編集を続ける", false, true],
+      ["share", "共有する", false, true],
+    ],
+    width,
+    height,
+  );
 }
 
 function pasteLayout(p: Extract<DeckPanel, { kind: "paste" }>, width: number, height: number): DeckPanelLayout {
@@ -202,10 +230,11 @@ function pasteLayout(p: Extract<DeckPanel, { kind: "paste" }>, width: number, he
 export function deckPanelLayout(panel: DeckPanel, width: number, height: number): DeckPanelLayout {
   if (panel.kind === "share") return shareLayout(panel, width, height);
   if (panel.kind === "open") return openLayout(panel, width, height);
+  if (panel.kind === "list") return listLayout(panel, width, height);
   return pasteLayout(panel, width, height);
 }
 
-export const PANEL_TITLES: Record<DeckPanel["kind"], string> = { share: "デッキを共有", open: "共有されたデッキ", paste: "テキストから取り込む" };
+export const PANEL_TITLES: Record<DeckPanel["kind"], string> = { share: "デッキを共有", open: "共有されたデッキ", paste: "テキストから取り込む", list: "デッキ一覧" };
 
 const HOST_ACTIONS = new Set<string>(["copyUrl", "copyText", "saveQr"]);
 export const isHostAction = (id: string): id is HostActionId => HOST_ACTIONS.has(id);

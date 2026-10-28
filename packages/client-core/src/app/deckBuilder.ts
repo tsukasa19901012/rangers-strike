@@ -103,8 +103,8 @@ export type DeckBuilderView = {
 
 export type DeckBuilderResult = { kind: "saved"; deck: CustomDeck } | { kind: "deleted"; id: string } | { kind: "closed" };
 
-/** What the builder asks the shell to show over it: the share panel, or the box to paste a card list into. */
-export type DeckShellRequest = "share" | "paste";
+/** What the builder asks the shell to show over it: the share panel, the box to paste a card list into, or the deck as card images. */
+export type DeckShellRequest = "share" | "paste" | "list";
 
 type MenuItem = { label: string; run: () => void };
 
@@ -468,7 +468,12 @@ export class DeckBuilder {
         run: () => this.save(),
       },
       { label: this.dirty ? "保存せずに戻る（変更を捨てる）" : "戻る", run: () => (this.result = { kind: "closed" }) },
-      ...(this.sharing ? [{ label: "共有する（URL・テキスト・QR）", run: () => (this.request = "share") }] : []),
+      ...(this.sharing
+        ? [
+            { label: "デッキ一覧（カード画像で見る）", run: () => (this.request = "list") },
+            { label: "共有する（URL・テキスト・QR）", run: () => (this.request = "share") },
+          ]
+        : []),
       { label: "絞り込み", run: () => this.openFiltersMenu() },
       { label: "別のデッキを開く", run: () => this.openStartMenu() },
     ];
@@ -479,7 +484,8 @@ export class DeckBuilder {
     this.openMenu(`${this.deckName.trim() || "名前なし"}（${this.validation.total}枚）`, items);
   }
 
-  private save(): void {
+  /** Saves the deck and leaves the builder (its menu, or the shell's デッキ一覧 panel). */
+  save(): void {
     const name = this.deckName.trim() || this.nextName("自作デッキ", this.deckId);
     const deck: CustomDeck = {
       id: this.deckId ?? `d${Date.now().toString(36)}${Math.floor(Math.random() * 1296).toString(36)}`,

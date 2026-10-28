@@ -237,6 +237,10 @@ describe("DeckBuilder", () => {
     pickMenu(app, /共有する/);
     expect(app.takeDeckRequest()).toBe("share");
     expect(app.builderDeck()!.entries.reduce((n, e) => n + e.count, 0)).toBe(40);
+    // デッキ一覧 asks for the card-image list.
+    app.dispatch(input.cancel);
+    pickMenu(app, /デッキ一覧/);
+    expect(app.takeDeckRequest()).toBe("list");
   });
 
   it("saves a deck opened from a URL once, then edits or plays it", () => {

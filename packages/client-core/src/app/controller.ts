@@ -56,7 +56,7 @@ export type ControllerOptions = {
   gui?: boolean;
   /** With `gui`: the shell draws card images (see GuiView.detailArt). */
   cardArt?: boolean;
-  /** The shell shares decks and reads pasted card lists (adds the deck builder's 共有する / テキストから取り込む rows). */
+  /** The shell shares decks, reads pasted card lists and draws a deck as card images (adds the deck builder's 共有する / テキストから取り込む / デッキ一覧 rows). */
   deckSharing?: boolean;
   /** Shell-specific screen geometry for the match and the deck builder (defaults: the Vita layout). */
   layouts?: {
@@ -399,6 +399,14 @@ export class AppController {
   /** The deck open in the builder, for the share panel. */
   builderDeck(): { name: string; entries: DeckEntry[] } | null {
     return this.builder && this.screen === "deck" ? this.builder.currentDeck() : null;
+  }
+
+  /** Saves the builder's deck and goes back to the title, like the menu's 保存して戻る (the デッキ一覧 panel). */
+  saveBuilderDeck(): void {
+    if (!this.builder || this.screen !== "deck") return;
+    this.builder.save();
+    this.afterBuilder();
+    this.touch();
   }
 
   /** A pasted card list becomes the builder's deck (new and unsaved). */
