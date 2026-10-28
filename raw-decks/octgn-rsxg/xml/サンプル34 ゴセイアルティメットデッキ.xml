@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>ゴセイアルティメットデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990507038">ゴーオンシルバー×ゴーオンゴールド</card>
+      <card id="990507038">ゴーオンシルバー×ゴーオンゴールド</card>
+      <card id="990507052">ゴセイアルティメット</card>
+      <card id="990507052">ゴセイアルティメット</card>
+      <card id="990507052">ゴセイアルティメット</card>
+      <card id="990507053">ゴセイアルティメットMM</card>
+      <card id="990507053">ゴセイアルティメットMM</card>
+      <card id="990507053">ゴセイアルティメットMM</card>
+      <card id="990208093">ツキノワ</card>
+      <card id="990208093">ツキノワ</card>
+      <card id="990208093">ツキノワ</card>
+      <card id="990507044">ハリケンレッド</card>
+      <card id="990507044">ハリケンレッド</card>
+      <card id="990507044">ハリケンレッド</card>
+      <card id="990208067">ファイヤーカイザー</card>
+      <card id="990208067">ファイヤーカイザー</card>
+      <card id="990208071">マジレッド</card>
+      <card id="990208071">マジレッド</card>
+      <card id="990208071">マジレッド</card>
+      <card id="990206001">メディテーション</card>
+      <card id="990206001">メディテーション</card>
+      <card id="990403076">仮面ライダーキバ</card>
+      <card id="990403076">仮面ライダーキバ</card>
+      <card id="990505047">仮面ライダーディケイドCF</card>
+      <card id="990206060">天空大聖者マジエル</card>
+      <card id="990206060">天空大聖者マジエル</card>
+      <card id="990206060">天空大聖者マジエル</card>
+      <card id="990205051">気伝獣ウォンタイガー</card>
+      <card id="990205051">気伝獣ウォンタイガー</card>
+      <card id="990205051">気伝獣ウォンタイガー</card>
+      <card id="990209001">異次元からの翼</card>
+      <card id="990209001">異次元からの翼</card>
+      <card id="990209001">異次元からの翼</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990503026">魔導馬バリキオン</card>
+      <card id="990503026">魔導馬バリキオン</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

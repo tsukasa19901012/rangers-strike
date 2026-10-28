@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>キラーアバレンオーデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990205007">Vコマンダー</card>
+      <card id="990205007">Vコマンダー</card>
+      <card id="990506005">アバレキラー</card>
+      <card id="990506005">アバレキラー</card>
+      <card id="990506005">アバレキラー</card>
+      <card id="990506002">キラーアバレンオー</card>
+      <card id="990506002">キラーアバレンオー</card>
+      <card id="990506002">キラーアバレンオー</card>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990506028">タイタンボーイ</card>
+      <card id="990506028">タイタンボーイ</card>
+      <card id="990506028">タイタンボーイ</card>
+      <card id="990101066">ダイノミッション</card>
+      <card id="990101066">ダイノミッション</card>
+      <card id="990101066">ダイノミッション</card>
+      <card id="990402068">デネブ</card>
+      <card id="990402068">デネブ</card>
+      <card id="990402068">デネブ</card>
+      <card id="990506029">フラッシュタイタン</card>
+      <card id="990506029">フラッシュタイタン</card>
+      <card id="990506029">フラッシュタイタン</card>
+      <card id="990503077">宇宙忍デモスト</card>
+      <card id="990503077">宇宙忍デモスト</card>
+      <card id="990503077">宇宙忍デモスト</card>
+      <card id="990201052">爆竜ティラノサウルス</card>
+      <card id="990201052">爆竜ティラノサウルス</card>
+      <card id="990201052">爆竜ティラノサウルス</card>
+      <card id="990201053">爆竜トリケラトプス</card>
+      <card id="990201053">爆竜トリケラトプス</card>
+      <card id="990201053">爆竜トリケラトプス</card>
+      <card id="990201054">爆竜プテラノドン</card>
+      <card id="990201054">爆竜プテラノドン</card>
+      <card id="990201054">爆竜プテラノドン</card>
+      <card id="990206072">聖剣ズバーン</card>
+      <card id="990206072">聖剣ズバーン</card>
+      <card id="990201004">超電子頭脳</card>
+      <card id="990201004">超電子頭脳</card>
+      <card id="990201004">超電子頭脳</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

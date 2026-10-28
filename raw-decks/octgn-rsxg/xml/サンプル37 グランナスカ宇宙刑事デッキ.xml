@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>グランナスカ宇宙刑事デッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990204040">カーナビック</card>
+      <card id="990402066">キンタロス</card>
+      <card id="990402066">キンタロス</card>
+      <card id="990505054">グランナスカ・カノンフォーメーション</card>
+      <card id="990505054">グランナスカ・カノンフォーメーション</card>
+      <card id="990505054">グランナスカ・カノンフォーメーション</card>
+      <card id="990504036">ゴーオンシルバー</card>
+      <card id="990504036">ゴーオンシルバー</card>
+      <card id="990504036">ゴーオンシルバー</card>
+      <card id="990402068">デネブ</card>
+      <card id="990402068">デネブ</card>
+      <card id="990402068">デネブ</card>
+      <card id="990402070">デンライナーレッコウ</card>
+      <card id="990402070">デンライナーレッコウ</card>
+      <card id="990201022">パトアーマー</card>
+      <card id="990201022">パトアーマー</card>
+      <card id="990201022">パトアーマー</card>
+      <card id="990204041">プロバイダーベース</card>
+      <card id="990204041">プロバイダーベース</card>
+      <card id="990204041">プロバイダーベース</card>
+      <card id="990402011">乗車拒否</card>
+      <card id="990402011">乗車拒否</card>
+      <card id="990402011">乗車拒否</card>
+      <card id="990503062">仮面ライダーサソードMF</card>
+      <card id="990503062">仮面ライダーサソードMF</card>
+      <card id="990503062">仮面ライダーサソードMF</card>
+      <card id="990503063">仮面ライダーサソードRF</card>
+      <card id="990503063">仮面ライダーサソードRF</card>
+      <card id="990507040">仮面ライダー電王LF×モモタロス</card>
+      <card id="990507040">仮面ライダー電王LF×モモタロス</card>
+      <card id="990507040">仮面ライダー電王LF×モモタロス</card>
+      <card id="990401072">仮面ライダー電王SF</card>
+      <card id="990401072">仮面ライダー電王SF</card>
+      <card id="990401072">仮面ライダー電王SF</card>
+      <card id="990507042">宇宙刑事シャリバン×ギャバン×シャイダー</card>
+      <card id="990507042">宇宙刑事シャリバン×ギャバン×シャイダー</card>
+      <card id="990507042">宇宙刑事シャリバン×ギャバン×シャイダー</card>
+      <card id="990505052">超時空戦闘母艦グランナスカ</card>
+      <card id="990505052">超時空戦闘母艦グランナスカ</card>
+      <card id="990505052">超時空戦闘母艦グランナスカ</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダーライジングイクサデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990301017">オメデトロフィー</card>
+      <card id="990301017">オメデトロフィー</card>
+      <card id="990301017">オメデトロフィー</card>
+      <card id="990301045">ガンギブソン</card>
+      <card id="990301045">ガンギブソン</card>
+      <card id="990301045">ガンギブソン</card>
+      <card id="990502103">キカイダー</card>
+      <card id="990502103">キカイダー</card>
+      <card id="990502103">キカイダー</card>
+      <card id="990503070">キングダーク</card>
+      <card id="990503070">キングダーク</card>
+      <card id="990401056">シャドームーン</card>
+      <card id="990401056">シャドームーン</card>
+      <card id="990401056">シャドームーン</card>
+      <card id="990209008">スカイエース</card>
+      <card id="990209008">スカイエース</card>
+      <card id="990209008">スカイエース</card>
+      <card id="990401025">トライチェイサー</card>
+      <card id="990401025">トライチェイサー</card>
+      <card id="990401025">トライチェイサー</card>
+      <card id="990501089">バイクル</card>
+      <card id="990501089">バイクル</card>
+      <card id="990501089">バイクル</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990404071">仮面ライダーイクサBM</card>
+      <card id="990404071">仮面ライダーイクサBM</card>
+      <card id="990404071">仮面ライダーイクサBM</card>
+      <card id="990404072">仮面ライダーライジングイクサ</card>
+      <card id="990404072">仮面ライダーライジングイクサ</card>
+      <card id="990404072">仮面ライダーライジングイクサ</card>
+      <card id="990503077">宇宙忍デモスト</card>
+      <card id="990503077">宇宙忍デモスト</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

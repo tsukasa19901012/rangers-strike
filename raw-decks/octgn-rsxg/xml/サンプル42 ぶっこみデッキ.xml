@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>ぶっこみデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990201026">アバレッド</card>
+      <card id="990201026">アバレッド</card>
+      <card id="990201026">アバレッド</card>
+      <card id="990209050">ガオイエロー</card>
+      <card id="990209050">ガオイエロー</card>
+      <card id="990209050">ガオイエロー</card>
+      <card id="990507028">シンクレッダー</card>
+      <card id="990507028">シンクレッダー</card>
+      <card id="990507028">シンクレッダー</card>
+      <card id="990201017">タイガーレンジャー</card>
+      <card id="990201017">タイガーレンジャー</card>
+      <card id="990201017">タイガーレンジャー</card>
+      <card id="990501097">ビーファイタークワガー</card>
+      <card id="990501097">ビーファイタークワガー</card>
+      <card id="990501097">ビーファイタークワガー</card>
+      <card id="990205042">ホワイトスワン</card>
+      <card id="990205042">ホワイトスワン</card>
+      <card id="990205042">ホワイトスワン</card>
+      <card id="990506031">レー・バラキ</card>
+      <card id="990506031">レー・バラキ</card>
+      <card id="990208091">レツタカ</card>
+      <card id="990208091">レツタカ</card>
+      <card id="990208091">レツタカ</card>
+      <card id="990204010">レッドファルコン</card>
+      <card id="990204010">レッドファルコン</card>
+      <card id="990204010">レッドファルコン</card>
+      <card id="990507022">ロストドライバー</card>
+      <card id="990507022">ロストドライバー</card>
+      <card id="990507022">ロストドライバー</card>
+      <card id="990501101">ロボコン</card>
+      <card id="990501101">ロボコン</card>
+      <card id="990501101">ロボコン</card>
+      <card id="990402049">仮面ライダーカリス</card>
+      <card id="990402049">仮面ライダーカリス</card>
+      <card id="990402049">仮面ライダーカリス</card>
+      <card id="990507005">仮面ライダーギャレン×仮面ライダーブレイド</card>
+      <card id="990507005">仮面ライダーギャレン×仮面ライダーブレイド</card>
+      <card id="990507005">仮面ライダーギャレン×仮面ライダーブレイド</card>
+      <card id="990503077">宇宙忍デモスト</card>
+      <card id="990503077">宇宙忍デモスト</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

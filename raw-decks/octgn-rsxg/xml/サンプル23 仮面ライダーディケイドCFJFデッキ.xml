@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダーディケイドCFJFデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990301032">アイアンウルフ</card>
+      <card id="990301032">アイアンウルフ</card>
+      <card id="990301032">アイアンウルフ</card>
+      <card id="990207082">ゴートクラッシャー</card>
+      <card id="990207082">ゴートクラッシャー</card>
+      <card id="990501077">ディケイドライバー</card>
+      <card id="990501077">ディケイドライバー</card>
+      <card id="990501077">ディケイドライバー</card>
+      <card id="990501072">ディケイド電王SF</card>
+      <card id="990501072">ディケイド電王SF</card>
+      <card id="990501072">ディケイド電王SF</card>
+      <card id="990504064">マックジャバー</card>
+      <card id="990504064">マックジャバー</card>
+      <card id="990504064">マックジャバー</card>
+      <card id="990503043">仮面ライダーBLACK</card>
+      <card id="990503043">仮面ライダーBLACK</card>
+      <card id="990503043">仮面ライダーBLACK</card>
+      <card id="990506058">仮面ライダーG4</card>
+      <card id="990506058">仮面ライダーG4</card>
+      <card id="990401048">仮面ライダーガタックMF</card>
+      <card id="990401048">仮面ライダーガタックMF</card>
+      <card id="990401048">仮面ライダーガタックMF</card>
+      <card id="990404065">仮面ライダーキバDGBKF</card>
+      <card id="990404065">仮面ライダーキバDGBKF</card>
+      <card id="990404065">仮面ライダーキバDGBKF</card>
+      <card id="990501078">仮面ライダーディケイド</card>
+      <card id="990501078">仮面ライダーディケイド</card>
+      <card id="990501078">仮面ライダーディケイド</card>
+      <card id="990502043">仮面ライダーディケイドCF</card>
+      <card id="990502043">仮面ライダーディケイドCF</card>
+      <card id="990502043">仮面ライダーディケイドCF</card>
+      <card id="990503071">仮面ライダーディケイドCFジャンボフォーメーション</card>
+      <card id="990503071">仮面ライダーディケイドCFジャンボフォーメーション</card>
+      <card id="990503071">仮面ライダーディケイドCFジャンボフォーメーション</card>
+      <card id="990402057">仮面ライダードレイクMF</card>
+      <card id="990402057">仮面ライダードレイクMF</card>
+      <card id="990402057">仮面ライダードレイクMF</card>
+      <card id="990401074">仮面ライダー電王RF</card>
+      <card id="990401074">仮面ライダー電王RF</card>
+      <card id="990401074">仮面ライダー電王RF</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

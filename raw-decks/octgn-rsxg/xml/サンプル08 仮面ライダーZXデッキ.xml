@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダーZXデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990501091">ウォルター</card>
+      <card id="990501091">ウォルター</card>
+      <card id="990208052">ガンマジン</card>
+      <card id="990208052">ガンマジン</card>
+      <card id="990208052">ガンマジン</card>
+      <card id="990206043">ゴーグリーン</card>
+      <card id="990206043">ゴーグリーン</card>
+      <card id="990204013">ゴーゴーファイヤー</card>
+      <card id="990204013">ゴーゴーファイヤー</card>
+      <card id="990204013">ゴーゴーファイヤー</card>
+      <card id="990206002">スーパー戦隊アドレスブック</card>
+      <card id="990206002">スーパー戦隊アドレスブック</card>
+      <card id="990206002">スーパー戦隊アドレスブック</card>
+      <card id="990209008">スカイエース</card>
+      <card id="990209008">スカイエース</card>
+      <card id="990209008">スカイエース</card>
+      <card id="990208014">スコープショット</card>
+      <card id="990208014">スコープショット</card>
+      <card id="990204007">ダイナマッハ</card>
+      <card id="990204007">ダイナマッハ</card>
+      <card id="990204007">ダイナマッハ</card>
+      <card id="990207021">ニンジャブラック</card>
+      <card id="990207021">ニンジャブラック</card>
+      <card id="990207021">ニンジャブラック</card>
+      <card id="990207003">ネコマル</card>
+      <card id="990207003">ネコマル</card>
+      <card id="990207003">ネコマル</card>
+      <card id="990205010">バイモーションバスター</card>
+      <card id="990205010">バイモーションバスター</card>
+      <card id="990209007">バリブルーン</card>
+      <card id="990209007">バリブルーン</card>
+      <card id="990202005">ブルバルカン</card>
+      <card id="990202005">ブルバルカン</card>
+      <card id="990202005">ブルバルカン</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990206060">天空大聖者マジエル</card>
+      <card id="990206060">天空大聖者マジエル</card>
+      <card id="990206060">天空大聖者マジエル</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

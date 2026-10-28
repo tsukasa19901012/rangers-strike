@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダー1号＆2号デッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990507003">アバレッド×爆竜ティラノサウルス</card>
+      <card id="990507003">アバレッド×爆竜ティラノサウルス</card>
+      <card id="990507003">アバレッド×爆竜ティラノサウルス</card>
+      <card id="990504015">オートスライダー</card>
+      <card id="990504015">オートスライダー</card>
+      <card id="990504015">オートスライダー</card>
+      <card id="990505041">キカイダー01</card>
+      <card id="990505041">キカイダー01</card>
+      <card id="990505041">キカイダー01</card>
+      <card id="990505012">ゴーグルレッド</card>
+      <card id="990505012">ゴーグルレッド</card>
+      <card id="990101062">ドラゴンレンジャー</card>
+      <card id="990101062">ドラゴンレンジャー</card>
+      <card id="990101062">ドラゴンレンジャー</card>
+      <card id="990208079">ボウケンシルバー</card>
+      <card id="990208079">ボウケンシルバー</card>
+      <card id="990207004">ライフバード</card>
+      <card id="990207004">ライフバード</card>
+      <card id="990207004">ライフバード</card>
+      <card id="990401065">仮面ライダー1号</card>
+      <card id="990401065">仮面ライダー1号</card>
+      <card id="990401065">仮面ライダー1号</card>
+      <card id="990101064">仮面ライダー2号</card>
+      <card id="990101064">仮面ライダー2号</card>
+      <card id="990101064">仮面ライダー2号</card>
+      <card id="990506006">仮面ライダーオーズ・タトバコンボ</card>
+      <card id="990506006">仮面ライダーオーズ・タトバコンボ</card>
+      <card id="990506006">仮面ライダーオーズ・タトバコンボ</card>
+      <card id="990507010">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990507010">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990507010">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990507016">仮面ライダー新2号×仮面ライダー新1号</card>
+      <card id="990507016">仮面ライダー新2号×仮面ライダー新1号</card>
+      <card id="990503077">宇宙忍デモスト</card>
+      <card id="990503077">宇宙忍デモスト</card>
+      <card id="990503077">宇宙忍デモスト</card>
+      <card id="990401009">宏のオルゴール時計</card>
+      <card id="990401009">宏のオルゴール時計</card>
+      <card id="990507015">新サイクロン号</card>
+      <card id="990507015">新サイクロン号</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>ゴセイグレートデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990208052">ガンマジン</card>
+      <card id="990208052">ガンマジン</card>
+      <card id="990208052">ガンマジン</card>
+      <card id="990504096">ゴセイグレート</card>
+      <card id="990504096">ゴセイグレート</card>
+      <card id="990504096">ゴセイグレート</card>
+      <card id="990505090">ゴセイマシン</card>
+      <card id="990207081">ソードスラッシャー</card>
+      <card id="990207081">ソードスラッシャー</card>
+      <card id="990207081">ソードスラッシャー</card>
+      <card id="990207021">ニンジャブラック</card>
+      <card id="990207021">ニンジャブラック</card>
+      <card id="990207021">ニンジャブラック</card>
+      <card id="990504064">マックジャバー</card>
+      <card id="990504064">マックジャバー</card>
+      <card id="990504064">マックジャバー</card>
+      <card id="990204054">ライドラプター</card>
+      <card id="990204054">ライドラプター</card>
+      <card id="990204054">ライドラプター</card>
+      <card id="990502081">リュウキドラグレッダー</card>
+      <card id="990502081">リュウキドラグレッダー</card>
+      <card id="990502081">リュウキドラグレッダー</card>
+      <card id="990505010">仮面ライダーナイト</card>
+      <card id="990505010">仮面ライダーナイト</card>
+      <card id="990505010">仮面ライダーナイト</card>
+      <card id="990504012">仮面ライダー龍騎</card>
+      <card id="990504012">仮面ライダー龍騎</card>
+      <card id="990504012">仮面ライダー龍騎</card>
+      <card id="990206060">天空大聖者マジエル</card>
+      <card id="990206060">天空大聖者マジエル</card>
+      <card id="990206060">天空大聖者マジエル</card>
+      <card id="990201016">守護獣プテラノドン</card>
+      <card id="990201016">守護獣プテラノドン</card>
+      <card id="990201016">守護獣プテラノドン</card>
+      <card id="990404005">親子の絆</card>
+      <card id="990404005">親子の絆</card>
+      <card id="990404005">親子の絆</card>
+      <card id="990505056">魔法剣キングカリバー</card>
+      <card id="990505056">魔法剣キングカリバー</card>
+      <card id="990505056">魔法剣キングカリバー</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

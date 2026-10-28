@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダーアギトデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990504062">アクロバッター</card>
+      <card id="990504062">アクロバッター</card>
+      <card id="990504062">アクロバッター</card>
+      <card id="990402004">オルタフォース</card>
+      <card id="990402004">オルタフォース</card>
+      <card id="990402004">オルタフォース</card>
+      <card id="990302012">オルタリング</card>
+      <card id="990209036">ギガバイタスCM</card>
+      <card id="990504092">ギンガピンク</card>
+      <card id="990402066">キンタロス</card>
+      <card id="990402066">キンタロス</card>
+      <card id="990402066">キンタロス</card>
+      <card id="990506047">ケシズミガラス</card>
+      <card id="990506047">ケシズミガラス</card>
+      <card id="990505088">ゴセイブラック</card>
+      <card id="990505088">ゴセイブラック</card>
+      <card id="990505088">ゴセイブラック</card>
+      <card id="990505085">ゴセイレッド</card>
+      <card id="990505085">ゴセイレッド</card>
+      <card id="990208043">トリケラレンジャー</card>
+      <card id="990208043">トリケラレンジャー</card>
+      <card id="990208043">トリケラレンジャー</card>
+      <card id="990503072">仮面ライダーアギト</card>
+      <card id="990503072">仮面ライダーアギト</card>
+      <card id="990503072">仮面ライダーアギト</card>
+      <card id="990501054">仮面ライダーアギトBF</card>
+      <card id="990501054">仮面ライダーアギトBF</card>
+      <card id="990402084">仮面ライダーアギトGF</card>
+      <card id="990402084">仮面ライダーアギトGF</card>
+      <card id="990402027">仮面ライダーアギトSF</card>
+      <card id="990402027">仮面ライダーアギトSF</card>
+      <card id="990402027">仮面ライダーアギトSF</card>
+      <card id="990504012">仮面ライダー龍騎</card>
+      <card id="990504012">仮面ライダー龍騎</card>
+      <card id="990504012">仮面ライダー龍騎</card>
+      <card id="990301059">異次元調達屋カブト</card>
+      <card id="990301059">異次元調達屋カブト</card>
+      <card id="990301059">異次元調達屋カブト</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990201070">疾風流超忍法</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

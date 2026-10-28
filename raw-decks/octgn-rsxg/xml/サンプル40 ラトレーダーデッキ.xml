@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>ラトレーダーデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990507003">アバレッド×爆竜ティラノサウルス</card>
+      <card id="990507003">アバレッド×爆竜ティラノサウルス</card>
+      <card id="990201048">クルマジックパワー</card>
+      <card id="990201048">クルマジックパワー</card>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990202040">デカピンク</card>
+      <card id="990202040">デカピンク</card>
+      <card id="990505036">バットショット</card>
+      <card id="990505036">バットショット</card>
+      <card id="990505036">バットショット</card>
+      <card id="990202015">ファイヤーファイター</card>
+      <card id="990202015">ファイヤーファイター</card>
+      <card id="990202015">ファイヤーファイター</card>
+      <card id="990503002">ラジエッカー</card>
+      <card id="990503002">ラジエッカー</card>
+      <card id="990503002">ラジエッカー</card>
+      <card id="990101071">仮面ライダーオーズ×仮面ライダー電王SF</card>
+      <card id="990101071">仮面ライダーオーズ×仮面ライダー電王SF</card>
+      <card id="990101071">仮面ライダーオーズ×仮面ライダー電王SF</card>
+      <card id="990506007">仮面ライダーオーズ・ガタキリバコンボ</card>
+      <card id="990506007">仮面ライダーオーズ・ガタキリバコンボ</card>
+      <card id="990506006">仮面ライダーオーズ・タトバコンボ</card>
+      <card id="990506006">仮面ライダーオーズ・タトバコンボ</card>
+      <card id="990506006">仮面ライダーオーズ・タトバコンボ</card>
+      <card id="990506008">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990506008">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990506008">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990507005">仮面ライダーギャレン×仮面ライダーブレイド</card>
+      <card id="990507005">仮面ライダーギャレン×仮面ライダーブレイド</card>
+      <card id="990507005">仮面ライダーギャレン×仮面ライダーブレイド</card>
+      <card id="990502072">仮面ライダーディエンド</card>
+      <card id="990502072">仮面ライダーディエンド</card>
+      <card id="990401074">仮面ライダー電王RF</card>
+      <card id="990401074">仮面ライダー電王RF</card>
+      <card id="990401074">仮面ライダー電王RF</card>
+      <card id="990203002">超電子レーダー</card>
+      <card id="990203002">超電子レーダー</card>
+      <card id="990203002">超電子レーダー</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

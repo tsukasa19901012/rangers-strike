@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダージョーカーデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990404078">ガルル獣人態</card>
+      <card id="990404078">ガルル獣人態</card>
+      <card id="990207036">ギンガット</card>
+      <card id="990207036">ギンガット</card>
+      <card id="990207036">ギンガット</card>
+      <card id="990207032">ギンガレオン</card>
+      <card id="990208042">ティラノレンジャー</card>
+      <card id="990208042">ティラノレンジャー</card>
+      <card id="990208042">ティラノレンジャー</card>
+      <card id="990404079">バッシャー獣人態</card>
+      <card id="990404079">バッシャー獣人態</card>
+      <card id="990402064">モモタロス</card>
+      <card id="990402064">モモタロス</card>
+      <card id="990402064">モモタロス</card>
+      <card id="990201064">ランドバルカン</card>
+      <card id="990201064">ランドバルカン</card>
+      <card id="990201064">ランドバルカン</card>
+      <card id="990503101">仮面ライダーW・HJ</card>
+      <card id="990503101">仮面ライダーW・HJ</card>
+      <card id="990503101">仮面ライダーW・HJ</card>
+      <card id="990506007">仮面ライダーオーズ・ガタキリバコンボ</card>
+      <card id="990506007">仮面ライダーオーズ・ガタキリバコンボ</card>
+      <card id="990506006">仮面ライダーオーズ・タトバコンボ</card>
+      <card id="990506006">仮面ライダーオーズ・タトバコンボ</card>
+      <card id="990506006">仮面ライダーオーズ・タトバコンボ</card>
+      <card id="990506008">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990506008">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990505094">仮面ライダーカリス</card>
+      <card id="990505094">仮面ライダーカリス</card>
+      <card id="990505094">仮面ライダーカリス</card>
+      <card id="990403068">仮面ライダーキバBF</card>
+      <card id="990403068">仮面ライダーキバBF</card>
+      <card id="990403077">仮面ライダーキバGF</card>
+      <card id="990403077">仮面ライダーキバGF</card>
+      <card id="990506061">仮面ライダーグレイブ</card>
+      <card id="990506061">仮面ライダーグレイブ</card>
+      <card id="990506061">仮面ライダーグレイブ</card>
+      <card id="990506055">仮面ライダージョーカー</card>
+      <card id="990506055">仮面ライダージョーカー</card>
+      <card id="990506055">仮面ライダージョーカー</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

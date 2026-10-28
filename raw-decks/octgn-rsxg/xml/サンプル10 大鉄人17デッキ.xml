@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>大鉄人17デッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990205040">イエローオウル</card>
+      <card id="990205040">イエローオウル</card>
+      <card id="990205040">イエローオウル</card>
+      <card id="990301017">オメデトロフィー</card>
+      <card id="990301017">オメデトロフィー</card>
+      <card id="990504030">ガンギブソン</card>
+      <card id="990504030">ガンギブソン</card>
+      <card id="990504030">ガンギブソン</card>
+      <card id="990209008">スカイエース</card>
+      <card id="990209008">スカイエース</card>
+      <card id="990506012">ダイボウケン</card>
+      <card id="990506012">ダイボウケン</card>
+      <card id="990506012">ダイボウケン</card>
+      <card id="990501089">バイクル</card>
+      <card id="990501089">バイクル</card>
+      <card id="990501089">バイクル</card>
+      <card id="990207008">バトルシャーク</card>
+      <card id="990207008">バトルシャーク</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990503095">ライジンゴー</card>
+      <card id="990503095">ライジンゴー</card>
+      <card id="990503095">ライジンゴー</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990101064">仮面ライダー2号</card>
+      <card id="990101064">仮面ライダー2号</card>
+      <card id="990101064">仮面ライダー2号</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990506014">強化スカイライダー</card>
+      <card id="990506014">強化スカイライダー</card>
+      <card id="990506022">戦闘ワンセブン</card>
+      <card id="990506022">戦闘ワンセブン</card>
+      <card id="990506022">戦闘ワンセブン</card>
+      <card id="990506023">要塞ワンセブン</card>
+      <card id="990506023">要塞ワンセブン</card>
+      <card id="990506023">要塞ワンセブン</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>ゴーカイレッドデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990507031">ゴーカイレッド</card>
+      <card id="990507031">ゴーカイレッド</card>
+      <card id="990507031">ゴーカイレッド</card>
+      <card id="990502088">ゴールドプラチナム</card>
+      <card id="990502088">ゴールドプラチナム</card>
+      <card id="990502088">ゴールドプラチナム</card>
+      <card id="990505085">ゴセイレッド</card>
+      <card id="990505085">ゴセイレッド</card>
+      <card id="990505085">ゴセイレッド</card>
+      <card id="990505043">シグナルキャノン</card>
+      <card id="990505043">シグナルキャノン</card>
+      <card id="990507028">シンクレッダー</card>
+      <card id="990507028">シンクレッダー</card>
+      <card id="990507028">シンクレッダー</card>
+      <card id="990204046">タイムレッド</card>
+      <card id="990204046">タイムレッド</card>
+      <card id="990204046">タイムレッド</card>
+      <card id="990201002">デンジマシーン</card>
+      <card id="990201002">デンジマシーン</card>
+      <card id="990201002">デンジマシーン</card>
+      <card id="990402069">デンライナーイスルギ</card>
+      <card id="990402069">デンライナーイスルギ</card>
+      <card id="990402069">デンライナーイスルギ</card>
+      <card id="990502002">ファイブレッド</card>
+      <card id="990502002">ファイブレッド</card>
+      <card id="990204010">レッドファルコン</card>
+      <card id="990504104">仮面ライダーW・CT</card>
+      <card id="990504104">仮面ライダーW・CT</card>
+      <card id="990101065">仮面ライダーアクセル</card>
+      <card id="990101065">仮面ライダーアクセル</card>
+      <card id="990101065">仮面ライダーアクセル</card>
+      <card id="990506018">仮面ライダーアクセルトライアル</card>
+      <card id="990506018">仮面ライダーアクセルトライアル</card>
+      <card id="990503062">仮面ライダーサソードMF</card>
+      <card id="990503062">仮面ライダーサソードMF</card>
+      <card id="990503062">仮面ライダーサソードMF</card>
+      <card id="990503063">仮面ライダーサソードRF</card>
+      <card id="990503063">仮面ライダーサソードRF</card>
+      <card id="990404049">仮面ライダーパンチホッパー</card>
+      <card id="990404049">仮面ライダーパンチホッパー</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

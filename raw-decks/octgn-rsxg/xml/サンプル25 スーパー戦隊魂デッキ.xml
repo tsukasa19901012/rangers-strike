@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>スーパー戦隊魂デッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990209070">シンケンレッド</card>
+      <card id="990503038">シンケンレッド</card>
+      <card id="990503038">シンケンレッド</card>
+      <card id="990206079">スーパーゲキレッド</card>
+      <card id="990206079">スーパーゲキレッド</card>
+      <card id="990502038">スーパーシンケンレッド</card>
+      <card id="990502038">スーパーシンケンレッド</card>
+      <card id="990502038">スーパーシンケンレッド</card>
+      <card id="990208015">スーパー戦隊魂</card>
+      <card id="990208015">スーパー戦隊魂</card>
+      <card id="990208015">スーパー戦隊魂</card>
+      <card id="990204046">タイムレッド</card>
+      <card id="990204046">タイムレッド</card>
+      <card id="990204046">タイムレッド</card>
+      <card id="990208031">チェンジマーメイド</card>
+      <card id="990208031">チェンジマーメイド</card>
+      <card id="990208031">チェンジマーメイド</card>
+      <card id="990205102">デカレッドSWAT</card>
+      <card id="990205102">デカレッドSWAT</card>
+      <card id="990205102">デカレッドSWAT</card>
+      <card id="990201002">デンジマシーン</card>
+      <card id="990201002">デンジマシーン</card>
+      <card id="990201002">デンジマシーン</card>
+      <card id="990501003">デンジレッド</card>
+      <card id="990501003">デンジレッド</card>
+      <card id="990501003">デンジレッド</card>
+      <card id="990502087">ハイパーショウ</card>
+      <card id="990502087">ハイパーショウ</card>
+      <card id="990502087">ハイパーショウ</card>
+      <card id="990208071">マジレッド</card>
+      <card id="990208071">マジレッド</card>
+      <card id="990208071">マジレッド</card>
+      <card id="990501009">レッドフラッシュ</card>
+      <card id="990501009">レッドフラッシュ</card>
+      <card id="990501009">レッドフラッシュ</card>
+      <card id="990501007">レッドワン</card>
+      <card id="990501007">レッドワン</card>
+      <card id="990501007">レッドワン</card>
+      <card id="990501036">兜折神</card>
+      <card id="990501036">兜折神</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

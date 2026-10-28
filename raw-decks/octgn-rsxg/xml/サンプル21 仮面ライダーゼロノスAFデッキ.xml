@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダーゼロノスAFデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990203027">イエローレーサー</card>
+      <card id="990203027">イエローレーサー</card>
+      <card id="990203027">イエローレーサー</card>
+      <card id="990208007">ゴーオンレッド</card>
+      <card id="990209072">シンケンピンク</card>
+      <card id="990209072">シンケンピンク</card>
+      <card id="990209072">シンケンピンク</card>
+      <card id="990207080">スピードル</card>
+      <card id="990504042">スピルバン</card>
+      <card id="990202040">デカピンク</card>
+      <card id="990202040">デカピンク</card>
+      <card id="990202040">デカピンク</card>
+      <card id="990206009">デンジイエロー</card>
+      <card id="990206009">デンジイエロー</card>
+      <card id="990203028">ピンクレーサー</card>
+      <card id="990203028">ピンクレーサー</card>
+      <card id="990203028">ピンクレーサー</card>
+      <card id="990206057">マーフィーK9</card>
+      <card id="990206057">マーフィーK9</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990503062">仮面ライダーサソードMF</card>
+      <card id="990503062">仮面ライダーサソードMF</card>
+      <card id="990503063">仮面ライダーサソードRF</card>
+      <card id="990503063">仮面ライダーサソードRF</card>
+      <card id="990506032">仮面ライダーゼロノスAF</card>
+      <card id="990506032">仮面ライダーゼロノスAF</card>
+      <card id="990506032">仮面ライダーゼロノスAF</card>
+      <card id="990503060">仮面ライダードレイクMF</card>
+      <card id="990503060">仮面ライダードレイクMF</card>
+      <card id="990503060">仮面ライダードレイクMF</card>
+      <card id="990503061">仮面ライダードレイクRF</card>
+      <card id="990503061">仮面ライダードレイクRF</card>
+      <card id="990403060">仮面ライダー羽撃鬼</card>
+      <card id="990403060">仮面ライダー羽撃鬼</card>
+      <card id="990403060">仮面ライダー羽撃鬼</card>
+      <card id="990402055">仮面ライダー蛮鬼</card>
+      <card id="990402055">仮面ライダー蛮鬼</card>
+      <card id="990402055">仮面ライダー蛮鬼</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダーキバEFデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990404027">ゴ・ガドル・バ</card>
+      <card id="990505017">ゴーグルロボ</card>
+      <card id="990505017">ゴーグルロボ</card>
+      <card id="990505017">ゴーグルロボ</card>
+      <card id="990504080">ナスカ・ドーパント</card>
+      <card id="990504080">ナスカ・ドーパント</card>
+      <card id="990504080">ナスカ・ドーパント</card>
+      <card id="990505065">ニビイロヘビ</card>
+      <card id="990505065">ニビイロヘビ</card>
+      <card id="990505065">ニビイロヘビ</card>
+      <card id="990404079">バッシャー獣人態</card>
+      <card id="990404079">バッシャー獣人態</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990505068">仮面ライダーキバ</card>
+      <card id="990505068">仮面ライダーキバ</card>
+      <card id="990505068">仮面ライダーキバ</card>
+      <card id="990403068">仮面ライダーキバBF</card>
+      <card id="990403068">仮面ライダーキバBF</card>
+      <card id="990505063">仮面ライダーキバEF</card>
+      <card id="990505063">仮面ライダーキバEF</card>
+      <card id="990505063">仮面ライダーキバEF</card>
+      <card id="990504084">仮面ライダー幽汽HF</card>
+      <card id="990504084">仮面ライダー幽汽HF</card>
+      <card id="990504084">仮面ライダー幽汽HF</card>
+      <card id="990505066">仮面ライダー響鬼</card>
+      <card id="990505066">仮面ライダー響鬼</card>
+      <card id="990505066">仮面ライダー響鬼</card>
+      <card id="990207069">冥獣人ニンジャキリカゲ</card>
+      <card id="990207069">冥獣人ニンジャキリカゲ</card>
+      <card id="990207069">冥獣人ニンジャキリカゲ</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990502015">鉄面臂張遼</card>
+      <card id="990502015">鉄面臂張遼</card>
+      <card id="990503027">魔導騎士ウルザード</card>
+      <card id="990503027">魔導騎士ウルザード</card>
+      <card id="990503027">魔導騎士ウルザード</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

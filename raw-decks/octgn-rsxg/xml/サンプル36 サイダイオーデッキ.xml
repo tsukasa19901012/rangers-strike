@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>サイダイオーデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990207050">ゲキウルフ</card>
+      <card id="990207050">ゲキウルフ</card>
+      <card id="990207050">ゲキウルフ</card>
+      <card id="990206077">ゲキチーター</card>
+      <card id="990206077">ゲキチーター</card>
+      <card id="990207052">ゲキチョッパー</card>
+      <card id="990207052">ゲキチョッパー</card>
+      <card id="990207052">ゲキチョッパー</card>
+      <card id="990207051">ゲキバイオレット</card>
+      <card id="990207051">ゲキバイオレット</card>
+      <card id="990207051">ゲキバイオレット</card>
+      <card id="990501033">ゲキレッド</card>
+      <card id="990501033">ゲキレッド</card>
+      <card id="990501033">ゲキレッド</card>
+      <card id="990204028">マジパンチ</card>
+      <card id="990204028">マジパンチ</card>
+      <card id="990204028">マジパンチ</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990507045">マジレッド</card>
+      <card id="990507045">マジレッド</card>
+      <card id="990507045">マジレッド</card>
+      <card id="990402049">仮面ライダーカリス</card>
+      <card id="990402049">仮面ライダーカリス</card>
+      <card id="990402049">仮面ライダーカリス</card>
+      <card id="990403068">仮面ライダーキバBF</card>
+      <card id="990403068">仮面ライダーキバBF</card>
+      <card id="990201016">守護獣プテラノドン</card>
+      <card id="990201016">守護獣プテラノドン</card>
+      <card id="990201016">守護獣プテラノドン</card>
+      <card id="990209076">獅子折神</card>
+      <card id="990209076">獅子折神</card>
+      <card id="990209076">獅子折神</card>
+      <card id="990507062">獣拳巨神サイダイオー</card>
+      <card id="990507062">獣拳巨神サイダイオー</card>
+      <card id="990507062">獣拳巨神サイダイオー</card>
+      <card id="990507063">獣拳神サイダイン</card>
+      <card id="990507063">獣拳神サイダイン</card>
+      <card id="990507063">獣拳神サイダイン</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

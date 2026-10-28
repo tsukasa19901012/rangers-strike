@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>地獄兄弟トリロジーデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990403023">ガライ</card>
+      <card id="990403023">ガライ</card>
+      <card id="990403023">ガライ</card>
+      <card id="990209065">キシャモス</card>
+      <card id="990209065">キシャモス</card>
+      <card id="990209065">キシャモス</card>
+      <card id="990201048">クルマジックパワー</card>
+      <card id="990201048">クルマジックパワー</card>
+      <card id="990505088">ゴセイブラック</card>
+      <card id="990505088">ゴセイブラック</card>
+      <card id="990505088">ゴセイブラック</card>
+      <card id="990505043">シグナルキャノン</card>
+      <card id="990505043">シグナルキャノン</card>
+      <card id="990504083">スーパーアポロガイスト</card>
+      <card id="990504083">スーパーアポロガイスト</card>
+      <card id="990504083">スーパーアポロガイスト</card>
+      <card id="990208020">スーパーハイウェイバスター</card>
+      <card id="990208020">スーパーハイウェイバスター</card>
+      <card id="990208020">スーパーハイウェイバスター</card>
+      <card id="990502061">スカラベアンデッド</card>
+      <card id="990502061">スカラベアンデッド</card>
+      <card id="990502061">スカラベアンデッド</card>
+      <card id="990402068">デネブ</card>
+      <card id="990402068">デネブ</card>
+      <card id="990402068">デネブ</card>
+      <card id="990507059">トリガー・ドーパント</card>
+      <card id="990507059">トリガー・ドーパント</card>
+      <card id="990507059">トリガー・ドーパント</card>
+      <card id="990507041">仮面ライダーパンチホッパー×仮面ライダーキックホッパー</card>
+      <card id="990507041">仮面ライダーパンチホッパー×仮面ライダーキックホッパー</card>
+      <card id="990507041">仮面ライダーパンチホッパー×仮面ライダーキックホッパー</card>
+      <card id="990504084">仮面ライダー幽汽HF</card>
+      <card id="990504084">仮面ライダー幽汽HF</card>
+      <card id="990504084">仮面ライダー幽汽HF</card>
+      <card id="990207007">炎神ソウル</card>
+      <card id="990207007">炎神ソウル</card>
+      <card id="990207007">炎神ソウル</card>
+      <card id="990506067">超・電王トリロジー</card>
+      <card id="990506067">超・電王トリロジー</card>
+      <card id="990506067">超・電王トリロジー</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

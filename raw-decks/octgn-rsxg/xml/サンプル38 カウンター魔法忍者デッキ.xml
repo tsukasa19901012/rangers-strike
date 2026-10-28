@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>カウンター魔法忍者デッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990506041">ゴセイナイト</card>
+      <card id="990506041">ゴセイナイト</card>
+      <card id="990506041">ゴセイナイト</card>
+      <card id="990507047">ゴセイレッド×ゴセイピンク</card>
+      <card id="990507047">ゴセイレッド×ゴセイピンク</card>
+      <card id="990506038">セイントカイザー</card>
+      <card id="990506038">セイントカイザー</card>
+      <card id="990506038">セイントカイザー</card>
+      <card id="990207071">ダイナブラック</card>
+      <card id="990207071">ダイナブラック</card>
+      <card id="990207071">ダイナブラック</card>
+      <card id="990207020">ニンジャマン</card>
+      <card id="990207020">ニンジャマン</card>
+      <card id="990207020">ニンジャマン</card>
+      <card id="990507044">ハリケンレッド</card>
+      <card id="990507044">ハリケンレッド</card>
+      <card id="990507044">ハリケンレッド</card>
+      <card id="990507049">マジピンク×マジブルー</card>
+      <card id="990507049">マジピンク×マジブルー</card>
+      <card id="990507049">マジピンク×マジブルー</card>
+      <card id="990208070">マジフェニックス</card>
+      <card id="990208070">マジフェニックス</card>
+      <card id="990208070">マジフェニックス</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990507045">マジレッド</card>
+      <card id="990507045">マジレッド</card>
+      <card id="990507045">マジレッド</card>
+      <card id="990507019">仮面ライダーカイザ×仮面ライダーファイズ</card>
+      <card id="990507019">仮面ライダーカイザ×仮面ライダーファイズ</card>
+      <card id="990507019">仮面ライダーカイザ×仮面ライダーファイズ</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990507051">雷撃ディスク</card>
+      <card id="990507051">雷撃ディスク</card>
+      <card id="990503026">魔導馬バリキオン</card>
+      <card id="990503026">魔導馬バリキオン</card>
+      <card id="990503026">魔導馬バリキオン</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

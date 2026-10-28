@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>レッツゴー仮面ライダーデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990501072">ディケイド電王SF</card>
+      <card id="990501072">ディケイド電王SF</card>
+      <card id="990507067">ドデカブタック</card>
+      <card id="990507067">ドデカブタック</card>
+      <card id="990507067">ドデカブタック</card>
+      <card id="990401025">トライチェイサー</card>
+      <card id="990401025">トライチェイサー</card>
+      <card id="990404026">ビートチェイサー</card>
+      <card id="990404026">ビートチェイサー</card>
+      <card id="990404026">ビートチェイサー</card>
+      <card id="990504048">ファイナルカメンアタックフォームライド</card>
+      <card id="990504048">ファイナルカメンアタックフォームライド</card>
+      <card id="990501051">ライダーシンドローム</card>
+      <card id="990501051">ライダーシンドローム</card>
+      <card id="990501051">ライダーシンドローム</card>
+      <card id="990401026">仮面ライダーG3MILD</card>
+      <card id="990401026">仮面ライダーG3MILD</card>
+      <card id="990502070">仮面ライダーNEW電王SF</card>
+      <card id="990502070">仮面ライダーNEW電王SF</card>
+      <card id="990502070">仮面ライダーNEW電王SF</card>
+      <card id="990402019">仮面ライダーX</card>
+      <card id="990402019">仮面ライダーX</card>
+      <card id="990404070">仮面ライダーイクサSM</card>
+      <card id="990404070">仮面ライダーイクサSM</card>
+      <card id="990404070">仮面ライダーイクサSM</card>
+      <card id="990501078">仮面ライダーディケイド</card>
+      <card id="990501078">仮面ライダーディケイド</card>
+      <card id="990501078">仮面ライダーディケイド</card>
+      <card id="990503039">仮面ライダーディケイドCF</card>
+      <card id="990503039">仮面ライダーディケイドCF</card>
+      <card id="990402057">仮面ライダードレイクMF</card>
+      <card id="990402057">仮面ライダードレイクMF</card>
+      <card id="990402057">仮面ライダードレイクMF</card>
+      <card id="990507016">仮面ライダー新2号×仮面ライダー新1号</card>
+      <card id="990507016">仮面ライダー新2号×仮面ライダー新1号</card>
+      <card id="990507016">仮面ライダー新2号×仮面ライダー新1号</card>
+      <card id="990506014">強化スカイライダー</card>
+      <card id="990506014">強化スカイライダー</card>
+      <card id="990506014">強化スカイライダー</card>
+      <card id="990507015">新サイクロン号</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>ガンマジンクロスデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990401022">がんがんじい</card>
+      <card id="990401022">がんがんじい</card>
+      <card id="990401022">がんがんじい</card>
+      <card id="990208052">ガンマジン</card>
+      <card id="990208052">ガンマジン</card>
+      <card id="990208052">ガンマジン</card>
+      <card id="990205041">ブルースワロー</card>
+      <card id="990205041">ブルースワロー</card>
+      <card id="990507049">マジピンク×マジブルー</card>
+      <card id="990507049">マジピンク×マジブルー</card>
+      <card id="990507049">マジピンク×マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990507045">マジレッド</card>
+      <card id="990507045">マジレッド</card>
+      <card id="990507045">マジレッド</card>
+      <card id="990201064">ランドバルカン</card>
+      <card id="990201064">ランドバルカン</card>
+      <card id="990201064">ランドバルカン</card>
+      <card id="990507022">ロストドライバー</card>
+      <card id="990507022">ロストドライバー</card>
+      <card id="990507017">仮面ライダーV3×ライダーマン</card>
+      <card id="990507017">仮面ライダーV3×ライダーマン</card>
+      <card id="990101065">仮面ライダーアクセル</card>
+      <card id="990101065">仮面ライダーアクセル</card>
+      <card id="990101065">仮面ライダーアクセル</card>
+      <card id="990507021">仮面ライダーアクセル×仮面ライダーW・CJ</card>
+      <card id="990507021">仮面ライダーアクセル×仮面ライダーW・CJ</card>
+      <card id="990507021">仮面ライダーアクセル×仮面ライダーW・CJ</card>
+      <card id="990506018">仮面ライダーアクセルトライアル</card>
+      <card id="990506018">仮面ライダーアクセルトライアル</card>
+      <card id="990506018">仮面ライダーアクセルトライアル</card>
+      <card id="990507019">仮面ライダーカイザ×仮面ライダーファイズ</card>
+      <card id="990507019">仮面ライダーカイザ×仮面ライダーファイズ</card>
+      <card id="990507019">仮面ライダーカイザ×仮面ライダーファイズ</card>
+      <card id="990401009">宏のオルゴール時計</card>
+      <card id="990401009">宏のオルゴール時計</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990201070">疾風流超忍法</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

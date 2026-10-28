@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>モーフオルゴールデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990204013">ゴーゴーファイヤー</card>
+      <card id="990204013">ゴーゴーファイヤー</card>
+      <card id="990204013">ゴーゴーファイヤー</card>
+      <card id="990505043">シグナルキャノン</card>
+      <card id="990505043">シグナルキャノン</card>
+      <card id="990505043">シグナルキャノン</card>
+      <card id="990507028">シンクレッダー</card>
+      <card id="990507028">シンクレッダー</card>
+      <card id="990507028">シンクレッダー</card>
+      <card id="990504025">ディケイドファイズ</card>
+      <card id="990504025">ディケイドファイズ</card>
+      <card id="990501072">ディケイド電王SF</card>
+      <card id="990501072">ディケイド電王SF</card>
+      <card id="990501072">ディケイド電王SF</card>
+      <card id="990501089">バイクル</card>
+      <card id="990501089">バイクル</card>
+      <card id="990501089">バイクル</card>
+      <card id="990404077">パワードイクサー</card>
+      <card id="990404077">パワードイクサー</card>
+      <card id="990404077">パワードイクサー</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990504024">仮面ライダーZX</card>
+      <card id="990404071">仮面ライダーイクサBM</card>
+      <card id="990404071">仮面ライダーイクサBM</card>
+      <card id="990507019">仮面ライダーカイザ×仮面ライダーファイズ</card>
+      <card id="990507019">仮面ライダーカイザ×仮面ライダーファイズ</card>
+      <card id="990507019">仮面ライダーカイザ×仮面ライダーファイズ</card>
+      <card id="990505050">仮面ライダーディケイド</card>
+      <card id="990505050">仮面ライダーディケイド</card>
+      <card id="990505050">仮面ライダーディケイド</card>
+      <card id="990401009">宏のオルゴール時計</card>
+      <card id="990401009">宏のオルゴール時計</card>
+      <card id="990201066">科学アカデミアの科学力</card>
+      <card id="990201066">科学アカデミアの科学力</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>シンケンレッドデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990504062">アクロバッター</card>
+      <card id="990504062">アクロバッター</card>
+      <card id="990504062">アクロバッター</card>
+      <card id="990505085">ゴセイレッド</card>
+      <card id="990505085">ゴセイレッド</card>
+      <card id="990505085">ゴセイレッド</card>
+      <card id="990507046">シンケンレッド</card>
+      <card id="990507046">シンケンレッド</card>
+      <card id="990507046">シンケンレッド</card>
+      <card id="990502038">スーパーシンケンレッド</card>
+      <card id="990502038">スーパーシンケンレッド</card>
+      <card id="990507049">マジピンク×マジブルー</card>
+      <card id="990507049">マジピンク×マジブルー</card>
+      <card id="990507049">マジピンク×マジブルー</card>
+      <card id="990402064">モモタロス</card>
+      <card id="990402064">モモタロス</card>
+      <card id="990402064">モモタロス</card>
+      <card id="990506010">仮面ライダーオーズ・タカトラーター</card>
+      <card id="990506010">仮面ライダーオーズ・タカトラーター</card>
+      <card id="990506010">仮面ライダーオーズ・タカトラーター</card>
+      <card id="990506008">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990506008">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990506008">仮面ライダーオーズ・ラトラーターコンボ</card>
+      <card id="990402049">仮面ライダーカリス</card>
+      <card id="990402049">仮面ライダーカリス</card>
+      <card id="990402049">仮面ライダーカリス</card>
+      <card id="990403077">仮面ライダーキバGF</card>
+      <card id="990403077">仮面ライダーキバGF</card>
+      <card id="990403077">仮面ライダーキバGF</card>
+      <card id="990401031">仮面ライダーライア</card>
+      <card id="990401031">仮面ライダーライア</card>
+      <card id="990402055">仮面ライダー蛮鬼</card>
+      <card id="990402055">仮面ライダー蛮鬼</card>
+      <card id="990402055">仮面ライダー蛮鬼</card>
+      <card id="990505066">仮面ライダー響鬼</card>
+      <card id="990505066">仮面ライダー響鬼</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990507051">雷撃ディスク</card>
+      <card id="990507051">雷撃ディスク</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

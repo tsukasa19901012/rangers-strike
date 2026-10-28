@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>メレスラスターデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990204063">アバレブラック</card>
+      <card id="990204063">アバレブラック</card>
+      <card id="990204063">アバレブラック</card>
+      <card id="990208043">トリケラレンジャー</card>
+      <card id="990208043">トリケラレンジャー</card>
+      <card id="990208043">トリケラレンジャー</card>
+      <card id="990503031">ナナシ連中</card>
+      <card id="990503031">ナナシ連中</card>
+      <card id="990503031">ナナシ連中</card>
+      <card id="990503031">ナナシ連中</card>
+      <card id="990504087">ビルゴルディ</card>
+      <card id="990504087">ビルゴルディ</card>
+      <card id="990504087">ビルゴルディ</card>
+      <card id="990401013">ミラーワールド</card>
+      <card id="990401013">ミラーワールド</card>
+      <card id="990401013">ミラーワールド</card>
+      <card id="990506050">リンライオン</card>
+      <card id="990506050">リンライオン</card>
+      <card id="990506058">仮面ライダーG4</card>
+      <card id="990506058">仮面ライダーG4</card>
+      <card id="990506058">仮面ライダーG4</card>
+      <card id="990506056">仮面ライダーエターナル</card>
+      <card id="990505094">仮面ライダーカリス</card>
+      <card id="990505094">仮面ライダーカリス</card>
+      <card id="990505094">仮面ライダーカリス</card>
+      <card id="990206062">冥府神スレイプニル</card>
+      <card id="990206062">冥府神スレイプニル</card>
+      <card id="990206062">冥府神スレイプニル</card>
+      <card id="990206063">冥府神ドレイク</card>
+      <card id="990206063">冥府神ドレイク</card>
+      <card id="990206063">冥府神ドレイク</card>
+      <card id="990201016">守護獣プテラノドン</card>
+      <card id="990201016">守護獣プテラノドン</card>
+      <card id="990201016">守護獣プテラノドン</card>
+      <card id="990207056">獣人メレ</card>
+      <card id="990207056">獣人メレ</card>
+      <card id="990207056">獣人メレ</card>
+      <card id="990206083">黒獅子リオ</card>
+      <card id="990206083">黒獅子リオ</card>
+      <card id="990206083">黒獅子リオ</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

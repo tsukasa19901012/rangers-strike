@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダー電王デッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990504035">ゴーオンゴールド</card>
+      <card id="990502088">ゴールドプラチナム</card>
+      <card id="990502088">ゴールドプラチナム</card>
+      <card id="990502088">ゴールドプラチナム</card>
+      <card id="990505088">ゴセイブラック</card>
+      <card id="990505088">ゴセイブラック</card>
+      <card id="990202040">デカピンク</card>
+      <card id="990202040">デカピンク</card>
+      <card id="990202040">デカピンク</card>
+      <card id="990401019">ライダーパス</card>
+      <card id="990401019">ライダーパス</card>
+      <card id="990401019">ライダーパス</card>
+      <card id="990503002">ラジエッカー</card>
+      <card id="990503002">ラジエッカー</card>
+      <card id="990504104">仮面ライダーW・CT</card>
+      <card id="990403073">仮面ライダーミニ電王SF</card>
+      <card id="990403073">仮面ライダーミニ電王SF</card>
+      <card id="990403073">仮面ライダーミニ電王SF</card>
+      <card id="990506059">仮面ライダーリュウガ</card>
+      <card id="990506059">仮面ライダーリュウガ</card>
+      <card id="990506062">仮面ライダー歌舞鬼</card>
+      <card id="990506062">仮面ライダー歌舞鬼</card>
+      <card id="990505046">仮面ライダー電王CF</card>
+      <card id="990505046">仮面ライダー電王CF</card>
+      <card id="990505046">仮面ライダー電王CF</card>
+      <card id="990404059">仮面ライダー電王GF</card>
+      <card id="990402074">仮面ライダー電王PF</card>
+      <card id="990402074">仮面ライダー電王PF</card>
+      <card id="990402074">仮面ライダー電王PF</card>
+      <card id="990401074">仮面ライダー電王RF</card>
+      <card id="990401074">仮面ライダー電王RF</card>
+      <card id="990401074">仮面ライダー電王RF</card>
+      <card id="990401072">仮面ライダー電王SF</card>
+      <card id="990401072">仮面ライダー電王SF</card>
+      <card id="990401072">仮面ライダー電王SF</card>
+      <card id="990206062">冥府神スレイプニル</card>
+      <card id="990206062">冥府神スレイプニル</card>
+      <card id="990206062">冥府神スレイプニル</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

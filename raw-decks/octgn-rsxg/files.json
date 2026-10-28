@@ -1,0 +1,579 @@
+[
+ {
+  "id": 1,
+  "file": "rsxgsample01.zip",
+  "comment": "01 龍騎デッキ（XG5）",
+  "date": "2011/05/09 01:53:10",
+  "size": 673,
+  "md5_ok": true,
+  "saved": "01_rsxgsample01.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 2,
+  "file": "rsxgsample02.zip",
+  "comment": "02 赤黄速攻デッキ（XG6）",
+  "date": "2011/05/09 01:53:11",
+  "size": 686,
+  "md5_ok": true,
+  "saved": "02_rsxgsample02.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 3,
+  "file": "rsxgsample03.zip",
+  "comment": "03 電王デッキ（XG6）",
+  "date": "2011/05/09 01:53:11",
+  "size": 681,
+  "md5_ok": true,
+  "saved": "03_rsxgsample03.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 4,
+  "file": "rsxgsample04.zip",
+  "comment": "04 ライジングイクサデッキ（XG6）",
+  "date": "2011/05/09 01:53:11",
+  "size": 703,
+  "md5_ok": true,
+  "saved": "04_rsxgsample04.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 5,
+  "file": "rsxgsample05.zip",
+  "comment": "05 メレスラスターデッキ（XG6）",
+  "date": "2011/05/09 01:53:11",
+  "size": 685,
+  "md5_ok": true,
+  "saved": "05_rsxgsample05.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 6,
+  "file": "rsxgsample06.zip",
+  "comment": "06 青緑NCデッキ（XG5）",
+  "date": "2011/05/09 01:53:11",
+  "size": 686,
+  "md5_ok": true,
+  "saved": "06_rsxgsample06.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 7,
+  "file": "rsxgsample07.zip",
+  "comment": "07 ゴセイグレートデッキ（XG5）",
+  "date": "2011/05/09 01:53:11",
+  "size": 707,
+  "md5_ok": true,
+  "saved": "07_rsxgsample07.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 8,
+  "file": "rsxgsample08.zip",
+  "comment": "08 ZXデッキ（XG4）",
+  "date": "2011/05/09 01:53:11",
+  "size": 711,
+  "md5_ok": true,
+  "saved": "08_rsxgsample08.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 9,
+  "file": "rsxgsample09.zip",
+  "comment": "09 キラーアバレンオーデッキ（XG6）",
+  "date": "2011/05/09 01:53:11",
+  "size": 686,
+  "md5_ok": true,
+  "saved": "09_rsxgsample09.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 10,
+  "file": "rsxgsample10.zip",
+  "comment": "10 大鉄人17デッキ（XG6）",
+  "date": "2011/05/09 01:59:40",
+  "size": 677,
+  "md5_ok": true,
+  "saved": "10_rsxgsample10.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 11,
+  "file": "rsxgsample11.zip",
+  "comment": "11 天雷旋風神デッキ（XG6）",
+  "date": "2011/05/09 01:59:41",
+  "size": 713,
+  "md5_ok": true,
+  "saved": "11_rsxgsample11.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 12,
+  "file": "rsxgsample12.zip",
+  "comment": "12 タイタンボーイデッキ（XG6）",
+  "date": "2011/05/09 01:59:41",
+  "size": 720,
+  "md5_ok": true,
+  "saved": "12_rsxgsample12.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 13,
+  "file": "rsxgsample13.zip",
+  "comment": "13 ジョーカーデッキ（XG6）",
+  "date": "2011/05/09 01:59:41",
+  "size": 707,
+  "md5_ok": true,
+  "saved": "13_rsxgsample13.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 14,
+  "file": "rsxgsample14.zip",
+  "comment": "14 アクセルデッキ（XG6）",
+  "date": "2011/05/09 01:59:41",
+  "size": 736,
+  "md5_ok": true,
+  "saved": "14_rsxgsample14.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 15,
+  "file": "rsxgsample15.zip",
+  "comment": "15 W・CC＆JJデッキ（XG6）",
+  "date": "2011/05/09 01:59:41",
+  "size": 787,
+  "md5_ok": true,
+  "saved": "15_rsxgsample15.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 16,
+  "file": "rsxgsample16.zip",
+  "comment": "16 W・CJXデッキ（XG6）",
+  "date": "2011/05/09 01:59:41",
+  "size": 695,
+  "md5_ok": true,
+  "saved": "16_rsxgsample16.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 17,
+  "file": "rsxgsample17.zip",
+  "comment": "17 BLACKデッキ（XG6）",
+  "date": "2011/05/09 01:59:41",
+  "size": 735,
+  "md5_ok": true,
+  "saved": "17_rsxgsample17.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 18,
+  "file": "rsxgsample18.zip",
+  "comment": "18 アギトデッキ（XG6）",
+  "date": "2011/05/09 01:59:41",
+  "size": 731,
+  "md5_ok": true,
+  "saved": "18_rsxgsample18.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 19,
+  "file": "rsxgsample19.zip",
+  "comment": "19 ファイズ＆カブトデッキ（XG6）",
+  "date": "2011/05/09 01:59:42",
+  "size": 692,
+  "md5_ok": true,
+  "saved": "19_rsxgsample19.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 20,
+  "file": "rsxgsample20.zip",
+  "comment": "20 ブレイドKFデッキ（XG6）",
+  "date": "2011/05/09 02:04:25",
+  "size": 721,
+  "md5_ok": true,
+  "saved": "20_rsxgsample20.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 21,
+  "file": "rsxgsample21.zip",
+  "comment": "21 ゼロノスAFデッキ（XG6）",
+  "date": "2011/05/09 02:04:25",
+  "size": 700,
+  "md5_ok": true,
+  "saved": "21_rsxgsample21.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 22,
+  "file": "rsxgsample22.zip",
+  "comment": "22 キバEFデッキ（XG5）",
+  "date": "2011/05/09 02:04:25",
+  "size": 713,
+  "md5_ok": true,
+  "saved": "22_rsxgsample22.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 23,
+  "file": "rsxgsample23.zip",
+  "comment": "23 ディケイドCFJFデッキ（XG6）",
+  "date": "2011/05/09 02:04:25",
+  "size": 696,
+  "md5_ok": true,
+  "saved": "23_rsxgsample23.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 24,
+  "file": "rsxgsample24.zip",
+  "comment": "24 スーパーゴセイレッドデッキ（XG6）",
+  "date": "2011/05/09 02:04:26",
+  "size": 705,
+  "md5_ok": true,
+  "saved": "24_rsxgsample24.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 25,
+  "file": "rsxgsample25.zip",
+  "comment": "25 スーパー戦隊魂デッキ（XG3）",
+  "date": "2011/05/09 02:04:26",
+  "size": 648,
+  "md5_ok": true,
+  "saved": "25_rsxgsample25.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 26,
+  "file": "rsxgsample26.zip",
+  "comment": "26 ディケイドFFRデッキ（XG6）",
+  "date": "2011/05/09 02:04:26",
+  "size": 662,
+  "md5_ok": true,
+  "saved": "26_rsxgsample26.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 27,
+  "file": "rsxgsample27.zip",
+  "comment": "27 シンケンレッドデッキ（XG7）",
+  "date": "2011/05/09 02:04:26",
+  "size": 700,
+  "md5_ok": true,
+  "saved": "27_rsxgsample27.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 28,
+  "file": "rsxgsample28.zip",
+  "comment": "28 ゴーカイオーデッキ（XG7）",
+  "date": "2011/05/09 02:04:26",
+  "size": 681,
+  "md5_ok": true,
+  "saved": "28_rsxgsample28.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 29,
+  "file": "rsxgsample29.zip",
+  "comment": "29 ゴセイゴーカイデッキ（XG7）",
+  "date": "2011/05/09 02:04:26",
+  "size": 694,
+  "md5_ok": true,
+  "saved": "29_rsxgsample29.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 30,
+  "file": "rsxgsample30.zip",
+  "comment": "30 ゲキリントージャデッキ（XG7）",
+  "date": "2011/05/09 02:10:20",
+  "size": 712,
+  "md5_ok": true,
+  "saved": "30_rsxgsample30.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 31,
+  "file": "rsxgsample31.zip",
+  "comment": "31 ガンマジンクロスデッキ（XG7）",
+  "date": "2011/05/09 02:10:20",
+  "size": 726,
+  "md5_ok": true,
+  "saved": "31_rsxgsample31.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 32,
+  "file": "rsxgsample32.zip",
+  "comment": "32 ゴーカイレッドデッキ（XG7）",
+  "date": "2011/05/09 02:10:20",
+  "size": 694,
+  "md5_ok": true,
+  "saved": "32_rsxgsample32.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 33,
+  "file": "rsxgsample33.zip",
+  "comment": "33 アドベンチャーデッキ（XG7）",
+  "date": "2011/05/09 02:10:20",
+  "size": 770,
+  "md5_ok": true,
+  "saved": "33_rsxgsample33.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 34,
+  "file": "rsxgsample34.zip",
+  "comment": "34 ゴセイアルティメットデッキ（XG7）",
+  "date": "2011/05/09 02:10:20",
+  "size": 759,
+  "md5_ok": true,
+  "saved": "34_rsxgsample34.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 35,
+  "file": "rsxgsample35.zip",
+  "comment": "35 タジャドルデッキ（XG7）",
+  "date": "2011/05/09 02:10:20",
+  "size": 701,
+  "md5_ok": true,
+  "saved": "35_rsxgsample35.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 36,
+  "file": "rsxgsample36.zip",
+  "comment": "36 サイダイオーデッキ（XG7）",
+  "date": "2011/05/09 02:10:20",
+  "size": 658,
+  "md5_ok": true,
+  "saved": "36_rsxgsample36.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 37,
+  "file": "rsxgsample37.zip",
+  "comment": "37 グランナスカ宇宙刑事デッキ（XG7）",
+  "date": "2011/05/09 02:10:21",
+  "size": 757,
+  "md5_ok": true,
+  "saved": "37_rsxgsample37.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 38,
+  "file": "rsxgsample38.zip",
+  "comment": "38 カウンター魔法忍者デッキ（XG7）",
+  "date": "2011/05/09 02:10:21",
+  "size": 718,
+  "md5_ok": true,
+  "saved": "38_rsxgsample38.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 39,
+  "file": "rsxgsample39.zip",
+  "comment": "39 1号＆2号デッキ（XG7）",
+  "date": "2011/05/09 02:10:21",
+  "size": 743,
+  "md5_ok": true,
+  "saved": "39_rsxgsample39.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 40,
+  "file": "rsxgsample40.zip",
+  "comment": "40 ラトレーダーデッキ（XG7）",
+  "date": "2011/05/09 02:12:16",
+  "size": 736,
+  "md5_ok": true,
+  "saved": "40_rsxgsample40.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 41,
+  "file": "rsxgsample41.zip",
+  "comment": "41 呉越 LOVEデッキ（XG7）",
+  "date": "2011/05/09 02:12:16",
+  "size": 737,
+  "md5_ok": true,
+  "saved": "41_rsxgsample41.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 42,
+  "file": "rsxgsample42.zip",
+  "comment": "42 ぶっこみデッキ（XG7）",
+  "date": "2011/05/14 03:33:21",
+  "size": 690,
+  "md5_ok": true,
+  "saved": "42_rsxgsample42.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 43,
+  "file": "rsxgsample43.zip",
+  "comment": "43 レッツゴー仮面ライダーデッキ（XG7）",
+  "date": "2011/05/18 16:26:30",
+  "size": 734,
+  "md5_ok": true,
+  "saved": "43_rsxgsample43.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 44,
+  "file": "rsxgsample44.zip",
+  "comment": "44 超・電王トリロジーデッキ（XG7）",
+  "date": "2011/05/22 03:13:05",
+  "size": 761,
+  "md5_ok": true,
+  "saved": "44_rsxgsample44.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 45,
+  "file": "rsxgsample45.zip",
+  "comment": "45 モーフオルゴールデッキ（XG7）",
+  "date": "2011/05/27 10:54:07",
+  "size": 710,
+  "md5_ok": true,
+  "saved": "45_rsxgsample45.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 46,
+  "file": "rsxgsample46.zip",
+  "comment": "46 地獄兄弟トリロジーデッキ（XG7）",
+  "date": "2011/06/11 03:58:16",
+  "size": 732,
+  "md5_ok": true,
+  "saved": "46_rsxgsample46.zip",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 47,
+  "file": "青黒戒律.xml",
+  "comment": "",
+  "date": "2011/06/29 01:08:52",
+  "size": 2629,
+  "md5_ok": true,
+  "saved": "47_青黒戒律.xml",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 48,
+  "file": "990503066.jpg",
+  "comment": "「Spoiler\\XG03 Wインパクト\\LargeJPG」に上書き保存してXG3を更新してください",
+  "date": "2011/07/14 04:30:10",
+  "size": 304763,
+  "md5_ok": true,
+  "saved": "48_990503066.jpg",
+  "ctype": "image/jpeg"
+ },
+ {
+  "id": 50,
+  "file": "20140319.txt",
+  "comment": "レンストOCTGN対戦レポート",
+  "date": "2014/03/23 01:46:21",
+  "size": 19743,
+  "md5_ok": true,
+  "saved": "50_20140319.txt",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 51,
+  "file": "20140327.txt",
+  "comment": "レンストOCTGN対戦レポート",
+  "date": "2014/03/28 19:47:20",
+  "size": 20758,
+  "md5_ok": true,
+  "saved": "51_20140327.txt",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 52,
+  "file": "20140405.txt",
+  "comment": "レンストOCTGN対戦レポート",
+  "date": "2014/04/06 20:07:45",
+  "size": 39122,
+  "md5_ok": true,
+  "saved": "52_20140405.txt",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 53,
+  "file": "20140420.txt",
+  "comment": "レンストOCTGN対戦レポート",
+  "date": "2014/04/21 03:32:20",
+  "size": 14194,
+  "md5_ok": true,
+  "saved": "53_20140420.txt",
+  "ctype": "application/octet-stream"
+ },
+ {
+  "id": 54,
+  "file": "shinchan.jpg",
+  "comment": "ヴァイスシュヴァルツOCTGN",
+  "date": "2014/04/30 11:39:01",
+  "size": 479958,
+  "md5_ok": true,
+  "saved": "54_shinchan.jpg",
+  "ctype": "image/jpeg"
+ },
+ {
+  "id": 55,
+  "file": "scan-001_page-0004.zip",
+  "comment": "スターター7弾 解説シート",
+  "date": "2020/05/31 15:38:00",
+  "error": "ダウンロードパスワードが必要なため未取得"
+ },
+ {
+  "id": 56,
+  "file": "20221209_153425.jpg",
+  "comment": "",
+  "date": "2022/12/10 13:02:32",
+  "size": 2096557,
+  "md5_ok": true,
+  "saved": "56_20221209_153425.jpg",
+  "ctype": "image/jpeg"
+ },
+ {
+  "id": 57,
+  "file": "20221209_153425.jpg",
+  "comment": "レンストたのちい",
+  "date": "2022/12/10 13:06:09",
+  "size": 2096557,
+  "md5_ok": true,
+  "saved": "57_20221209_153425.jpg",
+  "ctype": "image/jpeg"
+ },
+ {
+  "id": 58,
+  "file": "Screenshot_20230410-165238.png",
+  "comment": "a",
+  "date": "2023/04/10 23:07:04",
+  "size": 967702,
+  "md5_ok": true,
+  "saved": "58_Screenshot_20230410-165238.png",
+  "ctype": "image/png"
+ },
+ {
+  "id": 59,
+  "file": "Screenshot_20230819_095038_YouTube.jpg",
+  "comment": "",
+  "date": "2023/08/20 13:16:57",
+  "size": 385133,
+  "md5_ok": true,
+  "saved": "59_Screenshot_20230819_095038_YouTube.jpg",
+  "ctype": "image/jpeg"
+ }
+]

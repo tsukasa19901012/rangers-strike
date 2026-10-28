@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダーアクセルデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990204063">アバレブラック</card>
+      <card id="990204063">アバレブラック</card>
+      <card id="990204063">アバレブラック</card>
+      <card id="990501030">アバレブラックAM</card>
+      <card id="990301017">オメデトロフィー</card>
+      <card id="990301017">オメデトロフィー</card>
+      <card id="990505013">ゴーグルブラック</card>
+      <card id="990505013">ゴーグルブラック</card>
+      <card id="990505013">ゴーグルブラック</card>
+      <card id="990505088">ゴセイブラック</card>
+      <card id="990206002">スーパー戦隊アドレスブック</card>
+      <card id="990206002">スーパー戦隊アドレスブック</card>
+      <card id="990501089">バイクル</card>
+      <card id="990501089">バイクル</card>
+      <card id="990501089">バイクル</card>
+      <card id="990209007">バリブルーン</card>
+      <card id="990209007">バリブルーン</card>
+      <card id="990206040">ピンクエイダー</card>
+      <card id="990206040">ピンクエイダー</card>
+      <card id="990501090">ファイヤー</card>
+      <card id="990501090">ファイヤー</card>
+      <card id="990501090">ファイヤー</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990505024">ボウケンレッド</card>
+      <card id="990209024">メガピンク</card>
+      <card id="990209024">メガピンク</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990506021">ライドベンダー</card>
+      <card id="990201064">ランドバルカン</card>
+      <card id="990201064">ランドバルカン</card>
+      <card id="990201064">ランドバルカン</card>
+      <card id="990504019">仮面ライダーアクセル</card>
+      <card id="990504019">仮面ライダーアクセル</card>
+      <card id="990504019">仮面ライダーアクセル</card>
+      <card id="990506018">仮面ライダーアクセルトライアル</card>
+      <card id="990506018">仮面ライダーアクセルトライアル</card>
+      <card id="990401009">宏のオルゴール時計</card>
+      <card id="990401009">宏のオルゴール時計</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>

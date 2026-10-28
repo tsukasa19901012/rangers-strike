@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<OCTGNDeck Version="1.0">
+  <header>
+    <charset codepage="1252" />
+  </header>
+  <deck>
+    <deckinfo>
+      <title>仮面ライダーBLACKデッキ</title>
+      <decktypeid>0</decktypeid>
+      <creator>レンスト兄貴</creator>
+      <version>
+      </version>
+      <description>
+      </description>
+      <email>
+      </email>
+      <comments>
+      </comments>
+    </deckinfo>
+    <maindeck>
+      <card id="990404016">アクロバッター</card>
+      <card id="990404016">アクロバッター</card>
+      <card id="990504082">アポロガイスト</card>
+      <card id="990504082">アポロガイスト</card>
+      <card id="990504082">アポロガイスト</card>
+      <card id="990301045">ガンギブソン</card>
+      <card id="990301045">ガンギブソン</card>
+      <card id="990301045">ガンギブソン</card>
+      <card id="990401056">シャドームーン</card>
+      <card id="990401056">シャドームーン</card>
+      <card id="990401056">シャドームーン</card>
+      <card id="990504083">スーパーアポロガイスト</card>
+      <card id="990504083">スーパーアポロガイスト</card>
+      <card id="990504083">スーパーアポロガイスト</card>
+      <card id="990506052">ネオショッカー大首領</card>
+      <card id="990506052">ネオショッカー大首領</card>
+      <card id="990506052">ネオショッカー大首領</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990201031">マジブルー</card>
+      <card id="990504064">マックジャバー</card>
+      <card id="990504064">マックジャバー</card>
+      <card id="990503043">仮面ライダーBLACK</card>
+      <card id="990503043">仮面ライダーBLACK</card>
+      <card id="990503043">仮面ライダーBLACK</card>
+      <card id="990402027">仮面ライダーアギトSF</card>
+      <card id="990402027">仮面ライダーアギトSF</card>
+      <card id="990403068">仮面ライダーキバBF</card>
+      <card id="990403068">仮面ライダーキバBF</card>
+      <card id="990207069">冥獣人ニンジャキリカゲ</card>
+      <card id="990207069">冥獣人ニンジャキリカゲ</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990201070">疾風流超忍法</card>
+      <card id="990503026">魔導馬バリキオン</card>
+      <card id="990503026">魔導馬バリキオン</card>
+      <card id="990503026">魔導馬バリキオン</card>
+      <card id="990503027">魔導騎士ウルザード</card>
+      <card id="990503027">魔導騎士ウルザード</card>
+      <card id="990503027">魔導騎士ウルザード</card>
+    </maindeck>
+    <sideboard />
+  </deck>
+</OCTGNDeck>
