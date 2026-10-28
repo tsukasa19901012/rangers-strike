@@ -10,7 +10,9 @@
  * レアリティは atwiki の「ノーマル／レア／スーパーレア」を N／R／SR として照合する。
  */
 import { describe, expect, it } from "vitest";
+import type { CardInstance } from "../types/game";
 import {
+  act,
   attack,
   attackUntilRegister,
   bpOf,
@@ -230,6 +232,36 @@ describe("XG6-048 仮面ライダーリュウガ", () => {
       }
     },
   );
+
+  // 常駐に重ねたカード（オモテ向き・ウラ向き）も「自軍常駐置き場にあるカード」。カード評価「効果のコストに充てるカードは常駐オペレーションそのものでなくてもよい」。
+  const stackedBoard = () => {
+    const op: CardInstance = { ...residentOp("TST-OP", "res"), stackedCards: [inst("SPEC-C3", "up"), { ...inst("SPEC-KR", "down"), faceDown: true }] };
+    const s = rushBoard({ hand: [inst("XG6-048", "ry")], operation: [op] }, {}, EXTRA);
+    const a = legal(s).find((x) => x.playerId === "player1" && JSON.stringify(x).includes("XG6-048:ry"))!;
+    return act(s, a);
+  };
+
+  it(`XG6-048: 【鏡像の戦士】常駐オペレーションに重ねたカードも選べる（出典: ${PAGE}「自軍常駐置き場にあるカードを1枚選び」・カード評価「効果のコストに充てるカードは常駐オペレーションそのものでなくてもよい」）`, () => {
+    expect(choiceIds(stackedBoard())).toEqual(["SPEC-C3:up", "SPEC-KR:down", "TST-OP:res"].sort());
+  });
+
+  it(`XG6-048: 【鏡像の戦士】重ねたカードを選ぶと、その1枚だけが捨札になり、常駐オペレーションと残りの重ねは残る（出典: ${PAGE}）`, () => {
+    for (const [picked, rest] of [["SPEC-KR:down", "SPEC-C3:up"], ["SPEC-C3:up", "SPEC-KR:down"]] as const) {
+      const s = settle(pick(stackedBoard(), picked));
+      expect(zoneOf(s, "player1", "XG6-048:ry")).toBe("rush");
+      expect(zoneOf(s, "player1", picked)).toBe("discard");
+      const op = s.players.player1.operation.find((c) => c.instanceId === "TST-OP:res");
+      expect((op?.stackedCards ?? []).map((c) => c.instanceId)).toEqual([rest]);
+      expect(s.players.player1.discard.find((c) => c.instanceId === picked)?.faceDown).toBeFalsy();
+    }
+  });
+
+  it(`XG6-048: 【鏡像の戦士】重ねたカードがある常駐オペレーションそのものを選ぶと、重ねたカードも一緒に捨札になる（出典: ${PAGE}・常駐置き場を離れた重ねの扱い）`, () => {
+    const s = settle(pick(stackedBoard(), "TST-OP:res"));
+    expect(zoneOf(s, "player1", "XG6-048:ry")).toBe("rush");
+    expect(s.players.player1.operation).toEqual([]);
+    expect(s.players.player1.discard.map((c) => c.instanceId).sort()).toEqual(["SPEC-C3:up", "SPEC-KR:down", "TST-OP:res"].sort());
+  });
 });
 
 // ===========================================================================

@@ -243,6 +243,9 @@ function ridingOrder(cards: readonly CardInstance[]): CardInstance[] {
   return out;
 }
 
+/** locateInstance's zone suffix for a card stacked on another card. */
+const STACK_SUFFIX = ":stack";
+
 /** Tile for any card instance (board rows, dialogs). */
 export function cardTile(
   engine: EngineApi,
@@ -255,7 +258,8 @@ export function cardTile(
   selected = false,
 ): GuiTile {
   const def = state.definitions[card.cardId];
-  const hidden = player !== HUMAN && (zone === "hand" || zone === "deck");
+  // Face-down stacked cards (クロックアップ) are looked at by nobody.
+  const hidden = (player !== HUMAN && (zone === "hand" || zone === "deck")) || (!!card.faceDown && zone.endsWith(STACK_SUFFIX));
   let kind: GuiTileKind = hidden ? "hidden" : "other";
   let sub = "";
   if (!hidden && def) {
@@ -327,8 +331,20 @@ export function locateInstance(
       if (card) return { player, zone, card };
     }
   }
+  // A card stacked on a resident operation or under a unit (XG6-048【鏡像の戦士】 picks one): zone "operation:stack".
+  for (const player of [HUMAN, CPU] as PlayerId[]) {
+    const p = state.players[player] as unknown as Record<string, unknown>;
+    for (const [zone, cards] of Object.entries(p)) {
+      if (!Array.isArray(cards)) continue;
+      for (const host of cards as CardInstance[]) {
+        const card = host && typeof host === "object" ? host.stackedCards?.find((c) => c.instanceId === instanceId) : undefined;
+        if (card) return { player, zone: `${zone}${STACK_SUFFIX}`, card };
+      }
+    }
+  }
   return null;
 }
+
 
 const ZONE_LABELS: Record<string, string> = {
   hand: "手札",
@@ -344,6 +360,8 @@ const ZONE_LABELS: Record<string, string> = {
 };
 
 export function zoneLabel(zone: string): string {
+  // Short enough for a Vita tile caption ("自重ね").
+  if (zone.endsWith(STACK_SUFFIX)) return "重ね";
   return ZONE_LABELS[zone] ?? zone;
 }
 

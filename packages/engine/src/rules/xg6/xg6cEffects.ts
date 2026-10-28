@@ -307,8 +307,15 @@ function applyGiganto(state: GameState, ctx: GrantKeywordContext): GrantKeywordR
 // XG6-048 仮面ライダーリュウガ【鏡像の戦士】
 // 「これが自分の手札か自軍捨札にある間、自軍ラッシュフェイズごとに1度だけ、自軍常駐置き場にあるカードを1枚選び捨札にしてよい。そうしたとき、
 //  これを自軍ラッシュエリアに出す。」（atwiki/page-2309）。手札・捨札のこれから起動する（このターンの記録で1度だけ）。
+// 常駐に重ねたカードも「常駐置き場にあるカード」として選べる（atwiki/page-2340 カード評価「効果のコストに充てるカードは常駐オペレーションそのもので
+// なくてもよい」。仮面ライダー凍鬼【音撃殴・一撃怒涛】の数え方と同じ）。常駐オペレーションそのものを選んだら、重ねたカードも一緒に捨札になる。
 
 const MIRROR = "xg6048_mirror";
+
+/** 自軍常駐置き場のカード（常駐オペレーションと、その上に重ねたカード）。 */
+function residentZoneIds(state: GameState, playerId: PlayerId): string[] {
+  return state.players[playerId].operation.flatMap((op) => [op.instanceId, ...(op.stackedCards ?? []).map((c) => c.instanceId)]);
+}
 
 XG6_ACTIVATIONS.push({
   list: (state, playerId) => {
@@ -317,7 +324,7 @@ XG6_ACTIVATIONS.push({
     return [...p.hand, ...p.discard].filter((c) => isCard(c.cardId, "XG6-048") && !hasXg6Mark(state, "XG6-048:used", playerId, c.instanceId)).map((c) => c.instanceId);
   },
   activate: (state, playerId, instanceId) => {
-    const ids = state.players[playerId].operation.map((c) => c.instanceId);
+    const ids = residentZoneIds(state, playerId);
     const marked = addXg6Mark(state, { key: "XG6-048:used", playerId, instanceId });
     return openEffectChoice(marked, choice({ playerId, phasePlayerId: playerId, sourceInstanceId: instanceId }, "XG6-048", MIRROR, "select_hand", ids, true));
   },
@@ -328,14 +335,21 @@ CHOICE_RESOLVERS[MIRROR] = (state, playerId, instanceId) => {
   const selfId = pending.sourceInstanceId;
   return finish(state, pending, instanceId, (s) =>
     patchPlayer(s, playerId, (p) => {
-      const res = p.operation.find((c) => c.instanceId === instanceId);
       const self = [...p.hand, ...p.discard].find((c) => c.instanceId === selfId);
-      if (!res || !self) return p;
+      if (!self) return p;
+      const res = p.operation.find((c) => c.instanceId === instanceId);
+      // 常駐オペレーションそのもの: 重ねたカードも捨札へ。重ねたカード: その1枚だけを捨札へ。
+      const host = res ? undefined : p.operation.find((op) => (op.stackedCards ?? []).some((c) => c.instanceId === instanceId));
+      if (!res && !host) return p;
+      const toDiscard = res ? [res, ...(res.stackedCards ?? [])] : (host!.stackedCards ?? []).filter((c) => c.instanceId === instanceId);
+      const operation = res
+        ? p.operation.filter((c) => c !== res)
+        : p.operation.map((op) => (op === host ? { ...op, stackedCards: (op.stackedCards ?? []).filter((c) => c.instanceId !== instanceId) } : op));
       return {
         ...p,
-        operation: p.operation.filter((c) => c !== res),
+        operation,
         hand: p.hand.filter((c) => c !== self),
-        discard: [...p.discard.filter((c) => c !== self), stripForZone(res)],
+        discard: [...p.discard.filter((c) => c !== self), ...toDiscard.map(stripForZone)],
         rush: [...p.rush, stripForZone(self)],
       };
     }),
