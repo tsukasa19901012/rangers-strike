@@ -9,6 +9,7 @@
  * レアリティは atwiki の「ノーマル／ノーマルレア／レア／スーパーレア」を N／NR／R／SR として照合する。
  */
 import { describe, expect, it } from "vitest";
+import { activate } from "./revealGate.helpers";
 import type { GameState } from "../types/game";
 import {
   canEnter,
@@ -123,7 +124,8 @@ describe("XG3-077 アギトトルネイダー", () => {
       EXTRA,
     );
     s = rideOff(mount(s, "XG1-077:d", "XG3-077:t"), off);
-    if (s.pendingEffectChoice) s = resolveAll(s);
+    // XG1-077【ライドブッカー】は発動の確認から（rules/revealGate.ts）
+    if (s.pendingEffectChoice) s = resolveAll(activate(s));
     return enter(passEntry(s), "TST-UNIT-0:nx");
   };
 

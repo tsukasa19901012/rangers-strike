@@ -420,6 +420,7 @@ import {
   consumeRideShooterRushRule,
 } from "../rules/fieldActivatedAbilities";
 import { applyShinobiBallRequiredDefender } from "../rules/batch06FieldEffects";
+import { blockedByRevealGate, openRevealGate } from "../rules/revealGate";
 import { applySuperBrainDraw } from "../effects/drawEffects";
 
 export type ActionResult =
@@ -1485,6 +1486,8 @@ function applyActionCore(
   options?: { trustLegality?: boolean },
 ): ActionResult {
   if (state.winner) return fail("game_already_over");
+  // 「山札の上から…をオモテにしてもよい」の発動の確認の間は、候補を選べない（rules/revealGate.ts）。
+  if (blockedByRevealGate(state, action)) return fail("reveal_not_activated");
   if (
     action.type === "end_phase" &&
     state.phase === "battle" &&
@@ -3295,6 +3298,15 @@ function applyActionCore(
       {
         const crane = rk10CraneIntercept(state, playerId, action);
         if (crane) return ok(crane, buildSimpleLogEntry(playerId, "confirm_effect_choice"));
+      }
+      // 「山札の上から…をオモテにしてもよい」を発動する: 確認を外し、山札のカードを見せて同じ選択を続ける（rules/revealGate.ts）。
+      {
+        const revealed = openRevealGate(state);
+        if (revealed?.empty) {
+          // 候補が無い: 発動して何も選ばなかったのと同じ（確認を外した選択の見送り。山札のシャッフル等の続きを行う）。
+          return applyActionCore(revealed.state, { type: "skip_effect_choice", playerId }, { trustLegality: true });
+        }
+        if (revealed) return ok(revealed.state, buildSimpleLogEntry(playerId, "confirm_effect_choice"));
       }
       // XG4-074【ライドルスティック】: バトルの前の確認（rules/xg4/xg4dEffects.ts）。
       if (isXg4BeforeBattleChoice(state.pendingEffectChoice)) {

@@ -1429,6 +1429,16 @@ export function pickEffectChoice(
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
 
+  // 「山札の上から…をオモテにしてもよい」の発動の確認（rules/revealGate.ts）: 確認の後の選択で見送るかを今までどおり決め、
+  // 見送らないなら発動する。
+  if (pending.revealGate) {
+    const { revealGate: _g, ...inner } = pending;
+    const innerState: GameState = { ...state, pendingEffectChoice: inner };
+    const picked = pickEffectChoice(innerState, inner, getLegalActions(innerState));
+    if (picked?.type === "skip_effect_choice" && skip) return skip;
+    return actions.find((a) => a.type === "confirm_effect_choice") ?? skip ?? null;
+  }
+
   // 「好きな順で山札の下（上）に戻す」（rules/deckOrder.ts）: 選び直さず、並びどおりに番号を付けて確定する。
   if (pending.deckOrderMeta) {
     return actions.find((a) => a.type === "resolve_effect_choice" && a.instanceId !== DECK_ORDER_RESET) ?? null;

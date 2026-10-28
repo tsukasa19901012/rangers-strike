@@ -49,3 +49,5 @@ npm run typecheck -w @rangers-strike/client-core
 `src/app/guiStall.test.ts` は CPU 同士の対戦で、自分の番なのに選択ウィンドウも盤面の手もない局面（画面では止まって見える）がないことを確かめます。エンジンに新しい待ち（`pending…`）を足したら、`src/view/board.ts` の `buildPendingView` にも足してください。
 
 選択ウィンドウのカードは `src/view/gui.ts` の `locateInstance` で探します。常駐やユニットに重ねたカード（`stackedCards`）も探し、置き場は `operation:stack` のように `:stack` を付けて返します（表示は「自重ね」。ウラ向きは裏で出す）。見つからない id はカードでなくボタンになるため、重ねたカードを選ぶ効果がウィンドウから選べませんでした（XG6-048）。
+
+「山札の上から…をオモテにしてもよい」の発動の確認（エンジンの選択の `revealGate`）の間は、選択ウィンドウに山札のカードを出さず（`viewedCardIds` は空）、ボタンは「発動する」「発動しない」です（`src/text/labels.ts` `describeAction`）。発動してから候補のカードが出ます（XG7-042 で発動を選ぶ前に山札の上5枚が見えていた）。

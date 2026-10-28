@@ -1015,6 +1015,13 @@ export type PendingEffectChoice = {
    */
   mayConfirm?: boolean;
   /**
+   * 「山札の上から…をオモテにしてもよい」「次の効果を発動できる⇒山札の上から…」の、発動するかの確認（rules/revealGate.ts）。
+   * true の間は「発動する」（confirm_effect_choice）と「発動しない」（skip_effect_choice）だけを選べ、候補の山札のカードは見せない。
+   */
+  revealGate?: boolean;
+  /** revealGate の選択を、発動した後も見送れるようにする（「…選び、…してもよい」。rules/revealGate.ts gateReveal）。 */
+  revealKeepsOptional?: boolean;
+  /**
    * 「好きな順で山札の下（上）に戻す」の順を選ぶ選択（rules/deckOrder.ts）。ids は戻すカード（表示の並び）、to は山札の下か上か、
    * selectedInstanceIds が付けた番号の順（1番から）。undos は番号を外した・選び直した回数（上限あり）。then は確定した後の続き。
    */

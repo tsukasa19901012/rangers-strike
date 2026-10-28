@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { activate } from "./cardSpec/revealGate.helpers";
 import {
   getBattleEntryHoldCount,
   getCardById,
@@ -155,7 +156,8 @@ describe("NC battle entry (standard CN position)", () => {
     expect(battleUnit(next, "player1", unit.instanceId)?.spModifier).toBe(1);
     expect(next.pendingEffectChoice?.effectId).toBe("radial_hammer");
 
-    const resolved = applyAction(next, {
+    // 見るかを先に選ぶ（rules/revealGate.ts）
+    const resolved = applyAction(activate(next), {
       type: "resolve_effect_choice",
       playerId: "player1",
       instanceId: deckTop[0]!.instanceId,

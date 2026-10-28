@@ -26,6 +26,7 @@ import { applyConfirmEffectChoice, openEffectChoice, type ChoiceOutcome } from "
 import { registerChoiceRefresher } from "../choiceRefreshers";
 import { applyNumberComboEffect } from "../numberComboEffects";
 import { getNumberComboEffect } from "@rangers-strike/cards";
+import { gateReveal } from "../revealGate";
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
 type ChoiceSkipper = (state: GameState, playerId: PlayerId) => ChoiceOutcome;
@@ -72,7 +73,8 @@ function beginFighterChange(state: GameState, ctx: GrantKeywordContext): GameSta
   const limit = player.power.length;
   const top = player.deck[0];
   if (limit <= 0 || !top) return null;
-  return openEffectChoice(state, {
+  // 1枚ごとに、次をオモテにするかを先に聞く（rules/revealGate.ts）。
+  return openEffectChoice(state, gateReveal({
     playerId: ctx.playerId,
     effectId: FIGHTER_CHANGE_EFFECT_ID,
     sourceCardId: "RS-353",
@@ -84,7 +86,7 @@ function beginFighterChange(state: GameState, ctx: GrantKeywordContext): GameSta
     processedInstanceIds: [],
     selectCount: limit,
     optional: true,
-  });
+  }));
 }
 
 function isMechaL(state: GameState, card: CardInstance): boolean {
@@ -137,6 +139,8 @@ function resolveFighterChange(state: GameState, playerId: PlayerId, instanceId: 
           validInstanceIds: [nextCard.instanceId],
           viewedInstanceIds: revealed,
           processedInstanceIds: revealed,
+          optional: true,
+          revealGate: true,
         },
       },
       log: entry,

@@ -181,6 +181,7 @@ import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEff
 import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import { appendIcyRushActions, icyStateForAction } from "../rules/legend1/icyLastResort";
+import { revealGateActions } from "../rules/revealGate";
 import {
   getMorphReactionActorId,
   morphOrderChooserPlayerId,
@@ -2096,7 +2097,9 @@ export function getLegalActions(input: GameState): GameAction[] {
   // 合法判定の中で乱数を使っても、状態の rngState から作るので決定的（core/rng.ts）。
   // XG1-053【バーニングライダーパンチ】: 追加でアタックできる間は、そのアタックしか選べない（rules/xg1/xg1cEffects.ts）。
   // XG3-024・XG3-025（ラッシュフェイズのかわりに発動した後）の絞り込み（rules/xg3/xg3Effects.ts）。
-  const actions = filterXg3LegalActions(state, xg1ForcedAttackFilter(state, runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value));
+  const computed = filterXg3LegalActions(state, xg1ForcedAttackFilter(state, runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value));
+  // 「山札の上から…をオモテにしてもよい」の発動の確認の間は、発動する・しないだけ（rules/revealGate.ts）。
+  const actions = revealGateActions(state, computed) ?? computed;
   if (cache && engineSideEffectCount() === sideEffectsBefore) {
     for (const action of actions) deepFreeze(action);
     cache.set(input, [...actions]);

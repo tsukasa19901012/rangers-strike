@@ -49,6 +49,7 @@ import { XG1_068_KUUGA_RULE } from "./xg1Fields";
 import { XG1_CONFIRMERS, XG1_KEYWORDS, XG1_RESOLVERS, XG1_SKIPPERS, noop } from "./xg1Core";
 import { addTurnMark, costNumber, enemySUnits, hasTurnMark, holdCommands, isUnitDef, printedFeatures, releasedCommands, unitCatsNow } from "./xg1Shared";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
+import { gateReveal } from "../revealGate";
 
 function pickOne(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], optional: boolean, extra: Partial<PendingEffectChoice> = {}): PendingEffectChoice {
   return { ...base(ctx, sourceCardId), effectId, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional, ...extra };
@@ -523,7 +524,7 @@ XG1_KEYWORDS["XG1-077::ride_booker"] = (state, ctx) => {
   const ids = top.filter((c) => isUnitDef(state, c.cardId) && printedFeatures(state, c.cardId).includes("仮面ライダー")).map((c) => c.instanceId);
   const meta = { xg1Meta: { steps: top.map((c) => c.instanceId) } };
   const choice = ids.length > 0 ? pickOne(ctxBase(ctx), "XG1-077", RIDE_BOOKER_EFFECT_ID, ids, true, meta) : confirmOptions(ctxBase(ctx), "XG1-077", RIDE_BOOKER_EFFECT_ID, ["accept"], true, meta);
-  return { state: openAfter(state, choice), detail: RIDE_BOOKER_EFFECT_ID };
+  return { state: openAfter(state, gateReveal(choice)), detail: RIDE_BOOKER_EFFECT_ID };
 };
 
 XG1_RESOLVERS[RIDE_BOOKER_EFFECT_ID] = (state, playerId, instanceId) => {

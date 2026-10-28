@@ -13,6 +13,7 @@
  *  - チェイスそのもの（R-KW-CHASE-01・02）は rulesSpec/07-chase.test.ts。XG2-087 の「ターンを終えるとき捨札」は rules/keywordGapRuntime.test.ts にもある。
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import {
   act,
   attack,
@@ -182,17 +183,19 @@ describe("XG2-084 バビロス", () => {
     enter(p1Battle({ rush: [inst("XG2-084", "bb")] }, { deck: [inst("SPEC-B5000", "top"), ...deckCards(3, "e")], battle: [inst("SPEC-B5000", "e1"), inst("TST-UNIT-0", "e2"), inst("TST-UNIT-2", "m")], rush: [inst("SPEC-B5000", "e3")] }, EXTRA), "XG2-084:bb");
 
   it("XG2-084: ※ S ユニットにはアタックできない。M ユニットにはアタックできる（出典: atwiki/page-1808「これはSユニットにアタックすることができない」）", () => {
-    expect(attackTargets(resolveAll(lasered()), "XG2-084:bb")).toEqual(["TST-UNIT-2:m"]);
+    expect(attackTargets(resolveAll(activate(lasered())), "XG2-084:bb")).toEqual(["TST-UNIT-2:m"]);
   });
 
   it("XG2-084: 【バビロスレーザー】自軍ターン中にバトルエリアに出たとき、敵軍山札の上から1枚をオモテにするかを選べる（任意）（出典: atwiki/page-1808「敵軍山札の上から1枚をオモテにしてもよい」）", () => {
     const s = lasered();
     expectChoiceFrom(s, "player1", "XG2-084");
     expect(canSkip(s)).toBe(true);
+    // オモテにするかを選ぶまで、敵軍山札の上は見えない（rules/revealGate.ts）
+    expect(onlyActivateOrSkip(s)).toBe(true);
   });
 
   it("XG2-084: 【バビロスレーザー】オモテにしたカードと同じカード名の敵軍ユニットを（エリアを問わず）すべて撃破し、オモテにしたカードは山札の下に戻す（出典: atwiki/page-1808「同じカード名の敵軍ユニットをすべて撃破する。その後、オモテにしたカードは山札の下に戻す」）", () => {
-    const s = resolveAll(lasered());
+    const s = resolveAll(activate(lasered()));
     expect(zoneOf(s, "player2", "SPEC-B5000:e1")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-B5000:e3")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-0:e2")).toBe("battle");

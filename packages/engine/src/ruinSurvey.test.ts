@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
 import { createTestState, inst } from "./testing/fixtures";
+import { activate } from "./cardSpec/revealGate.helpers";
 
 function def(id: string) {
   const card = legend1Catalog.cards.find((c) => c.id === id);
@@ -40,7 +41,9 @@ describe("RS-066 ruin survey", () => {
     expect(result.state.pendingEffectChoice?.kind).toBe("deck_top_or_bottom");
     expect(result.state.activePlayer).toBe("player1");
 
-    const actions = getLegalActions(result.state);
+    // 見るかを先に選ぶ（rules/revealGate.ts）。見ると決めてから、上か下かを選ぶ。
+    expect(getLegalActions(result.state).filter((a) => a.type === "resolve_ruin_survey")).toHaveLength(0);
+    const actions = getLegalActions(activate(result.state));
     expect(actions.filter((a) => a.type === "resolve_ruin_survey")).toHaveLength(2);
   });
 
@@ -69,7 +72,7 @@ describe("RS-066 ruin survey", () => {
     });
     expect(moved.ok).toBe(true);
     if (!moved.ok) return;
-    state = moved.state;
+    state = activate(moved.state);
 
     const resolved = applyAction(state, {
       type: "resolve_ruin_survey",
@@ -109,7 +112,7 @@ describe("RS-066 ruin survey", () => {
     });
     expect(moved.ok).toBe(true);
     if (!moved.ok) return;
-    state = moved.state;
+    state = activate(moved.state);
 
     const resolved = applyAction(state, {
       type: "resolve_ruin_survey",

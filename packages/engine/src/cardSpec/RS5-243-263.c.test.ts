@@ -12,6 +12,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import { pickEffectChoice } from "../ai/helpers";
 import { applyAction } from "../core/applyAction";
 import { getLegalActions } from "../core/legalActions";
@@ -102,7 +103,9 @@ describe("RS-257 野球仮面", () => {
     let s = homerun("TST-UNIT-2", [released("TST-UNIT-2", "c2"), released("TST-OP-ET", "c1")]);
     expect(ncLogged(s, "RS-257")).toBe(true);
     expect(canSkip(s)).toBe(true);
-    s = pickAll(s, ["TST-UNIT-2:top", "TST-UNIT-2:c2"], 4);
+    // オモテにするかを先に選ぶ（rules/revealGate.ts）
+    expect(onlyActivateOrSkip(s)).toBe(true);
+    s = pickAll(activate(s), ["TST-UNIT-2:top", "TST-UNIT-2:c2"], 4);
     s = settle(s);
     expect(s.players.player1.command.find((c) => c.instanceId === "TST-UNIT-2:c2")?.commandHeld).toBe(true);
     const placed = s.players.player2.power.find((c) => c.instanceId === "TST-UNIT-2:top");
@@ -111,7 +114,7 @@ describe("RS-257 野球仮面", () => {
   });
 
   it("RS-257: 同じ必要パワーの自軍コマンドがなければ（ホールドできなければ）、オモテにしたカードは持ち主の手札に加わる（出典: atwiki/page-432「できなければ、そのカードを持ち主の手札に加える」）", () => {
-    let s = homerun("TST-UNIT-2", [released("TST-OP-ET", "c1")]);
+    let s = activate(homerun("TST-UNIT-2", [released("TST-OP-ET", "c1")]));
     s = pickAll(s, ["TST-UNIT-2:top"], 4);
     s = settle(s);
     expect(zoneOf(s, "player2", "TST-UNIT-2:top")).toBe("hand");
@@ -135,7 +138,7 @@ describe("RS-257 野球仮面", () => {
 
   // faq-card-5 RS-257 Q1（atwiki Q1）「いいえ、ホールドしたくなければしなくても構いません。ただしその場合は…「できなければ」以降のテキストに従ってください。」
   it("RS-257: 公式Q&A — ホールドできるときもホールドしなくてよい。その場合はカードを持ち主の手札に加える（出典: grnrngr/faq-card-5 RS-257 Q1・atwiki/page-432 Q1）", () => {
-    let s = homerun("TST-UNIT-2", [released("TST-UNIT-2", "c2")]);
+    let s = activate(homerun("TST-UNIT-2", [released("TST-UNIT-2", "c2")]));
     s = pickAll(s, ["TST-UNIT-2:top"], 1);
     expect(canSkip(s)).toBe(true);
     s = settle(skip(s));
@@ -145,7 +148,7 @@ describe("RS-257 野球仮面", () => {
 
   // faq-card-5 RS-257 Q2（atwiki Q2）「「オモテにしたカードの必要パワーと同じ必要パワーのカードをホールドする」と解釈してください。」
   it("RS-257: 公式Q&A — 比べるのは必要パワーどうし（必要パワー2のカードに対し、ナンバー2で必要パワー1のマジブルーはホールドに使えず手札へ）（出典: grnrngr/faq-card-5 RS-257 Q2・atwiki/page-432 Q2）", () => {
-    let s = homerun("TST-UNIT-2", [released("RS-059", "cn2")]);
+    let s = activate(homerun("TST-UNIT-2", [released("RS-059", "cn2")]));
     s = pickAll(s, ["TST-UNIT-2:top"], 4);
     s = settle(s);
     expect(s.players.player1.command[0]?.commandHeld).toBe(false);
@@ -170,6 +173,10 @@ describe("RS-257 野球仮面（CPU）", () => {
 
   it("RS-257: CPU は、相手の山札の半分以上が自軍コマンドと同じ必要パワーならオモテにし、ホールドしてダメージにする", () => {
     let s = reveal([inst("TST-UNIT-2", "a"), inst("TST-UNIT-2", "b"), inst("TST-OP-ET", "c")]);
+    // 発動の確認（rules/revealGate.ts）で発動し、続けてオモテにする
+    const declare = cpu(s);
+    expect(declare?.type).toBe("confirm_effect_choice");
+    s = applyAction(s, declare!).state;
     const first = cpu(s);
     expect(first?.type).toBe("resolve_effect_choice");
     let r = applyAction(s, first!);

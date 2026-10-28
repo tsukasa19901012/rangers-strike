@@ -10,6 +10,7 @@
  * レアリティは atwiki の「スーパーレア／レア／ノーマル」を SR／R／N として照合する。
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import type { CardInstance, GameState } from "../types/game";
 import {
   act,
@@ -92,21 +93,23 @@ describe("XG7-001 ゴーカイピンク", () => {
     const s = key(inst("SPEC-RED-MALE", "top"));
     expectChoiceFrom(s, "player1", "XG7-001");
     expect(canSkip(s)).toBe(true);
+    // オモテにするかを選ぶまで、山札の上は見えない（rules/revealGate.ts）
+    expect(onlyActivateOrSkip(s)).toBe(true);
   });
 
   it("XG7-001: 【レンジャーキー】オモテにしたカードが特徴に色（レッド）を持てば、自軍パワーゾーンに置く（出典: atwiki/page-2406「特徴に色を持つなら自軍パワーゾーンに置き」・Q1）", () => {
-    const s = resolveAll(key(inst("SPEC-RED-MALE", "top")), ["SPEC-RED-MALE:top"]);
+    const s = resolveAll(activate(key(inst("SPEC-RED-MALE", "top"))), ["SPEC-RED-MALE:top"]);
     expect(zoneOf(s, "player1", "SPEC-RED-MALE:top")).toBe("power");
     expect(s.players.player1.deck).toHaveLength(3);
   });
 
   it("XG7-001: 【レンジャーキー】「シルバー」も特徴の色（10種）に含まれる（出典: atwiki/page-2406 Q1「…「シルバー」、「バイオレット」、「ゴールド」の１０種です」）", () => {
-    const s = resolveAll(key(inst("SPEC-SILVER", "top")), ["SPEC-SILVER:top"]);
+    const s = resolveAll(activate(key(inst("SPEC-SILVER", "top"))), ["SPEC-SILVER:top"]);
     expect(zoneOf(s, "player1", "SPEC-SILVER:top")).toBe("power");
   });
 
   it("XG7-001: 【レンジャーキー】特徴に色を持たないカード（特徴「男」だけ）は山札の下に戻す（出典: atwiki/page-2406「それ以外なら山札の下に戻す」）", () => {
-    const s = resolveAll(key(inst("SPEC-PLAIN-MALE", "top")), ["SPEC-PLAIN-MALE:top"]);
+    const s = resolveAll(activate(key(inst("SPEC-PLAIN-MALE", "top"))), ["SPEC-PLAIN-MALE:top"]);
     expect(zoneOf(s, "player1", "SPEC-PLAIN-MALE:top")).toBe("deck");
     expect(deckOf(s).at(-1)).toBe("SPEC-PLAIN-MALE:top");
   });

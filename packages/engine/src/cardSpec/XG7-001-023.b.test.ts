@@ -10,6 +10,7 @@
  * レアリティは atwiki の「スーパーレア／レア／ノーマル」を SR／R／N として照合する。
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import type { CardInstance, GameState } from "../types/game";
 import {
   attack,
@@ -106,12 +107,32 @@ describe("XG7-009 タイムレッド", () => {
   it("XG7-009: ※ラッシュしたとき — 自軍山札の「Vコマンダー」のカード（RS-249）から1枚選べる。特徴「Vコマンダー」を持つだけの別名のカードは選べない（発動は任意）（出典: atwiki/page-2449「自軍山札を見て「Vコマンダー」のカードを1枚選び」「次の効果を発動できる」）", () => {
     const s = rushed([inst("RS-249", "vc"), inst("XG7-009", "other"), ...deckCards(3)]);
     expectChoiceFrom(s, "player1", "XG7-009");
-    expect(choiceIds(s)).toEqual(["RS-249:vc"]);
     expect(canSkip(s)).toBe(true);
+    // 発動するかを先に選ぶ（rules/revealGate.ts）。発動すると選べる
+    expect(onlyActivateOrSkip(s)).toBe(true);
+    expect(choiceIds(activate(s))).toEqual(["RS-249:vc"]);
+  });
+
+  it("XG7-009: ※ 発動しなければ山札はシャッフルされない（ユーザー報告 2026-10-28「任意効果で処理が先に動くもの」の横展開。以前は見送ってもシャッフルした）（出典: atwiki/page-2449「次の効果を発動できる」）", () => {
+    const deck = [inst("RS-249", "vc"), ...deckCards(5)];
+    const s = resolveAll(skip(rushed(deck)));
+    expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(deck.map((c) => c.instanceId));
+  });
+
+  it("XG7-009: ※ 山札に「Vコマンダー」が無くても、発動するかを聞く（以前は聞かずにシャッフルした）。発動しなければ山札はそのまま（出典: atwiki/page-2449「次の効果を発動できる⇒…その後、山札をシャッフルする」）", () => {
+    const deck = deckCards(6);
+    const s = rushed(deck);
+    expectChoiceFrom(s, "player1", "XG7-009");
+    expect(onlyActivateOrSkip(s)).toBe(true);
+    expect(resolveAll(skip(s)).players.player1.deck.map((c) => c.instanceId)).toEqual(deck.map((c) => c.instanceId));
+    // 発動すれば、選ぶカードが無いまま効果を終える（山札はシャッフル）
+    const done = activate(s);
+    expect(done.pendingEffectChoice?.sourceCardId).not.toBe("XG7-009");
+    expect(done.players.player1.deck).toHaveLength(6);
   });
 
   it("XG7-009: ※ 選んだカードを相手に見せてから手札に加える（出典: atwiki/page-2449「相手に見せてから手札に加える」）", () => {
-    const s = resolveAll(rushed([inst("RS-249", "vc"), ...deckCards(3)]), ["RS-249:vc"]);
+    const s = resolveAll(activate(rushed([inst("RS-249", "vc"), ...deckCards(3)])), ["RS-249:vc"]);
     expect(zoneOf(s, "player1", "RS-249:vc")).toBe("hand");
     expect(s.players.player1.deck).toHaveLength(3);
     expect(logged(s, "reveal")).toBe(true);

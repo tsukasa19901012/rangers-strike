@@ -52,6 +52,7 @@ import {
   simpleSkipXg2,
   xg2Hook,
 } from "./xg2Core";
+import { gateReveal } from "../revealGate";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -217,7 +218,7 @@ function applyLaser(state: GameState, ctx: GrantKeywordContext): GrantKeywordRes
   if (!ownTurn(state, ctx.playerId)) return { state, detail: "xg2_084:not_own_turn" };
   const top = state.players[opponent(ctx.playerId)].deck[0];
   if (!top) return { state, detail: "xg2_084:empty_deck" };
-  return { state: openAfter(state, { ...selectOne(ctxBase(ctx), "XG2-084", LASER_EFFECT_ID, [top.instanceId], true), kind: "confirm" }), detail: LASER_EFFECT_ID };
+  return { state: openAfter(state, gateReveal({ ...selectOne(ctxBase(ctx), "XG2-084", LASER_EFFECT_ID, [top.instanceId], true), kind: "confirm" })), detail: LASER_EFFECT_ID };
 }
 
 registerXg2Choice(LASER_EFFECT_ID, {

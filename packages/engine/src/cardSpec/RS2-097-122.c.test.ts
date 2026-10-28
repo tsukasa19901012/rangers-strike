@@ -8,6 +8,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import {
   DEFS,
   act,
@@ -971,7 +972,7 @@ describe("RS-122 ゴーゴーマリン", () => {
     s = enter(s, "RS-066:pink");
     expect(s.pendingEffectChoice?.effectId).not.toBe("seabed_survey");
     expect(s.pendingEffectChoice?.viewedInstanceIds).toEqual(["TST-OP:top"]);
-    s = act(s, { type: "resolve_ruin_survey", playerId: "player1", placement: "bottom" });
+    s = act(activate(s), { type: "resolve_ruin_survey", playerId: "player1", placement: "bottom" });
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:mid", "TST-OP:bottom", "TST-OP:top"]);
   });
 });

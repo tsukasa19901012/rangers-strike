@@ -11,6 +11,7 @@
  * レアリティは atwiki の「ノーマル／ノーマルレア／レア／スーパーレア」を N／NR／R／SR として照合する。
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import {
   DEFS,
   act,
@@ -179,7 +180,7 @@ describe("XG1-077 仮面ライダーディケイド", () => {
   });
 
   it("XG1-077: 選んだカードは自軍パワーゾーンに置き、それ以外の2枚は山札の下に戻す（既知の不具合: CARD-XG1-077 選んだカードが山札の上に残り、ほかのカードが捨札になる）（出典: atwiki/page-1542「自軍パワーゾーンに置く。その後、それ以外のカードは好きな順で山札の下に戻す」）", () => {
-    const s = resolveAll(rc(), ["XG1-064:ag"]);
+    const s = resolveAll(activate(rc()), ["XG1-064:ag"]);
     expect(zoneOf(s, "player1", "XG1-064:ag")).toBe("power");
     const deck = deckIds(s);
     expect(deck).toHaveLength(4);
@@ -188,7 +189,7 @@ describe("XG1-077 仮面ライダーディケイド", () => {
   });
 
   it("XG1-077: それ以外の2枚を山札の下に戻す順を選べ、オモテにした3枚は公開表示に出る（出典: atwiki/page-1542「それ以外のカードは好きな順で山札の下に戻す」）", () => {
-    let s = act(rc(), { type: "resolve_effect_choice", playerId: "player1", instanceId: "XG1-064:ag" });
+    let s = act(activate(rc()), { type: "resolve_effect_choice", playerId: "player1", instanceId: "XG1-064:ag" });
     expect(s.lastReveal?.cards.map((c) => [c.instanceId, c.destination])).toEqual([
       ["TST-OP:d0", "deck_bottom"],
       ["XG1-064:ag", "power"],
@@ -204,6 +205,9 @@ describe("XG1-077 仮面ライダーディケイド", () => {
 
   it("XG1-077: 特徴「仮面ライダー」のユニットカードがなくても、オモテにした3枚が公開表示に出て、3枚を山札の下に戻す順を選べる（出典: atwiki/page-1542「それ以外のカードは好きな順で山札の下に戻す」）", () => {
     let s = rcAt("XG1-077:dc", { deck: [inst("TST-OP", "x0"), inst("TST-OP", "x1"), inst("TST-OP", "x2"), ...deckCards(2)] }, {}, EXTRA);
+    // 「仮面ライダー」が無いことも、発動を選ぶまではわからない（rules/revealGate.ts）
+    expect(onlyActivateOrSkip(s)).toBe(true);
+    s = activate(s);
     expect(choiceIds(s)).toEqual(["accept"]);
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "accept" });
     expect(s.lastReveal?.cards.map((c) => c.instanceId)).toEqual(["TST-OP:x0", "TST-OP:x1", "TST-OP:x2"]);

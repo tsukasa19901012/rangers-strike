@@ -312,6 +312,8 @@ const VIEWED_META_KEYS = new Set(["top", "topId", "topInstanceId", "revealedId",
 export function viewedCardIds(state: GameState): string[] {
   const choice = state.pendingEffectChoice;
   if (!choice || choice.playerId !== HUMAN) return [];
+  // 「山札の上から…をオモテにしてもよい」の発動の確認の間は、山札のカードを見せない（engine rules/revealGate.ts）。
+  if (choice.revealGate) return [];
   const inDeck = new Set([...state.players.player1.deck, ...state.players.player2.deck].map((c) => c.instanceId));
   const ids = [...(choice.viewedInstanceIds ?? [])];
   for (const [key, value] of Object.entries(choice as unknown as Record<string, unknown>)) {

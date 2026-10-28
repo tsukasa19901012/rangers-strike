@@ -518,6 +518,41 @@ describe("cards an effect shows", () => {
     app.dispatch(input.confirm);
     expect(session.version).not.toBe(version);
   });
+
+  it("asks whether to activate before showing the deck top (XG7-042【ライダー大戦の世界】, engine rules/revealGate.ts)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const top = session.state.players.player1.deck.slice(0, 5).map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "xg7042_rider_war",
+        sourceCardId: "XG7-042",
+        kind: "select_unit",
+        validInstanceIds: top,
+        selectCount: 1,
+        optional: true,
+        revealGate: true,
+      },
+    };
+    session.version++;
+    let dialog = app.view().gui!.dialog!;
+    // Before activating: no deck card, only 発動する / 発動しない.
+    expect(dialog.cards).toEqual([]);
+    expect(dialog.buttons.map((b) => b.text)).toEqual(["発動する", "発動しない"]);
+    // The cursor starts on 発動する.
+    expect(dialog.buttons.find((b) => b.selected)?.text).toBe("発動する");
+    app.dispatch(input.confirm);
+    // After activating: the five cards are shown to pick from, and it can no longer be declined.
+    dialog = app.view().gui!.dialog!;
+    expect(dialog.cards.length).toBeGreaterThan(0);
+    expect(dialog.cards.map((c) => c.instanceId)).toEqual(top.slice(0, dialog.cards.length));
+    expect(dialog.cards.every((c) => c.actionable)).toBe(true);
+    expect(dialog.buttons.map((b) => b.text)).not.toContain("選ばない");
+  });
 });
 
 describe("picking a card stacked in the operation zone", () => {
