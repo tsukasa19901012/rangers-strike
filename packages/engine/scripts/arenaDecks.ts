@@ -50,3 +50,32 @@ export function resolveDeckList(spec: string): string[] {
   };
   return spec.split(",").flatMap((s) => (groups[s] ? [...groups[s]!()] : [s]));
 }
+
+/**
+ * --decks に「名前=重み」を書いたときのデッキの選び方。例: starters=1,arena=1,livedoor=1,blog2=1 なら、
+ * まず重みに比例してグループを選び、その中から 1 つを同じ確率で選ぶ（グループの大きさに引っぱられない）。
+ * 重みを書かない項目は重み 1。どこにも = がなければ、今までどおり全デッキから同じ確率で選ぶ。
+ */
+export function resolveDeckPool(spec: string): { ids: string[]; pick: (rand: () => number) => string } {
+  const items = spec.split(",");
+  if (!items.some((s) => s.includes("="))) {
+    const ids = resolveDeckList(spec);
+    return { ids, pick: (rand) => ids[Math.floor(rand() * ids.length)]! };
+  }
+  const buckets = items.map((s) => {
+    const [name, w] = s.split("=");
+    const ids = resolveDeckList(name!);
+    const weight = w === undefined ? 1 : Number(w);
+    if (!(weight >= 0) || ids.length === 0) throw new Error(`--decks: ${s} が読めません`);
+    return { ids, weight };
+  });
+  const total = buckets.reduce((sum, b) => sum + b.weight, 0);
+  return {
+    ids: [...new Set(buckets.flatMap((b) => b.ids))],
+    pick: (rand) => {
+      let r = rand() * total;
+      const b = buckets.find((x) => (r -= x.weight) < 0) ?? buckets[buckets.length - 1]!;
+      return b.ids[Math.floor(rand() * b.ids.length)]!;
+    },
+  };
+}

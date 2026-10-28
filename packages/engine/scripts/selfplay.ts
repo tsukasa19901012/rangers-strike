@@ -1,6 +1,7 @@
 // 学習用の自己対戦データを作る（docs: CPU 学習ロードマップ Phase 0・2）。
 //   npx tsx scripts/selfplay.ts --games 1000 --out .cache/selfplay/run1 [--shard 0 --shards 1] [--decks starters,arena]
-//   --decks は既定でスターター 46 個。arena-decks/<id>.json の id や、まとめた名前（starters, arena, wiki, blog）も使える。
+//   --decks は既定でスターター 46 個。arena-decks/<id>.json の id や、まとめた名前（starters, arena, wiki, blog, livedoor, blog2）も使える。
+//   「名前=重み」と書くとグループごとの割合を決められる（--decks starters=1,arena=1,livedoor=1,blog2=1 なら各 1/4）。
 // 並列で回すときは scripts/selfplay-par.sh を使う。
 //
 // 1 試合ごとに、途中の盤面から --positions 個を無作為に選び、両方のプレイヤーから見た特徴（ai/valueFeatures.ts）と
@@ -17,7 +18,7 @@ import { createValueNet, pickCpuAction, setValueEvaluator } from "../src/ai/inde
 import type { CpuLevel } from "../src/ai/types";
 import { FEATURE_DIM, FEATURE_NAMES, FEATURE_VERSION, encodeState } from "../src/ai/valueFeatures";
 import { createStarterGame } from "../src/verticalSlice/createStarterGame";
-import { arenaDeck, resolveDeckList } from "./arenaDecks";
+import { arenaDeck, resolveDeckPool } from "./arenaDecks";
 import type { GameState, PlayerId } from "../src/types/game";
 
 function arg(name: string, fallback: string): string {
@@ -31,9 +32,9 @@ const shard = Number(arg("shard", "0"));
 const shards = Number(arg("shards", "1"));
 const outDir = arg("out", ".cache/selfplay/run");
 const positions = Number(arg("positions", "12"));
-const decks = resolveDeckList(arg("decks", "starters"));
+const deckPool = resolveDeckPool(arg("decks", "starters"));
 // 試合ごとに JSON を読み直さないよう、arena-decks のデッキは最初に展開しておく。
-const deckCards = new Map(decks.map((id) => [id, arenaDeck(id)]));
+const deckCards = new Map(deckPool.ids.map((id) => [id, arenaDeck(id)]));
 // --mix: 「先手側Lv:後手側Lv=重み」のカンマ区切り。既定は Lv2 中心に Lv3 と Lv5 を混ぜる（ロードマップ Phase 2）。
 const mix = arg("mix", "2:2=45,3:2=20,3:3=20,5:5=15")
   .split(",")
@@ -108,8 +109,8 @@ let played = 0, decided = 0, rows = 0;
 for (let g = 0; g < games; g++) {
   if (only !== null ? g !== only : g % shards !== shard) continue;
   const rand = rng(seed0 * 1_000_003 + g);
-  const d1 = decks[Math.floor(rand() * decks.length)]!;
-  const d2 = decks[Math.floor(rand() * decks.length)]!;
+  const d1 = deckPool.pick(rand);
+  const d2 = deckPool.pick(rand);
   let pick = rand() * mixTotal;
   const m = mix.find((x) => (pick -= x.w) < 0) ?? mix[mix.length - 1]!;
   // どちらの席が強い側になるかも散らす。
