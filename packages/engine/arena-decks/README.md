@@ -564,4 +564,174 @@ livedoor ブログ blog.livedoor.jp/letsrenst の全 380 記事（2009-05〜2026
 | `blog-livedoor-letsrenst-6236827` | [【制限大会用】青単大会用・フルブラストカスタム（2026-03-29）](http://blog.livedoor.jp/letsrenst/archives/6236827.html) | 40 |
 | `blog-livedoor-letsrenst-6236868` | [【制限大会用】青単グレートタイタン（2026-03-29）](http://blog.livedoor.jp/letsrenst/archives/6236868.html) | 40 |
 
-どのデッキも、Lv2 同士で最後まで対局できることを確かめています（ブログのデッキは 1 デッキ 2 局ずつ。`blog-rabbit-9984932` の 1 局だけ、両者がクライマックス刑事でパワーを山札に戻し続けて 6,000 手で決着しませんでした）。livedoor「letsrenst」のデッキは Lv2 同士の 810 局（全 373 デッキが 1 局以上）で、すべて決着しました。
+## レンスト地域対抗戦のデッキ（56 個、テスト用）
+
+rstournament.blog.jp のカテゴリ「デッキレシピ」16 記事（2022 年の再掲。大会は 2018〜2019 年の XG 期）から、チームの各メンバーのデッキを集めたもの（2026-10-28）。id は `rstournament-<記事>-<番号>`。いちばん新しく、ほかのソースとも独立した強いデッキなので、学習には混ぜずに計測用のテスト用デッキとして使う想定です。`arena`・`blog` には入れていません。使うときは `--decks rstournament` と名指ししてください。
+
+- 「カード名(収録弾)」の表から読み、1,200 行のうちカタログと合わなかったのは「鉄面皮張遼」（鉄面臂張遼の表記ゆれ。対応付け済み）だけです。
+- 41〜83 枚のデッキが 29 個あり、元の表どおりの枚数で入れています。
+
+| id | デッキ（記事の日付） | 枚数 |
+|---|---|---|
+| `rstournament-39551963-1` | [これてぃか「タイタントリロジー」（2022-01-22）](https://rstournament.blog.jp/archives/39551963.html) | 40 |
+| `rstournament-39551963-2` | [烏宮「闇墜ち仕立ての速攻風ノーオペレーション赤黄」（2022-01-22）](https://rstournament.blog.jp/archives/39551963.html) | 40 |
+| `rstournament-39551963-3` | [しゃけ「マジカルショータイム」（2022-01-22）](https://rstournament.blog.jp/archives/39551963.html) | 42 |
+| `rstournament-39551963-4` | [ブラッドマン「超越G12」（2022-01-22）](https://rstournament.blog.jp/archives/39551963.html) | 58 |
+| `rstournament-39551963-5` | [メダパニ「メダパニ提出用」（2022-01-22）](https://rstournament.blog.jp/archives/39551963.html) | 42 |
+| `rstournament-39551963-6` | [零「君が負けるまでストライクをやめない」（2022-01-22）](https://rstournament.blog.jp/archives/39551963.html) | 40 |
+| `rstournament-39552006-1` | [イソップ「パワーロック」（2022-01-22）](https://rstournament.blog.jp/archives/39552006.html) | 40 |
+| `rstournament-39552006-2` | [KAI「初心者ですけれども…頑張ります。」（2022-01-22）](https://rstournament.blog.jp/archives/39552006.html) | 41 |
+| `rstournament-39552006-3` | [暇人「暇人スペシャル」（2022-01-22）](https://rstournament.blog.jp/archives/39552006.html) | 44 |
+| `rstournament-39552006-4` | [キキ「パンサーミキサーって知ってるかい？」（2022-01-22）](https://rstournament.blog.jp/archives/39552006.html) | 46 |
+| `rstournament-39552006-5` | [ゆすけ「HCタイタン」（2022-01-22）](https://rstournament.blog.jp/archives/39552006.html) | 40 |
+| `rstournament-39552093-1` | [もなか「シンケンオー見参」（2022-01-22）](https://rstournament.blog.jp/archives/39552093.html) | 52 |
+| `rstournament-39552093-2` | [へーーーうち「赤青捨札活用」（2022-01-22）](https://rstournament.blog.jp/archives/39552093.html) | 64 |
+| `rstournament-39552093-3` | [むぎゅう「雛形」（2022-01-22）](https://rstournament.blog.jp/archives/39552093.html) | 40 |
+| `rstournament-39552093-4` | [CAMO「タト電」（2022-01-22）](https://rstournament.blog.jp/archives/39552093.html) | 46 |
+| `rstournament-39552093-5` | [ハムハグ「Wディケイド」（2022-01-22）](https://rstournament.blog.jp/archives/39552093.html) | 40 |
+| `rstournament-39552093-6` | [トキワ「青緑宇宙刑事」（2022-01-22）](https://rstournament.blog.jp/archives/39552093.html) | 43 |
+| `rstournament-39552170-1` | [こーき「デカレンタイタン」（2022-01-22）](https://rstournament.blog.jp/archives/39552170.html) | 43 |
+| `rstournament-39552170-2` | [アサノ「黄青タッチ赤緑スーパー戦隊」（2022-01-22）](https://rstournament.blog.jp/archives/39552170.html) | 83 |
+| `rstournament-39552170-3` | [あっくん「黄緑バトルダンス」（2022-01-22）](https://rstournament.blog.jp/archives/39552170.html) | 40 |
+| `rstournament-39552170-4` | [ぢそ「TIMEセイクウオー」（2022-01-22）](https://rstournament.blog.jp/archives/39552170.html) | 50 |
+| `rstournament-39552170-5` | [MAJIN「雛形」（2022-01-22）](https://rstournament.blog.jp/archives/39552170.html) | 50 |
+| `rstournament-39552170-6` | [ノメロ「4色忍者」（2022-01-22）](https://rstournament.blog.jp/archives/39552170.html) | 40 |
+| `rstournament-39552216-1` | [ぎょりえ「伝説のチート合体」（2022-01-22）](https://rstournament.blog.jp/archives/39552216.html) | 44 |
+| `rstournament-39552216-2` | [ロイド「雛形」（2022-01-22）](https://rstournament.blog.jp/archives/39552216.html) | 40 |
+| `rstournament-39552216-3` | [あずき「ガライオルゴール」（2022-01-22）](https://rstournament.blog.jp/archives/39552216.html) | 41 |
+| `rstournament-39552236-1` | [セン「バトルダンスEX」（2022-01-22）](https://rstournament.blog.jp/archives/39552236.html) | 50 |
+| `rstournament-39552236-2` | [shen「てつをと月影」（2022-01-22）](https://rstournament.blog.jp/archives/39552236.html) | 40 |
+| `rstournament-39552236-3` | [デカチュウ不敗アリステラ「雛形」（2022-01-22）](https://rstournament.blog.jp/archives/39552236.html) | 40 |
+| `rstournament-39552261-1` | [HIDE「017平成ファイナル」（2022-01-22）](https://rstournament.blog.jp/archives/39552261.html) | 48 |
+| `rstournament-39552261-2` | [フニフニ「エレクトロレーダー」（2022-01-22）](https://rstournament.blog.jp/archives/39552261.html) | 40 |
+| `rstournament-39552261-3` | [ゾノマン「黄緑RCトライゴウラム」（2022-01-22）](https://rstournament.blog.jp/archives/39552261.html) | 40 |
+| `rstournament-39552261-4` | [空ダルマ「トリックベント」（2022-01-22）](https://rstournament.blog.jp/archives/39552261.html) | 40 |
+| `rstournament-39552261-5` | [シュー「チートレジェンド」（2022-01-22）](https://rstournament.blog.jp/archives/39552261.html) | 44 |
+| `rstournament-39552273-1` | [イナックス「青黄コンプリ」（2022-01-22）](https://rstournament.blog.jp/archives/39552273.html) | 50 |
+| `rstournament-39552273-2` | [イナックス(兄)「雛形」（2022-01-22）](https://rstournament.blog.jp/archives/39552273.html) | 48 |
+| `rstournament-39552273-3` | [涼「雛形」（2022-01-22）](https://rstournament.blog.jp/archives/39552273.html) | 46 |
+| `rstournament-39552288-1` | [烏宮(からすみや)「赤黄黒対抗戦仕様」（2022-01-22）](https://rstournament.blog.jp/archives/39552288.html) | 40 |
+| `rstournament-39552288-2` | [しゃけ「チーム戦用ショータイム」（2022-01-22）](https://rstournament.blog.jp/archives/39552288.html) | 40 |
+| `rstournament-39552288-3` | [これてぃか「タイタントリロジー3on3仕様」（2022-01-22）](https://rstournament.blog.jp/archives/39552288.html) | 40 |
+| `rstournament-39552301-1` | [イソップ「FFR」（2022-01-22）](https://rstournament.blog.jp/archives/39552301.html) | 40 |
+| `rstournament-39552301-2` | [暇人「黒単」（2022-01-22）](https://rstournament.blog.jp/archives/39552301.html) | 42 |
+| `rstournament-39552301-3` | [ゆすけ「ウイングタイタン」（2022-01-22）](https://rstournament.blog.jp/archives/39552301.html) | 40 |
+| `rstournament-39552310-1` | [KAI「KAIプロデュース1」（2022-01-22）](https://rstournament.blog.jp/archives/39552310.html) | 40 |
+| `rstournament-39552310-2` | [STEP「KAIプロデュース2」（2022-01-22）](https://rstournament.blog.jp/archives/39552310.html) | 41 |
+| `rstournament-39552310-3` | [喜梨彦「KAIプロデュース3」（2022-01-22）](https://rstournament.blog.jp/archives/39552310.html) | 40 |
+| `rstournament-39552322-1` | [MAZIN「2019地域対抗」（2022-01-22）](https://rstournament.blog.jp/archives/39552322.html) | 48 |
+| `rstournament-39552342-1` | [ノメロ「忍者&警察デッキ」（2022-01-22）](https://rstournament.blog.jp/archives/39552342.html) | 40 |
+| `rstournament-39552342-2` | [アサノ「青紫タッチ赤パスプニル」（2022-01-22）](https://rstournament.blog.jp/archives/39552342.html) | 40 |
+| `rstournament-39552342-3` | [セン(追加戦士枠)「雛形」（2022-01-22）](https://rstournament.blog.jp/archives/39552342.html) | 42 |
+| `rstournament-39552365-1` | [メダパニさん太郎「ディケイド対抗戦仕様」（2022-01-22）](https://rstournament.blog.jp/archives/39552365.html) | 40 |
+| `rstournament-39552365-2` | [サーガイン「サーガイン大会使用デッキ」（2022-01-22）](https://rstournament.blog.jp/archives/39552365.html) | 40 |
+| `rstournament-39552375-1` | [こーき「こーきレシピ」（2022-01-22）](https://rstournament.blog.jp/archives/39552375.html) | 45 |
+| `rstournament-39552375-2` | [もなか「剣豪デッキ」（2022-01-22）](https://rstournament.blog.jp/archives/39552375.html) | 40 |
+| `rstournament-39552375-3` | [へーうち「クロスドロー」（2022-01-22）](https://rstournament.blog.jp/archives/39552375.html) | 42 |
+| `rstournament-39552382-1` | [シュー「チートレジェンド」（2022-01-22）](https://rstournament.blog.jp/archives/39552382.html) | 44 |
+
+## ほかのブログと OCTGN のデッキ（90 個、`blog2`）
+
+2026-10-28 に足したもの。`arena`・`blog` には入れていません。使うときは `--decks blog2`（ほかと混ぜるなら `--decks starters,arena,blog2`）と名指ししてください。
+
+- OCTGN RSXG アップローダー（uu.getuploader.com/octgnrsxg、2026-11-25 にサービス終了）のサンプルデッキ 46 個と「青黒戒律」1 個。id は `octgn-rsxg-<番号>`。XG2〜XG7 期で、元の XML はカード名だけ（収録弾の区別なし）です。
+- つれづれレンスト（gyorie.blog114.fc2.com、2007〜2015 年）の「デッキレシピ」「大会レポ」から 21 個。id は `blog-gyorie-<記事>`。
+- Blue Splash（ameblo.jp/bluesplash-urara、2007〜2008 年）の「デッキレシピ」から 20 個。id は `blog-bluesplash-urara-<記事>`。
+- 北海道ホビーズ（hokkaidohobbies.seesaa.net、2011 年）の店舗大会の優勝デッキ 2 個。id は `blog-hokkaidohobbies-<記事>`。
+- カタログにないカード（ハリケンウインガー、旋風神ハリヤー、「はやて」「かくれ」、どちらか決まらない「ウォンタイガー」）は抜き、40 枚に足りなくなった 6 デッキは 2 枚以下のカードを 1 枚ずつ増やしました。
+- 既存の arena-decks とまったく同じデッキはありませんでした。
+
+| id | デッキ（記事の日付） | 枚数 |
+|---|---|---|
+| `blog-bluesplash-urara-10085380643` | [Blue Splash 10085380643（2008-04-03）](https://ameblo.jp/bluesplash-urara/entry-10085380643.html) | 40 |
+| `blog-bluesplash-urara-10104168493` | [第六回（2008-06-07）](https://ameblo.jp/bluesplash-urara/entry-10104168493.html) | 40 |
+| `blog-bluesplash-urara-10105770572` | [第七回（2008-06-12）](https://ameblo.jp/bluesplash-urara/entry-10105770572.html) | 40 |
+| `blog-bluesplash-urara-10106757021` | [第八回（2008-06-15）](https://ameblo.jp/bluesplash-urara/entry-10106757021.html) | 40 |
+| `blog-bluesplash-urara-10118048897` | [Blue Splash 10118048897（2008-07-20）](https://ameblo.jp/bluesplash-urara/entry-10118048897.html) | 40 |
+| `blog-bluesplash-urara-10118416319` | [第十参回（2008-07-20）](https://ameblo.jp/bluesplash-urara/entry-10118416319.html) | 40 |
+| `blog-bluesplash-urara-10193057844` | [第弐十回（2009-01-15）](https://ameblo.jp/bluesplash-urara/entry-10193057844.html) | 40 |
+| `blog-bluesplash-urara-10222595370` | [第弐拾四回（2009-03-11）](https://ameblo.jp/bluesplash-urara/entry-10222595370.html) | 40 |
+| `blog-bluesplash-urara-10240265316` | [第参拾回（2009-04-10）](https://ameblo.jp/bluesplash-urara/entry-10240265316.html) | 40 |
+| `blog-bluesplash-urara-10245699826` | [第参拾参回（2009-04-20）](https://ameblo.jp/bluesplash-urara/entry-10245699826.html) | 40 |
+| `blog-bluesplash-urara-10254744287` | [Blue Splash 10254744287（2009-05-04）](https://ameblo.jp/bluesplash-urara/entry-10254744287.html) | 40 |
+| `blog-bluesplash-urara-10258645823` | [第四拾壱回（2009-05-10）](https://ameblo.jp/bluesplash-urara/entry-10258645823.html) | 40 |
+| `blog-bluesplash-urara-10260472452` | [第四拾参回（2009-05-13）](https://ameblo.jp/bluesplash-urara/entry-10260472452.html) | 40 |
+| `blog-bluesplash-urara-10263600214` | [第四拾伍回（2009-05-18）](https://ameblo.jp/bluesplash-urara/entry-10263600214.html) | 40 |
+| `blog-bluesplash-urara-10273584614` | [第四拾九回（2009-06-03）](https://ameblo.jp/bluesplash-urara/entry-10273584614.html) | 40 |
+| `blog-bluesplash-urara-10325823647` | [第六拾参回（2009-08-21）](https://ameblo.jp/bluesplash-urara/entry-10325823647.html) | 42 |
+| `blog-bluesplash-urara-10344036157` | [第六拾仇回（2009-09-16）](https://ameblo.jp/bluesplash-urara/entry-10344036157.html) | 45 |
+| `blog-bluesplash-urara-10423181767` | [第八拾仇回（2009-12-31）](https://ameblo.jp/bluesplash-urara/entry-10423181767.html) | 45 |
+| `blog-bluesplash-urara-10526997050` | [第壱百四回（2010-05-06）](https://ameblo.jp/bluesplash-urara/entry-10526997050.html) | 45 |
+| `blog-bluesplash-urara-10533134035` | [第壱百伍回（2010-05-12）](https://ameblo.jp/bluesplash-urara/entry-10533134035.html) | 45 |
+| `blog-gyorie-10` | [華麗にファンタスティックビーム！（2007-11-16）](http://gyorie.blog114.fc2.com/blog-entry-10.html) | 40 |
+| `blog-gyorie-18` | [青黒パワーロック　ライダー２弾環境Ver（2008-03-25）](http://gyorie.blog114.fc2.com/blog-entry-18.html) | 40 |
+| `blog-gyorie-20` | [黄緑コサックケニアガオナイト（2008-04-07）](http://gyorie.blog114.fc2.com/blog-entry-20.html) | 40 |
+| `blog-gyorie-23` | [マンマルバ幼体「うほっ、いい男…」（2008-05-16）](http://gyorie.blog114.fc2.com/blog-entry-23.html) | 40 |
+| `blog-gyorie-27` | [黒単怪人デッキ　７弾環境Ver.（2008-07-01）](http://gyorie.blog114.fc2.com/blog-entry-27.html) | 42 |
+| `blog-gyorie-28` | [フォッグマザーマジレジェンド（2008-08-04）](http://gyorie.blog114.fc2.com/blog-entry-28.html) | 40 |
+| `blog-gyorie-3` | [公式大会で使用した「青黒パワーロック」です。（2007-10-09）](http://gyorie.blog114.fc2.com/blog-entry-3.html) | 40 |
+| `blog-gyorie-30` | [サバイブぶんぶんデッキ（2008-08-26）](http://gyorie.blog114.fc2.com/blog-entry-30.html) | 40 |
+| `blog-gyorie-31` | [霧母レジェンドデッキ　三大ヒーローVer.（2008-08-26）](http://gyorie.blog114.fc2.com/blog-entry-31.html) | 40 |
+| `blog-gyorie-33` | [スーパー戦隊わらわらデッキ（2008-10-06）](http://gyorie.blog114.fc2.com/blog-entry-33.html) | 40 |
+| `blog-gyorie-36` | [各々方、合体で御座る！～必勝合体編（2009-01-14）](http://gyorie.blog114.fc2.com/blog-entry-36.html) | 40 |
+| `blog-gyorie-37` | [ライダー単　～青単パワーロックデッキ（2009-01-21）](http://gyorie.blog114.fc2.com/blog-entry-37.html) | 40 |
+| `blog-gyorie-40` | [キラキラカード単デッキ（2009-05-08）](http://gyorie.blog114.fc2.com/blog-entry-40.html) | 40 |
+| `blog-gyorie-42-1` | [リーダー（2009-05-15）](http://gyorie.blog114.fc2.com/blog-entry-42.html) | 40 |
+| `blog-gyorie-42-2` | [サポーター（2009-05-15）](http://gyorie.blog114.fc2.com/blog-entry-42.html) | 40 |
+| `blog-gyorie-43` | [（ほとんど）ノンストライカーデッキ　クウガＲＰメイン（2009-06-22）](http://gyorie.blog114.fc2.com/blog-entry-43.html) | 40 |
+| `blog-gyorie-53` | [歩くライダー図鑑（2009-09-29）](http://gyorie.blog114.fc2.com/blog-entry-53.html) | 41 |
+| `blog-gyorie-59` | [黄緑スーパーことはで無限ストライク！（2009-11-10）](http://gyorie.blog114.fc2.com/blog-entry-59.html) | 40 |
+| `blog-gyorie-62` | [ライダー単　～青黒パワーロックデッキ（2010-01-09）](http://gyorie.blog114.fc2.com/blog-entry-62.html) | 45 |
+| `blog-gyorie-64` | [チートのデパート（2010-10-10）](http://gyorie.blog114.fc2.com/blog-entry-64.html) | 40 |
+| `blog-gyorie-70` | [チートレジェンドFINAL（2015-05-17）](http://gyorie.blog114.fc2.com/blog-entry-70.html) | 44 |
+| `blog-hokkaidohobbies-201109article_9` | [緑単ワンセブン（2011-09-25）](https://hokkaidohobbies.seesaa.net/article/201109article_9.html) | 40 |
+| `blog-hokkaidohobbies-201111article_2` | [EPISODE FINAL（2011-11-06）](https://hokkaidohobbies.seesaa.net/article/201111article_2.html) | 40 |
+| `octgn-rsxg-01` | [仮面ライダー龍騎デッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/1) | 40 |
+| `octgn-rsxg-02` | [赤黄速攻デッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/2) | 40 |
+| `octgn-rsxg-03` | [仮面ライダー電王デッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/3) | 40 |
+| `octgn-rsxg-04` | [仮面ライダーライジングイクサデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/4) | 40 |
+| `octgn-rsxg-05` | [メレスラスターデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/5) | 40 |
+| `octgn-rsxg-06` | [青緑NCデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/6) | 40 |
+| `octgn-rsxg-07` | [ゴセイグレートデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/7) | 40 |
+| `octgn-rsxg-08` | [仮面ライダーZXデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/8) | 40 |
+| `octgn-rsxg-09` | [キラーアバレンオーデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/9) | 40 |
+| `octgn-rsxg-10` | [大鉄人17デッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/10) | 40 |
+| `octgn-rsxg-11` | [天雷旋風神デッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/11) | 40 |
+| `octgn-rsxg-12` | [タイタンボーイデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/12) | 40 |
+| `octgn-rsxg-13` | [仮面ライダージョーカーデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/13) | 40 |
+| `octgn-rsxg-14` | [仮面ライダーアクセルデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/14) | 40 |
+| `octgn-rsxg-15` | [レンスト16 仮面ライダーW ウィッツ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/15) | 40 |
+| `octgn-rsxg-16` | [仮面ライダーW・CJXデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/16) | 40 |
+| `octgn-rsxg-17` | [仮面ライダーBLACKデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/17) | 40 |
+| `octgn-rsxg-18` | [仮面ライダーアギトデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/18) | 40 |
+| `octgn-rsxg-19` | [仮面ライダーファイズ＆カブトデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/19) | 40 |
+| `octgn-rsxg-20` | [仮面ライダーブレイドKFデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/20) | 40 |
+| `octgn-rsxg-21` | [仮面ライダーゼロノスAFデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/21) | 40 |
+| `octgn-rsxg-22` | [仮面ライダーキバEFデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/22) | 40 |
+| `octgn-rsxg-23` | [仮面ライダーディケイドCFJFデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/23) | 40 |
+| `octgn-rsxg-24` | [スーパーゴセイレッドデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/24) | 40 |
+| `octgn-rsxg-25` | [スーパー戦隊魂デッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/25) | 40 |
+| `octgn-rsxg-26` | [仮面ライダーディケイドFFRデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/26) | 40 |
+| `octgn-rsxg-27` | [シンケンレッドデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/27) | 40 |
+| `octgn-rsxg-28` | [ゴーカイオーデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/28) | 40 |
+| `octgn-rsxg-29` | [ゴセイゴーカイデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/29) | 40 |
+| `octgn-rsxg-30` | [ゲキリントージャデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/30) | 40 |
+| `octgn-rsxg-31` | [ガンマジンクロスデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/31) | 40 |
+| `octgn-rsxg-32` | [ゴーカイレッドデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/32) | 40 |
+| `octgn-rsxg-33` | [アドベンチャー宇宙刑事デッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/33) | 40 |
+| `octgn-rsxg-34` | [ゴセイアルティメットデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/34) | 40 |
+| `octgn-rsxg-35` | [タジャドルデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/35) | 40 |
+| `octgn-rsxg-36` | [サイダイオーデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/36) | 40 |
+| `octgn-rsxg-37` | [グランナスカ宇宙刑事デッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/37) | 40 |
+| `octgn-rsxg-38` | [カウンター魔法忍者デッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/38) | 40 |
+| `octgn-rsxg-39` | [仮面ライダー1号＆2号デッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/39) | 40 |
+| `octgn-rsxg-40` | [ラトレーダーデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/40) | 40 |
+| `octgn-rsxg-41` | [呉越 SPEED LOVEデッキ（2011-05-09）](https://uu.getuploader.com/octgnrsxg/download/41) | 40 |
+| `octgn-rsxg-42` | [ぶっこみデッキ（2011-05-14）](https://uu.getuploader.com/octgnrsxg/download/42) | 40 |
+| `octgn-rsxg-43` | [レッツゴー仮面ライダーデッキ（2011-05-18）](https://uu.getuploader.com/octgnrsxg/download/43) | 40 |
+| `octgn-rsxg-44` | [超・電王トリロジーデッキ（2011-05-22）](https://uu.getuploader.com/octgnrsxg/download/44) | 40 |
+| `octgn-rsxg-45` | [モーフオルゴールデッキ（2011-05-27）](https://uu.getuploader.com/octgnrsxg/download/45) | 40 |
+| `octgn-rsxg-46` | [地獄兄弟トリロジーデッキ（2011-06-11）](https://uu.getuploader.com/octgnrsxg/download/46) | 40 |
+| `octgn-rsxg-47` | [青黒戒律（2011-06-29）](https://uu.getuploader.com/octgnrsxg/download/47) | 44 |
+
+どのデッキも、Lv2 同士で最後まで対局できることを確かめています（ブログのデッキは 1 デッキ 2 局ずつ。`blog-rabbit-9984932` の 1 局だけ、両者がクライマックス刑事でパワーを山札に戻し続けて 6,000 手で決着しませんでした）。livedoor「letsrenst」のデッキは Lv2 同士の 810 局（全 373 デッキが 1 局以上）で、すべて決着しました。2026-10-28 に足した地域対抗戦・`blog2` の 146 デッキは Lv2 同士の 300 局（全デッキ 2 局ずつ）で、エラーはなく、2 局を除いて決着しました（残り 2 局は手数の上限で引き分け）。

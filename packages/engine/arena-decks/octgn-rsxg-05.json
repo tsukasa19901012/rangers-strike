@@ -1,0 +1,63 @@
+{
+  "id": "octgn-rsxg-05",
+  "name": "メレスラスターデッキ（2011-05-09）",
+  "source": "https://uu.getuploader.com/octgnrsxg/download/5",
+  "entries": [
+    {
+      "cardId": "RS-233",
+      "count": 3
+    },
+    {
+      "cardId": "RS-082",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-033",
+      "count": 4
+    },
+    {
+      "cardId": "XG4-093",
+      "count": 3
+    },
+    {
+      "cardId": "RK-016",
+      "count": 3
+    },
+    {
+      "cardId": "XG6-021",
+      "count": 2
+    },
+    {
+      "cardId": "RK-195",
+      "count": 3
+    },
+    {
+      "cardId": "XG6-041",
+      "count": 1
+    },
+    {
+      "cardId": "RK-127",
+      "count": 3
+    },
+    {
+      "cardId": "RS-409",
+      "count": 3
+    },
+    {
+      "cardId": "RS-410",
+      "count": 3
+    },
+    {
+      "cardId": "RS-039",
+      "count": 3
+    },
+    {
+      "cardId": "RS-504",
+      "count": 3
+    },
+    {
+      "cardId": "RS-431",
+      "count": 3
+    }
+  ]
+}
