@@ -36,6 +36,10 @@ UI は Vita 版と同じ [PocketJS](https://github.com/pocket-stack/pocketjs)（
   開いた人は同じ場面から CPU 相手に続きを遊べます（デバッグで盤面を伝える用。結果は戦績に残りません）。
   URL は短い形 `/?s=<8文字>`（盤面は `api/share.js` が Upstash Redis に 30 日保存）で、保存先がないときは
   盤面を圧縮して入れた長い形 `/#s=RS1.…`（終盤で約 2,000〜3,500 文字）になります。クリップボードに書けないブラウザでは URL を表示します
+- 対戦の記録: 人と CPU の対戦が終わると、種・デッキ・指した手の全部（client-core `app/gameRecord.ts`）を `api/share.js` に送ります（画面には出しません。
+  共有した盤面から続けた対戦と、CPU 同士の自動対戦は送りません）。CPU の負け方を調べるためのもので、
+  `node scripts/list-game-records.mjs --env <読み取り専用の鍵のファイル> --out game-records.json` で読み出し、
+  `packages/engine/scripts/replay-game-records.ts` でエンジンで再生して CPU の負けた対戦を並べます
 - 保存（設定・自作デッキ・戦績）は localStorage（キー `rs.settings.v1` / `rs.decks.v1` / `rs.records.v1`）
 
 ## 構成
@@ -54,7 +58,7 @@ src/share.ts        共有 URL を作る・開く（gzip + base64url、/api/shar
 src/deckShare.ts    デッキの共有 URL を作る・開く（RD1.、/api/share の deck）
 src/DeckSharePanel.tsx  デッキの共有パネル・共有されたデッキの確認・テキスト取り込みの描画と当たり判定
 src/qr.ts           QR コードのモジュール計算（qrcode-generator。描画はホストの globalThis.__rsQr）
-api/share.js        Vercel Function: 共有された盤面とデッキを Upstash Redis に保存・取得（開発用サーバではメモリに保存）
+api/share.js        Vercel Function: 共有された盤面とデッキを Upstash Redis に保存・取得、対戦の記録を保存（開発用サーバではメモリに保存）
 src/ui.tsx          画面共通の描画ヘルパ
 host/               ブラウザホスト（index.html, host.js）
 scripts/            ビルド・開発用静的サーバ・フォント取得・pocket check
@@ -144,3 +148,5 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 - デッキ: `POST /api/share {"deck": "RD1.…"}` → `{"id": …}`、`GET /api/share?d=…` → `{"deck": …}`。
   ID は中身の SHA-256 から作るので同じデッキは同じ ID（2 回目は何も増えません）。期限なし。
   2,048 文字まで、サーバで展開して `{v:1, name, cards}` のカードリストであることを確かめたものだけ保存します
+- 対戦の記録: `POST /api/share {"game": "RG1.…"}` → `{"ok": true}`。キー `game:<時刻>-<8文字>` で 1 年保存し、読み出す API はありません
+  （`scripts/list-game-records.mjs` が Upstash から直接読みます）。256 KiB まで、サーバで展開して `{v:1, seed, humanDeck, cpuDeck, actions}` であることを確かめます

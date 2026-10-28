@@ -16,7 +16,8 @@ DOM・Node・PocketJS には依存しません（`lib` は ES2022、`types` な�
 | `src/app/guiMatch.ts` | 対戦画面の GUI 状態（カードのフォーカス・操作メニュー）。合法手をカードごとに振り分ける |
 | `src/app/deckBuilder.ts` | デッキ構築画面の状態（一覧・絞り込み・保存）。`deckSharing` のシェルでは「共有する」「テキストから取り込む」も出す |
 | `src/app/deckShare.ts` | デッキの共有形式（URL 用の `{v, name, cards}` とテキストのカードリスト）の作成と読み取り |
-| `src/session/session.ts` | 1 試合: 合法手 → ラベル付き選択肢、CPU 1 手の実行と時間計測、ログ整形 |
+| `src/session/session.ts` | 1 試合: 合法手 → ラベル付き選択肢、CPU 1 手の実行と時間計測、ログ整形、適用した手の記録（`actions`） |
+| `src/app/gameRecord.ts` | 終わった対戦の記録（種・デッキ・手の全部）。`Platform.sendGameRecord` があるシェル（ブラウザ版）が終局時に送る |
 | `src/view/gui.ts` | GameState → カードタイルの表示モデルと、Vita 用の配置 |
 | `src/view/webGui.ts` | ブラウザ版の配置（`computeWebGuiGeometry` / `computeWebDeckGeometry`、縦持ちのスマホ配置を含む） |
 | `src/view/board.ts`, `src/view/layout.ts` | テキスト画面（タイトル・結果）の表示モデルと配置 |

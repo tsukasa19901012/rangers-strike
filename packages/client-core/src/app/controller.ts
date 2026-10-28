@@ -18,6 +18,7 @@ import { sameDeckEntries } from "./deckShare";
 import type { GuiGeometry } from "../view/gui";
 import { CUSTOM_DECK_PREFIX } from "../platform/settings";
 import { buildSharePayload, type SharePayload } from "./share";
+import { buildGameRecord } from "./gameRecord";
 
 export type Row = { text: string; selected: boolean };
 
@@ -605,6 +606,10 @@ export class AppController {
       cpuLevel: session.options.cpuLevel,
       ...(session.options.humanLevel ? { autoLevel: session.options.humanLevel } : {}),
     });
+    if (!this.sharedMatch && this.platform.sendGameRecord) {
+      const record = buildGameRecord(session, Date.now());
+      if (record) this.platform.sendGameRecord(record);
+    }
     if (session.options.humanLevel) {
       const request = this.settingsStore.autoplay();
       if (request) this.settingsStore.saveAutoplay({ ...request, games: request.games - 1 });
