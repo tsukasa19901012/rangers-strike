@@ -4,6 +4,9 @@
 //   GET  /api/share?id=k3F9xQ2a           -> {"code": "RS1...."}
 //   POST /api/share  {"deck": "RD1...."}  -> {"id": "Hq7mT2xa"}   deck, kept for good
 //   GET  /api/share?d=Hq7mT2xa            -> {"deck": "RD1...."}
+//   POST /api/share  {"game": "RG1...."}  -> {"ok": true}         finished match, kept a year
+// A game record (client-core app/gameRecord.ts) is only written, never served: the developers read
+// them with scripts/list-game-records.mjs to see how the CPU lost.
 // A deck's id comes from its content, so sharing the same deck again gives the
 // same URL and stores nothing new. Only a real deck is kept: the server
 // decompresses it and checks it is a small {name, cards} list.
@@ -18,6 +21,11 @@ export const TTL_SECONDS = 30 * 24 * 60 * 60;
 export const MAX_CODE_LENGTH = 64 * 1024;
 const PREFIX = "RS1.";
 const DECK_PREFIX = "RD1.";
+const GAME_PREFIX = "RG1.";
+/** Game records are deleted after this many seconds. */
+export const GAME_TTL_SECONDS = 365 * 24 * 60 * 60;
+/** A long match is a few thousand actions, about 20 KB gzipped. */
+export const MAX_GAME_LENGTH = 256 * 1024;
 /** A 40-card deck is about 300 characters; even 60 different cards stay far below this. */
 export const MAX_DECK_LENGTH = 2048;
 const DECK_CARDS = /^[A-Za-z]{2}\d?-\d{3}(\*\d{1,2})?(,[A-Za-z]{2}\d?-\d{3}(\*\d{1,2})?){0,199}$/;
@@ -46,6 +54,18 @@ export function isDeckCode(code) {
     const json = gunzipSync(Buffer.from(code.slice(DECK_PREFIX.length), "base64url"), { maxOutputLength: 8 * 1024 }).toString("utf8");
     const deck = JSON.parse(json);
     return deck?.v === 1 && typeof deck.name === "string" && deck.name.length <= 40 && typeof deck.cards === "string" && DECK_CARDS.test(deck.cards);
+  } catch {
+    return false;
+  }
+}
+
+/** True when the code really is a game record (RG1. + gzip of {v:1, seed, decks, actions}). */
+export function isGameCode(code) {
+  if (typeof code !== "string" || !code.startsWith(GAME_PREFIX) || code.length > MAX_GAME_LENGTH || !/^[A-Za-z0-9._-]+$/.test(code)) return false;
+  try {
+    const json = gunzipSync(Buffer.from(code.slice(GAME_PREFIX.length), "base64url"), { maxOutputLength: 8 * 1024 * 1024 }).toString("utf8");
+    const r = JSON.parse(json);
+    return r?.v === 1 && Number.isInteger(r.seed) && typeof r.humanDeck === "string" && typeof r.cpuDeck === "string" && Array.isArray(r.actions);
   } catch {
     return false;
   }
@@ -88,6 +108,13 @@ export function createShareHandlers(getStore) {
         // Already there: the same deck shared before (a different deck with the same id is next to impossible).
         if ((await store.put(key, deck)) || (await store.get(key)) === deck) return json(200, { id });
         return json(409, { error: "id_taken" });
+      }
+      if (body && "game" in body) {
+        if (!isGameCode(body.game)) return json(400, { error: "bad_game" });
+        for (let attempt = 0; attempt < 3; attempt++) {
+          if (await store.put(`game:${Date.now().toString(36)}-${newId()}`, body.game, GAME_TTL_SECONDS)) return json(200, { ok: true });
+        }
+        return json(500, { error: "no_id" });
       }
       const code = body?.code;
       if (typeof code !== "string" || !code.startsWith(PREFIX) || code.length > MAX_CODE_LENGTH || !/^[A-Za-z0-9._-]+$/.test(code)) {

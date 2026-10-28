@@ -3,11 +3,13 @@ import { AppController } from "./controller";
 import { input } from "../input/actions";
 import { testPlatform } from "../testing/engine";
 import { measureText } from "../text/wrap";
+import type { GameRecord } from "./gameRecord";
 
 describe("AppController", () => {
   it("drives title -> match -> result with logical input only", () => {
     const logs: string[] = [];
-    const app = new AppController({ platform: testPlatform(logs), viewport: { width: 480, height: 272 }, cpuDelayFrames: 0, seed: () => 5 });
+    const sent: GameRecord[] = [];
+    const app = new AppController({ platform: { ...testPlatform(logs), sendGameRecord: (r) => sent.push(r) }, viewport: { width: 480, height: 272 }, cpuDelayFrames: 0, seed: () => 5 });
     let view = app.view();
     expect(view.screen).toBe("title");
     expect(view.rows).toHaveLength(5);
@@ -29,10 +31,15 @@ describe("AppController", () => {
     expect(view.screen).toBe("result");
     expect(view.footer).toMatch(/CPU思考/);
     expect(logs.some((l) => l.startsWith("cpu move="))).toBe(true);
+    // The finished match's record went to the platform once.
+    expect(sent).toHaveLength(1);
+    expect(sent[0]).toMatchObject({ seed: 5, winner: expect.stringMatching(/^player[12]$/) });
+    expect(sent[0]!.actions.length).toBeGreaterThan(10);
   });
 
   it("plays CPU-vs-CPU matches on its own when an autoplay request is stored", () => {
-    const platform = testPlatform();
+    const sent: GameRecord[] = [];
+    const platform = { ...testPlatform(), sendGameRecord: (r: GameRecord) => sent.push(r) };
     platform.storage.set("rs.autoplay.v1", JSON.stringify({ games: 2, humanLevel: 1, cpuLevel: 2 }));
     const app = new AppController({ platform, viewport: { width: 480, height: 272 }, cpuDelayFrames: 0, seed: () => 7 });
     for (let frame = 0; frame < 60000; frame++) {
@@ -44,6 +51,8 @@ describe("AppController", () => {
     expect(records[0]).toMatchObject({ autoLevel: 1, cpuLevel: 2 });
     expect(records[0].maxThinkMs).toBeGreaterThan(0);
     expect(JSON.parse(platform.storage.get("rs.autoplay.v1")!).games).toBe(0);
+    // Autoplay (measurement) matches are not sent.
+    expect(sent).toHaveLength(0);
   });
 
   it("keeps every rendered line inside its pane width", () => {

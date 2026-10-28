@@ -3,6 +3,7 @@ import { GameSession } from "./session";
 import { HUMAN } from "../engineApi";
 import { buildBoardView, buildPendingView } from "../view/board";
 import { testEngine } from "../testing/engine";
+import { buildGameRecord, parseGameRecord } from "../app/gameRecord";
 
 function newSession(seed: number, lines: string[] = []) {
   let now = 0;
@@ -57,5 +58,27 @@ describe("GameSession", () => {
     expect(session.log.length).toBeGreaterThan(10);
     expect(lines.some((l) => l.startsWith("match end"))).toBe(true);
     expect(buildBoardView(testEngine, session.state).header).toContain("勝利");
+
+    // The game record (seed + decks + actions) replays the same match.
+    const record = parseGameRecord(JSON.parse(JSON.stringify(buildGameRecord(session, 123))));
+    expect(record).not.toBeNull();
+    expect(record!.actions.length).toBeGreaterThan(session.metrics.moves);
+    let state = testEngine.createStarterGame({ player1Starter: record!.humanDeck, player2Starter: record!.cpuDeck, seed: record!.seed });
+    for (const action of record!.actions) {
+      const r = testEngine.applyAction(state, action);
+      expect(r.ok).toBe(true);
+      if (r.ok) state = r.state;
+    }
+    expect(state.winner).toBe(record!.winner);
+    expect(state.turn).toBe(record!.turns);
+  });
+
+  it("has no game record for an unfinished match or a loaded board", () => {
+    const session = newSession(5);
+    expect(buildGameRecord(session, 0)).toBeNull();
+    session.loadState({ ...session.state, winner: HUMAN });
+    expect(session.actions).toBeNull();
+    expect(buildGameRecord(session, 0)).toBeNull();
+    expect(parseGameRecord({ v: 1, seed: 1, actions: [] })).toBeNull();
   });
 });

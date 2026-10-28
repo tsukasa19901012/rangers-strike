@@ -65,6 +65,11 @@ export class GameSession {
   version = 0;
   private cachedOptions: { version: number; options: ActionOption[] } | null = null;
   lastError: string | null = null;
+  /**
+   * Every action applied since the match was created, in order: with the seed and the decks it replays
+   * the whole match (app/gameRecord.ts). null after loadState (a shared board has no history from the start).
+   */
+  actions: GameAction[] | null = [];
 
   constructor(options: SessionOptions) {
     this.engine = options.engine;
@@ -118,7 +123,7 @@ export class GameSession {
       this.version++;
       return { ok: false, error: this.lastError };
     }
-    this.commit(result.state);
+    this.commit(result.state, option.action);
     return { ok: true, label: option.label };
   }
 
@@ -184,7 +189,7 @@ export class GameSession {
     const m = this.metrics;
     if (actor === HUMAN && this.options.humanLevel) {
       // Autoplay: only the CPU side's thinking is measured.
-      this.commit(result.state);
+      this.commit(result.state, action);
       return { ok: true, label: `${PLAYER_LABELS[actor]}: ${label}` };
     }
     m.moves++;
@@ -193,7 +198,7 @@ export class GameSession {
     m.totalThinkMs += think;
     m.avgThinkMs = m.totalThinkMs / m.moves;
     m.maxThinkMs = Math.max(m.maxThinkMs, think);
-    this.commit(result.state);
+    this.commit(result.state, action);
     if (m.moves % (this.options.memoryEvery ?? 10) === 0 || this.state.winner) this.sampleMemory();
     this.options.log?.(
       `cpu move=${m.moves} actor=${actor} think=${think.toFixed(1)}ms apply=${m.lastApplyMs.toFixed(1)}ms ` +
@@ -208,6 +213,7 @@ export class GameSession {
    */
   loadState(next: GameState): void {
     this.state = next;
+    this.actions = null;
     this.lastError = null;
     this.version++;
     this.cachedOptions = null;
@@ -217,7 +223,8 @@ export class GameSession {
     this.syncLog();
   }
 
-  private commit(next: GameState): void {
+  private commit(next: GameState, action: GameAction): void {
+    this.actions?.push(action);
     this.state = next;
     this.lastError = null;
     this.version++;

@@ -1,6 +1,7 @@
 // Platform seams. Each shell (Vita/PocketJS now; web, iOS/Android later)
 // provides these; the core never touches files, the DOM or native APIs.
 import type { EngineApi, GameState } from "../engineApi";
+import type { GameRecord } from "../app/gameRecord";
 
 /** Monotonic-ish milliseconds (Date.now on QuickJS, performance.now in browsers). */
 export type Clock = () => number;
@@ -61,4 +62,6 @@ export type Platform = {
   memory: MemoryProbe;
   storage: KeyValueStore;
   assets: AssetLoader;
+  /** Keeps the record of a finished match somewhere the developers can read it (web: api/share.js). */
+  sendGameRecord?(record: GameRecord): void;
 };

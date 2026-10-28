@@ -1,7 +1,7 @@
 // The 共有 button: the match's board as a short URL (?s=<id>, stored by api/share.js)
 // or, when the server cannot store it, as a long URL (#s=<code>).
 // The code is the share payload as gzip + base64url, prefixed with its version.
-import { parseSharePayload, type SharePayload } from "@rangers-strike/client-core";
+import { parseSharePayload, type GameRecord, type SharePayload } from "@rangers-strike/client-core";
 
 const PREFIX = "RS1.";
 
@@ -102,4 +102,16 @@ export async function sharedBoardFromLocation(): Promise<SharePayload | null | "
   }
   const payload = code ? await decodeShare(code) : null;
   return payload ?? "error";
+}
+
+/** Sends a finished match's record (gzip + base64url, "RG1.") to api/share.js. Failures are ignored. */
+export async function sendGameRecord(record: GameRecord): Promise<void> {
+  try {
+    if (!g.fetch || !g.CompressionStream) return;
+    const json = new g.TextEncoder!().encode(JSON.stringify(record));
+    const game = "RG1." + toBase64Url(await pipe(json, new g.CompressionStream("gzip")));
+    await g.fetch("/api/share", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ game }) });
+  } catch {
+    // offline or no server: the record is simply not kept
+  }
 }

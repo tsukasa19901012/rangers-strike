@@ -1,6 +1,7 @@
 // Browser implementations of the client-core platform seams.
 import { MemoryKeyValueStore, heapOrEstimateProbe, type KeyValueStore, type Platform } from "@rangers-strike/client-core";
 import { engine } from "./engine";
+import { sendGameRecord } from "./share";
 
 type BrowserGlobals = {
   performance?: { now?: () => number; memory?: { usedJSHeapSize?: number } };
@@ -50,4 +51,5 @@ export const webPlatform: Platform = {
     cardImage: (cardId) => `cards/${cardId}.jpg`,
     fontStrategy: "baked-atlas",
   },
+  sendGameRecord: (record) => void sendGameRecord(record),
 };

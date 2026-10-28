@@ -20,4 +20,5 @@ export * from "./view/cardFields";
 export * from "./view/webGui";
 export * from "./input/devices";
 export * from "./app/share";
+export * from "./app/gameRecord";
 export * from "./app/deckShare";
