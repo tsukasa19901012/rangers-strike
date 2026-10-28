@@ -13,6 +13,7 @@ import { getLegalActions } from "../core/legalActions";
 import type { GameState } from "../types/game";
 import { ncBoard } from "../cardSpec/XG7-001-023.helpers";
 import { allFieldCards, allOperations, checkActivations, checkEnterBattle, checkOnRush, checkOperation, type DriveResult } from "./effectBoard";
+import { movesBetween } from "./effectResult";
 
 /** 「…てもよい。そうしたとき、山札の上から…」「発動できる⇒山札の上から…」「山札の上から…を見て（オモテにして）もよい」。 */
 const OPTIONAL_TOP = /(発動できる⇒|てもよい。そうしたとき、|てもよい⇒)[^「」]{0,90}?山札の上から[^。]{0,6}枚(を見|をオモテ|見)|山札の上から[^。]{0,24}(を見て|オモテにして)もよい/;
@@ -76,5 +77,31 @@ describe("山札の上を見る任意の効果は、発動を選ぶ前に山札�
       }
     }
     expect(leaks).toEqual([]);
+  }, 120_000);
+});
+
+/** 「（とき）、次の効果を発動できる⇒」（コストを払って発動するものは除く）。発動しなければ何も起きない。 */
+const FREE_ACTIVATION = /(とき|時)、(?:[^。⇒]*?ば、?)?次の効果を発動できる⇒/;
+const deckOrder = (s: GameState) => [s.players.player1.deck, s.players.player2.deck].map((d) => d.map((c) => c.instanceId).join(",")).join("|");
+
+describe("「次の効果を発動できる」を発動しなければ、何も動かない", () => {
+  const free = allFieldCards.filter((d) => FREE_ACTIVATION.test((d.text ?? "").normalize("NFKC")));
+
+  it("対象のカードを読めている", () => {
+    expect(free.map((d) => d.id)).toEqual(expect.arrayContaining(["XG7-009", "XP-032", "RM-024", "RS-439", "XG4-004"]));
+  });
+
+  it("発動しないを選ぶと、カードも山札の並びも変わらない（XG7-009・XP-032 は以前、見送ってもシャッフルしていた）", async () => {
+    const moved: string[] = [];
+    for (const [i, d] of free.entries()) {
+      if (i % 10 === 0) await new Promise((resolve) => setImmediate(resolve));
+      for (const [where, o] of [["rush", checkOnRush(d, "decline")], ["enter", checkEnterBattle(d, "decline")]] as const) {
+        if (o.kind !== "prompted" || !o.promptState || !o.state) continue;
+        if (o.promptState.pendingEffectChoice?.sourceCardId !== d.id) continue;
+        const mv = movesBetween(o.promptState, o.state, new Set(o.excluded ?? []));
+        if (mv.length > 0 || deckOrder(o.promptState) !== deckOrder(o.state)) moved.push(`${d.id} (${where}) ${mv.map((m) => m.id).join(",") || "山札の並び"}`);
+      }
+    }
+    expect(moved).toEqual([]);
   }, 120_000);
 });

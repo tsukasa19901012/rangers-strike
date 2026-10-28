@@ -22,6 +22,7 @@ import { registerPromoAfterAction, registerPromoBpBonus, registerPromoChoice, re
 import { fillsSlot } from "./xpEffects";
 import { registerPromoAttackerBpBonus, registerPromoOperationCostReduction } from "./promoHooks";
 import { returnToDeckInOrder } from "../deckOrder";
+import { gateReveal } from "../revealGate";
 
 // ---------------------------------------------------------------------------
 // XP-017 仮面ライダーディケイド激情態【世界の破壊者】（RC）
@@ -338,7 +339,8 @@ registerPromoKeyword("XP-029::madayo", (state) => ({ state, detail: `${MADAYO}:t
 // ---------------------------------------------------------------------------
 // XP-032 ゴーカイオー【レジェンドを求めて】（自軍ターン中、バトルエリアに出たとき）
 // 「次の効果を発動できる⇒自軍山札を見て、Sユニット以外のユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。その後、山札をシャッフルする。」
-// （atwiki/page-2444）。選べるのは印刷のサイズが S でないユニットカード。見送っても山札はシャッフルする。
+// （atwiki/page-2444）。選べるのは印刷のサイズが S でないユニットカード。発動するかを先に聞き（rules/revealGate.ts）、発動したら
+// 選ばなくても（候補が無くても）山札はシャッフルする。発動しなければ山札はそのまま。
 
 const LEGEND = "xp032_legend";
 
@@ -347,9 +349,8 @@ function applyLegend(state: GameState, ctx: GrantKeywordContext): GrantKeywordRe
   const ids = state.players[ctx.playerId].deck
     .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit" && unitSizeOf(state.definitions, c) !== "S")
     .map((c) => c.instanceId);
-  if (ids.length === 0) return { state: shuffleDeck(state, ctx.playerId), detail: `${LEGEND}:no_targets` };
   return {
-    state: openAfter(state, { ...base(ctxBase(ctx), ctx.sourceCardId), effectId: LEGEND, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true }),
+    state: openAfter(state, gateReveal({ ...base(ctxBase(ctx), ctx.sourceCardId), effectId: LEGEND, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true }, true)),
     detail: LEGEND,
   };
 }
@@ -368,7 +369,8 @@ registerPromoChoice(
     next = shuffleDeck(next, playerId);
     return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${LEGEND}:${instanceId}`) };
   },
-  simpleSkip((state, pending) => shuffleDeck(state, pending.playerId)),
+  // 確認が付いたままの見送り＝発動しない。外れていれば発動して選ばなかった（シャッフルする）。
+  simpleSkip((state, pending) => (pending.revealGate ? state : shuffleDeck(state, pending.playerId))),
 );
 registerPromoKeyword("XP-032::legend", applyLegend);
 

@@ -438,7 +438,8 @@ CHOICE_SKIPPERS[DINO_GUTS_EFFECT_ID] = declineLeaveStay(DINO_GUTS_EFFECT_ID, "XG
 // ---------------------------------------------------------------------------
 // XG7-009 タイムレッド ※（ラッシュしたとき）
 // 「次の効果を発動できる⇒自軍山札を見て「Vコマンダー」のカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。」
-// カード名が「Vコマンダー」のカード（RS-249）。選ばなくてもシャッフルする。
+// カード名が「Vコマンダー」のカード（RS-249）。発動するかを先に聞き（rules/revealGate.ts）、発動したら候補が無くてもシャッフルする。
+// 発動しなければ山札はそのまま（以前は候補が無いと聞かずにシャッフルし、見送ってもシャッフルしていた）。
 
 const V_COMMANDER_EFFECT_ID = "xg7009_v_commander";
 
@@ -446,8 +447,7 @@ function applyVCommanderSearch(state: GameState, ctx: GrantKeywordContext): Gran
   const ids = state.players[ctx.playerId].deck
     .filter((c) => sameCardName(getDefinition(state.definitions, c.cardId)?.name, "Vコマンダー"))
     .map((c) => c.instanceId);
-  if (ids.length === 0) return { state: shuffleDeck(state, ctx.playerId), detail: "xg7009:no_targets" };
-  return { state: openAfter(state, selectOne(ctxBase(ctx), "XG7-009", V_COMMANDER_EFFECT_ID, ids, true)), detail: V_COMMANDER_EFFECT_ID };
+  return { state: openAfter(state, gateReveal(selectOne(ctxBase(ctx), "XG7-009", V_COMMANDER_EFFECT_ID, ids, true))), detail: V_COMMANDER_EFFECT_ID };
 }
 
 CHOICE_RESOLVERS[V_COMMANDER_EFFECT_ID] = (state, playerId, instanceId) => {
@@ -461,7 +461,8 @@ CHOICE_RESOLVERS[V_COMMANDER_EFFECT_ID] = (state, playerId, instanceId) => {
   next = shuffleDeck(next, playerId);
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG7-009", `${V_COMMANDER_EFFECT_ID}:reveal:${card ? cardName(state.definitions, card.cardId) : "-"}`) };
 };
-CHOICE_SKIPPERS[V_COMMANDER_EFFECT_ID] = simpleSkip((s, pending) => shuffleDeck(s, pending.playerId));
+// 確認が付いたままの見送り＝発動しない。外れていれば発動して選ぶカードが無かった（シャッフルする）。
+CHOICE_SKIPPERS[V_COMMANDER_EFFECT_ID] = simpleSkip((s, pending) => (pending.revealGate ? s : shuffleDeck(s, pending.playerId)));
 
 // ---------------------------------------------------------------------------
 // XG7-011 ハリケンレッド【ジャイロ手裏剣】（NC。「特徴「忍者」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する」は

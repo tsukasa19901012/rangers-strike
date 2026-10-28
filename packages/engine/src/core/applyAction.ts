@@ -3302,7 +3302,11 @@ function applyActionCore(
       // 「山札の上から…をオモテにしてもよい」を発動する: 確認を外し、山札のカードを見せて同じ選択を続ける（rules/revealGate.ts）。
       {
         const revealed = openRevealGate(state);
-        if (revealed) return ok(revealed, buildSimpleLogEntry(playerId, "confirm_effect_choice"));
+        if (revealed?.empty) {
+          // 候補が無い: 発動して何も選ばなかったのと同じ（確認を外した選択の見送り。山札のシャッフル等の続きを行う）。
+          return applyActionCore(revealed.state, { type: "skip_effect_choice", playerId }, { trustLegality: true });
+        }
+        if (revealed) return ok(revealed.state, buildSimpleLogEntry(playerId, "confirm_effect_choice"));
       }
       // XG4-074【ライドルスティック】: バトルの前の確認（rules/xg4/xg4dEffects.ts）。
       if (isXg4BeforeBattleChoice(state.pendingEffectChoice)) {

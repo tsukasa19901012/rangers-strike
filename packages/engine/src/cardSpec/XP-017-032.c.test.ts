@@ -10,6 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-XP-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import {
   act,
   attack,
@@ -40,6 +41,7 @@ import {
   rushPhase,
   rushVia,
   settle,
+  skip,
   st,
   sUnit,
   wingTests,
@@ -473,11 +475,20 @@ describe("XP-032 ゴーカイオー", () => {
   it("XP-032: 【レジェンドを求めて】自軍ターン中にバトルエリアに出たとき、山札から S ユニット以外のユニットカードを1枚選びパワーゾーンに置ける（S ユニットは選べない。任意）（出典: atwiki/page-2444）", () => {
     let s = enter(st({ player1: { rush: [inst("XP-032", "gk")], deck: [inst("SPEC-L", "big"), inst("TST-UNIT-0", "small"), ...deckCards(3)] }, player2: { deck: deckCards(3, "e") } }, EXTRA), "XP-032:gk");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XP-032");
+    // 発動するかを先に選ぶ（rules/revealGate.ts）。発動した後も選ばなくてよい
+    expect(onlyActivateOrSkip(s)).toBe(true);
+    s = activate(s);
     expect(choiceIds(s)).toContain("SPEC-L:big");
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:small");
     expect(canSkip(s)).toBe(true);
     s = settle(pick(s, "SPEC-L:big"));
     expect(zoneOf(s, "player1", "SPEC-L:big")).toBe("power");
+  });
+
+  it("XP-032: 【レジェンドを求めて】発動しなければ山札はシャッフルされない（ユーザー報告 2026-10-28「任意効果で処理が先に動くもの」の横展開。以前は見送ってもシャッフルした）（出典: atwiki/page-2444「次の効果を発動できる」）", () => {
+    const deck = [inst("SPEC-L", "big"), inst("TST-UNIT-0", "small"), ...deckCards(3)];
+    const s = settle(skip(enter(st({ player1: { rush: [inst("XP-032", "gk")], deck }, player2: { deck: deckCards(3, "e") } }, EXTRA), "XP-032:gk")));
+    expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(deck.map((c) => c.instanceId));
   });
 
   it.todo("XP-032: 【レジェンドを求めて】敵軍ターン中にバトルエリアに出たときは発動しない（出典: atwiki/page-2444「自軍ターン中、」）— 敵軍ターン中に L ユニットをバトルエリアに出す手順を公開 API で組めない");
