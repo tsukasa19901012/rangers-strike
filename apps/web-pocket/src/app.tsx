@@ -257,7 +257,7 @@ export default function App() {
     else applySettingsAction(controller, action);
     return true;
   }
-  // Deck sharing: the share panel, a deck opened from a URL, the paste box (DeckSharePanel).
+  // Deck sharing: the share panel, a deck opened from a URL, the paste box, the deck as card images (DeckSharePanel).
   const [deckPanel, setDeckPanel] = createSignal<DeckPanel | null>(null);
   const [panelHot, setPanelHot] = createSignal<string | null>(null);
   const [panelNotice, setPanelNotice] = createSignal<string | null>(null);
@@ -302,7 +302,7 @@ export default function App() {
     if (!panel) return;
     if (id === "close" || id === "cancel" || id === "skip" || id === "outside") {
       // A click beside the box does not throw away pasted text or a deck from a URL.
-      if (id !== "outside" || panel.kind === "share") closePanel();
+      if (id !== "outside" || panel.kind === "share" || panel.kind === "list") closePanel();
       return;
     }
     if (panel.kind === "open" && (id === "edit" || id === "play")) {
@@ -311,6 +311,16 @@ export default function App() {
       if (id === "edit") controller.editSavedDeck(saved.id);
       else controller.playSavedDeck(saved.id);
       refresh();
+      return;
+    }
+    if (panel.kind === "list" && id === "save") {
+      closePanel();
+      controller.saveBuilderDeck();
+      refresh();
+      return;
+    }
+    if (panel.kind === "list" && id === "share") {
+      openSharePanel();
       return;
     }
     if (panel.kind === "paste" && id === "import") {
@@ -847,10 +857,14 @@ export default function App() {
       changed = true;
     }
     if (panelNoticeFrames > 0 && --panelNoticeFrames === 0) setPanelNotice(null);
-    // The deck builder's 共有する / テキストから取り込む rows.
+    // The deck builder's 共有する / テキストから取り込む / デッキ一覧 rows.
     const request = controller.takeDeckRequest();
     if (request === "share") openSharePanel();
-    else if (request === "paste") {
+    else if (request === "list") {
+      const deck = controller.builderDeck();
+      setPanelNotice(null);
+      if (deck) setDeckPanel({ kind: "list", name: deck.name, entries: deck.entries, check: checkDeck(deck.entries) });
+    } else if (request === "paste") {
       setPanelNotice(null);
       setDeckPanel({ kind: "paste", text: "", parsed: { name: "", entries: [], unreadable: [] } });
     }
