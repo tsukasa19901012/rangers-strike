@@ -46,3 +46,5 @@ npm run typecheck -w @rangers-strike/client-core
 ```
 
 `src/app/guiStall.test.ts` は CPU 同士の対戦で、自分の番なのに選択ウィンドウも盤面の手もない局面（画面では止まって見える）がないことを確かめます。エンジンに新しい待ち（`pending…`）を足したら、`src/view/board.ts` の `buildPendingView` にも足してください。
+
+選択ウィンドウのカードは `src/view/gui.ts` の `locateInstance` で探します。常駐やユニットに重ねたカード（`stackedCards`）も探し、置き場は `operation:stack` のように `:stack` を付けて返します（表示は「自重ね」。ウラ向きは裏で出す）。見つからない id はカードでなくボタンになるため、重ねたカードを選ぶ効果がウィンドウから選べませんでした（XG6-048）。

@@ -520,6 +520,41 @@ describe("cards an effect shows", () => {
   });
 });
 
+describe("picking a card stacked in the operation zone", () => {
+  it("lists cards stacked on a resident operation as pickable cards (XG6-048【鏡像の戦士】)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const p1 = session.state.players.player1;
+    const [host, up, down, ...deck] = p1.deck;
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      players: {
+        ...session.state.players,
+        player1: { ...p1, deck, operation: [{ ...host!, stackedCards: [up!, { ...down!, faceDown: true }] }] },
+      },
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "xg6048_mirror",
+        sourceCardId: "XG6-048",
+        kind: "select_hand",
+        validInstanceIds: [host!.instanceId, up!.instanceId, down!.instanceId],
+        selectCount: 1,
+        optional: true,
+      },
+    };
+    session.version++;
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog.cards.map((c) => c.instanceId)).toEqual([host!.instanceId, up!.instanceId, down!.instanceId]);
+    expect(dialog.cards.every((c) => c.actionable)).toBe(true);
+    expect(dialog.cards.map((c) => c.caption)).toEqual(["自常駐", "自重ね", "自重ね"]);
+    // A face-down stacked card (クロックアップ) shows its back.
+    expect(dialog.cards[2]!.kind).toBe("hidden");
+    expect(dialog.cards[1]!.kind).not.toBe("hidden");
+  });
+});
+
 describe("choosing the order to put cards on the deck bottom", () => {
   it("numbers the cards as they are picked, keeps them in place, then offers to confirm the order (XG1-077【ライドブッカー】)", () => {
     const app = startGui(5);
