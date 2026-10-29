@@ -11,6 +11,8 @@ describe("同じカードの起動を繰り返さない", () => {
     let state = createStarterGame({ player1Starter: "ticket-breaker-b", player2Starter: "ticket-breaker-b", seed: 11526, firstPlayer: "player1" });
     let maxPerPhase = 0;
     let inPhase = 0;
+    // フェイズが変わったら数え直す（フェイズが変わった手でも、ログの最後の行が「phase:」で始まるとは限らない）。
+    let phaseKey = "";
     try {
       for (let step = 0; step < 3000 && !state.winner; step++) {
         const legal = getLegalActions(state);
@@ -18,11 +20,15 @@ describe("同じカードの起動を繰り返さない", () => {
         const actor = legal[0]!.playerId;
         setCpuLevelOverrides(actor === "player2" ? { 5: { turnPlanSteps: 0 } } : {});
         const action = pickCpuAction(state, actor, 5) ?? legal[0]!;
+        const key = `${state.turn}:${state.phase}`;
+        if (key !== phaseKey) {
+          phaseKey = key;
+          inPhase = 0;
+        }
         const result = applyAction(state, action);
         if (!result.ok) break;
         state = result.state;
         const last = state.log.at(-1) ?? "";
-        if (last.startsWith("phase:")) inPhase = 0;
         if (last.includes("|activate_field_unit_ability|XG5-066|")) maxPerPhase = Math.max(maxPerPhase, ++inPhase);
         if (maxPerPhase > 1) break;
       }
