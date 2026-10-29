@@ -122,6 +122,8 @@ export function formatGameLog(
         return `${player}の「${cardName}」がジョイントRコンボを発動（SP+1）`;
       case "riding_combo":
         return `${player}の「${cardName}」がライディングコンボを発動（SP+1）`;
+      case "xg2_042_number_two":
+        return `${player}の「${cardName}」はファイナルアタックライドでナンバー「2」になり、バトルエリアの2番目に出たのでNC`;
       case "number_combo":
         if (detail?.startsWith("ruin_survey:")) {
           const seen = detail.replace("ruin_survey:", "");
@@ -142,6 +144,9 @@ export function formatGameLog(
         }
         if (detail === "future_sight") {
           return `${player}の「${cardName}」が未来予知を発動（1枚ドロー）`;
+        }
+        if (detail?.startsWith("choice:")) {
+          return `${player}の「${cardName}」がNCで${getEffectLabel(detail.slice("choice:".length))}の対象選択`;
         }
         if (detail) {
           return `${player}の「${cardName}」が${getEffectLabel(detail)}を発動`;
@@ -189,7 +194,7 @@ export function formatGameLog(
       }
       case "resolve_effect_choice": {
         if (detail && isNoteworthyResolveEffectChoice(detail)) {
-          return formatResolveEffectChoiceNotice(player, cardName, detail);
+          return formatResolveEffectChoiceNotice(player, cardName, detail, definitions);
         }
         return `${player}の「${cardName}」の効果を解決`;
       }

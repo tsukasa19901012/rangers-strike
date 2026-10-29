@@ -16,6 +16,7 @@
 import { describe, expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState } from "../types/game";
+import { formatGameLog } from "../log/formatLog";
 import {
   accept,
   act,
@@ -117,8 +118,8 @@ describe("XG2-042 仮面ライダーディケイドCF", () => {
     expect(canStartRush(board([inst("TST-UNIT-0", "u")]), "player1", "XG2-042:h")).toBe(false);
   });
 
-  const far = (p1: Partial<GameState["players"]["player1"]> = {}) =>
-    ncEnter("XG2-042:cf", 0, { power: [inst("XG2-043", "pw"), inst("XG2-045", "lt"), inst("XG2-026", "nr"), faceDownCard("XG2-044", "fd")], ...p1 });
+  const far = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
+    ncEnter("XG2-042:cf", 0, { power: [inst("XG2-043", "pw"), inst("XG2-045", "lt"), inst("XG2-026", "nr"), faceDownCard("XG2-044", "fd")], ...p1 }, p2);
 
   it("XG2-042: 【ファイナルアタックライド】NC で、オモテ向きの自軍パワーの特徴「仮面ライダー」を持つユニットカードから1枚選べる（「仮面ライダー」を持たないカード・ウラ向きのカードは選べない）。任意（出典: atwiki/page-1687「オモテ向きの自軍パワーから特徴「仮面ライダー」を持つユニットカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
     const s = far();
@@ -132,6 +133,22 @@ describe("XG2-042 仮面ライダーディケイドCF", () => {
     expect(zoneOf(s, "player1", "XG2-043:pw")).toBe("rush");
     s = settle(enter(passEntry(s), "XG2-043:pw"));
     expect(spOf(s, "player1", "XG2-043:pw")).toBe(1);
+  });
+
+  it("XG2-042: 【ファイナルアタックライド】で出した RC の XG3-046 仮面ライダーBLACK は、ライドしなくても2番目に出れば NC で【キングストーンフラッシュ】を発動する。ログにはナンバー「2」の NC であることと、捨札にしたカード・山札の下に戻したユニットの名前が出る（2026-10-29 ユーザー報告「RC してないのに発動」）", () => {
+    let s = far({ power: [inst("XG3-046", "bk")], hand: [inst("XG2-043", "h")] }, { battle: [inst("XG2-047", "e")] });
+    s = resolveAll(pick(s, "XG3-046:bk"));
+    const from = s.log.length;
+    s = enter(passEntry(s), "XG3-046:bk");
+    expectChoiceFrom(s, "player1", "XG3-046");
+    s = pick(s, "XG2-043:h");
+    expect(choiceIds(s)).toEqual(["XG2-047:e"]);
+    s = pick(s, "XG2-047:e");
+    const lines = s.log.slice(from).map((e) => formatGameLog(e, s.definitions));
+    expect(lines).toContain("あなたの「仮面ライダーBLACK」はファイナルアタックライドでナンバー「2」になり、バトルエリアの2番目に出たのでNC");
+    expect(lines).toContain("あなたの「仮面ライダーBLACK」がNCでキングストーンフラッシュの対象選択");
+    expect(lines).toContain("あなたの「仮面ライダーBLACK」がキングストーンフラッシュを発動 → 「仮面ライダーW・CJ」を捨札");
+    expect(lines).toContain("あなたの「仮面ライダーBLACK」がキングストーンフラッシュを発動 → 「仮面ライダースーパー1・RNH」を山札の下へ");
   });
 
   it("XG2-042: 公式Q&A — 出したユニットは、ナンバーに関わらず（ナンバーのない XG2-045 W・LT でも）、自分がターンを終えるとき自軍エリアにあれば捨札になる（出典: atwiki/page-1687 Q1「いいえ、ナンバーに関わらず、出したユニットは自分がターンを終えるとき、自軍エリアにあれば捨札になります」）", () => {

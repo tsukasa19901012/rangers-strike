@@ -1,3 +1,4 @@
+import type { CardDefinition } from "@rangers-strike/cards";
 import { getEffectLabel } from "@rangers-strike/cards";
 
 /** `named_effect|choice:effectId` — 途中通知を非表示；代わりに対象付きresolveを表示。 */
@@ -56,6 +57,10 @@ const EFFECT_TARGET_SUFFIX: Record<string, string> = {
   ruin_excavation: "をラッシュへ",
   earth_force: "を維持コストに",
   dolphin_arrow: "をパワーへ",
+  // 対象を instanceId で記録する効果（名前は formatResolveEffectChoiceNotice で引く）
+  xg2_042_final_attack_ride: "をラッシュへ",
+  xg3046_kingstone: "を捨札",
+  xg3046_kingstone_pick: "を山札の下へ",
 };
 
 export const RESOLVE_EFFECT_TARGET_NOTICE_IDS = new Set([
@@ -79,6 +84,9 @@ export const RESOLVE_EFFECT_TARGET_NOTICE_IDS = new Set([
   "ruin_excavation",
   "earth_force",
   "dolphin_arrow",
+  "xg2_042_final_attack_ride",
+  "xg3046_kingstone",
+  "xg3046_kingstone_pick",
 ]);
 
 export function quoteChoiceTargets(targets: string): string {
@@ -101,14 +109,21 @@ export function isNoteworthyResolveEffectChoice(detail: string | undefined): boo
   return RESOLVE_EFFECT_TARGET_NOTICE_IDS.has(effectId);
 }
 
+/** 「RK-150-10」のような instanceId（cardId-連番。テストでは cardId:名前）はカード名にする。 */
+function targetName(target: string, definitions?: Record<string, CardDefinition>): string {
+  const m = /^(.+)[-:][^-:]+$/.exec(target);
+  return (m && definitions?.[m[1]!]?.name) || target;
+}
+
 export function formatResolveEffectChoiceNotice(
   player: string,
   sourceCardName: string,
   detail: string,
+  definitions?: Record<string, CardDefinition>,
 ): string {
   const colon = detail.indexOf(":");
   const effectId = detail.slice(0, colon);
-  const target = detail.slice(colon + 1);
+  const target = targetName(detail.slice(colon + 1), definitions);
   const quoted = quoteChoiceTargets(target);
   const suffix = EFFECT_TARGET_SUFFIX[effectId];
   const label = getEffectLabel(effectId);
