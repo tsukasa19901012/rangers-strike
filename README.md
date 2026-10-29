@@ -116,7 +116,7 @@ Web 版は `apps/web-pocket` の静的サイト（`dist/`）を Vercel で配信
 | Lv4 | 2 手読み（候補 56・応答深度 20）＋チャージの先読み |
 | Lv5 | 2 手読み（候補 64・応答深度 28）＋チャージの先読み（試行 2 回）。盤面の評価は、手書きの評価に、自己対戦から学習した価値ネットワークの評価を 0.5 倍して足す（`valueNetBlend`）。読むときは相手の手札を山札と混ぜて配り直し、本物の手札は覗かない（`hideOpponentHand`。強さは覗く場合と同等で、1,104 試合で 50.1%）。ラッシュ・バトルフェイズの決定は、候補の手ごとに自分のターンの終わりまで指し進めて、ターンの終わりの盤面で比べる（ターン単位の読み、`turnPlanSteps`。1 回の決定で指し進める手は合わせて 60 手まで。時間でなく手の数で区切るので、端末の速さで選ぶ手は変わらない）。どの段の探索でも、候補の手で自分の効果の選択（対象選び・効果を使うかどうか）が始まったら、その選択を済ませた盤面で比べる（選択の途中の盤面で比べると、追加の選択がある効果を使わなくなっていた。2026-10-26、強さは同等で 368 試合 51.6%）。手札・山札から選ぶ選択、重ねたカードの置き換え（RK-022 等）、RS-257、出た直後の【ジュウクンドー】にも CPU の選び方を足した（同日、368 試合 51.4%） |
 
-Lv5 の価値ネットワークの重みは `packages/engine/src/ai/weights/valueNetV1.ts`（約 380 kB）に同梱しています。重みは、Lv5 中心の自己対戦（run3・run4 の 16 万試合に、スターターとブログ・wiki 等のデッキで集めた run6・run7 の 20 万試合を足したもの）で学習した版（v5r、2026-10-27）です。前の版（v3b、手書きだけの Lv5 に 65%）との対戦では、Lv5 同士のミラー戦 3,671 試合で 53.8% 勝ちます。学習のしかたは [packages/engine/scripts/nn/README.md](packages/engine/scripts/nn/README.md) を見てください。
+Lv5 の価値ネットワークの重みは `packages/engine/src/ai/weights/valueNetV1.ts`（約 380 kB）に同梱しています。重みは、Lv5 中心の自己対戦（run3・run4 の 16 万試合、スターターとブログ・wiki 等のデッキで集めた run6〜run8 の 30 万試合、livedoor・ブログ・OCTGN のデッキも混ぜた run9 の 10 万試合）で学習した版（v7、2026-10-29）です。前の版（v5r）との対戦では、Lv5 同士のミラー戦で、学習に使っていない地域対抗戦のデッキ（rstournament）で 3,651 試合 52.5%、スターターで 3,672 試合 50.2% 勝ちます。学習のしかたは [packages/engine/scripts/nn/README.md](packages/engine/scripts/nn/README.md) を見てください。
 
 強さの比較は `packages/engine/scripts/cpu-arena.ts`（並列版 `cpu-arena-par.sh`）で行います。
 スターターのほかに、atwiki の大会のデッキ・デッキサンプルから組んだ 43 デッキと共有されたデッキ 1 個（[packages/engine/arena-decks](packages/engine/arena-decks/README.md)）でも測れます。

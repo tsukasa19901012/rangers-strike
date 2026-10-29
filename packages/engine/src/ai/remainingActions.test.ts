@@ -6,9 +6,9 @@ import { createStarterGame, type AllStarterDeckId } from "../verticalSlice/creat
 import { pickCpuAction } from "./index";
 
 /** 同じデッキ同士で Lv5 に最後まで打たせ、手の種類ごとに「合法だった局面の数」と「選んだ数」を数える（scripts/selfplay.ts と同じ進め方）。 */
-function playAndCount(deck: AllStarterDeckId, maxSteps = 4000) {
+function playAndCount(deck: AllStarterDeckId, seed = 1, maxSteps = 4000) {
   // seed を決めて、毎回同じ対戦にする（決めないと山札の並びが毎回変わり、起動しない対戦を引くことがある）。
-  let s: GameState = createStarterGame({ player1Starter: deck, player2Starter: deck, seed: 1 });
+  let s: GameState = createStarterGame({ player1Starter: deck, player2Starter: deck, seed });
   const legal: Record<string, number> = {};
   const chosen: Record<string, number> = {};
   for (let step = 0; step < maxSteps && !s.winner; step++) {
@@ -32,8 +32,9 @@ describe("CPU は列挙に無い合法手も候補にする（remainingActions�
   it("常駐（ミラーワールドなど）を起動することがあり、起動を繰り返して終わらなくなることはない", () => {
     let legal = 0;
     let chosen = 0;
-    for (const deck of ["rider-exp-1-b", "rider-exp-4-1", "blue-nine-b"] as const) {
-      const r = playAndCount(deck);
+    // 起動するかどうかは対戦の流れと同梱の重みで変わるので、seed 2 つ × 3 デッキのどれかで起動すればよい。
+    for (const seed of [1, 2]) for (const deck of ["rider-exp-1-b", "rider-exp-4-1", "blue-nine-b"] as const) {
+      const r = playAndCount(deck, seed);
       expect(r.winner).not.toBeNull();
       expect(r.chosen.activate_resident_operation ?? 0).toBeLessThan(60);
       legal += r.legal.activate_resident_operation ?? 0;
