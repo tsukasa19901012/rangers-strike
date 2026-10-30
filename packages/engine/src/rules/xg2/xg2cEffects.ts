@@ -12,6 +12,7 @@ import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKey
 import { cardHasGrantKeyword } from "../../dsl/promotedKeywordBridge";
 import { FEATURE_KEYWORDS } from "../../dsl/featureKeywords";
 import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
+import { buildLogEntry } from "../../log/formatLog";
 import { getDslOperationEffect } from "../../dsl/dslCatalog";
 import { collectTargetInstanceIds } from "../../dsl/targetSelectors";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
@@ -177,8 +178,10 @@ xg2Hook("comboEnter", (state, playerId, card, battleBeforeEnter) => {
   if (!xg2List<Xg2TurnEntry>(state, XG2_FAR_KEY).some((e) => e.instanceId === card.instanceId && e.ownerId === playerId && e.turn === state.turn)) return state;
   if (defOf(state, card.cardId)?.comboNumber !== "RC") return state;
   if (battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).length + 1 !== 2) return state;
-  const out = tryResolveDslTriggeredEffects({ state, cardId: card.cardId, instanceId: card.instanceId, playerId, phasePlayerId: state.activePlayer, triggerType: "riding_combo" });
-  return { ...out.state, log: [...out.state.log, ...out.logs] };
+  // ログには RC ではなくナンバー「2」の NC で発動したことを残す（ライドオフしていないのに発動して見えないように）。
+  const reason = buildLogEntry(playerId, "xg2_042_number_two", card.cardId, state.definitions);
+  const out = tryResolveDslTriggeredEffects({ state, cardId: card.cardId, instanceId: card.instanceId, playerId, phasePlayerId: state.activePlayer, triggerType: "riding_combo", logAction: "number_combo" });
+  return { ...out.state, log: [...out.state.log, reason, ...out.logs] };
 });
 
 // ※「これがユニットでなくなるとき、オモテ向きの自軍パワーから特徴「仮面ライダー」を持つカードを1枚選び捨札にすれば、その場に留まる。」

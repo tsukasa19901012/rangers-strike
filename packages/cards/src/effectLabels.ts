@@ -1,3 +1,5 @@
+import effectNameRegistry from "./pipeline/effect-name-registry.json";
+
 /** 効果名 id の日本語ラベル（UI・ログ用）。 */
 export const EFFECT_LABELS: Record<string, string> = {
   // RS-385 グリーンホバー（リリース状態で置くかの確認）
@@ -159,8 +161,17 @@ export const EFFECT_LABELS: Record<string, string> = {
   xg7042_rider_war: "ライダー大戦の世界",
   // XG1-077 仮面ライダーディケイド
   xg1_077_ride_booker: "ライドブッカー",
+  // XG2-042 仮面ライダーディケイドCF
+  xg2_042_final_attack_ride: "ファイナルアタックライド",
+  // XG3-046 仮面ライダーBLACK
+  xg3046_kingstone: "キングストーンフラッシュ",
+  xg3046_kingstone_pick: "キングストーンフラッシュ",
 };
 
+/** カード文の【効果名】から作った effect ID（pipeline/effect-name-registry.json）→ 効果名。上の表に無い ID のログ表示用。 */
+const REGISTRY_LABELS: Record<string, string> = {};
+for (const [name, id] of Object.entries(effectNameRegistry as Record<string, string>)) REGISTRY_LABELS[id] ??= name;
+
 export function getEffectLabel(effectId: string): string {
-  return EFFECT_LABELS[effectId] ?? effectId;
+  return EFFECT_LABELS[effectId] ?? REGISTRY_LABELS[effectId] ?? effectId;
 }
