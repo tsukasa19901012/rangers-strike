@@ -1991,9 +1991,11 @@ function appendBattleEntryActions(
   }
   // 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」（NC。rules/holdToActivate.ts）は
   // 出た直後の行動ウィンドウで起動できる。
+  // RS-379 は上の【雷の雄叫び】でもう出しているので、同じ手を2つ並べない。
   if (
     isHoldToActivateNc(unit.cardId) &&
-    listFieldActivatedAbilityCards(state, playerId).includes(pending.instanceId)
+    listFieldActivatedAbilityCards(state, playerId).includes(pending.instanceId) &&
+    !actions.some((a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === pending.instanceId)
   ) {
     actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId: pending.instanceId });
   }
