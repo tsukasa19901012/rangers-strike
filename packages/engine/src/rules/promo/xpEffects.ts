@@ -3,6 +3,7 @@
  * 起点は DSL の grant_keyword（`promo::XP-NNN::name`。rules/promo/promoRegistry.ts）。
  * 選択の組み立ては rules/rm/rm1Effects.ts の共通の部品を使う。
  */
+import { lookCtx, openDeckLook } from "../deckLook";
 import { hasNameOrAlias } from "../../core/cardNames";
 import { canonicalCardName, fusionMaterialAliasNames } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
@@ -210,7 +211,8 @@ function applyDoubleDriverSearch(state: GameState, ctx: GrantKeywordContext): Gr
       return d?.type === "unit" && (d.features ?? []).includes("ダブルドライバー");
     })
     .map((c) => c.instanceId);
-  if (ids.length === 0) return { state: shuffleDeck(state, ctx.playerId), detail: `${DOUBLE_DRIVER_SEARCH}:none` };
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return { state: openDeckLook(shuffleDeck(state, ctx.playerId), lookCtx(ctx), ctx.sourceCardId), detail: `${DOUBLE_DRIVER_SEARCH}:none` };
   return {
     state: openAfter(state, { ...base(ctxBase(ctx), ctx.sourceCardId), effectId: DOUBLE_DRIVER_SEARCH, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true }),
     detail: DOUBLE_DRIVER_SEARCH,

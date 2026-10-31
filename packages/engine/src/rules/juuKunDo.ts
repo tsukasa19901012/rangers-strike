@@ -1,3 +1,4 @@
+import { openDeckLook } from "./deckLook";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { canPayBattleCommandReleaseCost, payBattleCommandReleaseCost } from "./battleCommand";
@@ -110,7 +111,9 @@ export function applyLionDance(
   );
   if (yellows.length === 0) {
     const nextPlayer = { ...player, battle, deck: shuffleCards(player.deck) };
-    return { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+    // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+    const source = player.battle.find((c) => c.instanceId === attackerInstanceId)?.cardId ?? "RS-100";
+    return openDeckLook({ ...state, ...updatePlayer(state, playerId, nextPlayer) }, { playerId, phasePlayerId: playerId, sourceInstanceId: attackerInstanceId }, source);
   }
   const acted: GameState = { ...state, ...updatePlayer(state, playerId, { ...player, battle }) };
   return openEffectChoice(acted, {

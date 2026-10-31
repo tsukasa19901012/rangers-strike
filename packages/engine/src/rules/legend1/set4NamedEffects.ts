@@ -5,6 +5,7 @@
  * - `tryResolveSet4Choice` / `trySkipSet4Choice` / `tryConfirmSet4Choice`: このモジュールが開いた選択の解決。
  * - バトル解決・アタック対象の判定から呼ばれる参照関数（RS-212 / RS-213 / RS-220 / RS-225 / RS-226）。
  */
+import { lookCtx, openDeckLook } from "../deckLook";
 import { shuffleCards as shuffleDeckCards } from "../../core/deckShuffle";
 import type { CardInstance, GameState, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
 import { bounceToHand } from "../bounce";
@@ -597,7 +598,8 @@ function providerBaseCandidates(state: GameState, playerId: PlayerId, exclude: s
 
 function beginProviderBase(state: GameState, ctx: GrantKeywordContext): GameState {
   const ids = providerBaseCandidates(state, ctx.playerId, []);
-  if (ids.length === 0) return finishProviderBaseWith(state, ctx.playerId, []);
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return openDeckLook(finishProviderBaseWith(state, ctx.playerId, []), lookCtx(ctx), ctx.sourceCardId);
   return openEffectChoice(state, {
     playerId: ctx.playerId,
     effectId: PROVIDER_BASE_EFFECT_ID,

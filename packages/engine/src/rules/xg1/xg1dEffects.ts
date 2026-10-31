@@ -46,6 +46,7 @@ import {
   stripForZone,
 } from "../rm/rm1Effects";
 import { XG1_068_KUUGA_RULE } from "./xg1Fields";
+import { openDeckLook } from "../deckLook";
 import { XG1_CONFIRMERS, XG1_KEYWORDS, XG1_RESOLVERS, XG1_SKIPPERS, noop } from "./xg1Core";
 import { addTurnMark, costNumber, enemySUnits, hasTurnMark, holdCommands, isUnitDef, printedFeatures, releasedCommands, unitCatsNow } from "./xg1Shared";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
@@ -465,7 +466,7 @@ XG1_RESOLVERS[DARK_KIVA_PICK_EFFECT_ID] = (state, playerId, instanceId) => {
 //  する。 ◎自軍山札を見て、特徴「ディケイドライバー」を持つユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。その後山札をシャッフルする。」
 // （atwiki/page-1616）。ラッシュエリアに出すのは効果のラッシュ（コメント「場に出たら「ラッシュ」扱い」）。「仮面ライダーディケイド」は
 // カード名（「○○としてつかえる」を含む）のユニットカード。選ばなくても山札はシャッフルする。選べるカードがなくても山札を見る窓を開く
-// （山札の全部を見るだけのカードとして見せ、見送ると山札をシャッフルする）。
+// （rules/deckLook.ts）。
 
 const DECADRIVER_EFFECT_ID = "xg1_076_decadriver";
 const DECADRIVER_RUSH_EFFECT_ID = "xg1_076_decadriver_rush";
@@ -488,11 +489,10 @@ XG1_RESOLVERS[DECADRIVER_EFFECT_ID] = (state, playerId, mode) => {
   const deck = cleared.players[playerId].deck;
   const ids = (mode === "mode_1" ? deck.filter((c) => namedDecade(cleared, c.cardId)) : deck.filter((c) => isUnitDef(cleared, c.cardId) && printedFeatures(cleared, c.cardId).includes("ディケイドライバー"))).map((c) => c.instanceId);
   const log = logFor(state, playerId, "XG1-076", `${DECADRIVER_EFFECT_ID}:${mode}`);
-  if (deck.length === 0) return { state: proceed(shuffleDeck(cleared, playerId), pending), log };
-  // 「山札を見て」: 選べるカードがなくても山札の全部を見せる（見るだけのカードは viewedInstanceIds）。選べるカードがなければ見送るだけ。
+  // 選べるカードがなくても、山札を見るだけの窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return { state: proceed(openDeckLook(shuffleDeck(cleared, playerId), pendingBase(pending), "XG1-076"), pending), log };
   const effectId = mode === "mode_1" ? DECADRIVER_RUSH_EFFECT_ID : DECADRIVER_POWER_EFFECT_ID;
-  const viewedInstanceIds = deck.map((c) => c.instanceId);
-  return { state: openNext(cleared, pending, pickOne(pendingBase(pending), "XG1-076", effectId, ids, true, { viewedInstanceIds })), log };
+  return { state: openNext(cleared, pending, pickOne(pendingBase(pending), "XG1-076", effectId, ids, true)), log };
 };
 
 XG1_RESOLVERS[DECADRIVER_RUSH_EFFECT_ID] = (state, playerId, instanceId) => {

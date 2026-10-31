@@ -1,3 +1,4 @@
+import { hasDeckLookText } from "../rules/deckLook";
 import type { EffectDefinition, EffectPrimitive, PlayerRef } from "@rangers-strike/cards/dsl/types";
 import type { CardInstance, DslChoiceResume, GameState, PlayerId } from "../types/game";
 import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
@@ -51,6 +52,8 @@ export type DslOperationOutcome = {
   detail?: string;
   discardOperation?: boolean;
   useLegacy?: boolean;
+  /** 自軍山札から選ぶ choose で選べるカードがなかった（「自軍山札を見て…」なら呼ぶ側が山札を見る窓を開く。rules/deckLook.ts）。 */
+  deckLook?: boolean;
 };
 
 type ZoneKey = "hand" | "discard" | "power" | "command" | "rush" | "battle";
@@ -162,7 +165,7 @@ function applyPrimitive(
   state: GameState,
   ctx: DslCardContext,
   primitive: EffectPrimitive,
-): { state: GameState; detail?: string; pending?: boolean } {
+): { state: GameState; detail?: string; pending?: boolean; deckLook?: boolean } {
   switch (primitive.type) {
     case "draw": {
       // 「相手は1枚ドローしてもよい」等は player: "opponent"。省略時は効果の使用者（自分）。
@@ -392,7 +395,8 @@ function applyPrimitive(
         validInstanceIds = viewedInstanceIds;
       }
       if (validInstanceIds.length === 0 && primitive.kind !== "scry_keep_one") {
-        return { state };
+        const ownDeck = primitive.valid.type === "zone" && primitive.valid.zone === "deck" && (primitive.valid.owner ?? "self") === "self";
+        return { state, deckLook: ownDeck && hasDeckLookText(state, ctx.sourceCardId) };
       }
       let unitDestination: "deck_top" | undefined;
       if (primitive.kind === "select_unit") {
@@ -442,18 +446,21 @@ export function interpretEffectPrimitives(
 ): DslOperationOutcome {
   let current = state;
   let detail: string | undefined;
+  let deckLook = false;
   for (const primitive of primitives) {
     const result = applyPrimitive(current, ctx, primitive);
     current = result.state;
     if (result.detail) detail = result.detail;
+    if (result.deckLook) deckLook = true;
     if (result.pending || current.pendingEffectChoice) {
-      return { state: current, detail, discardOperation: false };
+      return { state: current, detail, discardOperation: false, deckLook };
     }
   }
   return {
     state: { ...current, activePlayer: ctx.phasePlayerId },
     detail: detail ?? ctx.effectId,
     discardOperation: ctx.discardOperation,
+    deckLook,
   };
 }
 

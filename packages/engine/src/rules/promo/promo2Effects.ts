@@ -3,6 +3,7 @@
  * （cardSpec PROMO2-SX-SR の監査）。起点は DSL の grant_keyword（`promo::<ID>::name`。rules/promo/promoRegistry.ts）と、
  * rules/promo/promoHooks.ts の継続効果の登録。
  */
+import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardCategories, cardWorks, effectiveCommandCategories, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
@@ -464,7 +465,8 @@ registerPromoChoice(
         return d?.type === "unit" && unitSizeOf(next.definitions, c) === "S" && !cardWorks(next.definitions, c.cardId).some((w) => works.includes(w));
       })
       .map((c) => c.instanceId);
-    if (ids.length === 0) return { state: proceed(shuffleDeck(next, playerId), pending), log };
+    // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+    if (ids.length === 0) return { state: proceed(openDeckLook(shuffleDeck(next, playerId), pending, pending.sourceCardId), pending), log };
     return {
       state: openNext(next, pending, { ...pending, effectId: BATON_PICK, validInstanceIds: ids, selectedInstanceIds: [], optional: false, promoMeta: { gosei: works.includes(GOSEIGER) } }),
       log,

@@ -165,7 +165,8 @@ describe("XG5-009 ゴーグルダンプ", () => {
   it("XG5-009: NC【ゴーゴーチェンジ】— ジェット（1番目）・タンク（2番目）・ダンプ（3番目）で、コマンドゾーンの「ゴーグルロボ」を合体（バトルエリアの3体を捨札）で出せば、相手に1点ダメージ（出典: atwiki/page-2190「出したユニットが「ゴーグルロボ」だったなら、相手に1点ダメージを与える」・カード評価「この効果で合体に使うユニットはエリアを問わない」）", () => {
     let s = battle({ rush: [inst("XG5-007", "j"), inst("XG5-008", "t"), inst("XG5-009", "d")], command: [released("XG5-006", "robo")], power: powerCards(5) });
     s = enterSeq(s, ["XG5-007:j", "XG5-008:t"]);
-    s = resolveAll(enter(resolveAll(s), "XG5-009:d"), ["XG5-006:robo", "XG5-007:j", "XG5-008:t", "XG5-009:d"]);
+    // タンクの NC は山札に L ユニットがないので、山札を見るだけの窓（rules/deckLook.ts）を閉じてからバトル進入を終える。
+    s = resolveAll(enter(passEntry(resolveAll(s)), "XG5-009:d"), ["XG5-006:robo", "XG5-007:j", "XG5-008:t", "XG5-009:d"]);
     expect(zoneOf(s, "player1", "XG5-006:robo")).toBe("rush");
     for (const p of ["XG5-007:j", "XG5-008:t", "XG5-009:d"]) expect(zoneOf(s, "player1", p)).toBe("discard");
     expect(damageOf(s, "player2")).toBe(1);

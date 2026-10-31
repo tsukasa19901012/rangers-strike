@@ -9,7 +9,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import { getActionPlayerId, getLegalActions } from "../core/legalActions";
 import { applyAction } from "../core/applyAction";
-import { COMMAND_ZONE_MAX, type CardInstance, type GameState } from "../types/game";
+import { COMMAND_ZONE_MAX, type CardInstance, type GameState, type PlayerId } from "../types/game";
 import type { GameAction } from "../types/actions";
 import { all, base, buildRushBoard, plainOperations, plainUnits, real } from "./rushBoard";
 
@@ -142,7 +142,18 @@ export type DriveResult = EffectOutcome & {
   branchState?: GameState;
   /** そのカードの効果の選択が最初に出たときの盤面（支払いで動かしたカードを効果が選ぶこともあるので、ここからも比べる）。 */
   promptState?: GameState;
+  /** そのカードの選択のどれかで、山札の全部（1枚以上）が候補か見るだけのカードに出た軍（「山札を見て」。sweep/deckLookAllCards.test.ts）。 */
+  wholeDeckShown?: PlayerId[];
 };
+
+/** 選択の候補と見るだけのカードで、山札の全部が見えている軍（選ぶ人の山札だけを見る）。 */
+export function wholeDeckShownTo(s: GameState): PlayerId | null {
+  const c = s.pendingEffectChoice;
+  if (!c || c.revealGate) return null;
+  const shown = new Set([...c.validInstanceIds, ...(c.viewedInstanceIds ?? []), ...(c.deckLookInstanceIds ?? [])]);
+  const deck = s.players[c.playerId].deck;
+  return deck.length > 0 && deck.every((x) => shown.has(x.instanceId)) ? c.playerId : null;
+}
 
 /** 盤面を組んだ後に手を加える（条件を満たす／満たさない盤面）。 */
 export type Tweak = (s: GameState) => GameState;
@@ -186,6 +197,7 @@ function drive(start: GameState, first: GameAction, card: CardInstance, policy: 
   let picked: GameAction | undefined;
   let branchState: GameState | undefined;
   let promptState: GameState | undefined;
+  const wholeDeckShown = new Set<PlayerId>();
   for (let step = 0; step < 80; step++) {
     const choice = s.pendingEffectChoice as { sourceCardId?: string; sourceInstanceId?: string; effectId?: string } | undefined;
     // 「…を捨札にしなければバトルエリアに出られない」の支払い（battle_entry_*）は効果ではない
@@ -195,11 +207,13 @@ function drive(start: GameState, first: GameAction, card: CardInstance, policy: 
       !/^battle_entry/.test(choice.effectId ?? "");
     if (ownChoice && !prompted) promptState = s;
     if (ownChoice) prompted = true;
+    const shownTo = ownChoice ? wholeDeckShownTo(s) : null;
+    if (shownTo) wholeDeckShown.add(shownTo);
     const keys = pendingKeys(s);
     if (keys.length === 0) {
       const lines = s.log.filter((l) => l.includes(`|${card.cardId}|`) && !PLAIN_LOG.test(l));
       const kind = prompted ? "prompted" : lines.some((l) => /no_target/.test(l)) ? "no-target" : lines.length > 0 ? "logged" : "silent";
-      return { kind, state: s, start, excluded, source: card.instanceId, branches, picked, branchState, promptState };
+      return { kind, state: s, start, excluded, source: card.instanceId, branches, picked, branchState, promptState, wholeDeckShown: [...wholeDeckShown] };
     }
     const actor = getActionPlayerId(s);
     const actions = getLegalActions(s).filter((a) => a.playerId === actor && !NEVER_PICK.test(a.type));
@@ -285,12 +299,12 @@ export function checkOperation(op: CardDefinition, policy: ChoicePolicy, branch?
 }
 
 /** ラッシュエリア／バトルエリアのユニット・ビークルの起動効果を、ラッシュフェイズとバトルフェイズで全部試す。 */
-export function checkActivations(card: CardDefinition, policy: ChoicePolicy): Array<{ where: string; outcome: DriveResult }> {
+export function checkActivations(card: CardDefinition, policy: ChoicePolicy, tweak?: Tweak): Array<{ where: string; outcome: DriveResult }> {
   const out: Array<{ where: string; outcome: DriveResult }> = [];
   for (const zone of ["rush", "battle"] as const) {
     for (const phase of ["rush", "battle"] as const) {
       const inst = mk(card.id);
-      const s = ownTurnBoard(phase, { [zone]: [inst] }, 8);
+      const s = (tweak ?? same)(ownTurnBoard(phase, { [zone]: [inst] }, 8));
       for (const a of getLegalActions(s)) {
         if (a.type !== "activate_field_unit_ability" || a.unitInstanceId !== inst.instanceId) continue;
         out.push({ where: `${zone}/${phase}`, outcome: guarded(() => drive(s, a, inst, policy)) });

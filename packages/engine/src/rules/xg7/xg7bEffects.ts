@@ -3,6 +3,7 @@
  * 選択・キーワードは rules/xg7/xg7Registry.ts に登録し、入口は rules/xg7/xg7Effects.ts。継続効果の判定は rules/xg7/xg7Fields.ts。
  * 選択の組み立ては rules/rm/rm1Effects.ts の部品と rules/xg7/xg7aEffects.ts の共通部品を使う。
  */
+import { lookCtx, openDeckLook } from "../deckLook";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { commandCategoriesOf, cardName, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
@@ -949,7 +950,8 @@ function applyLostSearch(state: GameState, ctx: GrantKeywordContext): GrantKeywo
   const ids = p.deck
     .filter((c) => isUnitCard(state, c.cardId) && unitSizeOf(state.definitions, c) === "S" && numbers.includes(costNumberOf(state, c.cardId)))
     .map((c) => c.instanceId);
-  if (ids.length === 0) return { state: shuffleDeck(state, ctx.playerId), detail: "xg7045:no_targets" };
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return { state: openDeckLook(shuffleDeck(state, ctx.playerId), lookCtx(ctx), "XG7-045"), detail: "xg7045:no_targets" };
   return { state: openAfter(state, selectOne(ctxBase(ctx), "XG7-045", LOST_SEARCH_EFFECT_ID, ids, true)), detail: LOST_SEARCH_EFFECT_ID };
 }
 

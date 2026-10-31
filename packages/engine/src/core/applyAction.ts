@@ -1,4 +1,5 @@
 import { activateXg6HandEffect, applyXg6AfterAction, applyXg6OnBattleStart, openXg6OnCharged, applyXg6StrikeDamageTriggers, endXg6BattlePhase, openXg6OnAttacked, openXg6OnStrike, takeXg6BattlePhaseEnd } from "../rules/xg6/xg6Hooks";
+import { hasDeckLookText, openDeckLook, withDeckLookView } from "../rules/deckLook";
 import { noteEngineSideEffect } from "./sideEffects";
 import {
   applyXg7RushCounter,
@@ -1095,9 +1096,11 @@ function applyActionUncached(
   options?: { trustLegality?: boolean },
 ): ActionResult {
   // 乱数はゲーム状態の rngState から作り、進めた状態を結果に書き戻す（core/rng.ts）。
-  const { value: result, rngState } = runWithStateRng(state, () =>
+  const { value: raw, rngState } = runWithStateRng(state, () =>
     applyActionWithRng(state, action, options),
   );
+  // 「自軍山札を見て…」の選択には、山札の全部を見るだけのカードとして足す（rules/deckLook.ts）。
+  const result = raw.ok && raw.state ? { ...raw, state: withDeckLookView(raw.state) } : raw;
   if (!result.ok || rngState === undefined) return result;
   const withRng = { ...result.state, rngState };
   sharePerCardCacheInSearch(result.state, withRng);
@@ -2137,6 +2140,10 @@ function applyActionCore(
               discard: [...current.discard, found.card],
             }),
           };
+        }
+        // 「自軍山札を見て…」で選べるカードがなかった: 山札を見る窓を開く（rules/deckLook.ts）。
+        if (dslOutcome.deckLook) {
+          nextState = openDeckLook(nextState, { playerId, phasePlayerId: playerId, sourceInstanceId: found.card.instanceId }, found.card.cardId);
         }
       } else {
         const outcome = resolveOperationEffect({
@@ -3304,7 +3311,11 @@ function applyActionCore(
         const revealed = openRevealGate(state);
         if (revealed?.empty) {
           // 候補が無い: 発動して何も選ばなかったのと同じ（確認を外した選択の見送り。山札のシャッフル等の続きを行う）。
-          return applyActionCore(revealed.state, { type: "skip_effect_choice", playerId }, { trustLegality: true });
+          const pending = revealed.state.pendingEffectChoice!;
+          const skipped = applyActionCore(revealed.state, { type: "skip_effect_choice", playerId }, { trustLegality: true });
+          // 「自軍山札を見て…」は、選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+          if (!skipped.ok || !skipped.state || !hasDeckLookText(state, pending.sourceCardId)) return skipped;
+          return { ...skipped, state: openDeckLook(skipped.state, pending, pending.sourceCardId) };
         }
         if (revealed) return ok(revealed.state, buildSimpleLogEntry(playerId, "confirm_effect_choice"));
       }

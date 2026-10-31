@@ -3,6 +3,7 @@
  * 入口は rules/xg3/xg3Effects.ts、登録簿は rules/xg3/xg3Registry.ts。選択の組み立ては rules/rm/rm1Effects.ts の共通の部品を使う。
  * 継続効果（XG3-023 の BP、XG3-029 ※・【ウルサーベル】の BP/SP、XG3-031 の SP、XG3-037 の無効）は rules/xg3/xg3Fields.ts。
  */
+import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { getDefinition, parsePowerCost, unitSizeOf, effectiveBp } from "../../core/catalog";
@@ -122,7 +123,8 @@ for (const spec of CREATIONS) {
     },
   });
   HOLD_COMPLETERS[holdId] = (state, pending) => {
-    let next = shuffleDeck(state, pending.playerId);
+    const shuffled = shuffleDeck(state, pending.playerId);
+    let next = shuffled;
     const ids = next.players[pending.playerId].deck.filter((c) => isUnitCard(next, c.cardId) && spec.fits(next, c)).map((c) => c.instanceId);
     next = startEffectRush(next, {
       playerId: pending.playerId,
@@ -137,6 +139,8 @@ for (const spec of CREATIONS) {
       ignorePowerCost: true,
       alwaysAsk: true,
     });
+    // 出せるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+    if (next === shuffled) next = openDeckLook(shuffled, pending, spec.cardId);
     return proceed(next, pending);
   };
 }

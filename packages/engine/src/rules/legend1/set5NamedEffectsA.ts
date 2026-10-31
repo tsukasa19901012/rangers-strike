@@ -6,6 +6,7 @@
  * - 継続効果・制限の参照関数（BP/SP 補正、バトル進入・アタック・支払いの制限）。
  * 型・構成は rules/legend1/set4NamedEffects.ts と同じ。
  */
+import { lookCtx, openDeckLook } from "../deckLook";
 import { filthyAirActive } from "./otherLinesNamedEffects";
 import { shuffleCards as shuffleDeckCards } from "../../core/deckShuffle";
 import type { Category, CardDefinition } from "@rangers-strike/cards";
@@ -278,7 +279,7 @@ function beginDeckRush(
     })
     .map((c) => c.instanceId);
   const shuffledState = patchPlayer(state, ctx.playerId, (p) => ({ ...p, deck: shuffled(p.deck) }));
-  if (candidates.length === 0) return shuffledState;
+  if (candidates.length === 0) return deckLookOrNothing(shuffledState, ctx);
   const next = startEffectRush(shuffledState, {
     playerId: ctx.playerId,
     phasePlayerId: ctx.phasePlayerId,
@@ -292,7 +293,14 @@ function beginDeckRush(
     ignorePowerCost,
     alwaysAsk: true,
   });
+  if (next === shuffledState) return deckLookOrNothing(shuffledState, ctx);
   return next.pendingEffectChoice ? discardUsedOperation(next, ctx) : next;
+}
+
+/** 出せるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。窓が開いたら、使ったオペレーションは今捨札にする。 */
+function deckLookOrNothing(state: GameState, ctx: GrantKeywordContext): GameState {
+  const looked = openDeckLook(state, lookCtx(ctx), ctx.sourceCardId);
+  return looked.pendingEffectChoice && looked.pendingEffectChoice !== state.pendingEffectChoice ? discardUsedOperation(looked, ctx) : looked;
 }
 
 // ---------------------------------------------------------------------------

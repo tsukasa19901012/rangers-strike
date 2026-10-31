@@ -7,6 +7,7 @@
  *   applyAction の後処理（RS-607 の続き・RS-613 のホールド待ち・RS-623 の重ねたカード）。
  * 構成は rules/legend1/set8NamedEffectsC.ts と同じ。
  */
+import { lookCtx, openDeckLook } from "../deckLook";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition, unitSizeOf } from "../../core/catalog";
@@ -267,7 +268,8 @@ function openWingFromDeck(state: GameState, ctx: GrantKeywordContext): GrantKeyw
   const valid = filterEffectRushCandidates(state, pid, "deck", wings, true, true);
   if (valid.length === 0) {
     const shuffled = patchPlayer(state, pid, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
-    return { state: shuffled, detail: `${WING_FROM_DECK_EFFECT_ID}:no_targets` };
+    // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+    return { state: openDeckLook(shuffled, lookCtx(ctx), ctx.sourceCardId), detail: `${WING_FROM_DECK_EFFECT_ID}:no_targets` };
   }
   return {
     state: openAfter(state, {
@@ -910,6 +912,8 @@ function finishSkyCommands(state: GameState, playerId: PlayerId, selected: strin
   const ids = mechaSDeckIds(next, playerId);
   if (max <= 0 || ids.length === 0) {
     next = patchPlayer(next, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
+    // コマンドを捨札にしたら、置けるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+    if (selected.length > 0) next = openDeckLook(next, pending, "RS-612");
     return { state: proceed(next, pending), log };
   }
   return {

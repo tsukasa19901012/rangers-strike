@@ -15,6 +15,7 @@
  * - `rk10EffectiveSp`: RK-191【ガライソード】の SP1（rules/legend3/fieldEffects.ts）。
  * 継続効果の判定（RK-194・RK-196・RK-197・RK-199・RK-206・RK-209）は rules/rk/rk10Fields.ts。構成は rules/rk/rk9UnitEffects.ts と同じ。
  */
+import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { GameAction } from "../../types/actions";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
@@ -316,7 +317,8 @@ CHOICE_CONFIRMERS[FOG_MOTHER_EFFECT_ID] = (state, playerId) => {
     .filter((c) => !shownIds.includes(c.instanceId) && isUnitCard(next, c.cardId))
     .filter((c) => sameCategories(categoriesOfCard(next, c.cardId), cats) && Number.isFinite(num) && costNumber(next, c.cardId) === num)
     .map((c) => c.instanceId);
-  if (ids.length === 0) return { state: proceed(reshuffleDeck(next, playerId), pending), log };
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return { state: proceed(openDeckLook(reshuffleDeck(next, playerId), pending, "RK-190"), pending), log };
   next = openNext(next, pending, {
     ...pending,
     effectId: FOG_MOTHER_PICK_EFFECT_ID,

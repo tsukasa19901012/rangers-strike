@@ -1,3 +1,4 @@
+import { openDeckLook } from "./deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 /**
  * 第4弾「四雄の覚醒」RS-201〜RS-208 の NC 効果ほか（cardSpec RS4-201-221）。
@@ -78,7 +79,9 @@ export function openHolography(
   const player = state.players[playerId];
   const ops = player.deck.filter((c) => getDefinition(state.definitions, c.cardId)?.type === "operation");
   if (ops.length === 0) {
-    return { ...state, ...updatePlayer(state, playerId, { ...player, deck: shuffle(player.deck) }) };
+    // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+    const shuffled = { ...state, ...updatePlayer(state, playerId, { ...player, deck: shuffle(player.deck) }) };
+    return openDeckLook(shuffled, { playerId, phasePlayerId, sourceInstanceId }, "RS-201");
   }
   return {
     ...state,

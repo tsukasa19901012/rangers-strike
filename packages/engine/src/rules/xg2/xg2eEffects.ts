@@ -3,6 +3,7 @@
  * 登録は rules/xg2/xg2Core.ts。継続効果の判定（XG2-082 のビークルとしての扱い・XG2-083 のアタックされるときの BP・XG2-085 の BP・
  * XG2-088 の BP と SP・XG2-093 の選ばれない・XG2-099 のリリースできない・XG2-100・XG2-102 のアタックできない）は rules/xg2/xg2Fields.ts。
  */
+import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
@@ -290,6 +291,8 @@ function applyEnergy(state: GameState, ctx: GrantKeywordContext): GrantKeywordRe
     requireConditions: true,
     alwaysAsk: true,
   });
+  // 出せるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (next === state) next = openDeckLook(state, { playerId: ctx.playerId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: ctx.triggerSourceInstanceId }, "XG2-087");
   next = patchPlayer(next, ctx.playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
   return { state: next, detail: "xg2_087_energy" };
 }

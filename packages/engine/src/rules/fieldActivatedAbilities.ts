@@ -1,3 +1,4 @@
+import { openDeckLook } from "./deckLook";
 import { activateRm2FieldAbility, canActivateRm2FieldAbility, isRm2FieldAbilityCard } from "./rm/rm2Effects";
 import { activateXg7FieldAbility, canActivateXg7FieldAbility, isXg7BattleFieldAbilityCard, isXg7FieldAbilityCard } from "./xg7/xg7Effects";
 import { activateXg1aFieldAbility, canActivateXg1aFieldAbility, isXg1aFieldAbilityCard } from "./xg1/xg1aEffects";
@@ -342,7 +343,8 @@ const ABILITIES: FieldActivatedAbility[] = [
     zones: ["rush", "battle"],
     resolve: (state, playerId, card) => {
       const valid = ginkuronTargets(state, playerId);
-      if (valid.length === 0) return state;
+      // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+      if (valid.length === 0) return openDeckLook(state, { playerId, phasePlayerId: playerId, sourceInstanceId: card.instanceId }, card.cardId);
       // ルール: R-ERR-XG4-102 — 山札を見てケンローダー以外の OT S ビークルを1枚ラッシュエリアに出し、山札をシャッフル。
       return openEffectChoice(state, {
         playerId,

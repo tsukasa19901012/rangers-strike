@@ -519,7 +519,7 @@ describe("cards an effect shows", () => {
     expect(session.version).not.toBe(version);
   });
 
-  it("shows the whole deck to look at even when nothing can be picked (XG1-076 ディケイドライバー, shared board bG3HJt8o)", () => {
+  it("shows the whole deck to look at even when nothing can be picked (XG1-076 ディケイドライバー, shared board bG3HJt8o; engine rules/deckLook.ts)", () => {
     const app = startGui(5);
     const session = app.session!;
     const deck = session.state.players.player1.deck.map((c) => c.instanceId);
@@ -529,11 +529,11 @@ describe("cards an effect shows", () => {
       pendingEffectChoice: {
         playerId: "player1",
         phasePlayerId: "player1",
-        effectId: "xg1_076_decadriver_power",
+        effectId: "deck_look",
         sourceCardId: "XG1-076",
         kind: "select_unit",
         validInstanceIds: [],
-        viewedInstanceIds: deck,
+        deckLookInstanceIds: deck,
         selectCount: 1,
         optional: true,
       } as never,
@@ -544,6 +544,7 @@ describe("cards an effect shows", () => {
     // The deck cards are there to look at (the window pages through them), none of them can be picked.
     expect(dialog.cards.length).toBeGreaterThan(0);
     expect(dialog.cards.every((c) => !c.actionable)).toBe(true);
+    expect(JSON.stringify(dialog.titleLines)).toContain("山札を見る");
     expect(dialog.buttons.map((b) => b.text)).toEqual(["選ばない"]);
     const version = session.version;
     app.dispatch(input.cancel);

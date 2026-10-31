@@ -154,7 +154,7 @@ describe("XG1-076 ディケイドライバー", () => {
     const s = pick(used(), "mode_2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG1-076");
     expect(choiceIds(s)).toEqual(["XG1-064:ag", "XG1-077:dc"]);
-    expect([...(s.pendingEffectChoice?.viewedInstanceIds ?? [])].sort()).toEqual(deckIds(s, "player1").sort());
+    expect([...(s.pendingEffectChoice?.deckLookInstanceIds ?? [])].sort()).toEqual(deckIds(s, "player1").sort());
   });
 
   it("XG1-076: ◎2つ目 — 山札に特徴「ディケイドライバー」のユニットがなくても山札を見る窓が開き、見送ると山札をシャッフルして終わる（ディケイドライバーは捨札）（出典: atwiki/page-1616「自軍山札を見て…置いてもよい。その後山札をシャッフルする」）", () => {
@@ -166,7 +166,8 @@ describe("XG1-076 ディケイドライバー", () => {
     const t = pick(s, "mode_2");
     expect(t.pendingEffectChoice?.sourceCardId).toBe("XG1-076");
     expect(choiceIds(t)).toEqual([]);
-    expect(t.pendingEffectChoice?.viewedInstanceIds?.length).toBe(5);
+    expect(t.pendingEffectChoice?.effectId).toBe("deck_look");
+    expect(t.pendingEffectChoice?.deckLookInstanceIds?.length).toBe(5);
     expect(canSkip(t)).toBe(true);
     const u = skip(t);
     expect(u.pendingEffectChoice).toBeFalsy();

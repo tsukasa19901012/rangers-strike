@@ -125,8 +125,11 @@ describe("XG7-009 タイムレッド", () => {
     expectChoiceFrom(s, "player1", "XG7-009");
     expect(onlyActivateOrSkip(s)).toBe(true);
     expect(resolveAll(skip(s)).players.player1.deck.map((c) => c.instanceId)).toEqual(deck.map((c) => c.instanceId));
-    // 発動すれば、選ぶカードが無いまま効果を終える（山札はシャッフル）
-    const done = activate(s);
+    // 発動すれば、選ぶカードが無いまま山札を見るだけの窓が開き（rules/deckLook.ts）、閉じれば効果を終える（山札はシャッフル）
+    const looked = activate(s);
+    expect(looked.pendingEffectChoice?.effectId).toBe("deck_look");
+    expect(looked.pendingEffectChoice?.deckLookInstanceIds).toHaveLength(6);
+    const done = skip(looked);
     expect(done.pendingEffectChoice?.sourceCardId).not.toBe("XG7-009");
     expect(done.players.player1.deck).toHaveLength(6);
   });

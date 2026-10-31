@@ -14,6 +14,7 @@
  * - `applyRm2AfterAction`: RM-026 の「その後、選んだビークルをパワーゾーンに送る」の続き（チェイスの選択の後。core/applyAction.ts）。
  * 継続効果の判定（RM-023・RM-029 の※）は rules/rm/rm2Fields.ts。選択の組み立ては rules/rm/rm1Effects.ts の共通の部品を使う。
  */
+import { lookCtx, openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
@@ -284,7 +285,8 @@ function applyGavion(state: GameState, ctx: GrantKeywordContext): GrantKeywordRe
       return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && (d.features ?? []).includes("車両");
     })
     .map((c) => c.instanceId);
-  if (ids.length === 0) return { state, detail: "rm024:no_targets" };
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts。発動しないこともできるので、シャッフルはしない）。
+  if (ids.length === 0) return { state: openDeckLook(state, lookCtx(ctx), "RM-024"), detail: "rm024:no_targets" };
   return {
     state: openAfter(state, { ...base(ctxBase(ctx), "RM-024"), effectId: GAVION_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true }),
     detail: GAVION_EFFECT_ID,
