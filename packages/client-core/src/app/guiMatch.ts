@@ -118,7 +118,8 @@ export type GuiView = {
   logShown: boolean;
 };
 
-type MenuItem = { option: ActionOption; index: number };
+/** `payWith`: after the move starts a command payment, hold this card for it (a コール unit chosen first). */
+type MenuItem = { option: ActionOption; index: number; payWith?: string };
 type Verb = { label: string; items: MenuItem[] };
 type Target = { id: string; row: number; index: number; items: MenuItem[] };
 
@@ -259,10 +260,43 @@ export class GuiMatch {
     return this.options().map((option, index) => ({ option, index }));
   }
 
+  private callRushCache: Map<string, MenuItem[]> | null = null;
+
+  /**
+   * コール（※コールMA 等）: units on the human's field that can be held to pay a rush, with the rushes they pay.
+   * The rush itself is a move of the hand card, so a tap on the unit used to offer nothing, and the player could
+   * not start from the unit to keep the command released (2026-10-31 report, データス / マジレッド).
+   * Each rush is tried on a copy of the state: the units its payment window would list are the ones that pay it.
+   */
+  private callRushItems(): Map<string, MenuItem[]> {
+    if (this.callRushCache) return this.callRushCache;
+    const found = new Map<string, MenuItem[]>();
+    this.callRushCache = found;
+    const state = this.state();
+    if (!this.humanActive() || state.phase !== "rush" || state.activePlayer !== HUMAN || state.pendingCommandPayment) return found;
+    const field = new Set([...state.players[HUMAN].rush, ...state.players[HUMAN].battle].map((c) => c.instanceId));
+    if (field.size === 0) return found;
+    for (const item of this.allItems()) {
+      const action = item.option.action;
+      if (action.type !== "initiate_command_payment" || action.kind !== "category_use") continue;
+      const subject = actionSubjectId(action);
+      if (!subject || field.has(subject)) continue;
+      const tried = this.engine.applyAction(state, action);
+      const pending = tried.ok ? tried.state?.pendingCommandPayment : undefined;
+      if (!pending || pending.totalNeeded !== 1) continue;
+      for (const id of pending.validInstanceIds) {
+        if (!field.has(id)) continue;
+        found.set(id, [...(found.get(id) ?? []), { ...item, payWith: id }]);
+      }
+    }
+    return found;
+  }
+
   private sync(): void {
     if (this.syncedVersion === this.session.version) return;
     this.syncedVersion = this.session.version;
-    this.rows = buildGuiRows(this.engine, this.state(), this.geometry, this.options().map((o) => o.action));
+    this.callRushCache = null;
+    this.rows = buildGuiRows(this.engine, this.state(), this.geometry, this.options().map((o) => o.action), this.callRushItems().keys());
     this.mode = { kind: "board" };
     const reveal = this.state().lastReveal;
     if (reveal && reveal.seq > this.revealSeen) {
@@ -482,9 +516,24 @@ export class GuiMatch {
       groups.set(key, verb);
     }
     // A verb with a single move is labelled with its full description.
-    return [...groups.values()].map((verb) =>
+    const verbs = [...groups.values()].map((verb) =>
       verb.items.length === 1 ? { label: verb.items[0]!.option.label, items: verb.items } : verb,
     );
+    return [...verbs, ...this.callRushVerbs(instanceId)];
+  }
+
+  /** On a コール unit: one row per card it can pay the rush of (「コールでホールド: マジレッドをラッシュ」). */
+  private callRushVerbs(instanceId: string): Verb[] {
+    const byCard = new Map<string, MenuItem[]>();
+    for (const item of this.callRushItems().get(instanceId) ?? []) {
+      const subject = actionSubjectId(item.option.action)!;
+      byCard.set(subject, [...(byCard.get(subject) ?? []), item]);
+    }
+    return [...byCard].map(([subject, items]) => {
+      const card = locateInstance(this.state(), subject)?.card;
+      const name = card ? this.cardName(card.cardId) : subject;
+      return { label: `コールでホールド: ${name}をラッシュ`, items };
+    });
   }
 
   private globalVerbs(): Verb[] {
@@ -628,6 +677,19 @@ export class GuiMatch {
     this.mode = { kind: "board" };
     const result = this.session.chooseHuman(item.index);
     this.message = result.ok ? `あなた: ${result.label}` : `エラー: ${result.error}`;
+    if (result.ok && item.payWith) {
+      // The rush opened its payment window: hold the コール unit the player started from.
+      const options = this.session.humanOptions();
+      const pay = options.findIndex((o) => {
+        const a = o.action;
+        return a.type === "resolve_command_payment" && a.commandInstanceIds.length === 1 && a.commandInstanceIds[0] === item.payWith;
+      });
+      if (pay >= 0) {
+        const paid = this.session.chooseHuman(pay);
+        this.message = paid.ok ? `あなた: ${result.label}（コールでホールド）` : `エラー: ${paid.error}`;
+        return paid.ok ? paid : result;
+      }
+    }
     return result;
   }
 
@@ -743,9 +805,17 @@ export class GuiMatch {
     const own = this.allItems().filter((item) => actionSubjectId(item.option.action) === fromId);
     const onCard = to.instanceId && to.instanceId !== fromId ? own.filter((item) => actionInstanceIds(item.option.action).includes(to.instanceId!)) : [];
     const fits = DROP_ZONES[to.zone ?? ""];
-    const items = onCard.length > 0 ? onCard : fits ? own.filter((item) => fits(item.option.action)) : [];
+    // A hand card dropped on a コール unit (or the unit dropped on the hand card): rush it holding that unit.
+    const calls = this.callRushItems();
+    const viaCall = to.instanceId
+      ? [
+          ...(calls.get(to.instanceId) ?? []).filter((item) => actionSubjectId(item.option.action) === fromId),
+          ...(calls.get(fromId) ?? []).filter((item) => actionSubjectId(item.option.action) === to.instanceId),
+        ]
+      : [];
+    const items = viaCall.length > 0 ? viaCall : onCard.length > 0 ? onCard : fits ? own.filter((item) => fits(item.option.action)) : [];
     if (items.length === 0) {
-      if (own.length > 0) this.message = "そこへは動かせません";
+      if (own.length > 0 || calls.has(fromId)) this.message = "そこへは動かせません";
       return null;
     }
     const at = this.findTile(fromId);
