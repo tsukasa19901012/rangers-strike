@@ -464,7 +464,8 @@ XG1_RESOLVERS[DARK_KIVA_PICK_EFFECT_ID] = (state, playerId, instanceId) => {
 // 「次の効果から1つ選び発動する⇒ ◎自軍山札を見て、「仮面ライダーディケイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後山札をシャッフル
 //  する。 ◎自軍山札を見て、特徴「ディケイドライバー」を持つユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。その後山札をシャッフルする。」
 // （atwiki/page-1616）。ラッシュエリアに出すのは効果のラッシュ（コメント「場に出たら「ラッシュ」扱い」）。「仮面ライダーディケイド」は
-// カード名（「○○としてつかえる」を含む）のユニットカード。選ばなくても山札はシャッフルする。
+// カード名（「○○としてつかえる」を含む）のユニットカード。選ばなくても山札はシャッフルする。選べるカードがなくても山札を見る窓を開く
+// （山札の全部を見るだけのカードとして見せ、見送ると山札をシャッフルする）。
 
 const DECADRIVER_EFFECT_ID = "xg1_076_decadriver";
 const DECADRIVER_RUSH_EFFECT_ID = "xg1_076_decadriver_rush";
@@ -487,9 +488,11 @@ XG1_RESOLVERS[DECADRIVER_EFFECT_ID] = (state, playerId, mode) => {
   const deck = cleared.players[playerId].deck;
   const ids = (mode === "mode_1" ? deck.filter((c) => namedDecade(cleared, c.cardId)) : deck.filter((c) => isUnitDef(cleared, c.cardId) && printedFeatures(cleared, c.cardId).includes("ディケイドライバー"))).map((c) => c.instanceId);
   const log = logFor(state, playerId, "XG1-076", `${DECADRIVER_EFFECT_ID}:${mode}`);
-  if (ids.length === 0) return { state: proceed(shuffleDeck(cleared, playerId), pending), log };
+  if (deck.length === 0) return { state: proceed(shuffleDeck(cleared, playerId), pending), log };
+  // 「山札を見て」: 選べるカードがなくても山札の全部を見せる（見るだけのカードは viewedInstanceIds）。選べるカードがなければ見送るだけ。
   const effectId = mode === "mode_1" ? DECADRIVER_RUSH_EFFECT_ID : DECADRIVER_POWER_EFFECT_ID;
-  return { state: openNext(cleared, pending, pickOne(pendingBase(pending), "XG1-076", effectId, ids, true)), log };
+  const viewedInstanceIds = deck.map((c) => c.instanceId);
+  return { state: openNext(cleared, pending, pickOne(pendingBase(pending), "XG1-076", effectId, ids, true, { viewedInstanceIds })), log };
 };
 
 XG1_RESOLVERS[DECADRIVER_RUSH_EFFECT_ID] = (state, playerId, instanceId) => {

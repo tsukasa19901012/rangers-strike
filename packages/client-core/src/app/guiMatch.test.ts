@@ -519,6 +519,39 @@ describe("cards an effect shows", () => {
     expect(session.version).not.toBe(version);
   });
 
+  it("shows the whole deck to look at even when nothing can be picked (XG1-076 ディケイドライバー, shared board bG3HJt8o)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const deck = session.state.players.player1.deck.map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "xg1_076_decadriver_power",
+        sourceCardId: "XG1-076",
+        kind: "select_unit",
+        validInstanceIds: [],
+        viewedInstanceIds: deck,
+        selectCount: 1,
+        optional: true,
+      } as never,
+    };
+    session.version++;
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog).toBeTruthy();
+    // The deck cards are there to look at (the window pages through them), none of them can be picked.
+    expect(dialog.cards.length).toBeGreaterThan(0);
+    expect(dialog.cards.every((c) => !c.actionable)).toBe(true);
+    expect(dialog.buttons.map((b) => b.text)).toEqual(["選ばない"]);
+    const version = session.version;
+    app.dispatch(input.cancel);
+    app.dispatch(input.confirm);
+    expect(session.version).not.toBe(version);
+    expect(session.state.pendingEffectChoice).toBeFalsy();
+  });
+
   it("asks whether to activate before showing the deck top (XG7-042【ライダー大戦の世界】, engine rules/revealGate.ts)", () => {
     const app = startGui(5);
     const session = app.session!;
