@@ -53,3 +53,5 @@ npm run typecheck -w @rangers-strike/client-core
 「山札の上から…をオモテにしてもよい」の発動の確認（エンジンの選択の `revealGate`）の間は、選択ウィンドウに山札のカードを出さず（`viewedCardIds` は空）、ボタンは「発動する」「発動しない」です（`src/text/labels.ts` `describeAction`）。発動してから候補のカードが出ます（XG7-042 で発動を選ぶ前に山札の上5枚が見えていた）。
 
 「自軍山札を見て…」の選択では、エンジンが足す `deckLookInstanceIds`（山札の全部）も `viewedCardIds` に入り、選べるカードの後ろに見るだけのカードとして並びます。選べるカードがないときの見るだけの窓（`effectId` `deck_look`）は、見出しが「山札を見る「カード名」: 選べるカードはありません」で、ボタンは「選ばない」だけです（`src/view/board.ts`。XG1-076 ディケイドライバーで山札を確かめられなかった報告）。
+
+「これをホールドして次の効果を発動できる」（XG2-075・076・078。候補がこのユニット自身だけの選択）では、カードを選ぶ行は「ホールドして発動する」、選ばない行は「発動しない」です。エンジンは同じホールドを効果の支払い（`initiate_command_payment` `effect_hold`）としても合法手に出しますが、コマンドは支払わないのに「コマンドを支払って使う（種類:効果）」と並んで紛らわしかったので、`GameSession.humanOptions` が出しません（`isDuplicateSelfHoldPayment`）。

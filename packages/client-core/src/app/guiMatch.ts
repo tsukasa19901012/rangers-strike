@@ -118,8 +118,10 @@ export type GuiView = {
   logShown: boolean;
 };
 
-type MenuItem = { option: ActionOption; index: number };
-type Verb = { label: string; items: MenuItem[] };
+/** `payWith`: after the move starts a command payment, hold this card for it (a コール unit chosen first). */
+type MenuItem = { option: ActionOption; index: number; payWith?: string };
+/** `callPick`: the verb opens the selection window to pick the card a コール unit pays the rush of. */
+type Verb = { label: string; items: MenuItem[]; callPick?: string };
 type Target = { id: string; row: number; index: number; items: MenuItem[] };
 
 type Mode =
@@ -163,6 +165,7 @@ const TARGET_PROMPTS: Record<string, string> = {
   play_operation: "オペレーションの対象を選ぶ",
   mount_ride: "ライドするビークルを選ぶ",
 };
+const CALL_VERB = "コール（ホールドしてラッシュするカードを選ぶ）";
 const POPUP_ROWS = 6;
 const LIST_ROWS = 12;
 const DIALOG_BUTTONS = 5;
@@ -259,10 +262,46 @@ export class GuiMatch {
     return this.options().map((option, index) => ({ option, index }));
   }
 
+  private callRushCache: Map<string, MenuItem[]> | null = null;
+  /** The コール unit whose selection window (the cards it can pay the rush of) is open. */
+  private callPick: string | null = null;
+
+  /**
+   * コール（※コールMA 等）: units on the human's field that can be held to pay a rush, with the rushes they pay.
+   * The rush itself is a move of the hand card, so a tap on the unit used to offer nothing, and the player could
+   * not start from the unit to keep the command released (2026-10-31 report, データス / マジレッド).
+   * Each rush is tried on a copy of the state: the units its payment window would list are the ones that pay it.
+   */
+  private callRushItems(): Map<string, MenuItem[]> {
+    if (this.callRushCache) return this.callRushCache;
+    const found = new Map<string, MenuItem[]>();
+    this.callRushCache = found;
+    const state = this.state();
+    if (!this.humanActive() || state.phase !== "rush" || state.activePlayer !== HUMAN || state.pendingCommandPayment) return found;
+    const field = new Set([...state.players[HUMAN].rush, ...state.players[HUMAN].battle].map((c) => c.instanceId));
+    if (field.size === 0) return found;
+    for (const item of this.allItems()) {
+      const action = item.option.action;
+      if (action.type !== "initiate_command_payment" || action.kind !== "category_use") continue;
+      const subject = actionSubjectId(action);
+      if (!subject || field.has(subject)) continue;
+      const tried = this.engine.applyAction(state, action);
+      const pending = tried.ok ? tried.state?.pendingCommandPayment : undefined;
+      if (!pending || pending.totalNeeded !== 1) continue;
+      for (const id of pending.validInstanceIds) {
+        if (!field.has(id)) continue;
+        found.set(id, [...(found.get(id) ?? []), { ...item, payWith: id }]);
+      }
+    }
+    return found;
+  }
+
   private sync(): void {
     if (this.syncedVersion === this.session.version) return;
     this.syncedVersion = this.session.version;
-    this.rows = buildGuiRows(this.engine, this.state(), this.geometry, this.options().map((o) => o.action));
+    this.callRushCache = null;
+    this.callPick = null;
+    this.rows = buildGuiRows(this.engine, this.state(), this.geometry, this.options().map((o) => o.action), this.callRushItems().keys());
     this.mode = { kind: "board" };
     const reveal = this.state().lastReveal;
     if (reveal && reveal.seq > this.revealSeen) {
@@ -416,6 +455,7 @@ export class GuiMatch {
   /** The engine waits on a decision (effect choice, payment, reaction) the human must answer. */
   private dialogActive(): boolean {
     if (!this.humanActive()) return false;
+    if (this.callPick) return true;
     const options = this.options();
     // The human's own battle entry is played on the board (attack targeting, strike, pass).
     if (options.some((o) => BOARD_MOVES.has(o.action.type))) return false;
@@ -428,6 +468,11 @@ export class GuiMatch {
    * the end button and easy to miss (more so once the draw before it is automatic).
    */
   private pendingView(): { title: string; source?: string; detail?: string } | null {
+    if (this.callPick) {
+      const unit = locateInstance(this.state(), this.callPick)?.card;
+      const name = unit ? this.cardName(unit.cardId) : "";
+      return { title: `コール: ${name}をホールドしてラッシュするカードを選ぶ`, source: name };
+    }
     const pending = buildPendingView(this.engine, this.state());
     if (pending) return pending;
     if (this.options().some((o) => o.action.type === "bonus_draw")) {
@@ -442,6 +487,7 @@ export class GuiMatch {
   }
 
   private dialogItems(): DialogItem[] {
+    if (this.callPick) return this.callPickItems();
     const cards = new Map<string, MenuItem[]>();
     const buttons: DialogItem[] = [];
     const pass: DialogItem[] = [];
@@ -482,9 +528,35 @@ export class GuiMatch {
       groups.set(key, verb);
     }
     // A verb with a single move is labelled with its full description.
-    return [...groups.values()].map((verb) =>
+    const verbs = [...groups.values()].map((verb) =>
       verb.items.length === 1 ? { label: verb.items[0]!.option.label, items: verb.items } : verb,
     );
+    return [...verbs, ...this.callRushVerbs(instanceId)];
+  }
+
+  /** On a コール unit: 「コール」, which opens the selection window with the cards it can pay the rush of. */
+  private callRushVerbs(instanceId: string): Verb[] {
+    const items = this.callRushItems().get(instanceId) ?? [];
+    return items.length > 0 ? [{ label: CALL_VERB, items, callPick: instanceId }] : [];
+  }
+
+  private openCallPick(instanceId: string): void {
+    this.mode = { kind: "board" };
+    this.callPick = instanceId;
+    this.dialogCursor = 0;
+    this.dialogOffset = 0;
+    this.dialogHidden = false;
+  }
+
+  /** The selection window of 「コール」: one card per hand card the unit pays the rush of, then 「コールをやめる」. */
+  private callPickItems(): DialogItem[] {
+    const byCard = new Map<string, MenuItem[]>();
+    for (const item of this.callRushItems().get(this.callPick!) ?? []) {
+      const subject = actionSubjectId(item.option.action)!;
+      byCard.set(subject, [...(byCard.get(subject) ?? []), item]);
+    }
+    const cancel: MenuItem = { option: { label: "コールをやめる", action: { type: "cancel_call_pick" } as unknown as GameAction }, index: -1 };
+    return [...[...byCard].map(([id, items]) => ({ kind: "card" as const, id, items })), { kind: "button", items: [cancel] }];
   }
 
   private globalVerbs(): Verb[] {
@@ -578,6 +650,10 @@ export class GuiMatch {
   }
 
   private runVerb(verb: Verb): StepResult | null {
+    if (verb.callPick) {
+      this.openCallPick(verb.callPick);
+      return null;
+    }
     if (verb.items.length === 1) return this.execute(verb.items[0]!);
     // Moves that differ by their target pick it on the board. On the target's own popup
     // ("アタック（このカードへ）" with several attackers) they differ by their subject instead.
@@ -616,6 +692,11 @@ export class GuiMatch {
   }
 
   private runItems(items: MenuItem[], title: string): StepResult | null {
+    if (items[0]?.index === -1) {
+      // 「コールをやめる」 (the only move that is not the engine's).
+      this.callPick = null;
+      return null;
+    }
     if (items.length === 1) return this.execute(items[0]!);
     // Variants that differ only in extra fields (material, substitute...) are listed by their full labels.
     const distinct = new Set(items.map((i) => actionExtrasKey(i.option.action)));
@@ -628,6 +709,19 @@ export class GuiMatch {
     this.mode = { kind: "board" };
     const result = this.session.chooseHuman(item.index);
     this.message = result.ok ? `あなた: ${result.label}` : `エラー: ${result.error}`;
+    if (result.ok && item.payWith) {
+      // The rush opened its payment window: hold the コール unit the player started from.
+      const options = this.session.humanOptions();
+      const pay = options.findIndex((o) => {
+        const a = o.action;
+        return a.type === "resolve_command_payment" && a.commandInstanceIds.length === 1 && a.commandInstanceIds[0] === item.payWith;
+      });
+      if (pay >= 0) {
+        const paid = this.session.chooseHuman(pay);
+        this.message = paid.ok ? `あなた: ${result.label}（コールでホールド）` : `エラー: ${paid.error}`;
+        return paid.ok ? paid : result;
+      }
+    }
     return result;
   }
 
@@ -701,7 +795,7 @@ export class GuiMatch {
    * button), or null. Nothing happens while a popup, list or targeting is open.
    */
   private autoItem(): { item: MenuItem; endTurn: boolean } | null {
-    if (!this.humanActive() || this.mode.kind !== "board") return null;
+    if (!this.humanActive() || this.mode.kind !== "board" || this.callPick) return null;
     const options = this.options();
     if (this.endTurnOn !== null) {
       const index = this.state().turn === this.endTurnOn ? endTurnMove(this.state(), options) : null;
@@ -743,9 +837,17 @@ export class GuiMatch {
     const own = this.allItems().filter((item) => actionSubjectId(item.option.action) === fromId);
     const onCard = to.instanceId && to.instanceId !== fromId ? own.filter((item) => actionInstanceIds(item.option.action).includes(to.instanceId!)) : [];
     const fits = DROP_ZONES[to.zone ?? ""];
-    const items = onCard.length > 0 ? onCard : fits ? own.filter((item) => fits(item.option.action)) : [];
+    // A hand card dropped on a コール unit (or the unit dropped on the hand card): rush it holding that unit.
+    const calls = this.callRushItems();
+    const viaCall = to.instanceId
+      ? [
+          ...(calls.get(to.instanceId) ?? []).filter((item) => actionSubjectId(item.option.action) === fromId),
+          ...(calls.get(fromId) ?? []).filter((item) => actionSubjectId(item.option.action) === to.instanceId),
+        ]
+      : [];
+    const items = viaCall.length > 0 ? viaCall : onCard.length > 0 ? onCard : fits ? own.filter((item) => fits(item.option.action)) : [];
     if (items.length === 0) {
-      if (own.length > 0) this.message = "そこへは動かせません";
+      if (own.length > 0 || calls.has(fromId)) this.message = "そこへは動かせません";
       return null;
     }
     const at = this.findTile(fromId);
@@ -1254,7 +1356,11 @@ export class GuiMatch {
       }
       y += 4;
       if (buttonCursor >= 0 || cardItems.length === 0) {
-        const sourceId = state.pendingEffectChoice?.sourceCardId ?? state.pendingCommandPayment?.sourceCardId ?? null;
+        const sourceId =
+          (this.callPick ? locateInstance(state, this.callPick)?.card.cardId : undefined) ??
+          state.pendingEffectChoice?.sourceCardId ??
+          state.pendingCommandPayment?.sourceCardId ??
+          null;
         detailCard = { cardId: sourceId, hidden: false };
       }
       dialog = {

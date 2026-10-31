@@ -2,7 +2,7 @@
 // options, runs CPU moves and records per-move timing and memory samples.
 import type { CpuLevel, EngineApi, GameAction, GameState, PlayerId } from "../engineApi";
 import { CPU, HUMAN } from "../engineApi";
-import { describeAction, humanizeLogEntry, indexInstances, PLAYER_LABELS } from "../text/labels";
+import { describeAction, humanizeLogEntry, indexInstances, isDuplicateSelfHoldPayment, PLAYER_LABELS } from "../text/labels";
 import type { Clock, LogSink, MemoryProbe, MemorySample } from "../platform/interfaces";
 
 /** A normal turn takes well under 100 CPU moves; far more means the CPU is looping. */
@@ -104,12 +104,11 @@ export class GameSession {
   humanOptions(): ActionOption[] {
     if (this.cachedOptions?.version === this.version) return this.cachedOptions.options;
     const index = indexInstances(this.state);
-    const options = this.state.winner
-      ? []
-      : this.engine
-          .getLegalActions(this.state)
-          .filter((a) => (a as { playerId?: PlayerId }).playerId === HUMAN)
-          .map((action) => ({ action, label: describeAction(this.state, action, index) }));
+    const legal = this.state.winner ? [] : this.engine.getLegalActions(this.state);
+    const options = legal
+      // 「これをホールドして発動」は選ぶだけで発動する。同じ手の支払い経由の行は出さない（text/labels.ts）。
+      .filter((a) => (a as { playerId?: PlayerId }).playerId === HUMAN && !isDuplicateSelfHoldPayment(this.state, a, legal))
+      .map((action) => ({ action, label: describeAction(this.state, action, index) }));
     this.cachedOptions = { version: this.version, options };
     return options;
   }

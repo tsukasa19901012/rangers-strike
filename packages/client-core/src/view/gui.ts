@@ -303,8 +303,10 @@ export function buildGuiRows(
   state: GameState,
   geometry: GuiGeometry,
   humanActions: readonly GameAction[],
+  /** Cards that can be used without an action of their own naming them (a コール unit that pays a rush). */
+  extraActionable: Iterable<string> = [],
 ): GuiRow[] {
-  const actionable = new Set(humanActions.flatMap(actionInstanceIds));
+  const actionable = new Set([...humanActions.flatMap(actionInstanceIds), ...extraActionable]);
   const selected = new Set(state.pendingEffectChoice?.selectedInstanceIds ?? []);
   const fit: WrapOptions = { fontPx: geometry.fontPx, maxWidthPx: geometry.tileW - 4 };
   return (geometry.rowDefs ?? GUI_ROWS).map((def) => ({
