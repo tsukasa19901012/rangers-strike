@@ -730,3 +730,72 @@ describe("windows that keep cards or rows out of view", () => {
     expect(gui().list!.rows[0]!.text).not.toBe(before);
   });
 });
+
+describe("rush paid with a コール unit chosen first", () => {
+  // A shared board (2026-10-31, reworked so the MA command is released): データス (※コールMA) in the rush area,
+  // マジレッド (MA) in hand, a released MA command. The rush is a move of the hand card, so a tap on データス offered
+  // nothing and the player could not start from the コール unit to keep the command released.
+  function callBoard(): AppController {
+    const app = startGui(5);
+    app.startSharedMatch(parseSharePayload(JSON.parse(readFileSync(new URL("./fixtures/share-call-rush.json", import.meta.url), "utf8")))!);
+    return app;
+  }
+  function tileAt(app: AppController, id: string): { row: number; slot: number } {
+    const gui = app.view().gui!;
+    const row = gui.rows.findIndex((r) => r.tiles.some((t) => t.instanceId === id));
+    return { row, slot: gui.rows[row]!.tiles.findIndex((t) => t.instanceId === id) };
+  }
+  function expectHeldByCall(app: AppController): void {
+    const me = app.session!.state.players.player1;
+    expect(app.session!.state.pendingCommandPayment).toBeUndefined();
+    expect(me.rush.map((c) => c.instanceId)).toContain("XG7-014-38");
+    expect(me.rush.find((c) => c.instanceId === "XG5-046-35")!.commandHeld).toBe(true);
+    expect(me.command.find((c) => c.instanceId === "XG7-014-40")!.commandHeld).toBeFalsy();
+  }
+
+  it("lights the コール unit; its 「コール」 opens the selection window of the cards it pays the rush of", () => {
+    const app = callBoard();
+    const at = tileAt(app, "XG5-046-35");
+    expect(app.view().gui!.rows[at.row]!.tiles[at.slot]!.actionable).toBe(true);
+    app.dispatch(input.focusTile(at.row, at.slot));
+    app.dispatch(input.confirm);
+    const rows = app.view().gui!.popup!.rows.map((r) => r.text);
+    expect(rows).toEqual(["コール（ホールドしてラッシュするカードを選ぶ）"]);
+    app.dispatch(input.select(0, true));
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog.titleLines.map((l) => l.text).join("")).toContain("コール: データスをホールドしてラッシュするカードを選ぶ");
+    expect(dialog.cards.map((c) => c.instanceId)).toEqual(["XG7-014-38"]);
+    expect(dialog.buttons.map((b) => b.text)).toEqual(["コールをやめる"]);
+    app.dispatch(input.confirm);
+    expectHeldByCall(app);
+  });
+
+  it("「コールをやめる」 closes the window without a move", () => {
+    const app = callBoard();
+    const at = tileAt(app, "XG5-046-35");
+    app.dispatch(input.focusTile(at.row, at.slot));
+    app.dispatch(input.confirm);
+    app.dispatch(input.select(0, true));
+    const before = app.session!.version;
+    app.dispatch(input.cancel);
+    app.dispatch(input.confirm);
+    expect(app.view().gui!.dialog).toBeUndefined();
+    expect(app.session!.version).toBe(before);
+    expect(app.session!.state.players.player1.hand.map((c) => c.instanceId)).toContain("XG7-014-38");
+  });
+
+  it("dropping the hand card on the コール unit holds the unit", () => {
+    const app = callBoard();
+    app.dropCard("XG7-014-38", { instanceId: "XG5-046-35" });
+    expectHeldByCall(app);
+  });
+
+  it("still offers both the command and the unit when the rush starts from the hand card", () => {
+    const app = callBoard();
+    const at = tileAt(app, "XG7-014-38");
+    app.dispatch(input.focusTile(at.row, at.slot));
+    app.dispatch(input.confirm);
+    app.dispatch(input.confirm);
+    expect(app.view().gui!.dialog!.cards.map((c) => c.instanceId)).toEqual(["XG7-014-40", "XG5-046-35"]);
+  });
+});
