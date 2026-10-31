@@ -1,4 +1,5 @@
 import { recordReveal } from "./revealNotice";
+import { deckLookChoice, skipDeckLook } from "./deckLook";
 import { closeWithDeckOrder, deckOrderChoice, resolveDeckOrderPick } from "./deckOrder";
 import { hasNameOrAlias } from "../core/cardNames";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
@@ -2938,6 +2939,9 @@ function applyPostHoldContinuation(
   if (pending.effectId === "castoff_hold_command") {
     const continued = continueCastoffAfterHold(state, pending);
     if (continued) return { state: continued, done: true };
+    // 出せるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。閉じたら効果の続きへ。
+    const look = deckLookChoice(state, pending, pending.sourceCardId);
+    if (look) return { state: { ...state, pendingEffectChoice: { ...look, resumeChoice: pending.resumeChoice }, activePlayer: look.playerId }, done: true };
   }
   let nextState = state;
   if (pending.effectId === "shift_up" && pending.sourceInstanceId) {
@@ -3088,6 +3092,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
+  const deckLook = skipDeckLook(state, playerId);
+  if (deckLook) return deckLook;
   if (pending.pickThenDeckOrder) {
     return {
       state: closeWithDeckOrder(state, pending, pending.processedInstanceIds ?? [], pending.pickThenDeckOrder),

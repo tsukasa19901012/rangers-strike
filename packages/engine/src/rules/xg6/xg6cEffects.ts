@@ -13,6 +13,7 @@
  * - 場を離れたとき（XG6_UNIT_LEFT）: XG6-062 の※。
  * 継続効果（BP・SP・アタックの制限・コマンドのカテゴリ）は rules/xg6/xg6Fields.ts。
  */
+import { openDeckLook } from "../deckLook";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, effectiveBp, effectiveCommandCategories, unitSizeOf } from "../../core/catalog";
@@ -781,7 +782,8 @@ XG6_ACTIVATIONS.push({
   activate: (state, playerId, instanceId) => {
     const next = moveFieldUnit(state, playerId, instanceId, playerId, "discard");
     const ids = next.players[playerId].deck.filter((c) => def(next, c.cardId)?.type === "operation").map((c) => c.instanceId);
-    if (ids.length === 0) return shuffleDeck(next, playerId);
+    // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+    if (ids.length === 0) return openDeckLook(shuffleDeck(next, playerId), { playerId, phasePlayerId: playerId, sourceInstanceId: instanceId }, "XG6-061");
     return openAfter(next, choice({ playerId, phasePlayerId: playerId, sourceInstanceId: instanceId }, "XG6-061", VENDOR, "select_hand", ids, false));
   },
 });

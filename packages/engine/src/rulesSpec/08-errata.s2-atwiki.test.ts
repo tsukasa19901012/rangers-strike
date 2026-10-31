@@ -1,4 +1,4 @@
-import { getLegalActions } from "../index";
+import { applyAction, getLegalActions } from "../index";
 /**
  * docs/rules/08-errata.md §2 atwiki 記載の修正後テキスト（21件）[wiki]
  *
@@ -1003,8 +1003,13 @@ describe("R-ERR-XG4-004 副長ゼルモダ", () => {
   it("R-ERR-XG4-004: Q&A — 山札に「戦闘員」がなくても処理は中断されずラッシュが完了する（出典: atwiki/page-2069 Q1）", () => {
     const { s, z } = zerumodaRushed([inst("TST-OP", "x1"), inst("TST-OP", "x2")]);
     expect(zoneIds(s, "player1", "rush")).toContain(z);
-    expect(s.pendingEffectChoice).toBeUndefined();
-    expect(s.players.player1.deck).toHaveLength(2);
+    // 山札を見るだけの窓（選べるカードはない。rules/deckLook.ts）が開き、閉じれば終わる。
+    expect(s.pendingEffectChoice?.effectId).toBe("deck_look");
+    expect(s.pendingEffectChoice?.deckLookInstanceIds).toHaveLength(2);
+    const t = applyAction(s, { type: "skip_effect_choice", playerId: "player1" });
+    expect(t.ok).toBe(true);
+    expect(t.state!.pendingEffectChoice).toBeUndefined();
+    expect(t.state!.players.player1.deck).toHaveLength(2);
   });
 });
 

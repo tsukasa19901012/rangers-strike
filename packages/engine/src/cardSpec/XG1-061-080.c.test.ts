@@ -149,6 +149,31 @@ describe("XG1-076 ディケイドライバー", () => {
     expect(zoneOf(t, "player1", "XG1-064:ag")).toBe("power");
     expect(zoneOf(t, "player1", "TST-OP:x")).toBe("deck");
   });
+
+  it("XG1-076: 「自軍山札を見て」— 選べるカードと一緒に山札の全部を見せる（出典: atwiki/page-1616「自軍山札を見て」）", () => {
+    const s = pick(used(), "mode_2");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG1-076");
+    expect(choiceIds(s)).toEqual(["XG1-064:ag", "XG1-077:dc"]);
+    expect([...(s.pendingEffectChoice?.deckLookInstanceIds ?? [])].sort()).toEqual(deckIds(s, "player1").sort());
+  });
+
+  it("XG1-076: ◎2つ目 — 山札に特徴「ディケイドライバー」のユニットがなくても山札を見る窓が開き、見送ると山札をシャッフルして終わる（ディケイドライバーは捨札）（出典: atwiki/page-1616「自軍山札を見て…置いてもよい。その後山札をシャッフルする」）", () => {
+    const s = useCard(
+      rushPhaseBoard({ hand: [inst("XG1-076", "dd")], command: releasedCat("OT", 1), power: powerCards(1), deck: [inst("TST-OP", "x"), ...deckCards(4)] }, {}, EXTRA),
+      "player1",
+      "XG1-076:dd",
+    );
+    const t = pick(s, "mode_2");
+    expect(t.pendingEffectChoice?.sourceCardId).toBe("XG1-076");
+    expect(choiceIds(t)).toEqual([]);
+    expect(t.pendingEffectChoice?.effectId).toBe("deck_look");
+    expect(t.pendingEffectChoice?.deckLookInstanceIds?.length).toBe(5);
+    expect(canSkip(t)).toBe(true);
+    const u = skip(t);
+    expect(u.pendingEffectChoice).toBeFalsy();
+    expect(zoneOf(u, "player1", "XG1-076:dd")).toBe("discard");
+    expect(deckIds(u, "player1").length).toBe(5);
+  });
 });
 
 // ===========================================================================

@@ -4,6 +4,7 @@
  * 継続効果（XG3-070 のアタック先・BP、XG3-073・XG3-077 の SP、XG3-077 のラッシュエリアへのアタック、XG3-078 のバトルエリアへの進入）は
  * rules/xg3/xg3Fields.ts。
  */
+import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
@@ -202,7 +203,8 @@ CHOICE_RESOLVERS[SEKAI_EFFECT_ID] = (state, playerId, instanceId) => {
   });
   const log = logFor(state, playerId, "XG3-068", `${SEKAI_EFFECT_ID}:${instanceId}`);
   const ids = next.players[playerId].deck.filter((c) => printedFeatures(next, c.cardId).includes("FFR")).map((c) => c.instanceId);
-  if (ids.length === 0) return { state: proceed(shuffleDeck(next, playerId), pending), log };
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return { state: proceed(openDeckLook(shuffleDeck(next, playerId), pendingBase(pending), "XG3-068"), pending), log };
   return { state: openFollow(next, pending, { ...base(pendingBase(pending), "XG3-068"), effectId: SEKAI_PICK_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: false }), log };
 };
 CHOICE_RESOLVERS[SEKAI_PICK_EFFECT_ID] = (state, playerId, instanceId) => {

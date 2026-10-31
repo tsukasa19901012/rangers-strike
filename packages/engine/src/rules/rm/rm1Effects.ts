@@ -14,6 +14,7 @@
  * 継続効果の判定（RM-011・RM-013・RM-014・RM-019・RM-020 の※）は rules/rm/rm1Fields.ts。
  * 選択の組み立ては rules/rk/rk16UnitEffects.ts と同じ。共通の部品（openAfter・proceed・moveFieldUnit 等）は rules/rm/rm2Effects.ts（RM-022〜RM-042）からも使う。
  */
+import { lookCtx, openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
@@ -464,7 +465,8 @@ function applyKyoju(state: GameState, ctx: GrantKeywordContext): GrantKeywordRes
       return d?.type === "unit" && unitSizeOf(next.definitions, c) === "L" && categoriesOf(next, c.cardId).includes("OT");
     })
     .map((c) => c.instanceId);
-  if (ids.length === 0) return { state: shuffleDeck(next, pid), detail: log };
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return { state: openDeckLook(shuffleDeck(next, pid), lookCtx(ctx), "RM-004"), detail: log };
   return {
     state: openAfter(next, { ...base(ctxBase(ctx), "RM-004"), effectId: KYOJU_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true }),
     detail: log,
@@ -1063,7 +1065,8 @@ function applyStarPiece(state: GameState, ctx: GrantKeywordContext): GrantKeywor
   let next = patchPlayer(state, pid, (p) => ({ ...p, power: p.power.map((c) => (c.faceDown ? { ...c, faceDown: false } : c)), damage: 0 }));
   const enemyId = opponent(pid);
   const ids = next.players[enemyId].deck.filter((c) => isUnitCard(next, c.cardId)).map((c) => c.instanceId);
-  if (ids.length === 0) return { state: shuffleDeck(next, enemyId), detail: "rm016:no_unit" };
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts。相手が自分の山札を見る）。
+  if (ids.length === 0) return { state: openDeckLook(shuffleDeck(next, enemyId), { ...lookCtx(ctx), playerId: enemyId }, "RM-016"), detail: "rm016:no_unit" };
   next = openAfter(next, { ...base({ playerId: enemyId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: ctx.operationInstanceId }, "RM-016"), effectId: STAR_PIECE_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true });
   return { state: next, detail: STAR_PIECE_EFFECT_ID };
 }

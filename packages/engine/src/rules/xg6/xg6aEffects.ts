@@ -11,6 +11,7 @@
  *   core/legalActions.ts・core/applyAction.ts の activate_field_unit_ability）。
  * 継続効果（XG6-004 のブラスト・XG6-012・XG6-013・XG6-020・XG6-021 の能力）は rules/xg6/xg6Fields.ts。
  */
+import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity, matchesJointLPartnerById, matchesJointRPartnerById } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingStrike, PlayerId, ZoneName } from "../../types/game";
 import { cardCategories, effectiveBp, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
@@ -975,7 +976,8 @@ function activateHeritage(state: GameState, playerId: PlayerId, instanceId: stri
     })
     .map((c) => c.instanceId);
   const ctx = { playerId, phasePlayerId: playerId, sourceInstanceId: instanceId };
-  if (ids.length === 0) return finishHeritage(state, ctx);
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return openDeckLook(finishHeritage(state, ctx), ctx, "XG6-014");
   return openEffectChoice(state, choice(ctx, "XG6-014", HERITAGE, "select_hand", ids, true));
 }
 

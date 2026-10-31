@@ -7,6 +7,7 @@
  * - 選択の解決: `tryResolveSet8AChoice` / `trySkipSet8AChoice` / `tryConfirmSet8AChoice`（rules/pendingChoices.ts）
  * 構成は rules/legend1/set7NamedEffectsA.ts と同じ。出典は各節のコメント（atwiki/page-N）。
  */
+import { lookCtx, openDeckLook } from "../deckLook";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, TagChoiceMeta } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { commandCategoriesOf, cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
@@ -689,8 +690,8 @@ function openSuperHighwayBuster(state: GameState, ctx: Set8ACardEffectContext): 
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) {
-    // 見たうえで選ばなかった扱い（山札は見ただけ。シャッフルは「そうしたとき」の後半なので行わない）。
-    return state;
+    // 見たうえで選ばなかった扱い（山札は見ただけ。シャッフルは「そうしたとき」の後半なので行わない）。山札を見る窓は開く（rules/deckLook.ts）。
+    return openDeckLook(state, lookCtx(ctx), ctx.sourceCardId);
   }
   return openEffectChoice(state, {
     playerId: ctx.playerId,
@@ -1674,7 +1675,8 @@ function afterBrideBold(state: GameState, playerId: PlayerId, pending: PendingEf
     .map((c) => c.instanceId);
   if (grunts.length === 0) {
     const shuffled = patchPlayer(state, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
-    return { state: finish(shuffled, pending) };
+    // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+    return { state: openDeckLook(finish(shuffled, pending), pending, "RS-519") };
   }
   return {
     state: reopen(state, pending, {
@@ -1877,7 +1879,9 @@ function afterPartnerBold(state: GameState, playerId: PlayerId, pending: Pending
     })
     .map((c) => c.instanceId);
   if (materials.length === 0) {
-    return { state: finish(patchPlayer(state, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) })), pending) };
+    // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+    const done = finish(patchPlayer(state, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) })), pending);
+    return { state: openDeckLook(done, pending, "RS-525") };
   }
   return {
     state: reopen(state, pending, {

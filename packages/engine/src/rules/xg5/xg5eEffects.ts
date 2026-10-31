@@ -3,6 +3,7 @@
  * 登録先は rules/xg5/xg5Core.ts。継続効果の判定（BP・SP・アタックできない相手・本来の BP のバトル・カテゴリの追加・可能ならバトルエリアに出る・
  * XG5-087 のバトルフェイズ終了時の選択）は rules/xg5/xg5Fields.ts。
  */
+import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
@@ -418,7 +419,8 @@ HAND_ACTIVATIONS.push({
     const ctx = { playerId, phasePlayerId: playerId, sourceInstanceId: instanceId };
     const ids = hakaiTargets(marked, playerId);
     if (ids.length > 0) return openAfter(marked, selectOne(ctx, "XG5-094", HAKAI_SEARCH, ids, true));
-    const shuffled = shuffleDeck(marked, playerId);
+    // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。手札を捨てる選択はその後。
+    const shuffled = openDeckLook(shuffleDeck(marked, playerId), ctx, "XG5-094");
     const hand = shuffled.players[playerId].hand.map((c) => c.instanceId);
     return hand.length > 0 ? openAfter(shuffled, selectOne(ctx, "XG5-094", HAKAI_DISCARD, hand, false)) : shuffled;
   },

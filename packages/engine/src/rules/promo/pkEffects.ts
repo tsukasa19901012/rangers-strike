@@ -2,6 +2,7 @@
  * プロモーションカード PK・PM・SM・SK のカード固有の効果（cardSpec PROMO1-PK-SK の監査）。
  * 起点は DSL の grant_keyword（`promo::<ID>::name`。rules/promo/promoRegistry.ts）。
  */
+import { lookCtx, openDeckLook } from "../deckLook";
 import { hasNameOrAlias } from "../../core/cardNames";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
@@ -205,7 +206,8 @@ function applySpaceSheriffs(state: GameState, ctx: GrantKeywordContext): GrantKe
     return { state, detail: `${SPACE_SHERIFFS}:has_sheriff` };
   }
   const ids = sheriffCandidates(state, ctx.playerId, []);
-  if (ids.length === 0) return { state: shuffleDeck(state, ctx.playerId), detail: `${SPACE_SHERIFFS}:none` };
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return { state: openDeckLook(shuffleDeck(state, ctx.playerId), lookCtx(ctx), ctx.sourceCardId), detail: `${SPACE_SHERIFFS}:none` };
   return {
     state: openAfter(state, {
       ...base(ctxBase(ctx), ctx.sourceCardId),

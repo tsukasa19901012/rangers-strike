@@ -226,6 +226,15 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
       detail: choice.sourceCardId === "engine" ? undefined : sourceText(choice.sourceCardId),
     };
   }
+  // 「自軍山札を見て…」で選べるカードがなかった: 山札を見るだけの窓（engine rules/deckLook.ts）。
+  if (choice?.effectId === "deck_look") {
+    return {
+      actor: who(choice.playerId),
+      title: `山札を見る「${cardName(state, choice.sourceCardId) || choice.sourceCardId}」: 選べるカードはありません`,
+      source: cardName(state, choice.sourceCardId),
+      detail: sourceText(choice.sourceCardId),
+    };
+  }
   if (choice) {
     const selected = choice.selectedInstanceIds?.length ?? 0;
     const count = choice.selectCount ? ` ${selected}/${choice.selectCount}` : "";
@@ -315,7 +324,8 @@ export function viewedCardIds(state: GameState): string[] {
   // 「山札の上から…をオモテにしてもよい」の発動の確認の間は、山札のカードを見せない（engine rules/revealGate.ts）。
   if (choice.revealGate) return [];
   const inDeck = new Set([...state.players.player1.deck, ...state.players.player2.deck].map((c) => c.instanceId));
-  const ids = [...(choice.viewedInstanceIds ?? [])];
+  // deckLookInstanceIds: 「自軍山札を見て…」で見ている山札の全部（engine rules/deckLook.ts）。
+  const ids = [...(choice.viewedInstanceIds ?? []), ...(choice.deckLookInstanceIds ?? [])];
   for (const [key, value] of Object.entries(choice as unknown as Record<string, unknown>)) {
     if (!key.endsWith("Meta") || !value || typeof value !== "object") continue;
     for (const [field, v] of Object.entries(value as Record<string, unknown>)) {

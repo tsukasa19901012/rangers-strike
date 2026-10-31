@@ -6,6 +6,7 @@
  * - 継続効果（SP・BP・アタックの制限・効果名を持つテキストの無効・「可能ならバトルエリアに出る」の無効）。
  * 構成は rules/legend1/set7NamedEffectsD.ts と同じ。
  */
+import { openDeckLook } from "../deckLook";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, DeferredDestroyTrigger, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { canAttackDefender } from "../legend3/restrictions";
@@ -1163,8 +1164,8 @@ function openMeeMegalo(state: GameState, playerId: PlayerId, usedCardId: string)
     set8dMeta: { cardId: usedCardId },
   };
   if (ids.length === 0) {
-    // 山札を見たが同名のカードがない: その後、山札をシャッフルする。
-    return patchPlayer(state, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
+    // 山札を見たが同名のカードがない: その後、山札をシャッフルする。山札を見る窓は開く（rules/deckLook.ts）。
+    return openDeckLook(patchPlayer(state, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) })), choice, "RS-582");
   }
   return openAfter(state, choice);
 }

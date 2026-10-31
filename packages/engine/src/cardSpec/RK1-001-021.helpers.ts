@@ -563,7 +563,14 @@ export function drain(s: GameState, playerId: PlayerId, prefer: string[] = []): 
     const p = next.pendingEffectChoice;
     if (!p || p.playerId !== playerId) break;
     const pick = prefer.find((id) => p.validInstanceIds.includes(id)) ?? p.validInstanceIds[0];
-    if (!pick) break;
+    if (!pick) {
+      // 選べるカードがない「山札を見る」窓（rules/deckLook.ts）は、見て閉じる。
+      if (p.effectId !== "deck_look") break;
+      const r = tryAct(next, { type: "skip_effect_choice", playerId });
+      if (!r.ok) break;
+      next = r.state;
+      continue;
+    }
     const r = tryAct(next, { type: "resolve_effect_choice", playerId, instanceId: pick });
     if (!r.ok) break;
     next = r.state;

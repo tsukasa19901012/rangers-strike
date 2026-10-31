@@ -12,6 +12,7 @@
  * 継続効果の判定（RK-278・RK-280〜RK-282・RK-288・RK-292）は rules/rk/rk14Fields.ts・rules/rk/rk14Features.ts、RK-294 は keywords/battleKeywords.ts。
  * 構成は rules/rk/rk13UnitEffects.ts と同じ。
  */
+import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
@@ -717,6 +718,9 @@ export function applyRk14OnUnitLeft(state: GameState, event: Rk14LeaveEvent): Ga
         selectCount: 1,
         optional: true,
       });
+    } else {
+      // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts。発動しないこともできるので、シャッフルはしない）。
+      next = openDeckLook(next, { playerId: owner, phasePlayerId: turnPlayer, sourceInstanceId: event.instanceId }, "RK-292");
     }
   }
   return next;

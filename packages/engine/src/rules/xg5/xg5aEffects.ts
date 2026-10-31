@@ -2,6 +2,7 @@
  * クロスギャザー XG5 XG5-001〜XG5-020（ゴーグルレッド〜ボウケンレッド）のカード固有の効果（cardSpec XG5-001-020 の監査）。
  * 登録先は rules/xg5/xg5Core.ts（DSL の `xg5::cardId::name`・選択・後処理）。継続効果の判定は rules/xg5/xg5Fields.ts。
  */
+import { lookCtx, openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
@@ -275,7 +276,8 @@ XG5_KEYWORDS["XG5-008::gogo_change"] = (state, ctx) => {
   const pid = ctx.playerId;
   if (state.players[pid].command.length > 4) return { state, detail: "xg5_008:command_over_4" };
   const ids = state.players[pid].deck.filter((c) => defOf(state, c.cardId)?.type === "unit" && sizeOf(state, c) === "L").map((c) => c.instanceId);
-  if (ids.length === 0) return { state, detail: "xg5_008:no_targets" };
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts。発動しないこともできるので、シャッフルはしない）。
+  if (ids.length === 0) return { state: openDeckLook(state, lookCtx(ctx), "XG5-008"), detail: "xg5_008:no_targets" };
   return { state: openAfter(state, selectOne(ctxBase(ctx), "XG5-008", TANK_PICK, ids, true)), detail: TANK_PICK };
 };
 CHOICE_RESOLVERS[TANK_PICK] = (state, playerId, instanceId) => {

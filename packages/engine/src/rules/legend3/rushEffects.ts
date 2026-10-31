@@ -1,3 +1,4 @@
+import { openDeckLook } from "../deckLook";
 import { getUnitEffectBlock, hasUnnamedRule } from "@rangers-strike/cards";
 import type { GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit, unitSizeOf } from "../../core/catalog";
@@ -246,7 +247,8 @@ export function resolveLegend3OnRushEffects(
         phasePlayerId,
         optional: true,
       });
-      if (withChoice) nextState = withChoice;
+      // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+      nextState = withChoice ?? openDeckLook(nextState, { playerId: rusherPlayerId, phasePlayerId }, cardId);
       break;
     }
     case "assault": {

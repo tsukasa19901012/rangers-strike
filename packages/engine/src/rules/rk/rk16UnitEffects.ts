@@ -12,6 +12,7 @@
  * 継続効果の判定（RK-317・RK-320 の※・RK-325・RK-327・RK-332・RK-334）は rules/rk/rk16Fields.ts。
  * 構成は rules/rk/rk15UnitEffects.ts と同じ。
  */
+import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
@@ -345,7 +346,8 @@ CHOICE_RESOLVERS[SWAP_EFFECT_ID] = (state, playerId, commandId) => {
   const log = logFor(state, playerId, "RK-319", `${SWAP_EFFECT_ID}:${cardName(state.definitions, cmd.cardId)}`);
   const deck = next.players[playerId].deck;
   const ids = deck.filter((c) => [1, 9, 3].includes(rk16CostNumber(next, c.cardId))).map((c) => c.instanceId);
-  if (ids.length === 0) return { state: proceed(shuffleDeck(next, playerId), pending), log };
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return { state: proceed(openDeckLook(shuffleDeck(next, playerId), pending, "RK-319"), pending), log };
   return {
     state: openNext(next, pending, {
       ...base({ playerId, phasePlayerId: pending.phasePlayerId, sourceInstanceId: pending.sourceInstanceId }, "RK-319"),
@@ -696,7 +698,8 @@ export function openRk16Fuessle(state: GameState, playerId: PlayerId, card: Card
   const ids = p.deck
     .filter((c) => isUnitCard(state, c.cardId) && (namedIs(state, c.cardId, f.kiba) || (dgbkf && namedIs(state, c.cardId, "仮面ライダーキバDGBKF"))))
     .map((c) => c.instanceId);
-  if (ids.length === 0) return shuffleDeck(state, playerId);
+  // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+  if (ids.length === 0) return openDeckLook(shuffleDeck(state, playerId), { playerId, phasePlayerId: playerId, sourceInstanceId: card.instanceId }, f.id);
   return openOrQueue(state, {
     ...base({ playerId, phasePlayerId: playerId, sourceInstanceId: card.instanceId }, f.id),
     effectId: FUESSLE_EFFECT_ID,

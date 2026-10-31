@@ -4,6 +4,7 @@
  * - `tryErrataCardEffect`: DSL の grant_keyword（`cardId::effectId`）から呼ばれる起点。
  * - `tryResolveErrataChoice`: このモジュールが開いた選択（effectId）の解決。
  */
+import { deckLookChoice, lookCtx, openDeckLook } from "./deckLook";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../dsl/grantKeyword";
@@ -841,7 +842,13 @@ function lookDenebCandy(state: GameState, playerId: PlayerId): ChoiceOutcome {
   }
   const player = next.players[playerId];
   next = { ...next, ...updatePlayer(next, playerId, { ...player, deck: shuffleDeckCards(player.deck) }) };
-  return { state: continueDenebCandy(next, pending), log };
+  // オペレーションカードがなくても山札を見る窓を開く（rules/deckLook.ts）。閉じたら次の手番へ。
+  const look = deckLookChoice(next, pending, pending.sourceCardId, playerId);
+  const cont = continueDenebCandy(next, pending);
+  if (!look) return { state: cont, log };
+  const after = cont.pendingEffectChoice;
+  if (after) return { state: { ...cont, pendingEffectChoice: { ...look, resumeChoice: after }, activePlayer: look.playerId }, log };
+  return { state: openEffectChoice(cont, look), log };
 }
 
 function resolveDenebCandy(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
@@ -1800,7 +1807,8 @@ export function tryErrataCardEffect(
     }
     case "RS-349::deck_to_hand": {
       const next = beginAddressBook(state, ctx);
-      return next ? { state: next, detail: ADDRESS_BOOK } : { state, detail: `${ADDRESS_BOOK}:no_targets` };
+      // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+      return next ? { state: next, detail: ADDRESS_BOOK } : { state: openDeckLook(state, lookCtx(ctx), ctx.sourceCardId), detail: `${ADDRESS_BOOK}:no_targets` };
     }
     case "RK-146::denebukyandei": {
       const next = openDenebCandyFor(
@@ -1816,7 +1824,8 @@ export function tryErrataCardEffect(
     }
     case "XG4-004::wanpano": {
       const next = beginWanpaPot(state, ctx);
-      return next ? { state: next, detail: WANPA_POT } : { state, detail: `${WANPA_POT}:none` };
+      // 選べるカードがなくても山札を見る窓を開く（rules/deckLook.ts）。
+      return next ? { state: next, detail: WANPA_POT } : { state: openDeckLook(state, lookCtx(ctx), ctx.sourceCardId), detail: `${WANPA_POT}:none` };
     }
     case "XG2-014::chikara_chikara": {
       const next = beginKiryoku(state, ctx);

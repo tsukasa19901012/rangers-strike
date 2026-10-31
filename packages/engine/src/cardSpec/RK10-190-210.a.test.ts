@@ -163,7 +163,11 @@ describe("RK-190 フォッグマザー", () => {
 
   it("RK-190: オペレーションのカードは選べない（出典: atwiki/page-911「ユニットカードを1枚選び」）", () => {
     const deck = [inst("SPEC-OPDA3", "o0"), inst("SPEC-OPDA3", "o1"), inst("SPEC-OPDA3", "o2"), inst("SPEC-OPDA3", "o3")];
-    const s = settle(accept(afterRush(deck)));
+    // 選べるカードがないので、山札を見るだけの窓が開く（rules/deckLook.ts）。閉じれば効果は終わる。
+    const looked = settle(accept(afterRush(deck)));
+    expect(looked.pendingEffectChoice?.effectId).toBe("deck_look");
+    expect(choiceIds(looked)).toEqual([]);
+    const s = settle(skip(looked));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-190");
     expect(s.players.player1.deck).toHaveLength(4);
     expect(s.players.player1.rush.map((c) => c.instanceId)).toEqual(["RK-190:fm"]);
