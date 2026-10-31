@@ -82,3 +82,44 @@ describe("GameSession", () => {
     expect(parseGameRecord({ v: 1, seed: 1, actions: [] })).toBeNull();
   });
 });
+
+describe("「これをホールドして次の効果を発動できる」の選択（XG2-076【キバアロー】）", () => {
+  it("offers the hold once, as 「ホールドして発動する」, without a 「コマンドを支払って使う（種類:効果）」 row (no command is paid)", async () => {
+    const { getCardDefinition } = await import("@rangers-strike/cards");
+    const session = newSession(1);
+    const s = session.state;
+    const kiba = { instanceId: "kiba-1", cardId: "XG2-076" };
+    session.state = {
+      ...s,
+      phase: "battle",
+      activePlayer: "player1",
+      definitions: { ...s.definitions, "XG2-076": getCardDefinition("XG2-076")! },
+      players: { ...s.players, player1: { ...s.players.player1, battle: [...s.players.player1.battle, kiba] } },
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "xg2_ffr_hold",
+        sourceCardId: "XG2-076",
+        sourceInstanceId: "kiba-1",
+        kind: "select_command",
+        commandAction: "hold",
+        validInstanceIds: ["kiba-1"],
+        selectCount: 1,
+        optional: true,
+        xg2Meta: { selfHold: true, decade: false },
+      },
+    } as typeof s;
+    session.version++;
+    // The engine offers the hold twice (pick, or an effect_hold payment); both hold キバ itself.
+    expect(testEngine.getLegalActions(session.state).some((a) => a.type === "initiate_command_payment")).toBe(true);
+    const options = session.humanOptions();
+    expect(options.map((o) => o.label).sort()).toEqual(["ホールドして発動する", "発動しない"].sort());
+    expect(options.some((o) => o.action.type === "initiate_command_payment")).toBe(false);
+    const commands = session.state.players.player1.command.map((c) => c.instanceId);
+    expect(session.chooseHuman(options.findIndex((o) => o.label === "ホールドして発動する")).ok).toBe(true);
+    // キバ itself is held and its effect goes on to the opponent's pick; no command is held.
+    expect(session.state.players.player1.battle.find((c) => c.instanceId === "kiba-1")?.commandHeld).toBe(true);
+    expect(session.state.players.player1.command.filter((c) => c.commandHeld)).toEqual([]);
+    expect(session.state.players.player1.command.map((c) => c.instanceId)).toEqual(commands);
+  });
+});

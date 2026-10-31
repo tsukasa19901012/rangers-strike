@@ -307,6 +307,28 @@ function formatValue(
   return null;
 }
 
+/**
+ * The pending choice asks only to hold the effect's own unit on the field (「これをホールドして次の効果を発動できる」,
+ * XG2-075・076・078): its one candidate is the source itself, and it is not a command.
+ */
+export function isSelfHoldChoice(state: GameState): boolean {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.commandAction !== "hold") return false;
+  const id = pending.validInstanceIds[0];
+  if (pending.validInstanceIds.length !== 1 || !id || id !== pending.sourceInstanceId) return false;
+  return !state.players[pending.playerId].command.some((c) => c.instanceId === id);
+}
+
+/**
+ * The engine also takes that hold as an effect_hold payment (core/legalActions.ts): the same move again, through a
+ * payment window, shown as 「コマンドを支払って使う（種類:効果）」 though no command is paid. The window offers it once.
+ */
+export function isDuplicateSelfHoldPayment(state: GameState, action: GameAction, legal: GameAction[]): boolean {
+  if (action.type !== "initiate_command_payment" || action.kind !== "effect_hold" || !isSelfHoldChoice(state)) return false;
+  const id = action.sourceInstanceId;
+  return id === state.pendingEffectChoice!.sourceInstanceId && legal.some((a) => a.type === "resolve_effect_choice" && a.instanceId === id);
+}
+
 /** Human-readable one-line label for an engine action. */
 export function describeAction(
   state: GameState,
@@ -316,6 +338,11 @@ export function describeAction(
   // 「山札の上から…をオモテにしてもよい」の発動の確認（engine rules/revealGate.ts）。
   if (state.pendingEffectChoice?.revealGate) {
     if (action.type === "confirm_effect_choice") return "発動する";
+    if (action.type === "skip_effect_choice") return "発動しない";
+  }
+  // 「これをホールドして次の効果を発動できる」（XG2-075・076・078）: 選ぶ = このユニット自身をホールドして発動する。
+  if (isSelfHoldChoice(state)) {
+    if (action.type === "resolve_effect_choice") return "ホールドして発動する";
     if (action.type === "skip_effect_choice") return "発動しない";
   }
   const base = ACTION_LABELS[action.type] ?? action.type;
