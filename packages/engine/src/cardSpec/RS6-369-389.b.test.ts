@@ -268,6 +268,12 @@ describe("RS-379 ギンガイエロー", () => {
     expect(attackTargets(s, "TST-UNIT-7:atk")).not.toContain("RS-135:jf");
   });
 
+  it("RS-379: 【雷の雄叫び】NC 成立直後の行動ウィンドウで、発動の手は1つだけ（同じ選択肢が2つ並ばない）（出典: atwiki/page-504）", () => {
+    const s = act(st({ player1: { rush: [inst("RS-379", "x")], command: MA1(), deck: deckCards(5) }, player2: ENEMY() }), { type: "move_to_battle", playerId: "player1", instanceId: "RS-379:x" });
+    const acts = legal(s).filter((a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === "RS-379:x");
+    expect(acts).toHaveLength(1);
+  });
+
   it("RS-379: NC 不成立（2番目）なら【雷の雄叫び】は発動できない（出典: atwiki/page-504「CN：1」・R-CN-02）", () => {
     const s = ncEnter("RS-379", 2, { command: MA1() }, ENEMY());
     expect(holdEffectOffered(s, "RS-379:x")).toBe(false);
