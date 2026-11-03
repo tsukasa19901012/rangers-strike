@@ -403,7 +403,7 @@ export function powerNotes(count: PowerCount): string {
     .join("・");
 }
 
-/** "CPU ダメージ2/7 手5 山30 捨3 P5(裏1・マルチ+1) C3" — the zones not drawn as rows. */
+/** "CPU ダメージ2/7 手5 山30 捨3 除1 P5(裏1・マルチ+1) C3" — the zones not drawn as rows (除 only while cards are removed). */
 export function playerStrip(engine: EngineApi, state: GameState, player: PlayerId): string {
   const p = state.players[player];
   const power = powerCount(engine, state, player);
@@ -413,6 +413,7 @@ export function playerStrip(engine: EngineApi, state: GameState, player: PlayerI
     player === HUMAN ? "" : `手${p.hand.length}`,
     `山${p.deck.length}`,
     `捨${p.discard.length}`,
+    p.exile?.length ? `除${p.exile.length}` : "",
     `P${power.total}${notes ? `(${notes})` : ""}`,
     player === HUMAN ? "" : `C${p.command.length}`,
     p.operation.length ? `常${p.operation.length}` : "",
