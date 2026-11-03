@@ -67,6 +67,7 @@ export function buildPlayerBoard(
     },
   ];
   if (p.operation.length > 0) zones.push({ label: "オペ", text: list(p.operation, false) });
+  if (p.exile?.length) zones.push({ label: "除外", text: list(p.exile, false) });
   if (revealHand) zones.push({ label: "手札", text: list(p.hand, false) });
   return {
     playerId,

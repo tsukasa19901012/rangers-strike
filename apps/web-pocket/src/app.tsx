@@ -386,6 +386,8 @@ export default function App() {
       const gui = controller.view().gui;
       return gui && controller.session ? pileLayout(controller.session.state, player, webPileRect(gui.geometry, player)) : null;
     },
+    /** The zone shown enlarged (hovered or tapped pile: discard, 除外, power, 常駐), or null. */
+    peek: () => peek(),
     /** The open deck panel's rectangles (share / open / paste). */
     deckPanel: () => deckPanelBox(),
     peekCards: () => {

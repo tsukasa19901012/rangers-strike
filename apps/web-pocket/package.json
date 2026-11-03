@@ -10,7 +10,8 @@
     "web:build:app": "node scripts/build.mjs --app-only",
     "web:serve": "node scripts/serve.mjs",
     "web:dev": "node scripts/build.mjs && node scripts/serve.mjs",
-    "pocket:check": "node scripts/pocket-check.mjs"
+    "pocket:check": "node scripts/pocket-check.mjs",
+    "web:exile-test": "node scripts/exile-test.mjs"
   },
   "dependencies": {
     "@rangers-strike/client-core": "*",

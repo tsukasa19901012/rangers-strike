@@ -36,4 +36,14 @@ describe("power display", () => {
     expect(playerStrip(testEngine, state, "player1")).toContain(" P0");
     expect(playerStrip(testEngine, state, "player1")).not.toContain("マルチ");
   });
+
+  it("shows removed (除外) cards only while there are any", () => {
+    const state = testEngine.createStarterGame({ player1Starter: "abarenoh", player2Starter: "dekaranger", seed: 1 });
+    expect(playerStrip(testEngine, state, "player1")).not.toContain("除");
+    const p1 = state.players.player1;
+    p1.exile = p1.deck.splice(0, 2);
+    expect(playerStrip(testEngine, state, "player1")).toContain(" 除2 ");
+    const zone = buildPlayerBoard(testEngine, state, "player1", false).zones.find((z) => z.label === "除外");
+    expect(zone?.text.split("、")).toHaveLength(2);
+  });
 });

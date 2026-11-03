@@ -17,6 +17,8 @@ UI は Vita 版と同じ [PocketJS](https://github.com/pocket-stack/pocketjs)（
   スタートフェイズに使える効果がある）は、「スタートフェイズ」のポップアップがフェイズ終了ボタンの横に出ます。1つ選ぶたびに残りが出ます
   パワーはパワーゾーンの枚数ではなく、相手コマンドゾーンのマルチカテゴリ 1 枚につき +1 した数を出します
   （例: `パワー 4(裏1・マルチ+1)`。上端の帯の `P4(…)` も同じ）
+  ゲームから除外されたカードがあると、山札・捨札の下に「除外 N」が出ます（帯にも `除N`）。捨札と同じく、
+  乗せる（スマホはタップ）と除外されたカードが新しい順に全部大きく並び、1 枚をタップすると詳細が出ます
 - デッキ構築: 全 1,832 枚の一覧からクリックで追加・右クリックで削除、保存。種類・カテゴリ・弾・コスト・BP で絞り込み、
   文字列検索（カード名・効果文・特徴・作品名・カード番号。スペース区切りで AND、ひらがな／カタカナ・全角／半角を区別しない）。
   デッキ名は上部の欄で付け替え（検索欄・デッキ名欄はホストページの `<input>` をキャンバスに重ねたもので、スマホの IME が使えます）
@@ -79,7 +81,7 @@ scripts/            ビルド・開発用静的サーバ・フォント取得・
 - カード画像（`apps/web/public/cards` のコピー）はブラウザでデコードしてテクスチャにします
 - ルールエンジン（`dist/engine.js`）は UI と別ファイルの ESM として読み込みます
 - 入力欄は文字 16px 以上、viewport は `maximum-scale=1`、ページ全体を `touch-action: manipulation` にして、iPhone で入力欄に触れたときの自動ズーム・ダブルタップズームを止めています（入力を終えたらキーボードでずれたページ位置を戻します）
-- テスト用に `window.__rsApp`（`controller` と `pile(player)`）を公開しています
+- テスト用に `window.__rsApp`（`controller`・`pile(player)`・`peek()`（拡大表示中のゾーン）など）を公開しています
 
 ## 操作
 
@@ -112,6 +114,7 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 | `npm run web:build` | `dist/` を作る（エンジン・UI・カード画像すべて） |
 | `npm run web:build:app` | UI とホストだけ再ビルド（エンジンとカード画像は前回のもの。engine / cards を変えたら `web:build`） |
 | `npm run web:serve` | `dist/` を http://127.0.0.1:8140/ で配信（`node scripts/serve.mjs --port=…` で変更可。開発用。`/api/share` はメモリに保存） |
+| `npm run web:exile-test` | ブラウザ（Playwright）で除外の表示を確認（PC・スマホ。除外 0 枚で何も出ない／「除外 N」行と帯の `除N`／乗せる・タップで新しい順に全部並ぶ）。先に `web:build` |
 | `npm run pocket:check` | `pocket.json` を PocketJS の web-app プロファイルで検査し、型検査 |
 
 `web:*` / `pocket:*` はルートの turbo（`build` / `test` / `typecheck`）や CI からは実行されません。

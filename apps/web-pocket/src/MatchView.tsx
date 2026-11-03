@@ -152,7 +152,8 @@ function peekCards(cards: readonly ZoneCard[]): PeekCard[] {
  * power zone (face-down cards show their back) and the operation zone (常駐)
  * as small cards. The narrow column of a phone held upright has no room for
  * the deck image or a power fan: it shows counts and the operation cards
- * one under the other, never overlapping. Hovering or tapping a zone shows
+ * one under the other, never overlapping. Removed cards (除外) get a label
+ * row while there are any. Hovering or tapping a zone shows
  * all of its cards enlarged (pileHit / PeekPanel).
  */
 export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileLayout {
@@ -171,6 +172,18 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
   const sections: PileSection[] = [];
   // The whole discard pile, newest first: hovering or tapping it shows every card, not just the top one.
   const discardAll = { title: `${who}の捨札（${p.discard.length}枚・新しい順）`, cards: [...p.discard].reverse().map((c) => ({ cardId: c.cardId, hidden: false })) };
+  // Removed from the game (除外): a label row only while it holds cards; hovering or tapping it shows them all, newest first.
+  const exile = p.exile ?? [];
+  const exileSection = (labelRect: Box): PileSection => ({
+    title: `${who}の除外`,
+    label: `除外 ${exile.length}`,
+    tone: "text-xs text-rose-300 font-bold",
+    labelRect,
+    cards: [],
+    all: peekCards([...exile].reverse()),
+    count: exile.length,
+    ids: exile.map((c) => c.instanceId),
+  });
   if (narrow) {
     let y = rect.y + 6;
     let discardRow: Box | null = null;
@@ -181,6 +194,10 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
     }
     // No room for the discard image: its count row takes the tap instead.
     const discardTap = p.discard.length > 0 && discardRow ? { rect: discardRow } : null;
+    if (exile.length) {
+      sections.push(exileSection({ x: rect.x, y, w: rect.w, h: 18 }));
+      y += 18;
+    }
     sections.push({ title: powerTitle, label: `パワー ${power.total}`, tone: "text-xs text-amber-300 font-bold", labelRect: { x: rect.x, y, w: rect.w, h: 18 }, cards: [], all: all(p.power), count: p.power.length, ids: p.power.map((c) => c.instanceId) });
     y += 22;
     if (p.operation.length) {
@@ -202,6 +219,10 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
   counts.push({ text: `山札 ${p.deck.length}`, rect: { ...deckRect, y, h: 20 } });
   counts.push({ text: `捨札 ${p.discard.length}`, rect: { ...discardRect, y, h: 20 } });
   y += 22;
+  if (exile.length) {
+    sections.push(exileSection({ x: rect.x, y, w: rect.w, h: 18 }));
+    y += 18;
+  }
   const zones = [
     { title: powerTitle, label: `パワー ${power.total}${notes ? `(${notes})` : ""}`, tone: "text-xs text-amber-300 font-bold", cards: p.power, operation: false },
     ...(p.operation.length ? [{ title: `${who}の常駐`, label: `常駐 ${p.operation.length}`, tone: "text-xs text-violet-300 font-bold", cards: p.operation, operation: true }] : []),
