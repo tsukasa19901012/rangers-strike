@@ -15,7 +15,7 @@ import { CPU, HUMAN } from "../engineApi";
 import type { LogicalInput } from "../input/actions";
 import { ListCursor } from "../input/actions";
 import type { ActionOption, GameSession, StepResult } from "../session/session";
-import { ACTION_LABELS, PHASE_LABELS, revealDestination, revealSummary } from "../text/labels";
+import { ACTION_LABELS, describeAction, indexInstances, PHASE_LABELS, revealDestination, revealSummary } from "../text/labels";
 import { cardFieldLines, effectParagraphs } from "../view/cardFields";
 import { clipLine, fitLine, fitLineKeepTail, measureText, wrapText, type WrapOptions } from "../text/wrap";
 import { buildPendingView, viewedCardIds } from "../view/board";
@@ -80,9 +80,9 @@ export type GuiDialogView = {
   rect: Rect;
   titleLines: PanelLine[];
   /** `note`: a caption that is not where the card is (「選択対象」 / 「対象外」, a revealed card's destination); the card can't be picked. */
-  /** `order`: the number the card got in a deck-bottom order choice. */
+  /** `order`: the number the card got in a deck-bottom order choice. `checked`: checked in a choose-any-number window. */
   /** `label`: the caption unclipped when it is not where the card is (「選択可能」「選択対象」), for a shell with room for it. */
-  cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect; note?: string; order?: number; label?: string })[];
+  cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect; note?: string; order?: number; checked?: boolean; label?: string })[];
   buttons: MenuRowView[];
   /** Index of the first visible button among all buttons. */
   buttonOffset: number;
@@ -120,7 +120,33 @@ export type GuiView = {
 };
 
 /** `payWith`: after the move starts a command payment, hold this card for it (a コール unit chosen first). */
-type MenuItem = { option: ActionOption; index: number; payWith?: string };
+/**
+ * `checkToggle`: checks / unchecks that card in a choose-any-number window (no move of its own until 確定).
+ * `commit`: the moves a check window sends when a button is pressed (the checked picks, then the button's move).
+ */
+type MenuItem = { option: ActionOption; index: number; payWith?: string; checkToggle?: string; commit?: GameAction[] };
+
+/**
+ * A choose-any-number window (「好きな枚数選び」: RK-080 超変身 等) the human is checking cards in. The picks are tried on
+ * a copy of the state; the session gets them only when a button is pressed.
+ * `open`: the choice is still open after the picks (false: the last pick ended it, as a pick up to the limit does).
+ */
+type CheckDraft = { version: number; picks: string[]; actions: GameAction[]; state: GameState; open: boolean };
+
+/** The same effect choice, still asking for cards out of the ones it offered (a pick that opens another question is not). */
+function sameChoice(next: GameState["pendingEffectChoice"], base: NonNullable<GameState["pendingEffectChoice"]>): boolean {
+  return (
+    !!next &&
+    next.playerId === base.playerId &&
+    next.effectId === base.effectId &&
+    next.sourceCardId === base.sourceCardId &&
+    next.sourceInstanceId === base.sourceInstanceId &&
+    !next.deckOrderMeta &&
+    next.validInstanceIds.every((id) => base.validInstanceIds.includes(id))
+  );
+}
+
+const CHECK_RESET = "選び直す（チェックをすべて外す）";
 /** `callPick`: the verb opens the selection window to pick the card a コール unit pays the rush of. */
 type Verb = { label: string; items: MenuItem[]; callPick?: string };
 type Target = { id: string; row: number; index: number; items: MenuItem[] };
@@ -266,6 +292,8 @@ export class GuiMatch {
   }
 
   private callRushCache: Map<string, MenuItem[]> | null = null;
+  private checkCache: { version: number; on: boolean } | null = null;
+  private draft: CheckDraft | null = null;
   /** The コール unit whose selection window (the cards it can pay the rush of) is open. */
   private callPick: string | null = null;
 
@@ -304,6 +332,7 @@ export class GuiMatch {
     this.syncedVersion = this.session.version;
     this.callRushCache = null;
     this.callPick = null;
+    this.draft = null;
     this.rows = buildGuiRows(this.engine, this.state(), this.geometry, this.options().map((o) => o.action), this.callRushItems().keys());
     this.mode = { kind: "board" };
     const reveal = this.state().lastReveal;
@@ -476,7 +505,11 @@ export class GuiMatch {
       const name = unit ? this.cardName(unit.cardId) : "";
       return { title: `コール: ${name}をホールドしてラッシュするカードを選ぶ`, source: name };
     }
-    const pending = buildPendingView(this.engine, this.state());
+    const state = this.state();
+    const choice = state.pendingEffectChoice;
+    // A check window counts the checked cards (the session has none picked yet).
+    const shown = choice && this.checkMode() ? { ...state, pendingEffectChoice: { ...choice, selectedInstanceIds: this.checkDraft().picks } } : state;
+    const pending = buildPendingView(this.engine, shown);
     if (pending) return pending;
     if (this.options().some((o) => o.action.type === "bonus_draw")) {
       const p = this.state().players[HUMAN];
@@ -489,8 +522,139 @@ export class GuiMatch {
     return this.dialogActive() && !this.dialogHidden && this.mode.kind === "board";
   }
 
+  // ------------------------------------------------------------ check windows (choose any number of cards)
+
+  /**
+   * A choice the human answers by picking any number of the cards it offers, then 確定: each pick keeps the same choice open
+   * (RK-080 超変身「好きな枚数選び」, 「N枚まで選び」…). Its window checks cards in place, like the deck-bottom order window,
+   * instead of taking each pick away from the window at once (2026-11-05 request). Found by trying the first pick on a copy.
+   */
+  private checkMode(): boolean {
+    const version = this.session.version;
+    if (this.checkCache?.version !== version) this.checkCache = { version, on: this.detectCheck() };
+    return this.checkCache.on;
+  }
+
+  private detectCheck(): boolean {
+    if (!this.humanActive() || this.callPick) return false;
+    const state = this.state();
+    const pending = state.pendingEffectChoice;
+    if (!pending || pending.playerId !== HUMAN || pending.deckOrderMeta || pending.mayConfirm || pending.revealGate) return false;
+    if (pending.selectCount !== undefined && pending.selectCount < 2) return false;
+    const picks = this.cardPicks(state);
+    if (picks.length < 2) return false;
+    const tried = this.engine.applyAction(state, picks[0]!);
+    return tried.ok && !!tried.state && sameChoice(tried.state.pendingEffectChoice, pending);
+  }
+
+  /** The card picks the human can make in a state (the window's cards). */
+  private cardPicks(state: GameState): Extract<GameAction, { type: "resolve_effect_choice" }>[] {
+    return this.engine
+      .getLegalActions(state)
+      .filter((a): a is Extract<GameAction, { type: "resolve_effect_choice" }> => a.type === "resolve_effect_choice" && a.playerId === HUMAN)
+      .filter((a) => !!locateInstance(state, a.instanceId));
+  }
+
+  /** The checked cards, tried in order on a copy of the state (a pick that is no longer possible is dropped). */
+  private checkDraft(): CheckDraft {
+    if (this.draft?.version !== this.session.version) this.draft = this.buildDraft([]);
+    return this.draft;
+  }
+
+  private buildDraft(picks: string[]): CheckDraft {
+    const base = this.state().pendingEffectChoice!;
+    let state = this.state();
+    let open = true;
+    const kept: string[] = [];
+    const actions: GameAction[] = [];
+    for (const id of picks) {
+      if (!open) break;
+      const action = this.cardPicks(state).find((a) => a.instanceId === id);
+      const tried = action ? this.engine.applyAction(state, action) : null;
+      if (!tried?.ok || !tried.state) continue;
+      kept.push(id);
+      actions.push(action!);
+      state = tried.state;
+      open = sameChoice(state.pendingEffectChoice, base);
+    }
+    return { version: this.session.version, picks: kept, actions, state, open };
+  }
+
+  private toggleCheck(id: string): void {
+    const draft = this.checkDraft();
+    this.draft = this.buildDraft(draft.picks.includes(id) ? draft.picks.filter((p) => p !== id) : [...draft.picks, id]);
+  }
+
+  private checkItemsCache: { draft: CheckDraft; items: DialogItem[] } | null = null;
+
+  /** The check window's cards and buttons (worked out once per set of checks: every frame draws them). */
+  private checkItems(): DialogItem[] {
+    const draft = this.checkDraft();
+    if (this.checkItemsCache?.draft !== draft) this.checkItemsCache = { draft, items: this.buildCheckItems(draft) };
+    return this.checkItemsCache.items;
+  }
+
+  private buildCheckItems(draft: CheckDraft): DialogItem[] {
+    const state = this.state();
+    const pickable = new Set(draft.open ? this.cardPicks(draft.state).map((a) => a.instanceId) : []);
+    const toggle = (id: string, checked: boolean): MenuItem => ({
+      option: { label: `${checked ? "チェックを外す" : "チェックする"}: ${this.instanceName(id)}`, action: { type: "check_toggle" } as unknown as GameAction },
+      index: -1,
+      checkToggle: id,
+    });
+    const ids = this.cardPicks(state).map((a) => a.instanceId);
+    const cards: DialogItem[] = [...new Set(ids)].map((id) => {
+      const checked = draft.picks.includes(id);
+      return { kind: "card", id, items: checked || pickable.has(id) ? [toggle(id, checked)] : [] };
+    });
+    const viewed = viewedCardIds(state)
+      .filter((id) => !ids.includes(id))
+      .map((id) => ({ kind: "card" as const, id, items: [] as MenuItem[] }));
+    const picks = draft.actions;
+    const buttons: DialogItem[] = [];
+    const pass: DialogItem[] = [];
+    const reset: MenuItem = { option: { label: CHECK_RESET, action: { type: "check_reset" } as unknown as GameAction }, index: -1, checkToggle: "" };
+    if (!draft.open) {
+      // The last pick ended the choice (the most cards it takes): 確定 sends the picks.
+      const label = `${ACTION_LABELS.confirm_effect_choice}（${draft.picks.length}枚）`;
+      buttons.push({ kind: "button", items: [{ option: { label, action: { type: "confirm_effect_choice" } as unknown as GameAction }, index: -1, commit: picks }] });
+    } else {
+      // The moves the choice offers after the picks (確定, 選ばない…), each sent after the picks.
+      const index = indexInstances(draft.state);
+      for (const action of this.engine.getLegalActions(draft.state)) {
+        if ((action as { playerId?: string }).playerId !== HUMAN) continue;
+        if (action.type === "resolve_effect_choice" && locateInstance(draft.state, action.instanceId)) continue;
+        let label = describeAction(draft.state, action, index);
+        if (action.type === "confirm_effect_choice" && draft.picks.length > 0) label = `${label}（${draft.picks.length}枚）`;
+        const item: DialogItem = { kind: "button", items: [{ option: { label, action }, index: -1, commit: [...picks, action] }] };
+        (PASS_LIKE.test(action.type) ? pass : buttons).push(item);
+      }
+    }
+    if (draft.picks.length > 0) buttons.push({ kind: "button", items: [reset] });
+    return [...cards, ...viewed, ...buttons, ...pass];
+  }
+
+  /** Sends the checked picks and the pressed button's move to the session, one by one. */
+  private commitChecks(steps: GameAction[]): StepResult | null {
+    this.mode = { kind: "board" };
+    let last: StepResult | null = null;
+    for (const step of steps) {
+      const key = JSON.stringify(step);
+      const index = this.session.humanOptions().findIndex((o) => JSON.stringify(o.action) === key);
+      if (index < 0) {
+        last = { ok: false, error: "選択できませんでした" };
+        break;
+      }
+      last = this.session.chooseHuman(index);
+      if (!last.ok) break;
+    }
+    if (last) this.message = last.ok ? `あなた: ${steps.length > 1 ? `${steps.length - 1}枚を選んで確定` : last.label}` : `エラー: ${last.error}`;
+    return last;
+  }
+
   private dialogItems(): DialogItem[] {
     if (this.callPick) return this.callPickItems();
+    if (this.checkMode()) return this.checkItems();
     const cards = new Map<string, MenuItem[]>();
     const buttons: DialogItem[] = [];
     const pass: DialogItem[] = [];
@@ -695,6 +859,13 @@ export class GuiMatch {
   }
 
   private runItems(items: MenuItem[], title: string): StepResult | null {
+    const first = items[0];
+    if (first?.checkToggle !== undefined) {
+      if (first.checkToggle === "") this.draft = this.buildDraft([]);
+      else this.toggleCheck(first.checkToggle);
+      return null;
+    }
+    if (first?.commit) return this.commitChecks(first.commit);
     if (items[0]?.index === -1) {
       // 「コールをやめる」 (the only move that is not the engine's).
       this.callPick = null;
@@ -1307,6 +1478,7 @@ export class GuiMatch {
       const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
       const orderChoice = state.pendingEffectChoice?.deckOrderMeta ? state.pendingEffectChoice : undefined;
       const orderOf = (id: string) => (orderChoice?.selectedInstanceIds ?? []).indexOf(id) + 1;
+      const checked = new Set(this.checkMode() ? this.checkDraft().picks : []);
       // 選べるカードと一緒に出る、見るだけのカード（「自軍山札を見て…」の山札の残りなど）は「対象外」。選べるカードが
       // ない窓（山札の上の1枚を見て上か下かを選ぶ、選べるカードがない山札を見る窓）では「選択対象」。
       const viewNote = cardItems.some((i) => i.items.length > 0) ? "対象外" : "選択対象";
@@ -1333,6 +1505,8 @@ export class GuiMatch {
             ...(viewing ? { note: viewNote } : {}),
             // The number a card got in a deck-bottom order choice (1 = upper, the last = the very bottom).
             ...(orderOf(item.id) > 0 ? { order: orderOf(item.id), note: clipLine(`${orderOf(item.id)}番目`, fitTile) } : {}),
+            // A card checked in a choose-any-number window (sent when 確定 is pressed).
+            ...(checked.has(item.id) ? { checked: true, note: clipLine("✓選択中", fitTile) } : {}),
             captionRect: { x: rect.x, y: rect.y + rect.h, w: rect.w, h: g.lineHeight },
           });
           if (index === this.dialogCursor) detailCard = { cardId: tile.kind === "hidden" ? null : at.card.cardId, hidden: tile.kind === "hidden" };
