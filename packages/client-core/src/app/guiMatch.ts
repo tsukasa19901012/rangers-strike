@@ -81,7 +81,8 @@ export type GuiDialogView = {
   titleLines: PanelLine[];
   /** `note`: a caption that is not where the card is (「選択対象」 / 「対象外」, a revealed card's destination); the card can't be picked. */
   /** `order`: the number the card got in a deck-bottom order choice. */
-  cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect; note?: string; order?: number })[];
+  /** `label`: the caption unclipped when it is not where the card is (「選択可能」「選択対象」), for a shell with room for it. */
+  cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect; note?: string; order?: number; label?: string })[];
   buttons: MenuRowView[];
   /** Index of the first visible button among all buttons. */
   buttonOffset: number;
@@ -1307,6 +1308,10 @@ export class GuiMatch {
       // 選べるカードと一緒に出る、見るだけのカード（「自軍山札を見て…」の山札の残りなど）は「対象外」。選べるカードが
       // ない窓（山札の上の1枚を見て上か下かを選ぶ、選べるカードがない山札を見る窓）では「選択対象」。
       const viewNote = cardItems.some((i) => i.items.length > 0) ? "対象外" : "選択対象";
+      // 選べるカードの下: 山札から選ぶ窓（「自軍山札を見て…を選び」）は「選択可能」、山札に戻す順番の窓は「選択対象」、
+      // ほかはカードのある場所（自バトル など）。
+      const pickCaption = (at: { player: string; zone: string }) =>
+        orderChoice ? "選択対象" : at.zone === "deck" ? "選択可能" : `${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`;
       if (cardItems.length > 0) {
         y += 2;
         const shown = cardItems.slice(this.dialogOffset, this.dialogOffset + visible);
@@ -1321,7 +1326,8 @@ export class GuiMatch {
             ...tile,
             rect,
             focused: index === this.dialogCursor,
-            caption: clipLine(viewing ? viewNote : `${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`, fitTile),
+            caption: clipLine(viewing ? viewNote : pickCaption(at), fitTile),
+            ...(viewing || at.zone === "deck" || orderChoice ? { label: viewing ? viewNote : pickCaption(at) } : {}),
             ...(viewing ? { note: viewNote } : {}),
             // The number a card got in a deck-bottom order choice (1 = upper, the last = the very bottom).
             ...(orderOf(item.id) > 0 ? { order: orderOf(item.id), note: clipLine(`${orderOf(item.id)}番目`, fitTile) } : {}),

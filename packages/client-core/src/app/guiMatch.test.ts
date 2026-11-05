@@ -429,7 +429,7 @@ describe("cards an effect shows", () => {
     expect(app.view().gui!.dialog?.buttons.map((b) => b.text)).not.toEqual(["閉じる"]);
   });
 
-  it("captions the look-only deck cards next to pickable ones 「対象外」 (RS-186 プロバイダーベース)", () => {
+  it("captions pickable deck cards 「選択可能」 and the look-only ones next to them 「対象外」 (RS-186 プロバイダーベース)", () => {
     const app = startGui(5);
     const session = app.session!;
     const deck = session.state.players.player1.deck.map((c) => c.instanceId);
@@ -451,7 +451,7 @@ describe("cards an effect shows", () => {
     };
     session.version++;
     const cards = app.view().gui!.dialog!.cards;
-    expect(cards.slice(0, 2).map((c) => c.caption)).toEqual(["自山札", "自山札"]);
+    expect(cards.slice(0, 2).map((c) => c.caption)).toEqual(["選択可能", "選択可能"]);
     expect(cards.slice(2).length).toBeGreaterThan(0);
     expect(cards.slice(2).every((c) => c.caption === "対象外" && c.note === "対象外")).toBe(true);
   });
@@ -738,6 +738,9 @@ describe("choosing the order to put cards on the deck bottom", () => {
     const title = app.view().gui!.dialog!.titleLines.map((l) => l.text).join("");
     expect(title).toContain("続き「プロバイダーベース」: 山札の上に戻す順番を選ぶ（1番が一番上） 0/5");
     expect(title).not.toContain("効果の選択");
+    const captions = app.view().gui!.dialog!.cards.map((c) => c.caption);
+    expect(captions.length).toBeGreaterThan(0);
+    expect(captions.every((c) => c === "選択対象")).toBe(true);
   });
 
   it("draws every line of a two-line question in the accent colour", () => {
