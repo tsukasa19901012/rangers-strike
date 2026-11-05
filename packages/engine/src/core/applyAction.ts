@@ -4152,6 +4152,7 @@ function applyActionCore(
         state,
         playerId,
         action.operationInstanceId,
+        action.targetInstanceId,
       );
       if (!result.ok) return fail("illegal_action");
       return ok(

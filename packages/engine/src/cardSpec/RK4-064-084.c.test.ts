@@ -295,10 +295,11 @@ function stackSwapTests(id: string, name: string, feature: string, page: string,
     let s = swapBoard([inst(unit, "u"), inst("SPEC-KAMEN", "k")]);
     expect(canActivateResident(s, `${id}:op`)).toBe(true);
     s = activateResident(s, `${id}:op`);
-    expect(choiceIds(s)).toEqual([`${unit2}:s`]);
-    s = pick(s, `${unit2}:s`);
+    // 置き換える場のユニットが先、重ねたカードが後（2026-11-05 利用者の要望）。
     expect(choiceIds(s)).toEqual([`${unit}:u`]);
-    s = resolveAll(pick(s, `${unit}:u`));
+    s = pick(s, `${unit}:u`);
+    expect(choiceIds(s)).toEqual([`${unit2}:s`]);
+    s = resolveAll(pick(s, `${unit2}:s`));
     expect(zoneOf(s, "player1", `${unit2}:s`)).toBe("rush");
     expect(zoneOf(s, "player1", `${unit}:u`)).not.toBe("rush");
   });

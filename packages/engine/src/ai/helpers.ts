@@ -1380,7 +1380,7 @@ function pickChoiceByEvaluation(state: GameState, pending: PendingEffectChoice, 
 const RESIDENT_SWAP_MARGIN = 50;
 
 /**
- * 重ねたカードと場のユニットの置き換え（RK-022 ライダーパス・RK-080 超変身・RK-082 オルタフォース）。重ねたカードを選ぶ選択は
+ * 重ねたカードと場のユニットの置き換え（RK-022 ライダーパス・RK-080 超変身・RK-082 オルタフォース）。場のユニット → 重ねたカードの順に選ぶ。重ねたカードを選ぶ選択は
  * 「1 枚選ぶ」形（scry_keep_one）で読みの対象にならず、簡易の選び方は見送っていたので、起動しても一度も置き換えなかった
  * （2026-10-26 の見直し）。重ねたカードと場のユニットの組を全部置き換えてみて、盤面の評価が一番良い組を選ぶ。
  */
@@ -1394,12 +1394,12 @@ export function pickResidentSwapChoice(
   const scoreOf = (action: GameAction): number => {
     const result = applyAction(state, action);
     if (!result.ok) return Number.NEGATIVE_INFINITY;
-    if (pending.effectId === RIDER_PASS_UNIT) return evaluateState(result.state, playerId);
-    // 重ねたカードを選んだ後: 置き換える場のユニットの選択で一番良いもの。
+    if (pending.effectId === RIDER_PASS_CARD) return evaluateState(result.state, playerId);
+    // 置き換える場のユニットを選んだ後: 重ねたカードの選択で一番良いもの。
     let best = Number.NEGATIVE_INFINITY;
-    for (const unit of getLegalActions(result.state)) {
-      if (unit.type !== "resolve_effect_choice") continue;
-      const swapped = applyAction(result.state, unit);
+    for (const card of getLegalActions(result.state)) {
+      if (card.type !== "resolve_effect_choice") continue;
+      const swapped = applyAction(result.state, card);
       if (swapped.ok) best = Math.max(best, evaluateState(swapped.state, playerId));
     }
     return best;

@@ -189,6 +189,7 @@ export function applyActivateResidentOperation(
   state: GameState,
   playerId: PlayerId,
   operationInstanceId: string,
+  targetInstanceId?: string,
 ): { state: GameState; ok: true } | { ok: false; error: string } {
   if (!canActivateResidentOperation(state, playerId, operationInstanceId)) {
     return { ok: false, error: "cannot_activate_resident" };
@@ -204,7 +205,8 @@ export function applyActivateResidentOperation(
   }
 
   if (swapResidentFeature(op.cardId)) {
-    return { ok: true, state: beginRiderPass(state, playerId, op) };
+    const opened = beginRiderPass(state, playerId, op, targetInstanceId);
+    return opened ? { ok: true, state: opened } : { ok: false, error: "invalid_target" };
   }
   if (isRk1ActivatableResident(op.cardId)) {
     return { ok: true, state: activateRk1Resident(state, playerId, op) };

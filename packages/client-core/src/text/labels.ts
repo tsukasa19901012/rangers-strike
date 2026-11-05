@@ -352,6 +352,12 @@ export function describeAction(
     const defender = formatValue(state, "defenderInstanceId", record.defenderInstanceId, index);
     return `${base}: ${attacker} → ${defender}`;
   }
+  // 置き換えの常駐（RK-022 ライダーパス・RK-080 超変身・RK-082）で置き換える場のユニットを決めた起動。
+  if (action.type === "activate_resident_operation" && action.targetInstanceId) {
+    const op = formatValue(state, "operationInstanceId", action.operationInstanceId, index);
+    const unit = formatValue(state, "targetInstanceId", action.targetInstanceId, index);
+    return `${op}で置き換える: ${unit}`;
+  }
   if (action.type === "end_phase") {
     return `${PHASE_LABELS[state.phase] ?? state.phase}${base}`;
   }

@@ -362,7 +362,7 @@ describe("RK-053 仮面ライダーガタックMF", () => {
     let s = vulcan({}, "SPEC-DENO:d", { command: releasedCat("OT", 2), operation: [{ ...inst("RK-022", "pass"), stackedCards: [inst("SPEC-DENO2", "s")] }] });
     s = resolveAll(pick(s, "TST-P:pw0"));
     s = act(s, { type: "activate_resident_operation", playerId: "player2", operationInstanceId: "RK-022:pass" });
-    s = pick(pick(s, "SPEC-DENO2:s"), "SPEC-DENO:d");
+    s = pick(pick(s, "SPEC-DENO:d"), "SPEC-DENO2:s");
     expect(zoneOf(s, "player2", "SPEC-DENO2:s")).toBe("rush");
     // 置き換えで出たユニットは新しくラッシュされたユニット（R-REPL-04）なので、ガタックバルカンをもう一度使える。ここでは使わない。
     if (s.pendingEffectChoice?.sourceCardId === "RK-053") s = skip(s);

@@ -249,6 +249,19 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
       detail: sourceText(choice.sourceCardId),
     };
   }
+  // 置き換えの常駐（engine rules/errataCardEffects.ts。RK-022 ライダーパス・RK-080 超変身・RK-082）: 場のユニット → 重ねたカードの順。
+  if (choice && (choice.effectId === "rider_pass_unit" || choice.effectId === "rider_pass_card")) {
+    const name = cardName(state, choice.sourceCardId) || choice.sourceCardId;
+    const unitId = choice.effectId === "rider_pass_card" ? choice.selectedInstanceIds?.[0] : undefined;
+    return {
+      actor: who(choice.playerId),
+      title: unitId
+        ? `効果の選択「${name}」: 「${instanceName(state, unitId, index)}」と置き換える重ねたカードを選ぶ（任意）`
+        : `効果の選択「${name}」: 置き換える場のユニットを選ぶ（任意）`,
+      source: cardName(state, choice.sourceCardId),
+      detail: effectExcerpt(engine, sourceText(choice.sourceCardId), choice.effectId, choice.optional),
+    };
+  }
   if (choice) {
     const selected = choice.selectedInstanceIds?.length ?? 0;
     const count = choice.selectCount ? ` ${selected}/${choice.selectCount}` : "";
