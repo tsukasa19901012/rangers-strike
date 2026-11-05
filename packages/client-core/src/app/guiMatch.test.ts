@@ -687,6 +687,32 @@ describe("choosing the order to put cards on the deck bottom", () => {
     expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: この順で戻す", "選ぶ: 選び直す"]);
   });
 
+  it("titles the order step as the rest of the effect, not as a second 「効果の選択」 (RS-186 プロバイダーベース)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const top = session.state.players.player1.deck.slice(0, 5).map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "deck_top_order",
+        sourceCardId: "RS-186",
+        kind: "select_unit",
+        validInstanceIds: top,
+        selectedInstanceIds: [],
+        selectCount: 5,
+        optional: false,
+        deckOrderMeta: { ids: top, undos: 0, to: "top" },
+      },
+    };
+    session.version++;
+    const title = app.view().gui!.dialog!.titleLines.map((l) => l.text).join("");
+    expect(title).toContain("続き「プロバイダーベース」: 山札の上に戻す順番を選ぶ（1番が一番上） 0/5");
+    expect(title).not.toContain("効果の選択");
+  });
+
   it("draws every line of a two-line question in the accent colour", () => {
     const app = startGui(5);
     const session = app.session!;
