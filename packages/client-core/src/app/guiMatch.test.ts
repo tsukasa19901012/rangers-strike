@@ -477,7 +477,7 @@ describe("cards an effect shows", () => {
     };
     session.version++;
     const dialog = app.view().gui!.dialog!;
-    expect(dialog.cards.map((c) => [c.instanceId, c.caption])).toEqual([[top.instanceId, "見ている"]]);
+    expect(dialog.cards.map((c) => [c.instanceId, c.caption])).toEqual([[top.instanceId, "選択対象"]]);
     expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: 山札の上", "選ぶ: 山札の下"]);
     // Picking the card itself does nothing; the buttons still answer the choice.
     app.dispatch(input.confirm);

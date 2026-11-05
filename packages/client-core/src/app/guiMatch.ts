@@ -79,7 +79,7 @@ export type GuiBox = { rect: Rect; title: string; titleRect: Rect; rows: MenuRow
 export type GuiDialogView = {
   rect: Rect;
   titleLines: PanelLine[];
-  /** `note`: a caption that is not where the card is (「見ている」 / 「対象外」, a revealed card's destination); the card can't be picked. */
+  /** `note`: a caption that is not where the card is (「選択対象」 / 「対象外」, a revealed card's destination); the card can't be picked. */
   /** `order`: the number the card got in a deck-bottom order choice. */
   cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect; note?: string; order?: number })[];
   buttons: MenuRowView[];
@@ -1305,8 +1305,8 @@ export class GuiMatch {
       const orderChoice = state.pendingEffectChoice?.deckOrderMeta ? state.pendingEffectChoice : undefined;
       const orderOf = (id: string) => (orderChoice?.selectedInstanceIds ?? []).indexOf(id) + 1;
       // 選べるカードと一緒に出る、見るだけのカード（「自軍山札を見て…」の山札の残りなど）は「対象外」。選べるカードが
-      // ない窓（山札の上の1枚を見て上か下かを選ぶ、選べるカードがない山札を見る窓）では「見ている」。
-      const viewNote = cardItems.some((i) => i.items.length > 0) ? "対象外" : "見ている";
+      // ない窓（山札の上の1枚を見て上か下かを選ぶ、選べるカードがない山札を見る窓）では「選択対象」。
+      const viewNote = cardItems.some((i) => i.items.length > 0) ? "対象外" : "選択対象";
       if (cardItems.length > 0) {
         y += 2;
         const shown = cardItems.slice(this.dialogOffset, this.dialogOffset + visible);
