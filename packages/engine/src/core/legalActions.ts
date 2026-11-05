@@ -126,7 +126,7 @@ import { canDeclareRush, rushPowerBudget } from "../rules/rushDeclaration";
 import { jaryuInvasionAllowsRushWithoutHold } from "../rules/jaryuInvasion";
 import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
 import { SCRAMBLE_EFFECT_ID, listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
-import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
+import { isErrataConfirmableChoice, riderPassTargetIds } from "../rules/errataCardEffects";
 import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
@@ -857,6 +857,13 @@ function appendActivateResidentOperationActions(
       continue;
     }
     if (!canActivateResidentOperation(state, playerId, card.instanceId)) continue;
+    // 置き換えの常駐（RK-022・RK-080・RK-082）: 置き換える場のユニットごとの手（場のユニットを先に選ぶ。2026-11-05 利用者の要望）。
+    if (swapResidentFeature(card.cardId)) {
+      for (const targetInstanceId of riderPassTargetIds(state, playerId, card)) {
+        actions.push({ type: "activate_resident_operation", playerId, operationInstanceId: card.instanceId, targetInstanceId });
+      }
+      continue;
+    }
     actions.push({
       type: "activate_resident_operation",
       playerId,
@@ -2991,9 +2998,11 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
     );
   }
   if (a.type === "activate_resident_operation" && b.type === "activate_resident_operation") {
+    // 置き換えるユニットを省いた手（b）は、どのユニットの手とも同じ（起動してからユニットを選ぶ）。
     return (
       a.playerId === b.playerId &&
-      a.operationInstanceId === b.operationInstanceId
+      a.operationInstanceId === b.operationInstanceId &&
+      (b.targetInstanceId === undefined || a.targetInstanceId === b.targetInstanceId)
     );
   }
   if (a.type === "confirm_shiron_reveal" && b.type === "confirm_shiron_reveal") {

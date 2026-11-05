@@ -141,6 +141,12 @@ export type ActivateResidentOperationAction = {
   type: "activate_resident_operation";
   playerId: PlayerId;
   operationInstanceId: string;
+  /**
+   * 置き換えの常駐（RK-022 ライダーパス・RK-080 超変身・RK-082 オルタフォース）で置き換える自軍ユニット。合法手は
+   * ユニットごとに1つずつ並ぶ（場のユニットを先に選ぶ。GUI では場のユニットを押して始めることもできる）。省略すると
+   * 置き換えるユニットを選ぶ選択から始まる。
+   */
+  targetInstanceId?: string;
 };
 
 export type ActivateFieldUnitAbilityAction = {

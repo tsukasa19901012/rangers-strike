@@ -1628,9 +1628,9 @@ describe("R-REPL-04 置き換え（用語）", () => {
     });
     const activate = legal(s0).find((a) => a.type === "activate_resident_operation" && a.operationInstanceId === "RK-022:pass");
     expect(activate).toBeDefined();
-    let s = run(s0, activate!);
-    s = run(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RK-061:sf" });
+    let s = run(s0, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "RK-022:pass" });
     s = run(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RK-062:af" });
+    s = run(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RK-061:sf" });
     expect(ids(s, "player1", "rush")).toEqual(["TST-UNIT-0:a", "RK-061:sf", "TST-UNIT-0:b"]);
     expect(s.players.player1.rush[1]?.commandHeld).toBe(true);
     expect(s.players.player1.operation[0]?.stackedCards?.map((c) => c.instanceId)).toEqual(["RK-062:af"]);

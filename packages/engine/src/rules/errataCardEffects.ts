@@ -1612,19 +1612,50 @@ export function canActivateRiderPass(state: GameState, playerId: PlayerId, op: C
   return riderPassCardIds(state, playerId, op).length > 0 && riderPassUnitIds(state, playerId, feature).length > 0;
 }
 
-export function beginRiderPass(state: GameState, playerId: PlayerId, op: CardInstance): GameState {
+/** 起動の合法手に並べる、置き換える場のユニット（起動できないなら空）。 */
+export function riderPassTargetIds(state: GameState, playerId: PlayerId, op: CardInstance): string[] {
   const feature = swapResidentFeature(op.cardId);
-  const ids = riderPassCardIds(state, playerId, op);
-  if (!feature || ids.length === 0 || riderPassUnitIds(state, playerId, feature).length === 0) return state;
+  if (!feature || !canActivateRiderPass(state, playerId, op)) return [];
+  return riderPassUnitIds(state, playerId, feature);
+}
+
+/** 置き換えるユニット（unitId）が決まったところで、重ねたカードから置き換えるカードを選ぶ。 */
+function openRiderPassCardChoice(state: GameState, playerId: PlayerId, op: CardInstance, unitId: string, phasePlayerId: PlayerId): GameState {
   return openEffectChoice(state, {
     playerId,
     effectId: RIDER_PASS_CARD,
     sourceCardId: op.cardId,
     sourceInstanceId: op.instanceId,
     kind: "scry_keep_one",
-    phasePlayerId: playerId,
-    validInstanceIds: ids,
+    phasePlayerId,
+    validInstanceIds: riderPassCardIds(state, playerId, op),
     viewedInstanceIds: (op.stackedCards ?? []).map((c) => c.instanceId),
+    selectCount: 1,
+    optional: true,
+    // 置き換える場のユニット（選んだもの）。
+    selectedInstanceIds: [unitId],
+  });
+}
+
+/**
+ * 起動: 先に置き換える場のユニットを選び、次に重ねたカードを選ぶ（2026-11-05 利用者の要望。以前は重ねたカードが先）。
+ * unitId（合法手の targetInstanceId）があればユニットの選択を飛ばす。選べないユニットなら null。
+ */
+export function beginRiderPass(state: GameState, playerId: PlayerId, op: CardInstance, unitId?: string): GameState | null {
+  const feature = swapResidentFeature(op.cardId);
+  const units = feature ? riderPassUnitIds(state, playerId, feature) : [];
+  if (!feature || riderPassCardIds(state, playerId, op).length === 0 || units.length === 0) return state;
+  if (unitId !== undefined) {
+    return units.includes(unitId) ? openRiderPassCardChoice(state, playerId, op, unitId, playerId) : null;
+  }
+  return openEffectChoice(state, {
+    playerId,
+    effectId: RIDER_PASS_UNIT,
+    sourceCardId: op.cardId,
+    sourceInstanceId: op.instanceId,
+    kind: "select_unit",
+    phasePlayerId: playerId,
+    validInstanceIds: units,
     selectCount: 1,
     optional: true,
   });
@@ -1633,26 +1664,16 @@ export function beginRiderPass(state: GameState, playerId: PlayerId, op: CardIns
 function resolveRiderPass(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
   const pending = state.pendingEffectChoice!;
   if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
-  if (pending.effectId === RIDER_PASS_CARD) {
-    return {
-      state: openEffectChoice(clearPending(state, pending.phasePlayerId), {
-        playerId,
-        effectId: RIDER_PASS_UNIT,
-        sourceCardId: pending.sourceCardId,
-        sourceInstanceId: pending.sourceInstanceId,
-        kind: "select_unit",
-        phasePlayerId: pending.phasePlayerId,
-        validInstanceIds: riderPassUnitIds(state, playerId, swapResidentFeature(pending.sourceCardId) ?? "DEN-O"),
-        selectCount: 1,
-        optional: false,
-        selectedInstanceIds: [instanceId],
-      }),
-    };
+  if (pending.effectId === RIDER_PASS_UNIT) {
+    const op = state.players[playerId].operation.find((c) => c.instanceId === pending.sourceInstanceId);
+    if (!op) return { error: "invalid_target" };
+    return { state: openRiderPassCardChoice(clearPending(state, pending.phasePlayerId), playerId, op, instanceId, pending.phasePlayerId) };
   }
   // 置き換え: 重ねたカードがユニットの位置と状態（ホールド・ライド等）を引き継ぎ、置き換えたユニットのカードは
   // ライダーパスに重ねる（Q2/Q4: ライド状態は維持。R-REPL-04）。エリアに出たカードは「ラッシュ」扱い（Q3/Q5。
   // core/applyAction.ts の settleEffectRushes が処理する）。
-  const passCardId = pending.selectedInstanceIds?.[0];
+  const passCardId = instanceId;
+  const unitId = pending.selectedInstanceIds?.[0];
   const player = state.players[playerId];
   const op = player.operation.find((c) => c.instanceId === pending.sourceInstanceId);
   const passCard = op?.stackedCards?.find((c) => c.instanceId === passCardId);
@@ -1660,7 +1681,7 @@ function resolveRiderPass(state: GameState, playerId: PlayerId, instanceId: stri
   let replaced: CardInstance | undefined;
   const swap = (cards: CardInstance[]) =>
     cards.map((c) => {
-      if (c.instanceId !== instanceId) return c;
+      if (c.instanceId !== unitId) return c;
       replaced = c;
       const { stackedCards: _s, faceDown: _f, ...incoming } = passCard;
       return {

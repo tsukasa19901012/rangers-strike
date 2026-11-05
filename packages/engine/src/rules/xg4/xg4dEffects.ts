@@ -98,32 +98,35 @@ XG4_SKIPPERS[HANGER_EFFECT_ID] = simpleSkip();
 XG4_CONFIRMERS[HANGER_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
   const next = close(state, pending);
-  const ids = hangerCommandIds(next, playerId);
+  const ids = hangerFieldIds(next, playerId);
   const log = logFor(state, playerId, "XG4-064", `${HANGER_EFFECT_ID}:confirm`);
-  if (ids.length === 0 || hangerFieldIds(next, playerId).length === 0) return { state: proceed(next, pending), log };
-  return { state: openNext(next, pending, { ...base(pendingBase(pending), "XG4-064"), effectId: HANGER_COMMAND_EFFECT_ID, kind: "select_command", validInstanceIds: ids, selectCount: 1, optional: false }), log };
+  if (ids.length === 0 || hangerCommandIds(next, playerId).length === 0) return { state: proceed(next, pending), log };
+  // 置き換える場のビークルを先に選び、次にコマンドゾーンのカードを選ぶ（2026-11-05 利用者の要望。テキストの順とは逆）。
+  return { state: openNext(next, pending, { ...base(pendingBase(pending), "XG4-064"), effectId: HANGER_FIELD_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: false }), log };
 };
 
-XG4_RESOLVERS[HANGER_COMMAND_EFFECT_ID] = (state, playerId, instanceId) => {
+XG4_RESOLVERS[HANGER_FIELD_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
   const next = close(state, pending);
   return {
     state: openNext(next, pending, {
       ...base(pendingBase(pending), "XG4-064"),
-      effectId: HANGER_FIELD_EFFECT_ID,
-      kind: "select_unit",
-      validInstanceIds: hangerFieldIds(next, playerId),
+      effectId: HANGER_COMMAND_EFFECT_ID,
+      kind: "select_command",
+      validInstanceIds: hangerCommandIds(next, playerId),
       selectCount: 1,
       optional: false,
-      xg4Meta: { commandId: instanceId },
+      // 置き換える場のビークル（選んだもの）。
+      selectedInstanceIds: [instanceId],
+      xg4Meta: { fieldId: instanceId },
     }),
-    log: logFor(state, playerId, "XG4-064", `${HANGER_COMMAND_EFFECT_ID}:${instanceId}`),
+    log: logFor(state, playerId, "XG4-064", `${HANGER_FIELD_EFFECT_ID}:${instanceId}`),
   };
 };
 
-XG4_RESOLVERS[HANGER_FIELD_EFFECT_ID] = (state, playerId, instanceId) => {
+XG4_RESOLVERS[HANGER_COMMAND_EFFECT_ID] = (state, playerId, commandId) => {
   const pending = state.pendingEffectChoice!;
-  const commandId = String(pending.xg4Meta?.commandId ?? "");
+  const instanceId = String(pending.xg4Meta?.fieldId ?? "");
   const next = patchPlayer(close(state, pending), playerId, (p) => {
     const cmd = p.command.find((c) => c.instanceId === commandId);
     const zone = p.rush.some((c) => c.instanceId === instanceId) ? "rush" : p.battle.some((c) => c.instanceId === instanceId) ? "battle" : null;
@@ -141,7 +144,7 @@ XG4_RESOLVERS[HANGER_FIELD_EFFECT_ID] = (state, playerId, instanceId) => {
       discard: [...p.discard, ...(vehicle.stackedCards ?? []).map(stripForZone)],
     };
   });
-  return { state: proceed(next, pending), log: logFor(state, playerId, "XG4-064", `${HANGER_FIELD_EFFECT_ID}:${commandId}:${instanceId}`) };
+  return { state: proceed(next, pending), log: logFor(state, playerId, "XG4-064", `${HANGER_COMMAND_EFFECT_ID}:${commandId}:${instanceId}`) };
 };
 
 // ---------------------------------------------------------------------------

@@ -85,14 +85,19 @@ describe("XG4-064 リボルギャリー", () => {
   it("XG4-064:【リボルバーハンガー】— 発動すると、コマンドゾーンのカテゴリ2つ以上のビークルカードと、カテゴリ2つ以上の自軍ビークルが置き換わる（出典: atwiki/page-2116「自軍コマンドゾーンから、カテゴリを2つ以上持つビークルカードを1枚選び、カテゴリを2つ以上持つ自軍ビークル1体と置き換える」）", () => {
     let s = entered();
     expectChoiceFrom(s, "player1", "XG4-064");
-    s = resolveAll(pickThrough(s, "XG4-064", ["XG4-065:tb", "XG4-066:sp"]));
+    s = confirm(s);
+    // 置き換える場のビークルを先に選び、次にコマンドゾーンのカードを選ぶ（2026-11-05 利用者の要望）。
+    expect(choiceIds(s)).toEqual(["XG4-066:sp"]);
+    s = pick(s, "XG4-066:sp");
+    expect(choiceIds(s)).toEqual(["XG4-065:tb"]);
+    s = resolveAll(pick(s, "XG4-065:tb"));
     expect(zoneOf(s, "player1", "XG4-065:tb")).toBe("rush");
     expect(zoneOf(s, "player1", "XG4-066:sp")).toBe("command");
   });
 
   it("XG4-064:【リボルバーハンガー】— 出すビークルの必要パワーを満たさなければ置き換えられない（パワー3で必要パワー4のビークル）（出典: atwiki/page-2116「ただし、必要パワーと追加条件は満たすこと」）", () => {
     let s = entered(3);
-    if (s.pendingEffectChoice?.sourceCardId === "XG4-064") s = pickThrough(s, "XG4-064", ["XG4-065:tb", "XG4-066:sp"]);
+    if (s.pendingEffectChoice?.sourceCardId === "XG4-064") s = pickThrough(s, "XG4-064", ["XG4-066:sp", "XG4-065:tb"]);
     s = resolveAll(s);
     expect(zoneOf(s, "player1", "XG4-065:tb")).toBe("command");
     expect(zoneOf(s, "player1", "XG4-066:sp")).toBe("rush");

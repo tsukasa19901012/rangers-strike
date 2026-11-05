@@ -173,14 +173,17 @@ describe("RK-022 ライダーパス", () => {
     });
   }
   const activate = (s: GameState) => legal(s).find((a) => a.type === "activate_resident_operation" && a.operationInstanceId === "RK-022:pass");
+  // 置き換えるユニットを決めない起動（ユニット → 重ねたカードの順に選ぶ。2026-11-05 利用者の要望）。
+  const start = (s: GameState) => act(s, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "RK-022:pass" });
 
   it("RK-022: 自軍ラッシュフェイズに重ねたカードと「DEN-O」の自軍ユニットを置き換え、エリアに出たカードはラッシュしたことになる（出典: atwiki/page-128・Q3）", () => {
-    let s = act(pass(), activate(pass())!);
-    expect(choiceIds(s)).toEqual(["RK-061:sf"]);
-    expect(canSkip(s)).toBe(true);
-    s = pick(s, "RK-061:sf");
+    expect(activate(pass())).toBeDefined();
+    let s = start(pass());
     expect(choiceIds(s)).toEqual(["RK-062:af"]);
+    expect(canSkip(s)).toBe(true);
     s = pick(s, "RK-062:af");
+    expect(choiceIds(s)).toEqual(["RK-061:sf"]);
+    s = pick(s, "RK-061:sf");
     expect(zoneOf(s, "player1", "RK-061:sf")).toBe("rush");
     expect(s.players.player1.operation[0]?.stackedCards?.map((c) => c.instanceId)).toEqual(["RK-062:af"]);
     expect(wasRushedThisTurn(s.players.player1, "RK-061:sf")).toBe(true);
@@ -188,15 +191,15 @@ describe("RK-022 ライダーパス", () => {
 
   it("RK-022: 置き換えは状態と位置を引き継ぐ（ホールド状態のまま同じ位置）（出典: atwiki/page-128 Q2「文字通り置き換えるだけ」・R-REPL-04）", () => {
     const s0 = pass({ rush: [inst("TST-UNIT-0", "a"), { ...inst("RK-062", "af"), commandHeld: true }, inst("TST-UNIT-0", "b")] });
-    let s = act(s0, activate(s0)!);
-    s = pick(pick(s, "RK-061:sf"), "RK-062:af");
+    let s = start(s0);
+    s = pick(pick(s, "RK-062:af"), "RK-061:sf");
     expect(s.players.player1.rush.map((c) => c.instanceId)).toEqual(["TST-UNIT-0:a", "RK-061:sf", "TST-UNIT-0:b"]);
     expect(s.players.player1.rush[1]?.commandHeld).toBe(true);
   });
 
   it("RK-022: ラッシュフェイズ中なら何度でも置き換えられる（出典: atwiki/page-128 Q6）", () => {
-    let s = act(pass(), activate(pass())!);
-    s = pick(pick(s, "RK-061:sf"), "RK-062:af");
+    let s = start(pass());
+    s = pick(pick(s, "RK-062:af"), "RK-061:sf");
     expect(activate(s)).toBeDefined();
   });
 
