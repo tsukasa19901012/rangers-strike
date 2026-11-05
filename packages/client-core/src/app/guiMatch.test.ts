@@ -429,6 +429,33 @@ describe("cards an effect shows", () => {
     expect(app.view().gui!.dialog?.buttons.map((b) => b.text)).not.toEqual(["閉じる"]);
   });
 
+  it("captions the look-only deck cards next to pickable ones 「対象外」 (RS-186 プロバイダーベース)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const deck = session.state.players.player1.deck.map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "purobaidabesu_deck_top",
+        sourceCardId: "RS-186",
+        kind: "select_unit",
+        validInstanceIds: deck.slice(0, 2),
+        selectedInstanceIds: [],
+        selectCount: 5,
+        optional: true,
+        deckLookInstanceIds: deck,
+      },
+    };
+    session.version++;
+    const cards = app.view().gui!.dialog!.cards;
+    expect(cards.slice(0, 2).map((c) => c.caption)).toEqual(["自山札", "自山札"]);
+    expect(cards.slice(2).length).toBeGreaterThan(0);
+    expect(cards.slice(2).every((c) => c.caption === "対象外" && c.note === "対象外")).toBe(true);
+  });
+
   it("shows the deck card a choice is looking at (RM-017 オメデトロフィー)", () => {
     const app = startGui(5);
     const session = app.session!;
