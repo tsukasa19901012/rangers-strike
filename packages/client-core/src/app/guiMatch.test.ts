@@ -896,7 +896,8 @@ describe("RK-080 超変身 swapping the same two units", () => {
   // its 「このターンラッシュした」 modifier first (no cardId), so every frame threw; (2) VRVマスター fired only for a card
   // not yet rushed this turn, and its revealed card was never shown.
   function swap(app: AppController): void {
-    for (const type of ["activate_resident_operation", "resolve_effect_choice", "resolve_effect_choice"]) {
+    // The legal activation names the unit to replace (one per unit), so only the stacked card is left to pick.
+    for (const type of ["activate_resident_operation", "resolve_effect_choice"]) {
       const index = app.session!.humanOptions().findIndex((o) => o.action.type === type);
       expect(index).toBeGreaterThanOrEqual(0);
       app.session!.chooseHuman(index);
@@ -1004,5 +1005,62 @@ describe("choose any number of cards (check window)", () => {
     expect(reset).toBeGreaterThanOrEqual(0);
     app.dispatch(input.select(gui.dialog!.cards.length + reset, true));
     expect(app.view().gui!.dialog!.cards.some((c) => c.checked)).toBe(false);
+  });
+});
+
+describe("Replacing with RK-080 超変身: the field unit first, then the stacked card", () => {
+  // The same shared board, with a second アマダム unit (XG2-073 クウガ) in the rush area.
+  function swapBoard(): AppController {
+    const app = startGui(5);
+    const payload = parseSharePayload(JSON.parse(readFileSync(new URL("./fixtures/share-rk080-vrv-master.json", import.meta.url), "utf8")))!;
+    const me = payload.state.players.player1;
+    me.rush = [...me.rush, { instanceId: "XG2-073-99", cardId: "XG2-073" }];
+    app.startSharedMatch(payload);
+    return app;
+  }
+  function tileAt(app: AppController, id: string): { row: number; slot: number } {
+    const gui = app.view().gui!;
+    const row = gui.rows.findIndex((r) => r.tiles.some((t) => t.instanceId === id));
+    return { row, slot: gui.rows[row]!.tiles.findIndex((t) => t.instanceId === id) };
+  }
+  function tap(app: AppController, id: string): void {
+    const at = tileAt(app, id);
+    app.dispatch(input.focusTile(at.row, at.slot));
+    app.dispatch(input.confirm);
+  }
+
+  it("tapping 超変身 asks for the field unit on the board, then opens the stacked cards", () => {
+    const app = swapBoard();
+    // The 常駐 pile's card (web-pocket opens it from the peek window).
+    app.dispatch(input.openCards(["RK-080-2"], "自分の常駐", { x: 0, y: 0, w: 40, h: 40 }));
+    const rows = app.view().gui!.popup!.rows.map((r) => r.text);
+    const verb = rows.findIndex((t) => t.includes("常駐オペレーションを起動"));
+    expect(verb).toBeGreaterThanOrEqual(0);
+    app.dispatch(input.select(verb, true));
+    const gui = app.view().gui!;
+    expect(gui.footer).toContain("置き換える場のユニットを選ぶ");
+    expect(app.session!.state.pendingEffectChoice).toBeUndefined();
+    // Picking the target on the board runs the move at once.
+    const at = tileAt(app, "XG2-073-99");
+    app.dispatch(input.focusTile(at.row, at.slot));
+    const pending = app.session!.state.pendingEffectChoice!;
+    expect(pending.effectId).toBe("rider_pass_card");
+    expect(pending.selectedInstanceIds).toEqual(["XG2-073-99"]);
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog.titleLines.map((l) => l.text).join("")).toContain("と置き換える重ねたカードを選ぶ");
+    expect(dialog.cards.map((c) => c.instanceId)).toContain("RK-103-5");
+  });
+
+  it("tapping the field unit starts 超変身 with that unit picked, so only the stacked card is asked", () => {
+    const app = swapBoard();
+    tap(app, "XG2-073-32");
+    const rows = app.view().gui!.popup!.rows.map((r) => r.text);
+    const verb = rows.findIndex((t) => t.includes("で置き換える"));
+    expect(verb).toBeGreaterThanOrEqual(0);
+    app.dispatch(input.select(verb, true));
+    const pending = app.session!.state.pendingEffectChoice!;
+    expect(pending.effectId).toBe("rider_pass_card");
+    expect(pending.selectedInstanceIds).toEqual(["XG2-073-32"]);
+    expect(app.view().gui!.dialog!.cards.map((c) => c.instanceId)).toContain("RK-103-5");
   });
 });

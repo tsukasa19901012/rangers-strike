@@ -185,11 +185,31 @@ describe("RK-022 ライダーパス", () => {
       },
       EXTRA,
     );
+  // 置き換える場のユニットを先に選び、次に重ねたカードを選ぶ（2026-11-05 利用者の要望）。
   const swap = (s: GameState, card: string, unit: string) => {
-    const a = legal(s).find((x) => x.type === "activate_resident_operation" && x.operationInstanceId === "RK-022:pass");
+    const a = legal(s).find((x) => x.type === "activate_resident_operation" && x.operationInstanceId === "RK-022:pass" && x.targetInstanceId === unit);
     expect(a).toBeDefined();
-    return pick(pick(act(s, a!), card), unit);
+    return pick(pick(act(s, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "RK-022:pass" }), unit), card);
   };
+
+  it("RK-022: 起動の手は置き換える場のユニットごとに並び、ユニットを決めた手は重ねたカードの選択から始まる（場のユニットを押して起動）", () => {
+    const s = passBoard([inst("SPEC-DENO", "u"), inst("SPEC-DENO", "u2")], [inst("SPEC-DENO2", "s")]);
+    const acts = legal(s).filter((x) => x.type === "activate_resident_operation" && x.operationInstanceId === "RK-022:pass");
+    expect(acts.map((a) => (a.type === "activate_resident_operation" ? a.targetInstanceId : undefined))).toEqual(["SPEC-DENO:u", "SPEC-DENO:u2"]);
+    const opened = act(s, acts[1]!);
+    expect(opened.pendingEffectChoice?.effectId).toBe("rider_pass_card");
+    expect(opened.pendingEffectChoice?.validInstanceIds).toEqual(["SPEC-DENO2:s"]);
+    const done = pick(opened, "SPEC-DENO2:s");
+    expect(zoneIds(done, "player1", "rush")).toEqual(["SPEC-DENO:u", "SPEC-DENO2:s"]);
+  });
+
+  it("RK-022: ユニットを決めずに起動すると、先に置き換える場のユニットを選ぶ", () => {
+    const s = passBoard([inst("SPEC-DENO", "u")], [inst("SPEC-DENO2", "s")]);
+    const opened = act(s, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "RK-022:pass" });
+    expect(opened.pendingEffectChoice?.effectId).toBe("rider_pass_unit");
+    expect(opened.pendingEffectChoice?.validInstanceIds).toEqual(["SPEC-DENO:u"]);
+    expect(opened.pendingEffectChoice?.optional).toBe(true);
+  });
 
   // 公式 Q2「文字通り置き換えるだけですので、ライド状態を維持したまま、重ねているユニットカードだけを置き換えます。」
   it("RK-022: 公式Q&A — ビークルにライドしているユニットと置き換えても、ライド状態のまま（出典: grnrngr/faq-rider-1 RK-022 Q2・atwiki/page-128 Q2）", () => {

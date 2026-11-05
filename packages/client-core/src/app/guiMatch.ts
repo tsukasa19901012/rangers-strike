@@ -191,6 +191,8 @@ const TARGET_PROMPTS: Record<string, string> = {
   battle: "アタックする相手を選ぶ",
   play_operation: "オペレーションの対象を選ぶ",
   mount_ride: "ライドするビークルを選ぶ",
+  // 置き換えの常駐（RK-022 ライダーパス・RK-080 超変身・RK-082）: 置き換える場のユニットを先に選ぶ。
+  activate_resident_operation: "置き換える場のユニットを選ぶ",
 };
 const CALL_VERB = "コール（ホールドしてラッシュするカードを選ぶ）";
 const POPUP_ROWS = 6;
