@@ -35,6 +35,9 @@ const byCardId = (a: { cardId: string }, b: { cardId: string }) => (a.cardId < b
  */
 export function withWholeDeckView(state: GameState, choice: PendingEffectChoice): PendingEffectChoice {
   if (choice.deckLookInstanceIds || choice.revealGate) return choice;
+  // 「好きな順で山札の上（下）に戻す」の順番の選択は、山札を見る効果の続きでも戻すカードだけを出す
+  // （山札の全部をもう一度出すと、効果がもう1回発動したように見えた。RS-186 プロバイダーベース、2026-11-05）。
+  if (choice.deckOrderMeta) return choice;
   if (choice.validInstanceIds.length === 0 || !hasDeckLookText(state, choice.sourceCardId)) return choice;
   const deck = state.players[choice.playerId]?.deck ?? [];
   const inDeck = new Set(deck.map((c) => c.instanceId));

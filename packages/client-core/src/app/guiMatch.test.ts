@@ -429,6 +429,33 @@ describe("cards an effect shows", () => {
     expect(app.view().gui!.dialog?.buttons.map((b) => b.text)).not.toEqual(["閉じる"]);
   });
 
+  it("captions pickable deck cards 「選択可能」 and the look-only ones next to them 「対象外」 (RS-186 プロバイダーベース)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const deck = session.state.players.player1.deck.map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "purobaidabesu_deck_top",
+        sourceCardId: "RS-186",
+        kind: "select_unit",
+        validInstanceIds: deck.slice(0, 2),
+        selectedInstanceIds: [],
+        selectCount: 5,
+        optional: true,
+        deckLookInstanceIds: deck,
+      },
+    };
+    session.version++;
+    const cards = app.view().gui!.dialog!.cards;
+    expect(cards.slice(0, 2).map((c) => c.caption)).toEqual(["選択可能", "選択可能"]);
+    expect(cards.slice(2).length).toBeGreaterThan(0);
+    expect(cards.slice(2).every((c) => c.caption === "対象外" && c.note === "対象外")).toBe(true);
+  });
+
   it("shows the deck card a choice is looking at (RM-017 オメデトロフィー)", () => {
     const app = startGui(5);
     const session = app.session!;
@@ -450,7 +477,7 @@ describe("cards an effect shows", () => {
     };
     session.version++;
     const dialog = app.view().gui!.dialog!;
-    expect(dialog.cards.map((c) => [c.instanceId, c.caption])).toEqual([[top.instanceId, "見ている"]]);
+    expect(dialog.cards.map((c) => [c.instanceId, c.caption])).toEqual([[top.instanceId, "選択対象"]]);
     expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: 山札の上", "選ぶ: 山札の下"]);
     // Picking the card itself does nothing; the buttons still answer the choice.
     app.dispatch(input.confirm);
@@ -685,6 +712,35 @@ describe("choosing the order to put cards on the deck bottom", () => {
     // A numbered card can be picked again to take its number off.
     expect(dialog.cards.every((c) => c.actionable)).toBe(true);
     expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: この順で戻す", "選ぶ: 選び直す"]);
+  });
+
+  it("titles the order step as the rest of the effect, not as a second 「効果の選択」 (RS-186 プロバイダーベース)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const top = session.state.players.player1.deck.slice(0, 5).map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "deck_top_order",
+        sourceCardId: "RS-186",
+        kind: "select_unit",
+        validInstanceIds: top,
+        selectedInstanceIds: [],
+        selectCount: 5,
+        optional: false,
+        deckOrderMeta: { ids: top, undos: 0, to: "top" },
+      },
+    };
+    session.version++;
+    const title = app.view().gui!.dialog!.titleLines.map((l) => l.text).join("");
+    expect(title).toContain("続き「プロバイダーベース」: 山札の上に戻す順番を選ぶ（1番が一番上） 0/5");
+    expect(title).not.toContain("効果の選択");
+    const captions = app.view().gui!.dialog!.cards.map((c) => c.caption);
+    expect(captions.length).toBeGreaterThan(0);
+    expect(captions.every((c) => c === "選択対象")).toBe(true);
   });
 
   it("draws every line of a two-line question in the accent colour", () => {

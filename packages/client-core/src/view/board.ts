@@ -236,6 +236,19 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
       detail: sourceText(choice.sourceCardId),
     };
   }
+  // 「好きな順で山札の上（下）に戻す」の順番の選択（engine rules/deckOrder.ts）。カードを選ぶ選択の直後に同じカードの名前・
+  // テキストで開くので、「効果の選択」の題では効果がもう1回発動したように見えた（RS-186 プロバイダーベース、2026-11-05）。
+  const order = choice?.deckOrderMeta;
+  if (choice && order) {
+    const top = order.to === "top";
+    const numbered = choice.selectedInstanceIds?.length ?? 0;
+    return {
+      actor: who(choice.playerId),
+      title: `続き「${cardName(state, choice.sourceCardId) || choice.sourceCardId}」: 山札の${top ? "上" : "下"}に戻す順番を選ぶ（${top ? "1番が一番上" : "最後の番号が一番下"}） ${numbered}/${order.ids.length}`,
+      source: cardName(state, choice.sourceCardId),
+      detail: sourceText(choice.sourceCardId),
+    };
+  }
   if (choice) {
     const selected = choice.selectedInstanceIds?.length ?? 0;
     const count = choice.selectCount ? ` ${selected}/${choice.selectCount}` : "";

@@ -777,6 +777,8 @@ describe("RS-186 プロバイダーベース", () => {
     // 5枚選ぶと選び終わり、山札の上の順を番号で選ぶ（「好きな順で山札の上に戻す」）。
     expect(s.pendingEffectChoice?.effectId).toBe("deck_top_order");
     expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(deck.slice(0, 5).map((c) => c.instanceId).sort());
+    // 順番の窓は戻す5枚だけ。山札の全部をもう一度出すと、効果がもう1回発動したように見えた（2026-11-05）。
+    expect(s.pendingEffectChoice?.deckLookInstanceIds).toBeUndefined();
     s = pickEffect(s, "player1", ["RS-196:e", "RS-196:d", "RS-196:c", "RS-196:b", "order_done"]);
     expect(s.players.player1.deck.slice(0, 5).map((c) => c.instanceId)).toEqual(["RS-196:e", "RS-196:d", "RS-196:c", "RS-196:b", "RS-196:a"]);
     expect(s.pendingEffectChoice).toBeUndefined();

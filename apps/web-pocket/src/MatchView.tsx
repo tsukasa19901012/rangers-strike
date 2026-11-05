@@ -849,7 +849,7 @@ export function MatchView(props: {
                     )}
                   </Show>
                   <View class="absolute flex-row justify-center" style={at(card().captionRect)}>
-                    <Text class={card().note ? "text-xs text-amber-200" : "text-xs text-slate-400"}>{card().note ?? caption(card().instanceId) ?? card().caption}</Text>
+                    <Text class={card().note ? "text-xs text-amber-200" : "text-xs text-slate-400"}>{card().note ?? card().label ?? caption(card().instanceId) ?? card().caption}</Text>
                   </View>
                 </>
               )}
