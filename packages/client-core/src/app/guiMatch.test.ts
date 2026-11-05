@@ -833,3 +833,35 @@ describe("rush paid with a コール unit chosen first", () => {
     expect(app.view().gui!.dialog!.cards.map((c) => c.instanceId)).toEqual(["XG7-014-40", "XG5-046-35"]);
   });
 });
+
+describe("RK-080 超変身 swapping the same two units", () => {
+  // A shared board: RK-080 超変身 with RK-103 クウガPF stacked, XG2-073 クウガ and RS-299 VRVマスター in the rush area.
+  // Swapping back and forth (1) froze the board: the selection window looked the stacked card up by instance id and found
+  // its 「このターンラッシュした」 modifier first (no cardId), so every frame threw; (2) VRVマスター fired only for a card
+  // not yet rushed this turn, and its revealed card was never shown.
+  function swap(app: AppController): void {
+    for (const type of ["activate_resident_operation", "resolve_effect_choice", "resolve_effect_choice"]) {
+      const index = app.session!.humanOptions().findIndex((o) => o.action.type === type);
+      expect(index).toBeGreaterThanOrEqual(0);
+      app.session!.chooseHuman(index);
+      app.tick();
+      app.view();
+    }
+  }
+
+  it("keeps drawing the selection window and fires VRVマスター on every swap", () => {
+    const app = startGui(5);
+    const payload = parseSharePayload(JSON.parse(readFileSync(new URL("./fixtures/share-rk080-vrv-master.json", import.meta.url), "utf8")))!;
+    app.startSharedMatch(payload);
+    const vrvLogs = () => app.session!.state.log.filter((l) => l.includes("nottemiNaika")).length;
+    const before = vrvLogs();
+    for (let round = 1; round <= 4; round++) {
+      swap(app);
+      expect(vrvLogs()).toBe(before + round);
+      const reveal = app.session!.state.lastReveal!;
+      expect(reveal.sourceCardId).toBe("RS-299");
+      expect(reveal.cards.map((c) => [c.cardId, c.destination])).toEqual([["RK-146", "deck_top"]]);
+      app.dispatch(input.confirm); // close the reveal window
+    }
+  });
+});
