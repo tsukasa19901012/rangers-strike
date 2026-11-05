@@ -848,6 +848,16 @@ export function MatchView(props: {
                       </View>
                     )}
                   </Show>
+                  <Show when={card().checked}>
+                    {/* checked in a choose-any-number window (sent with 「選択を確定」) */}
+                    <View class="absolute rounded-[8] border-[3] border-emerald-400" style={at({ x: card().rect.x - 2, y: card().rect.y - 2, w: card().rect.w + 4, h: card().rect.h + 4 })} />
+                    <View
+                      class="absolute w-[30] h-[30] items-center justify-center rounded-full bg-emerald-400 border-[2] border-[#0b1220]"
+                      style={at({ x: card().rect.x + card().rect.w / 2 - 15, y: card().rect.y + card().rect.h / 2 - 15, w: 30, h: 30 })}
+                    >
+                      <Text class="text-base text-[#0b1220] font-bold">✓</Text>
+                    </View>
+                  </Show>
                   <View class="absolute flex-row justify-center" style={at(card().captionRect)}>
                     <Text class={card().note ? "text-xs text-amber-200" : "text-xs text-slate-400"}>{card().note ?? card().label ?? caption(card().instanceId) ?? card().caption}</Text>
                   </View>

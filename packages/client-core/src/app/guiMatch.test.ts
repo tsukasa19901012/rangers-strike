@@ -921,3 +921,88 @@ describe("RK-080 超変身 swapping the same two units", () => {
     }
   });
 });
+
+describe("choose any number of cards (check window)", () => {
+  // RK-080 超変身「スタートフェイズを終えるとき…好きな枚数選び…これに重ねて置いてもよい」: each pick used to take the card
+  // out of the window at once. Now cards are checked in place (tap again to uncheck) and 「選択を確定」 sends them (2026-11-05).
+  function superHenshinBoard(app: AppController) {
+    const session = app.session!;
+    const state = structuredClone(session.state);
+    const deck = testEngine.deckApi.build([
+      { cardId: "RK-080", count: 1 },
+      { cardId: "RK-029", count: 1 },
+      { cardId: "RK-102", count: 1 },
+      { cardId: "RK-103", count: 1 },
+    ]);
+    const me = state.players.player1;
+    const instances = deck.map((def, i) => ({ instanceId: `${def.id}-x${i}`, cardId: def.id }));
+    for (const def of deck) state.definitions[def.id] = def;
+    me.operation = [instances[0]!];
+    me.hand = [...instances.slice(1), ...me.hand];
+    const ids = instances.slice(1).map((c) => c.instanceId);
+    state.pendingEffectChoice = {
+      playerId: "player1",
+      phasePlayerId: "player1",
+      sourceCardId: "RK-080",
+      sourceInstanceId: instances[0]!.instanceId,
+      effectId: "rk080_stack_from_hand",
+      kind: "select_unit",
+      validInstanceIds: ids,
+      selectCount: ids.length,
+      optional: true,
+    } as never;
+    session.state = state;
+    session.version++;
+    return ids;
+  }
+
+  const labels = (gui: GuiView) => gui.dialog!.buttons.map((b) => b.text);
+
+  it("checks cards in place, unchecks on a second tap, and sends them on 確定", () => {
+    const app = startGui(5);
+    const ids = superHenshinBoard(app);
+    const handBefore = app.session!.state.players.player1.hand.length;
+    let gui = app.view().gui!;
+    expect(gui.dialog!.cards.map((c) => c.instanceId)).toEqual(ids);
+    expect(labels(gui).some((t) => t.startsWith("選択を確定"))).toBe(false);
+
+    // Check the first two cards: they stay in the window, marked.
+    app.dispatch(input.confirm);
+    app.dispatch(input.pageNext);
+    app.dispatch(input.confirm);
+    gui = app.view().gui!;
+    expect(app.session!.state.pendingEffectChoice!.selectedInstanceIds ?? []).toEqual([]); // nothing sent yet
+    expect(gui.dialog!.cards.map((c) => c.instanceId)).toEqual(ids);
+    expect(gui.dialog!.cards.map((c) => !!c.checked)).toEqual([true, true, false]);
+    expect(gui.dialog!.titleLines[0]!.text).toContain("2/3");
+    expect(labels(gui)).toContain("選択を確定（2枚）");
+
+    // Uncheck the second one again.
+    app.dispatch(input.confirm);
+    gui = app.view().gui!;
+    expect(gui.dialog!.cards.map((c) => !!c.checked)).toEqual([true, false, false]);
+    expect(labels(gui)).toContain("選択を確定（1枚）");
+
+    // Check the third and confirm.
+    app.dispatch(input.pageNext);
+    app.dispatch(input.confirm);
+    const confirm = app.view().gui!.dialog!.buttons.findIndex((b) => b.text === "選択を確定（2枚）");
+    app.dispatch(input.select(ids.length + confirm, true));
+    const state = app.session!.state;
+    expect(state.pendingEffectChoice).toBeUndefined();
+    const stacked = state.players.player1.operation[0]!.stackedCards!.map((c) => c.instanceId);
+    expect(stacked).toEqual([ids[0], ids[2]]);
+    expect(state.players.player1.hand.length).toBe(handBefore); // 2 placed, 2 drawn
+  });
+
+  it("clears every check with 選び直す", () => {
+    const app = startGui(5);
+    superHenshinBoard(app);
+    app.dispatch(input.confirm);
+    const gui = app.view().gui!;
+    const reset = gui.dialog!.buttons.findIndex((b) => b.text.startsWith("選び直す"));
+    expect(reset).toBeGreaterThanOrEqual(0);
+    app.dispatch(input.select(gui.dialog!.cards.length + reset, true));
+    expect(app.view().gui!.dialog!.cards.some((c) => c.checked)).toBe(false);
+  });
+});
