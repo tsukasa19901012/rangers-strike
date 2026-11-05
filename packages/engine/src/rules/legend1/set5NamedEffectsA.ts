@@ -11,7 +11,7 @@ import { filthyAirActive } from "./otherLinesNamedEffects";
 import { shuffleCards as shuffleDeckCards } from "../../core/deckShuffle";
 import type { Category, CardDefinition } from "@rangers-strike/cards";
 import { cardHasCategory } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId, PlayerState } from "../../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId, PlayerState, RevealedCardNotice } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import {
@@ -36,6 +36,7 @@ import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
 import { deckOrderChoice } from "../deckOrder";
 import { gateReveal } from "../revealGate";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -837,6 +838,8 @@ export function applyVrvMasterOnRush(state: GameState, playerId: PlayerId, rushe
   if (!rushed || defOf(state, rushed.cardId)?.size !== "S") return state;
   const masters = player.rush.filter((c) => c.cardId === "RS-299" && c.instanceId !== rushedInstanceId);
   let next = state;
+  // オモテにしたカードは公開情報。両プレイヤーの UI が見られるよう記録する（記録しないと何も起きていないように見えた）。
+  const revealed: RevealedCardNotice[] = [];
   for (let i = 0; i < masters.length; i += 1) {
     const top = next.players[playerId].deck[0];
     if (!top) break;
@@ -846,10 +849,12 @@ export function applyVrvMasterOnRush(state: GameState, playerId: PlayerId, rushe
       ...next,
       log: [...next.log, buildLogEntry(playerId, "named_effect", "RS-299", next.definitions, `nottemiNaika:${cardName(next.definitions, top.cardId)}`)],
     };
+    revealed.push(...revealedCards([top], take ? "hand" : "deck_top"));
     if (!take) break;
     next = patchPlayer(next, playerId, (p) => ({ ...p, deck: p.deck.slice(1), hand: [...p.hand, top] }));
   }
-  return next;
+  if (revealed.length === 0) return next;
+  return recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "RS-299", effectLabel: "乗ってみないか？", from: "deck_top", cards: revealed });
 }
 
 // ---------------------------------------------------------------------------

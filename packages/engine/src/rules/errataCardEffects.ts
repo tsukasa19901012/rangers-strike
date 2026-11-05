@@ -24,6 +24,8 @@ import { deckOrderChoice } from "./deckOrder";
 import { isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { isMirrorWorld, takeHybridRevealedToHand } from "./rk/rk1NamedEffects";
 import { swapResidentFeature } from "./rk/rk4UnitEffects";
+import { clearTurnRestrictionModifiersForInstance } from "../core/scopedModifiers";
+import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { countAvailablePower, rushEffectivePowerCost } from "../core/power";
 import { opponent, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
@@ -1678,10 +1680,15 @@ function resolveRiderPass(state: GameState, playerId: PlayerId, instanceId: stri
       ? { ...c, stackedCards: [...(c.stackedCards ?? []).filter((x) => x.instanceId !== passCard.instanceId), replacedCard] }
       : c,
   );
-  const next = clearPending(
-    { ...state, ...updatePlayer(state, playerId, { ...player, rush, battle, operation, discard: [...player.discard, ...freed] }) },
-    pending.phasePlayerId,
+  // 重ねたカードはこのターンに一度ラッシュされて場を離れていても、置き換えで出るたびに新しくラッシュされたユニット
+  // （R-REPL-04。場を離れたカードは別のユニット: rules/turnModifiers.ts markRushedThisTurn）。「ラッシュ済み」の印を外して settleEffectRushes に
+  // ラッシュとして扱わせる（同じ2枚を何度も入れ替えたとき、2回目以降に RS-299 VRVマスター等が発動しなかった）。
+  const swapped = clearTurnRestrictionModifiersForInstance(
+    { ...player, rush, battle, operation, discard: [...player.discard, ...freed] },
+    passCard.instanceId,
+    [RESTRICTION_IDS.RUSHED_THIS_TURN],
   );
+  const next = clearPending({ ...state, ...updatePlayer(state, playerId, swapped) }, pending.phasePlayerId);
   return {
     state: next,
     log: logFor(state, playerId, op.cardId, `${RIDER_PASS_UNIT}:${replaced.cardId}->${passCard.cardId}`),

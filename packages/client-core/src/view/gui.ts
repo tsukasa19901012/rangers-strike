@@ -329,7 +329,9 @@ export function locateInstance(
     const p = state.players[player] as unknown as Record<string, unknown>;
     for (const [zone, cards] of Object.entries(p)) {
       if (!Array.isArray(cards)) continue;
-      const card = (cards as CardInstance[]).find((c) => c && typeof c === "object" && c.instanceId === instanceId);
+      // Only card zones: other arrays (modifiers: 「このターンラッシュした」等) also carry an instanceId but no cardId, and drawing
+      // one as a tile threw every frame (RK-080 超変身 swapping the same two cards back and forth froze the board).
+      const card = (cards as CardInstance[]).find((c) => c && typeof c === "object" && c.instanceId === instanceId && typeof c.cardId === "string");
       if (card) return { player, zone, card };
     }
   }
