@@ -399,13 +399,7 @@ export function playOp(
     targetInstanceId,
   });
   if (!r.ok && targetInstanceId !== undefined) {
-    r = tryAct(s, {
-      type: "initiate_command_payment",
-      playerId,
-      kind: "category_use",
-      sourceInstanceId: instanceId,
-      ...(opts.materials ? { zordMaterialInstanceIds: opts.materials } : {}),
-    });
+    r = tryAct(s, { type: "initiate_command_payment", playerId, kind: "category_use", sourceInstanceId: instanceId });
   }
   if (!r.ok) return r;
   let next = r.state;
