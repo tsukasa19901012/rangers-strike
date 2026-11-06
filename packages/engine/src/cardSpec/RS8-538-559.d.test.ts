@@ -229,6 +229,44 @@ describe("RS-558 ガンマジン", () => {
     expect(s.players.player1.hand.length).toBe(handBefore + 1);
   });
 
+  // 2026-11-06 報告（共有 SL6RqHzD）: ライドラプターが場にあると、ドラグレッダーのラッシュで出たガンマジンのドローが、
+  // ライドラプターの選択の後ろに積まれたまま消えていた（効果ラッシュの選択を閉じるときに続きの選択を落としていた）。
+  describe("RS-558 + RS-180 ライドラプター（XG2-080 リュウキドラグレッダーで龍騎を手札に戻してラッシュ）", () => {
+    const board = (): GameState =>
+      st({
+        phase: "rush",
+        player1: {
+          hand: [inst("XG2-080", "dr")],
+          rush: [inst("XG4-078", "ryuki"), inst("RS-558", "gm")],
+          operation: [inst("RS-180", "rap")],
+          command: releasedN(2),
+          power: powerCards(5),
+          deck: deckCards(5),
+        },
+        player2: { deck: deckCards(3, "e") },
+      });
+    const rushed = () => rushFromHand(board(), "player1", "XG2-080:dr", { materials: ["XG4-078:ryuki"] });
+
+    it("RS-558: ライドラプターを発動しなくても、その後にドローの選択が出る（出典: atwiki/page-1186・page-377）", () => {
+      const r = rushed();
+      expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-180");
+      const s = skip(r.state);
+      expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-558");
+    });
+
+    it("RS-558: ライドラプターで龍騎をラッシュし、ドラグレッダーを手札に戻した後にドローの選択が出る（出典: atwiki/page-1186・page-377）", () => {
+      let s = pick(rushed().state, "XG4-078:ryuki");
+      expect(s.players.player1.rush.map((c) => c.instanceId)).toContain("XG4-078:ryuki");
+      // 龍騎のラッシュで場のリュウキドラグレッダーを手札に戻す（XG2-080 ※、強制）。
+      expect(s.pendingEffectChoice?.sourceCardId).toBe("XG2-080");
+      s = pick(s, "XG2-080:dr");
+      expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-558");
+      const before = s.players.player1.hand.length;
+      s = pick(s, "draw");
+      expect(s.players.player1.hand.length).toBe(before + 1);
+    });
+  });
+
   it("RS-558: 公式Q&A — 「大神龍」（追加条件が「ユニットが7体以上ある」）をラッシュしてもドローできない（出典: grnrngr/faq-card-8 RS-558 Q3「場の状況だけを参照して…ドローすることはできません」）", () => {
     const s0 = st({
       phase: "rush",

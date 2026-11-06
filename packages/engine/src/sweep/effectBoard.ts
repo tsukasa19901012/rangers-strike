@@ -9,7 +9,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import { getActionPlayerId, getLegalActions } from "../core/legalActions";
 import { applyAction } from "../core/applyAction";
-import { COMMAND_ZONE_MAX, type CardInstance, type GameState, type PlayerId } from "../types/game";
+import { COMMAND_ZONE_MAX, type CardInstance, type GameState, type PendingEffectChoice, type PlayerId } from "../types/game";
 import type { GameAction } from "../types/actions";
 import { all, base, buildRushBoard, plainOperations, plainUnits, real } from "./rushBoard";
 
@@ -178,8 +178,14 @@ function choose(s: GameState, actions: GameAction[], actor: string, policy: Choi
   return use[0] ?? actions[0];
 }
 
+/**
+ * 選択の後ろで待つ選択が消えないかを見る（resumeChoiceAllCards.test.ts）。そのカードの効果の最初の選択が開いたときに
+ * `inject` で待つ選択を積み、その後その選択が開いたら `seen` を立てる。
+ */
+export type Probe = { inject: (s: GameState) => GameState; isProbe: (c: PendingEffectChoice) => boolean; injected?: boolean; seen?: boolean };
+
 /** first を適用し、保留中の選択・支払い・反応が無くなるまで合法手で進める。 */
-function drive(start: GameState, first: GameAction, card: CardInstance, policy: ChoicePolicy, branch?: Branch): DriveResult {
+function drive(start: GameState, first: GameAction, card: CardInstance, policy: ChoicePolicy, branch?: Branch, probe?: Probe): DriveResult {
   // 使ったカード自身と、効果の前の支払い・追加条件で動かしたカードは、結果の確認で比べない。
   const excluded = new Set<string>([card.instanceId]);
   const exclude = (a: GameAction) => {
@@ -207,6 +213,11 @@ function drive(start: GameState, first: GameAction, card: CardInstance, policy: 
       !/^battle_entry/.test(choice.effectId ?? "");
     if (ownChoice && !prompted) promptState = s;
     if (ownChoice) prompted = true;
+    if (probe && ownChoice && !probe.injected) {
+      s = probe.inject(s);
+      probe.injected = true;
+    }
+    if (probe && s.pendingEffectChoice && probe.isProbe(s.pendingEffectChoice)) probe.seen = true;
     const shownTo = ownChoice ? wholeDeckShownTo(s) : null;
     if (shownTo) wholeDeckShown.add(shownTo);
     const keys = pendingKeys(s);
@@ -245,19 +256,19 @@ function guarded(run: () => DriveResult): DriveResult {
 }
 
 /** ユニットを手札からラッシュする（「これをラッシュしたとき」）。 */
-export function checkOnRush(unit: CardDefinition, policy: ChoicePolicy, branch?: Branch, tweak?: Tweak): DriveResult {
+export function checkOnRush(unit: CardDefinition, policy: ChoicePolicy, branch?: Branch, tweak?: Tweak, probe?: Probe): DriveResult {
   return guarded(() => {
     const s = (tweak ?? same)(enrichBoard(buildRushBoard(unit, { commands: "operation", extraPower: 2, minimalCommands: true }), "variety"));
     const card = s.players.player1.hand[0]!;
     const first = getLegalActions(s).find(
       (a) => ("sourceInstanceId" in a && a.sourceInstanceId === card.instanceId) || ("zordInstanceId" in a && a.zordInstanceId === card.instanceId),
     );
-    return first ? drive(s, first, card, policy, branch) : { kind: "not-offered" };
+    return first ? drive(s, first, card, policy, branch, probe) : { kind: "not-offered" };
   });
 }
 
 /** 自軍バトルフェイズに、ラッシュエリアのユニットをバトルエリアに出す（「これがバトルエリアに出たとき」）。 */
-export function checkEnterBattle(unit: CardDefinition, policy: ChoicePolicy, branch?: Branch, tweak?: Tweak): DriveResult {
+export function checkEnterBattle(unit: CardDefinition, policy: ChoicePolicy, branch?: Branch, tweak?: Tweak, probe?: Probe): DriveResult {
   return guarded(() => {
     const b = buildRushBoard(unit, { commands: "operation", extraPower: 2 });
     const card = mk(unit.id);
@@ -277,12 +288,12 @@ export function checkEnterBattle(unit: CardDefinition, policy: ChoicePolicy, bra
     );
     if (!first) return { kind: "not-offered" };
     // 「…を捨札にしなければ出られない」は、捨てるカードを選んだらそのままバトルエリアに出る
-    return drive(s, first, card, policy, branch);
+    return drive(s, first, card, policy, branch, probe);
   });
 }
 
 /** 自軍ラッシュフェイズに、手札のオペレーションを使う（常駐は配置する）。 */
-export function checkOperation(op: CardDefinition, policy: ChoicePolicy, branch?: Branch, tweak?: Tweak): DriveResult {
+export function checkOperation(op: CardDefinition, policy: ChoicePolicy, branch?: Branch, tweak?: Tweak, probe?: Probe): DriveResult {
   return guarded(() => {
     const card = mk(op.id);
     const s = (tweak ?? same)(ownTurnBoard("rush", { hand: [card] }, costNumber(op.powerCost) + 3));
@@ -290,7 +301,7 @@ export function checkOperation(op: CardDefinition, policy: ChoicePolicy, branch?
       (a) => a.playerId === "player1" && JSON.stringify(a).includes(`"${card.instanceId}"`),
     );
     if (!first) return { kind: "not-offered" };
-    const out = drive(s, first, card, policy, branch);
+    const out = drive(s, first, card, policy, branch, probe);
     if (out.kind !== "error" && out.state?.players.player1.hand.some((c) => c.instanceId === card.instanceId)) {
       return { kind: "error", why: "the operation stayed in hand" };
     }
@@ -299,15 +310,21 @@ export function checkOperation(op: CardDefinition, policy: ChoicePolicy, branch?
 }
 
 /** ラッシュエリア／バトルエリアのユニット・ビークルの起動効果を、ラッシュフェイズとバトルフェイズで全部試す。 */
-export function checkActivations(card: CardDefinition, policy: ChoicePolicy, tweak?: Tweak): Array<{ where: string; outcome: DriveResult }> {
-  const out: Array<{ where: string; outcome: DriveResult }> = [];
+export function checkActivations(
+  card: CardDefinition,
+  policy: ChoicePolicy,
+  tweak?: Tweak,
+  makeProbe?: () => Probe,
+): Array<{ where: string; outcome: DriveResult; probe?: Probe }> {
+  const out: Array<{ where: string; outcome: DriveResult; probe?: Probe }> = [];
   for (const zone of ["rush", "battle"] as const) {
     for (const phase of ["rush", "battle"] as const) {
       const inst = mk(card.id);
       const s = (tweak ?? same)(ownTurnBoard(phase, { [zone]: [inst] }, 8));
       for (const a of getLegalActions(s)) {
         if (a.type !== "activate_field_unit_ability" || a.unitInstanceId !== inst.instanceId) continue;
-        out.push({ where: `${zone}/${phase}`, outcome: guarded(() => drive(s, a, inst, policy)) });
+        const probe = makeProbe?.();
+        out.push({ where: `${zone}/${phase}`, outcome: guarded(() => drive(s, a, inst, policy, undefined, probe)), probe });
       }
     }
   }
