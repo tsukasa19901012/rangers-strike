@@ -753,11 +753,14 @@ export const KEY_HOLDER_WISH_EFFECT_ID = "rs558_key_holder_wish";
 
 export function openKeyHolderWishDraw(state: GameState, ownerId: PlayerId, rushedInstanceId: string, phasePlayerId: PlayerId): GameState {
   const owner = state.players[ownerId];
-  if (owner.lastZordDiscard?.rushedInstanceId !== rushedInstanceId || owner.lastZordDiscard.instanceIds.length === 0) return state;
+  const discarded = owner.lastZordDiscard?.rushedInstanceId === rushedInstanceId ? owner.lastZordDiscard.instanceIds : [];
+  // 手札に戻す（XG2-080 リュウキドラグレッダー「自軍「仮面ライダー龍騎」1体を手札に戻す」）・コマンドをホールドする等も実行に入る。
+  const executed = owner.lastZordExecuted?.rushedInstanceId === rushedInstanceId ? owner.lastZordExecuted.instanceIds : [];
+  if (discarded.length === 0 && executed.length === 0) return state;
   // RS-359【最後の手段】で山札のカードを捨札にして満たした（「捨札にしたことにできる」）のは追加条件の実行ではない
   // （grnrngr/faq-card-8 RS-558 Q2）。
   const usedReplacement = owner.discard.some(
-    (c) => owner.lastZordDiscard!.instanceIds.includes(c.instanceId) && c.icyPhantomDeckIndex !== undefined,
+    (c) => discarded.includes(c.instanceId) && c.icyPhantomDeckIndex !== undefined,
   );
   if (usedReplacement) return state;
   const rushed = fieldUnits(state, ownerId).find((c) => c.instanceId === rushedInstanceId);

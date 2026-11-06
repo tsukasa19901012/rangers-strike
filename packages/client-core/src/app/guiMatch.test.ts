@@ -1064,3 +1064,20 @@ describe("Replacing with RK-080 超変身: the field unit first, then the stacke
     expect(app.view().gui!.dialog!.cards.map((c) => c.instanceId)).toContain("RK-103-5");
   });
 });
+
+describe("GuiMatch: phase ended for the human because nothing else was legal", () => {
+  // A shared board (2026-11-06): ライドラプター's pick (仮面ライダー龍騎) is open after rushing マジブルー. After the pick
+  // the only legal move is ending the rush phase, so assist ended it silently and it looked like the effect ended it.
+  it("says why the rush phase ended on its own", () => {
+    const app = startGui(5);
+    app.startSharedMatch(parseSharePayload(JSON.parse(readFileSync(new URL("./fixtures/share-ride-raptor-auto-end.json", import.meta.url), "utf8")))!);
+    expect(app.view().gui!.dialog!.cards.map((c) => c.instanceId)).toEqual(["XG4-078-32"]);
+    app.dispatch(input.confirm);
+    const state = () => app.session!.state;
+    expect(state().players.player1.rush.map((c) => c.instanceId)).toContain("XG4-078-32");
+    for (let i = 0; i < 60 && state().phase === "rush"; i++) app.tick();
+    expect(state().phase).toBe("battle");
+    expect(app.view().gui!.toast).toBe("できる行動がないのでラッシュ終了");
+    expect(app.session!.log).toContain("（できる行動がないのでラッシュフェイズを自動で終了）");
+  });
+});

@@ -233,6 +233,17 @@ describe("RS-180 ライドラプター", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:b")).toBe("rush");
   });
 
+  // 「Sユニットをラッシュしたとき」— S ビークルはユニットではない（2026-11-06 報告: XG4-049 アクロバッターで発動していた）。
+  it("RS-180: S ビークル（XG4-049 アクロバッター）をラッシュしても発動しない（出典: atwiki/page-377「Sユニットをラッシュしたとき」）", () => {
+    const s0 = raptor([inst("XG4-049", "v")]);
+    s0.players.player1.command = [released("RS-059", "ma")]; // アクロバッターは MA
+    const r = rushFromHand(s0, "player1", "XG4-049:v");
+    expect(r.ok).toBe(true);
+    expect(zoneOf(r.state, "player1", "XG4-049:v")).toBe("rush");
+    expect(r.state.pendingEffectChoice).toBeUndefined();
+    expect(r.state.pendingEffectRush).toBeUndefined();
+  });
+
   // atwiki/page-377 Q1「自軍ユニットのコールの効果でユニットをラッシュしました。…発動することはできますか？」「はい、できます。」
   it("RS-180: コール（ユニットをコマンドとしてホールド）でラッシュしたときも発動できる（出典: atwiki/page-377 Q1）", () => {
     const s0 = st({

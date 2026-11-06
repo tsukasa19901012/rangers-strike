@@ -207,6 +207,28 @@ describe("RS-558 ガンマジン", () => {
     expect(s.players.player1.hand).toHaveLength(0);
   });
 
+  // 2026-11-06 報告: リュウキドラグレッダーで発動しなかった（捨札にした追加条件しか見ていなかった）。
+  it("RS-558: 【鍵の持ち主の願い】「手札に戻す」追加条件（XG2-080 リュウキドラグレッダー 5+「自軍「仮面ライダー龍騎」1体を手札に戻す」）を実行してもドローできる（出典: atwiki/page-1186「追加条件を実行して満たしたとき」）", () => {
+    const s0 = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("XG2-080", "dr")],
+        rush: [inst("XG4-078", "ryuki"), inst("RS-558", "gm")],
+        command: releasedN(2),
+        power: powerCards(5),
+        deck: deckCards(5),
+      },
+      player2: { deck: deckCards(3, "e") },
+    });
+    const r = rushFromHand(s0, "player1", "XG2-080:dr", { materials: ["XG4-078:ryuki"] });
+    expect(r.error).toBeUndefined();
+    expect(r.state.players.player1.hand.map((c) => c.instanceId)).toContain("XG4-078:ryuki");
+    expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-558");
+    const handBefore = r.state.players.player1.hand.length;
+    const s = resolveAll(r.state);
+    expect(s.players.player1.hand.length).toBe(handBefore + 1);
+  });
+
   it("RS-558: 公式Q&A — 「大神龍」（追加条件が「ユニットが7体以上ある」）をラッシュしてもドローできない（出典: grnrngr/faq-card-8 RS-558 Q3「場の状況だけを参照して…ドローすることはできません」）", () => {
     const s0 = st({
       phase: "rush",

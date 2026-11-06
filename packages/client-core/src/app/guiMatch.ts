@@ -992,9 +992,16 @@ export class GuiMatch {
     this.sync();
     const auto = this.autoItem();
     if (!auto) return null;
+    const before = this.state().phase;
     const result = this.execute(auto.item);
-    if (result.ok) this.message = `自動: ${result.label}`;
-    else this.endTurnOn = null;
+    if (!result.ok) this.endTurnOn = null;
+    else if (!auto.endTurn && auto.item.option.action.type === "end_phase" && (before === "rush" || before === "battle")) {
+      // The only legal move was ending the phase (e.g. nothing left to rush after an effect): say why, and keep it up longer.
+      const phase = before === "rush" ? "ラッシュ" : "バトル";
+      this.message = `できる行動がないので${phase}終了`;
+      this.session.note(`（できる行動がないので${phase}フェイズを自動で終了）`);
+      this.toastFrames = TOAST_FRAMES * 2;
+    } else this.message = `自動: ${result.label}`;
     return result;
   }
 

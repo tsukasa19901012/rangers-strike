@@ -131,6 +131,8 @@ export type PlayerState = {
   hasChargedThisTurn?: boolean;
   /** 直近のラッシュの追加条件で捨札にしたカード（RS-437 白熱する実況「その追加条件で捨札にした合体ユニットのカード」）。 */
   lastZordDiscard?: { rushedInstanceId: string; instanceIds: string[] };
+  /** 「＋」の追加条件を実行して動かしたカード（手札に戻す・ホールドする等。RS-558【鍵の持ち主の願い】）。 */
+  lastZordExecuted?: { rushedInstanceId: string; instanceIds: string[] };
   /** RS-432 隠流マキビシ: 現在のバトルフェイズが始まったときに受けていたダメージ（「そのバトルフェイズ中に受けたダメージ」）。 */
   damageAtBattlePhaseStart?: number;
   /** damage_gate_battle_entry: 敵軍ターン中にダメージを受けた（自軍ターン終了で消える）。 */
