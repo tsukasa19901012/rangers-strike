@@ -57,6 +57,7 @@ import {
   openPowerUnitToHandAfterPlace,
   set7AStrikeCounterIds,
 } from "../rules/legend1/set7NamedEffectsA";
+import { keepWaitingChoices } from "../rules/waitingChoices";
 import { activateSet8BHandEffect, openKeyHolderWishDraw, settleGuardianApostleProviso } from "../rules/legend1/set8NamedEffectsB";
 import { openKibaShotIfReady, queueKibaShot } from "../rules/legend1/set6AuditFixes";
 import { icyStateForAction, isIcyPhantom, settleIcyPhantoms } from "../rules/legend1/icyLastResort";
@@ -1188,6 +1189,8 @@ function applyActionWithRng(
   next = continueDeferredPowerFlip(next);
   next = continueDeferredAttack(next);
   next = continueDeferredStrike(next);
+  // 選択の後ろで待っていた別のカードの選択を、効果の処理で落としていたら付け直す（rules/waitingChoices.ts）。
+  if (applyActionDepth === 0) next = keepWaitingChoices(state, next);
   // ルール: R-TIME-01 — 先の段階の効果（選択）が解決し終えたら、待たせていた撃破の誘発を段階の順に解決する。
   next = drainDeferredDestroyTriggers(next);
   // RS-547【守護獣の使徒】ただし書き: 任意の「ラッシュしたとき」の効果を発動したらホールドする（rules/legend1/set8NamedEffectsB.ts）。

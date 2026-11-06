@@ -37,7 +37,7 @@ import {
 } from "../events/emitUnitRushed";
 import { rushAdditionalConditionApplies } from "./bkOperationTurnRules";
 import { promoteDeferredBattleEntry } from "./battleEntry";
-import { suppressesDeployedUnitEffects } from "./pendingChoices";
+import { appendResumeChoice, openEffectChoice, suppressesDeployedUnitEffects } from "./pendingChoices";
 import { resolveZordFusionPartnerSlots, resolveZordFusionSlotAlternatives } from "../dsl/zordBridge";
 import {
   applyAllZordFusionMaterials,
@@ -480,11 +480,28 @@ function openPickChoice(state: GameState): GameState {
 
 function closeChoice(state: GameState): GameState {
   const pending = state.pendingEffectRush;
+  // 効果ラッシュの選択の後ろに積まれていた選択（ライドラプターの前に開いた RS-558 のドロー等）は、効果ラッシュを終えるまで預かる。
+  // 預からないと選択を閉じたときに消えていた。
+  const waiting = state.pendingEffectChoice?.resumeChoice;
+  const kept =
+    pending && waiting
+      ? { ...pending, resumeChoice: pending.resumeChoice ? appendResumeChoice(pending.resumeChoice, waiting) : waiting }
+      : pending;
   return {
     ...state,
+    pendingEffectRush: kept,
     pendingEffectChoice: undefined,
     activePlayer: pending?.phasePlayerId ?? state.activePlayer,
   };
+}
+
+/** 効果ラッシュを終える。預かっていた選択があれば開く（開いている選択があればその後に積む）。 */
+function finishEffectRush(state: GameState): GameState {
+  const resume = state.pendingEffectRush?.resumeChoice;
+  const done = withPending(state, undefined);
+  if (!resume) return promoteDeferredBattleEntry(done);
+  if (done.pendingEffectChoice) return { ...done, pendingEffectChoice: appendResumeChoice(done.pendingEffectChoice, resume) };
+  return openEffectChoice(done, resume);
 }
 
 function withPending(state: GameState, pending: PendingEffectRush | undefined): GameState {
@@ -746,7 +763,7 @@ export function continuePendingEffectRush(state: GameState): GameState {
     if (pending.queue.length === 0) {
       // 「バトルエリアに出たとき」の効果（パーツキャリアー等）から来た場合、保留していた
       // アタック／ストライク選択を再開する。
-      return promoteDeferredBattleEntry(withPending(next, undefined));
+      return finishEffectRush(next);
     }
     const [head, ...rest] = pending.queue;
     next = withPending(next, { ...pending, queue: rest });

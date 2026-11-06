@@ -1570,6 +1570,8 @@ export type EffectRushTrigger = {
 export type EffectRushSourceZone = "command" | "hand" | "discard" | "power" | "deck" | "operation";
 
 export type PendingEffectRush = {
+  /** 効果ラッシュの選択を開いたときに後ろで待っていた選択（RS-558 のドロー等）。効果ラッシュを終えたら開く。 */
+  resumeChoice?: PendingEffectChoice;
   /** 出すユニットの持ち主。 */
   playerId: PlayerId;
   phasePlayerId: PlayerId;
