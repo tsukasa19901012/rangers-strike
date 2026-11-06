@@ -290,7 +290,13 @@ export function rushFromHand(
 ): { ok: boolean; state: GameState; error?: string } {
   let r = tryAct(s, { type: "begin_zord_setup", playerId, zordInstanceId: instanceId });
   if (!r.ok) {
-    r = tryAct(s, { type: "initiate_command_payment", playerId, kind: "category_use", sourceInstanceId: instanceId });
+    r = tryAct(s, {
+      type: "initiate_command_payment",
+      playerId,
+      kind: "category_use",
+      sourceInstanceId: instanceId,
+      ...(opts.materials ? { zordMaterialInstanceIds: opts.materials } : {}),
+    });
     if (!r.ok) return r;
   }
   const mats = [...(opts.materials ?? [])];
@@ -393,7 +399,13 @@ export function playOp(
     targetInstanceId,
   });
   if (!r.ok && targetInstanceId !== undefined) {
-    r = tryAct(s, { type: "initiate_command_payment", playerId, kind: "category_use", sourceInstanceId: instanceId });
+    r = tryAct(s, {
+      type: "initiate_command_payment",
+      playerId,
+      kind: "category_use",
+      sourceInstanceId: instanceId,
+      ...(opts.materials ? { zordMaterialInstanceIds: opts.materials } : {}),
+    });
   }
   if (!r.ok) return r;
   let next = r.state;

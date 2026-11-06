@@ -936,6 +936,8 @@ export function tryRideRaptorOnRush(
   if (!raptor) return state;
   const rushed = findInZone(player, "rush", rushedInstanceId)?.card;
   if (!rushed || !isSmallUnit(state.definitions, rushed)) return state;
+  // 「Sユニットをラッシュしたとき」— S ビークル（XG4-049 アクロバッター等）のラッシュでは発動しない。
+  if (getDefinition(state.definitions, rushed.cardId)?.type !== "unit") return state;
   // 自軍コマンド（コールのユニットを含む）をホールドしてラッシュしたか。
   const payment = player.lastRushPayment;
   if (!payment || payment.rushedInstanceId !== rushedInstanceId || payment.holdInstanceIds.length === 0) return state;

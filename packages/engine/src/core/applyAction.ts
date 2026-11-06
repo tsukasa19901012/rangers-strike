@@ -2222,6 +2222,9 @@ function applyActionCore(
       });
       let nextPlayer = player;
 
+      // 「＋」の追加条件を実行して動かしたカード（手札に戻す・コマンドをホールドする等。捨札にしたカードは下で拾う）。
+      // RS-558【鍵の持ち主の願い】が「追加条件を実行して満たした」かを見る（grnrngr/faq-card-8 RS-558 Q3）。
+      let zordExecutedIds: string[] = [];
       if (
         needsZordDownPayment(found.card.cardId, definition!.powerCost, definition!) &&
         zordMaterialIds.length > 0
@@ -2304,6 +2307,7 @@ function applyActionCore(
           );
           if (!afterExtended) return fail("invalid_zord_material");
           nextPlayer = afterExtended;
+          zordExecutedIds = extendedIds;
         } else if (needsHoldExtraCommand(state.definitions, found.card.cardId)) {
           const holdIds = action.zordExtraCommandHoldInstanceIds ?? [];
           const afterHold = applyHoldExtraCommandPayment(
@@ -2314,6 +2318,7 @@ function applyActionCore(
           );
           if (!afterHold) return fail("invalid_zord_material");
           nextPlayer = afterHold;
+          zordExecutedIds = holdIds;
         } else if (needsOpponentDrawCost(state.definitions, found.card.cardId)) {
           // 相手ドローのみ。支払い不要。
         } else if (needsZordMaterial(state.definitions, found.card.cardId)) {
@@ -2365,6 +2370,7 @@ function applyActionCore(
             }
             if (!afterZord) return fail("invalid_zord_material");
             nextPlayer = afterZord;
+            zordExecutedIds = fieldIds;
           }
 
           if (mothershipHolds.length > 0) {
@@ -2398,6 +2404,17 @@ function applyActionCore(
           nextPlayer = { ...nextPlayer, lastZordDiscard: { rushedInstanceId: found.card.instanceId, instanceIds: zordDiscarded } };
         } else if (nextPlayer.lastZordDiscard) {
           const { lastZordDiscard: _stale, ...rest } = nextPlayer;
+          nextPlayer = rest as PlayerState;
+        }
+        const handBefore = state.players[playerId].hand;
+        const executed = zordExecutedIds.filter((id) => {
+          const fromHand = handBefore.find((c) => c.instanceId === id);
+          return !fromHand || !rk11IsHandSubstitute(state, handBefore, fromHand, found.card.cardId);
+        });
+        if (executed.length > 0) {
+          nextPlayer = { ...nextPlayer, lastZordExecuted: { rushedInstanceId: found.card.instanceId, instanceIds: executed } };
+        } else if (nextPlayer.lastZordExecuted) {
+          const { lastZordExecuted: _staleExecuted, ...rest } = nextPlayer;
           nextPlayer = rest as PlayerState;
         }
       }

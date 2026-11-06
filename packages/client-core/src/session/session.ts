@@ -236,6 +236,14 @@ export class GameSession {
     }
   }
 
+  /** Adds a line of the client's own to the match log (not part of the game state, so a shared board does not carry it). */
+  note(text: string): void {
+    this.log.push(text);
+    const limit = this.options.logLimit ?? 200;
+    if (this.log.length > limit) this.log.splice(0, this.log.length - limit);
+    this.version++;
+  }
+
   private syncLog(): void {
     const entries = this.state.log;
     for (let i = this.loggedEntries; i < entries.length; i++) {
