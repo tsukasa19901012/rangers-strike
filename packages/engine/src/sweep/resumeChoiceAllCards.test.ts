@@ -42,10 +42,11 @@ const makeProbe = (): Probe => ({
 });
 
 const TIMEOUT = 180_000;
-let sinceYield = 0;
-const breathe = async () => {
-  if (++sinceYield % 20 === 0) await new Promise((resolve) => setImmediate(resolve));
-};
+/**
+ * 長い同期ループで vitest のワーカーの通信（onTaskUpdate）が時間切れにならないよう、カード 1 枚ごとに処理を返す
+ * （起動効果は 1 枚で盤面を 4 つ試すので、20 枚ごとでは CI で時間切れになった）。
+ */
+const breathe = () => new Promise((resolve) => setImmediate(resolve));
 const POLICIES: ChoicePolicy[] = ["first", "decline"];
 
 /** 見張り役を積んだのに一度も開かずに終わった（エラーで止まったものは effectsAllCards.test.ts の担当なので数えない）。 */
