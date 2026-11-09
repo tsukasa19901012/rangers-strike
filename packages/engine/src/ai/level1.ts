@@ -41,6 +41,7 @@ import {
   pickWinningBattle,
 } from "./helpers";
 import { planComboEntry } from "./comboOrder";
+import { withoutIdleEntries } from "./idleEntry";
 import { deckProfile } from "./deckProfile";
 import { heuristicEvaluate } from "./scoring";
 import { pickMirrorWorldActivation, pickMirrorWorldChoice } from "./mirrorWorld";
@@ -75,6 +76,8 @@ export type PickCpuActionOptions = {
    * （ターン単位の読み。1 回の決定で指し進める手の数の合計の上限）。
    */
   turnPlanSteps?: number;
+  /** バトルフェイズで、出ても何もできない（何も起きない）ユニットをバトルエリアに出さない（ai/idleEntry.ts）。 */
+  skipIdleEntry?: boolean;
 };
 
 /** ターン単位の読みで、自分の残りの手を指す CPU（Lv2 相当。読みの中なので先読みはしない）。 */
@@ -785,24 +788,29 @@ function pickCpuActionInner(
 
       if (enableSearch) {
         // 出なければならないユニットは上の pickMandatoryBattleMove で見て無かった（同じ状態・同じ合法手なので調べ直さない）。
-        let candidates = collectBattleCandidates(state, playerId, actions);
-        const hasRushUnits = state.players[playerId].rush.length > 0;
+        // 出ても何もできないユニットは候補から外す（残りの合法手からも外す。外さないと残りの手として選ばれる）。
+        const usable = options.skipIdleEntry ? withoutIdleEntries(state, playerId, actions) : actions;
+        let candidates = collectBattleCandidates(state, playerId, usable);
+        const hasRushUnits = options.skipIdleEntry
+          ? usable.some((a) => a.type === "move_to_battle" || a.type === "mount_ride" || a.type === "initiate_command_payment")
+          : state.players[playerId].rush.length > 0;
         const hasCombat =
           actionsOfType(actions, "strike").length > 0 ||
           actionsOfType(actions, "battle").length > 0;
         if (hasRushUnits || hasCombat) {
           candidates = candidates.filter((a) => a.type !== "end_phase");
         }
-        if (turnPlan > 0) return pickByTurnPlan(state, playerId, candidates, actions, simTactical(actions), options, turnPlan);
-        const best = pickBestWithRemaining(state, playerId, candidates, actions, simTactical(actions), options);
+        if (turnPlan > 0) return pickByTurnPlan(state, playerId, candidates, usable, simTactical(actions), options, turnPlan);
+        const best = pickBestWithRemaining(state, playerId, candidates, usable, simTactical(actions), options);
         if (best) return best;
       }
 
-      const moveToBattle = actionsOfType(actions, "move_to_battle");
+      const entryActions = options.skipIdleEntry ? withoutIdleEntries(state, playerId, actions) : actions;
+      const moveToBattle = actionsOfType(entryActions, "move_to_battle");
       // ストライクで点を取るには、出せるユニットはすべて出す（以前はバトルエリアが空のときだけで、
       // 1ターンに1体しか出ず NC が成立しないまま山札切れで終わっていた）。
       if (moveToBattle.length > 0) {
-        return pickBestBattleEntry(state, playerId, actions);
+        return pickBestBattleEntry(state, playerId, entryActions);
       }
 
       const battle =
