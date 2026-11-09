@@ -1,0 +1,79 @@
+{
+  "id": "shared-chzFC8HR",
+  "name": "自作デッキ",
+  "source": "共有デッキ /?d=chzFC8HR",
+  "entries": [
+    {
+      "cardId": "RK-080",
+      "count": 3
+    },
+    {
+      "cardId": "RK-103",
+      "count": 3
+    },
+    {
+      "cardId": "RK-104",
+      "count": 2
+    },
+    {
+      "cardId": "RK-146",
+      "count": 3
+    },
+    {
+      "cardId": "RS-186",
+      "count": 3
+    },
+    {
+      "cardId": "RS-299",
+      "count": 3
+    },
+    {
+      "cardId": "RS-394",
+      "count": 2
+    },
+    {
+      "cardId": "RS-395",
+      "count": 2
+    },
+    {
+      "cardId": "RS-397",
+      "count": 1
+    },
+    {
+      "cardId": "RS-398",
+      "count": 1
+    },
+    {
+      "cardId": "RS-399",
+      "count": 1
+    },
+    {
+      "cardId": "RS-400",
+      "count": 1
+    },
+    {
+      "cardId": "RS-401",
+      "count": 1
+    },
+    {
+      "cardId": "RS-568",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-073",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-083",
+      "count": 2
+    },
+    {
+      "cardId": "XG4-073",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-042",
+      "count": 3
+    }
+  ]
+}
