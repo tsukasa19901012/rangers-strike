@@ -2,6 +2,7 @@ import type { GameAction } from "../types/actions";
 import type { GameState, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
 import { getLegalActions } from "../core/legalActions";
+import { strikeDamageFor } from "../rules/combo";
 
 /**
  * 出ても何もできない（何も起きない）バトル進入か。
@@ -39,9 +40,52 @@ function attackDoesSomething(state: GameState, action: Extract<GameAction, { typ
   return defenderLeft;
 }
 
+/**
+ * ユニットが出たときにできることの大きさ（出られない -1、何もできない 0、何かできれば 1 + ストライクのダメージ×10）。
+ * 先に出したユニットで、あとから出すユニットにできることが増えるか（コンビネーションの SP 等）を比べるのに使う。
+ */
+function entryOutcome(state: GameState, playerId: PlayerId, action: Extract<GameAction, { type: "move_to_battle" }>): number {
+  const result = applyAction(state, action);
+  if (!result.ok) return -1;
+  if (isIdleBattleEntry(state, playerId, action)) return 0;
+  const next = result.state;
+  const unit = next.players[playerId].battle.find((c) => c.instanceId === action.instanceId);
+  const canStrike = getLegalActions(next).some((a) => a.type === "strike" && a.instanceId === action.instanceId);
+  return 1 + (unit && canStrike ? strikeDamageFor(next.definitions, unit, next, playerId) * 10 : 0);
+}
+
+/**
+ * 何もできないユニットでも、出しておくと、あとから出すほかのユニットにできることが増えるなら（コンビネーションの相手になる M ユニット、
+ * 「バトルエリアに～がいれば」の条件など）、その進入は意図のある先出しなので残す。外すと、共有デッキ（デンライナーイスルギ・
+ * デカレンジャーロボ等）で前の Lv5 に 42.7% まで負けた（2026-11-09）。
+ */
+function enablesLaterEntry(state: GameState, playerId: PlayerId, action: Extract<GameAction, { type: "move_to_battle" }>, moves: Extract<GameAction, { type: "move_to_battle" }>[]): boolean {
+  const entered = applyAction(state, action);
+  if (!entered.ok) return true;
+  const pass = getLegalActions(entered.state).find((a) => a.type === "pass_battle_entry");
+  const after = pass ? applyAction(entered.state, pass) : null;
+  if (!after?.ok) return true;
+  for (const other of moves) {
+    if (other.instanceId === action.instanceId) continue;
+    const later = getLegalActions(after.state).find(
+      (a): a is Extract<GameAction, { type: "move_to_battle" }> =>
+        a.type === "move_to_battle" && a.instanceId === other.instanceId && !a.vehicleInstanceId && !a.rideOff,
+    );
+    if (!later) continue;
+    if (entryOutcome(after.state, playerId, later) > entryOutcome(state, playerId, other)) return true;
+  }
+  return false;
+}
+
 /** 何もできない進入を除いた合法手（ほかに選べる手が無くなるなら、そのまま返す）。 */
 export function withoutIdleEntries(state: GameState, playerId: PlayerId, actions: GameAction[]): GameAction[] {
   if (!actions.some((a) => a.type === "move_to_battle")) return actions;
-  const kept = actions.filter((a) => !isIdleBattleEntry(state, playerId, a));
+  const moves = actions.filter(
+    (a): a is Extract<GameAction, { type: "move_to_battle" }> =>
+      a.type === "move_to_battle" && a.playerId === playerId && !a.vehicleInstanceId && !a.rideOff,
+  );
+  const kept = actions.filter(
+    (a) => !(a.type === "move_to_battle" && isIdleBattleEntry(state, playerId, a) && !enablesLaterEntry(state, playerId, a, moves)),
+  );
   return kept.length > 0 ? kept : actions;
 }
