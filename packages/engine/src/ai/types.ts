@@ -53,7 +53,8 @@ const LEVEL_CONFIG: Record<CpuLevel, CpuLevelConfig> = {
   // turnPlanSteps: ラッシュ・バトルフェイズの決定を、候補ごとに自分のターンの終わりまで指し進めて比べる（ターン単位の読み）。
   // 前の Lv5 に、同デッキ 1,840 試合で 57.4%・違うデッキ 1,104 試合で 55.8%。1 手の平均の思考は約 20 ms → 約 40 ms（2026-10-23）。
   // skipIdleEntry: 出ても何もできない（アタック・ストライク・効果のどれも無い、負けるアタックしか無い）ユニットをバトルエリアに出さない。
-  // NC の並べ方の先出しは残す。何もしない進入 -36%、前の Lv5 に同デッキ 736 試合で 54.9%（2026-11-09）。
+  // NC の並べ方の先出しと、あとから出すユニットにできることが増える先出し（コンビネーション等）は残す。何もしない進入 -36%、
+  // skipIdleEntry なしに同デッキ戦でスターター 58.0%（368 試合）・共有デッキ 50.3%（736 試合。先出しを残す前は 42.7%）（2026-11-10）。
   5: { enableSearch: true, maxCandidates: 64, maxResponseDepth: 28, searchPly: 2, planSamples: 2, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true, valueNetBlend: 0.5, hideOpponentHand: true, turnPlanSteps: 60, skipIdleEntry: true },
 };
 
