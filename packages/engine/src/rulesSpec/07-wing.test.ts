@@ -67,6 +67,16 @@ describe("R-KW-WING-01 規定文", () => {
     expect(hasLegal(s, (a) => a.type === "battle" && a.attackerInstanceId === w.instanceId)).toBe(false);
     expect(canStrike(s, w.instanceId)).toBe(false);
   });
+
+  // ホールドはアタックの手順の一部。アタック先がいないのにホールドだけする（空打ち）ことはできない。
+  it("R-KW-WING-01: アタックできる敵軍ユニットがいなければウイングのホールド自体ができない（空打ち不可）（出典: grnrngr/faq-card-9 ウイング Q1「ホールドして、ラッシュエリアからアタックできる」）", () => {
+    const empty = state([WING, ENEMY], { phase: "battle", player1: { rush: [w] }, player2: { battle: [] } });
+    expect(canHold(empty)).toBe(false);
+    // 敵軍ラッシュエリアのユニットには（効果がなければ）アタックできないので、ラッシュにしかいなくても同じ。
+    const rushOnly = state([WING, ENEMY], { phase: "battle", player1: { rush: [w] }, player2: { rush: [e] } });
+    expect(canHold(rushOnly)).toBe(false);
+    expect(canHold(battlePhase())).toBe(true);
+  });
 });
 
 describe("R-KW-WING-02 公式Q&A", () => {

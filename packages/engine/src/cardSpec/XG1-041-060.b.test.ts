@@ -246,9 +246,10 @@ describe("XG1-052 仮面ライダーアギトTF", () => {
   zordDownTests("XG1-052", "RK-162", "仮面ライダーアギトGF", "atwiki/page-1673", "MA");
   reanimateTests("XG1-052", "RK-162", "仮面ライダーアギトGF", "atwiki/page-1673");
 
-  /** 敵軍（player2）バトルフェイズ。敵軍のバルイーグルがウイングでホールドし、敵軍ラッシュエリアにはターンの前からホールド状態のユニットもいる。相手がターンを終える。 */
+  /** 敵軍（player2）バトルフェイズ。敵軍のバルイーグルがウイングでホールドし、敵軍ラッシュエリアにはターンの前からホールド状態のユニットもいる。相手がターンを終える。
+   * ウイングはアタック先がいるときだけ発動できるので、自軍バトルエリアにアタック先のユニットを置く。 */
   const enemyTurnEnd = () => {
-    let s = enemyBoard({ rush: [inst("XG1-052", "tf")] }, { rush: [inst("XG1-003", "w"), heldUnit("TST-UNIT-0", "old")] });
+    let s = enemyBoard({ rush: [inst("XG1-052", "tf")], battle: [inst("TST-UNIT-0", "target")] }, { rush: [inst("XG1-003", "w"), heldUnit("TST-UNIT-0", "old")] });
     s = act(s, { type: "hold_for_wing", playerId: "player2", instanceId: "XG1-003:w" });
     return endTurn(s);
   };
