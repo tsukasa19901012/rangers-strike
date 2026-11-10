@@ -16,7 +16,7 @@ import type { GameState, PendingEffectChoice, PlayerId, PlayerState } from "../t
 import { isCostWindowSatisfied } from "./costWindow";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { hasAutoBattleEntryOnRushNote, isSameCardIdentity } from "@rangers-strike/cards";
-import { canWingAttackFromRush, canHoldForWing, canCancelWingHold } from "../keywords/battleKeywords";
+import { canWingAttackFromRush, canHoldForWing, canCancelWingHold, applyHoldForWing } from "../keywords/battleKeywords";
 import { canRiderMountVehicle, canMountRideIntoBattle } from "../keywords/ride";
 import {
   canPlayOperationCard,
@@ -2564,7 +2564,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
       }
 
       for (const card of player.rush) {
-        if (canHoldForWing(state, playerId, card)) {
+        if (canHoldForWing(state, playerId, card) && wingHoldHasAttackTarget(state, playerId, card.instanceId)) {
           actions.push({
             type: "hold_for_wing",
             playerId,
@@ -2719,6 +2719,23 @@ function getLegalActionsCore(state: GameState): GameAction[] {
   }
 
   return actions;
+}
+
+/**
+ * ウイングは「ラッシュエリアでホールドして、ラッシュエリアからアタックできる」能力で、ホールドはアタックの一部。
+ * ホールドしたあとアタックできる敵軍ユニットがいなければ発動できない（空打ちでホールド数を増やす等はできない）。
+ */
+function wingHoldHasAttackTarget(state: GameState, playerId: PlayerId, instanceId: string): boolean {
+  const held = applyHoldForWing(state, playerId, instanceId);
+  if (!held) return false;
+  const attacker = held.players[playerId].rush.find((c) => c.instanceId === instanceId);
+  if (!attacker || !canWingAttackFromRush(held, playerId, attacker)) return false;
+  if (unitCannotInitiateAttack(attacker.cardId)) return false;
+  const enemyId = opponent(playerId);
+  const enemy = held.players[enemyId];
+  return [...enemy.battle, ...enemy.rush].some((defender) =>
+    canAttackDefender(held, playerId, instanceId, enemyId, defender.instanceId, canAttackRushWithYellowThunder),
+  );
 }
 
 export function isLegalAction(state: GameState, action: GameAction): boolean {
