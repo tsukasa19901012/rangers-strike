@@ -597,9 +597,17 @@ CHOICE_RESOLVERS[FFR_CARD] = (state, playerId, instanceId) => {
 // 「敵軍捨札から、ナンバーにＲＣを持つユニットカードを1枚選んでもよい。そうしたとき、選んだカードのRCの効果をこのユニットの効果として発動する。」（atwiki/page-2216）。
 // 選んだカードは捨札に残る。そのカードの RC（DSL の riding_combo）の効果を、このユニットを発生源として処理する。
 
+// 選んだカードの RC 自体が【ライダーカード】（敵軍捨札の XG5-079 等）なら、同じ選択がもう一度開くだけで盤面は何も変わらない。
+// 選び続けると対戦が終わらない（CPU がそれを選び続けた。ticket-breaker-a 同士、2026-11-10）ので、候補に入れない。
+// 候補から外しても、それを選んで次に選べるカードは最初から選べるので、選べる結果は変わらない。
 const RIDER_CARD = "xg5_079_rider_card";
+function copiesRiderCard(cardId: string): boolean {
+  return listDslEffectsForTrigger(cardId, "riding_combo").some((e) => e.effects.some((p) => p.type === "grant_keyword" && p.keyword === "xg5::XG5-079::rider_card"));
+}
 XG5_KEYWORDS["XG5-079::rider_card"] = (state, ctx) => {
-  const ids = state.players[opp(ctx.playerId)].discard.filter((c) => isUnit(state, c) && defOf(state, c.cardId)?.comboNumber === "RC").map((c) => c.instanceId);
+  const ids = state.players[opp(ctx.playerId)].discard
+    .filter((c) => isUnit(state, c) && defOf(state, c.cardId)?.comboNumber === "RC" && !copiesRiderCard(c.cardId))
+    .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "xg5_079:no_targets" };
   return { state: openAfter(state, selectOne(ctxBase(ctx), "XG5-079", RIDER_CARD, ids, true)), detail: RIDER_CARD };
 };
