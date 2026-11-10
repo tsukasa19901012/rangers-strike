@@ -124,6 +124,16 @@ describe("XG6-037 仮面ライダーアクセル", () => {
       U30_EXTRA,
     );
 
+  it(`XG6-037: 【振り切るぜ】を起動して「選ばない」を選んだら、このターンはもう起動できない（起動→見送りの繰り返しで対局が終わらなかった）（出典: ${PAGE}「Sビークルを1体選んでもよい」）`, () => {
+    let s = furikiru(u30Board());
+    expect(s.pendingEffectChoice?.effectId).toBe("xg6037_furikiru");
+    s = act(s, { type: "skip_effect_choice", playerId: "player1" });
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(() => furikiru(s)).toThrow();
+    // ふつうの S ユニットとしてはバトルエリアに出られる。
+    expect(legal(s).some((a) => a.type === "move_to_battle" && a.instanceId === "XG6-037:ac")).toBe(true);
+  });
+
   it(`XG6-037: 【振り切るぜ】選べる S ビークルに、自軍ラッシュエリアの S ビークルと敵軍ラッシュエリアの S ビークルが入る${U30}`, () => {
     const ids = choiceIds(furikiru(u30Board()));
     expect(ids).toContain("SPEC-VEH:v");
