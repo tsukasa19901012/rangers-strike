@@ -600,13 +600,14 @@ ABILITIES.push({
 });
 // XG6-037 仮面ライダーアクセル【振り切るぜ】「自軍バトルフェイズ中、これが自軍ラッシュエリアでライドしていなければ、Sビークルを1体選んでもよい。…」
 // （atwiki/page-2318。rules/xg6/xg6dEffects.ts）。使ったらビークルとして扱うので、このターンもう起動できない。
+// 起動して「選ばない」を選んだときも、ほかの捨札コストのない起動効果と同じくこのターンはもう起動できない
+// （以前は repeatable で、CPU が起動→見送りを繰り返して対局が終わらなかった）。
 ABILITIES.push({
   cardId: "XG6-037",
   effectId: "xg6037_furikiru",
   zones: ["rush"],
   phase: "battle",
   discardSelf: false,
-  repeatable: true,
   canActivate: (state, playerId, card) => XG6_FURIKIRU_ACTIVATION.canActivate?.(state, playerId, card) ?? false,
   resolve: (state, playerId, card) => XG6_FURIKIRU_ACTIVATION.activate?.(state, playerId, card) ?? state,
 });
