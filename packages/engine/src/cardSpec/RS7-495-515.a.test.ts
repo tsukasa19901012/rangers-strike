@@ -29,7 +29,9 @@ import {
   inst,
   legal,
   passEntry,
+  nextPhase,
   pick,
+  playOp,
   powerCards,
   releasedCat,
   resolveAll,
@@ -368,9 +370,45 @@ describe("RS-497 冥獣人ニンジャキリカゲ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-141");
   });
 
-  it.todo(
-    "RS-497: コピーベントで敵軍ユニット自身が【変身の妨害】の対象になるループは、ターンプレイヤーが優先順を選ぶ（出典: atwiki/page-819 Q1「ターンプレイヤーが効果の優先順を選択して処理してください」）— XG1-078 コピーベントの効果名の入れ替えは実装済み（rules/legend1/otherLinesNamedEffects.ts）だが、ループになったときにターンプレイヤーが優先順を選ぶ合法手がない",
-  );
+  // atwiki/page-819 Q1「ターンプレイヤーが効果の優先順を選択して処理してください。」— 1体目（敵軍バトルエリアの、DA を持たない「男」の S ユニット）が
+  // コピーした【変身の妨害】で自分自身の効果名を持つテキストを無効にするループ。選ばなかった側の効果は適用しない（docs/rules R-RES-08。rules/loopPriority.ts）。
+  // 観測は自軍のガオブラック（4番目で NC【アイアンブロークン】BP+3000）。
+  describe("RS-497 + XG1-078 コピーベント（ループ）", () => {
+    const NAMED_MALE = sUnit("SPEC-NAMED-MALE", { category: "WB", bp: 1000, features: ["男"], text: "【テスト】これは何もしない。" } as never);
+    const copied = (): GameState => {
+      let s = st(
+        {
+          phase: "rush",
+          player1: { hand: [inst("XG1-078", "cv")], battle: fill(3), rush: [inst(GAO, "g"), inst("RS-497", "k")], command: releasedCat("WB", 2), power: powerCards(5), deck: deckCards(5) },
+          player2: { battle: [inst("SPEC-NAMED-MALE", "x")], deck: deckCards(5, "e") },
+        },
+        [NAMED_MALE],
+      );
+      const r = playOp(s, "player1", "XG1-078:cv");
+      expect(r.ok).toBe(true);
+      s = pick(r.state, "SPEC-NAMED-MALE:x");
+      return pick(s, "RS-497:k");
+    };
+    const gaoBp = (s: GameState) => {
+      const t = enterSeq(nextPhase(s), [`${GAO}:g`]);
+      return bpOf(t, "player1", `${GAO}:g`);
+    };
+
+    it("RS-497: コピーベントで1体目のユニットが自分の【変身の妨害】の対象になると、ターンプレイヤーがどちらの効果を優先するかを選ぶ（出典: atwiki/page-819 Q1）", () => {
+      const s = copied();
+      expect(s.pendingEffectChoice?.effectId).toBe("loop_priority");
+      expect(s.pendingEffectChoice?.playerId).toBe("player1");
+      expect([...choiceIds(s)].sort()).toEqual(["RS-497:k", "SPEC-NAMED-MALE:x"]);
+    });
+
+    it("RS-497: 1体目の効果を優先すると、コピーした【変身の妨害】が有効で、自軍のガオブラックの NC は無効（BP3000）（出典: atwiki/page-819 Q1・R-RES-08）", () => {
+      expect(gaoBp(pick(copied(), "SPEC-NAMED-MALE:x"))).toBe(3000);
+    });
+
+    it("RS-497: 【変身の妨害】の制限を優先すると、1体目の効果名を持つテキスト（コピーした【変身の妨害】）が無効で、ガオブラックの NC は発動する（BP6000）（出典: atwiki/page-819 Q1・R-RES-08）", () => {
+      expect(gaoBp(pick(copied(), "RS-497:k"))).toBe(6000);
+    });
+  });
 
   it("RS-497: キリカゲで効果名テキストが無効でもナンバーは消えないので、RC を持つユニットはライドオフしてビーファイタークワガーにアタックできる（出典: atwiki/page-819 Q2「はい、できます。…ナンバーは消えていないので、RCを持つユニットはライドオフすることでRCを発動しているとみなします」）", () => {
     let s = st({

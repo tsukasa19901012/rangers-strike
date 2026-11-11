@@ -105,9 +105,11 @@ export type CardInstance = {
   bpSetValue?: number;
   /**
    * このターン「Sユニットになる」（RK-154【頭が高い！】で選んだ M ユニット）。ターン終了時にクリア。
-   * "L" は XG6-053 仮面ライダーアーク の※「これはLユニットになり」（条件を満たす間。rules/xg6/xg6cEffects.ts が行動の後に合わせる）。
+   * "L" は XG6-053 仮面ライダーアーク の※「これはLユニットになり」（条件を満たす間。rules/xg6/xg6cEffects.ts が行動の後に合わせる）・
+   * XG2-029【災魔ツリー】（BP8000以上。rules/xg2/xg2bEffects.ts）。"M" は RK-013 Jパワーを重ねた XG3-029 で、ターンプレイヤーが
+   * ※「Mユニットになり」を優先したとき（rules/xg3/xg3Fields.ts。atwiki/page-211 Q8）。
    */
-  sizeOverride?: "S" | "L";
+  sizeOverride?: "S" | "M" | "L";
   /** XG1-048【エレキ光線】で選ばれたターン番号（そのターンを終えるとき隣のユニットが撃破される）。 */
   electroBeamTurn?: number;
   /** XG7-001〜XG7-068 のこのターンだけの付与（クロス・ライドオフ不可。rules/xg7/xg7Types.ts）。 */
@@ -1020,6 +1022,11 @@ export type PendingEffectChoice = {
    * 「ラッシュしたとき」に同時に発動した、ラッシュしたユニット自身の効果と RS-124 超電子レーダーの処理順
    * （simultaneous_order。validInstanceIds は "super_radar" とラッシュしたユニット）。faq-card-2 RS-092 Q1。
    */
+  /**
+   * 止められないループで優先する効果の選択（effectId `loop_priority`。R-SIM-02。rules/loopPriority.ts）。
+   * validInstanceIds は優先できる効果の発動元。選んだ結果は GameState.loopPriority[key] に残る。
+   */
+  loopPriorityMeta?: { key: string };
   rushTriggerOrderMeta?: {
     ownerPlayerId: PlayerId;
     instanceId: string;
@@ -1317,6 +1324,11 @@ export type GameState = {
   endTurnEffectsDeclined?: { turn: number; instanceIds: string[] };
   /** 同時解決中の反応窓グループ ID（RULE-02）。 */
   activeSimultaneousGroupId?: string;
+  /**
+   * 止められないループ（R-SIM-02）でターンプレイヤーが優先した効果の発動元（組の ID → インスタンス ID。rules/loopPriority.ts）。
+   * 組が無くなったら消える。
+   */
+  loopPriority?: Record<string, string>;
   /**
    * ルール: R-CTR-03 — カウンターを発動できないプレイヤー（パンサークロー等）。
    * アタック宣言からそのアタックの処理が終わる（次の宣言のタイミング）まで有効。

@@ -7,11 +7,12 @@
  * - 継続効果（ナンバー・NC・SP・BP の参照、アタック・ライドオフの制限、撃破の置換、ストライクのダメージの誘発）。
  * 構成は rules/legend1/set6NamedEffectsB.ts と同じ。
  */
-import type { CardDefinition } from "@rangers-strike/cards";
+import { isSameCardIdentity, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, DeferredDestroyTrigger, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp, unitSizeOf } from "../../core/catalog";
 import { opponent, updatePlayer } from "../../core/helpers";
-import { addNextTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
+import { addNextTurnRuleModifier, getPlayerModifiers, hasTurnRuleModifier } from "../../core/scopedModifiers";
+import { loopWinner, registerLoopDetector } from "../loopPriority";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
@@ -161,18 +162,76 @@ export function set7DBlocksNc(state: GameState, playerId: PlayerId, card: CardIn
 //  効果名を持つテキストは無効になり、発動もできない。」（atwiki/page-819）
 // 自軍・敵軍の限定はない。ナンバーは消えない（同 Q2）。
 
-/** 【変身の妨害】で、このユニットの効果名を持つテキストが無効か。 */
-export function transformationHindranceNegates(
-  state: Pick<GameState, "players" | "definitions">,
-  card: Pick<CardInstance, "cardId">,
-): boolean {
-  if (!anyFieldHas(state, "RS-497", ["battle"])) return false;
+/** 【変身の妨害】の制限を受けるユニットか（S ユニット・カテゴリに DA を持たない・本来の特徴に「男」か「女」）。 */
+function hindranceTarget(state: Pick<GameState, "definitions">, card: Pick<CardInstance, "cardId">): boolean {
   const def = getDefinition(state.definitions, card.cardId);
   if (!def || def.type !== "unit" || unitSizeOf(state.definitions, card) !== "S") return false;
   if (definitionCategories(def).includes("DA")) return false;
   const features = def.features ?? [];
   return features.includes("男") || features.includes("女");
 }
+
+/**
+ * XG1-078 コピーベントで【変身の妨害】を得て（1体目に選ばれて）、持ち主のバトルエリアにあるユニット（rules/legend1/otherLinesNamedEffects.ts の
+ * ターンのルール修飾子 `xg1078_copy::<instanceId>`。import の循環を避けるため ID をここで見る）。
+ */
+function copiedHindranceHolders(state: Pick<GameState, "players">): CardInstance[] {
+  return (["player1", "player2"] as const).flatMap((pid) =>
+    state.players[pid].battle.filter((c) =>
+      getPlayerModifiers(state.players[pid]).some(
+        (m) => m.kind === "rule" && m.scope === "turn" && m.ruleId === `xg1078_copy::${c.instanceId}` && isSameCardIdentity(String((m.payload as { sourceCardId?: string } | undefined)?.sourceCardId ?? ""), "RS-497"),
+      ),
+    ),
+  );
+}
+
+/** コピーした【変身の妨害】が自分自身を無効にするループの組の ID（atwiki/page-819 Q1。rules/loopPriority.ts）。 */
+function copiedHindranceLoopKey(holderInstanceId: string): string {
+  return `xg1078_rs497:${holderInstanceId}`;
+}
+
+/**
+ * コピーした【変身の妨害】が有効か。持ち主自身が制限を受けるユニットならループになり（atwiki/page-819 Q1「ターンプレイヤーが効果の優先順を選択して
+ * 処理してください」）、ターンプレイヤーが持ち主の効果を優先したときだけ有効（持ち主は自分の制限を受けない）。【変身の妨害】の制限を優先すれば（選ぶまでも）、
+ * 持ち主の効果名を持つテキストは無効で、制限も無くなる。本物のキリカゲがバトルエリアにあれば持ち主は無効（ループにならない）。
+ */
+function copiedHindranceActive(state: Pick<GameState, "players" | "definitions"> & Partial<Pick<GameState, "loopPriority">>, holder: CardInstance): boolean {
+  if (!hindranceTarget(state, holder)) return true;
+  if (anyFieldHas(state, "RS-497", ["battle"])) return false;
+  return loopWinner(state, copiedHindranceLoopKey(holder.instanceId)) === holder.instanceId;
+}
+
+/** 【変身の妨害】で、このユニットの効果名を持つテキストが無効か。 */
+export function transformationHindranceNegates(
+  state: Pick<GameState, "players" | "definitions"> & Partial<Pick<GameState, "loopPriority">>,
+  card: Pick<CardInstance, "cardId"> & Partial<Pick<CardInstance, "instanceId">>,
+): boolean {
+  if (!hindranceTarget(state, card)) return false;
+  if (anyFieldHas(state, "RS-497", ["battle"])) return true;
+  for (const holder of copiedHindranceHolders(state)) {
+    if (holder.instanceId === card.instanceId) {
+      if (!copiedHindranceActive(state, holder)) return true;
+      continue;
+    }
+    if (copiedHindranceActive(state, holder)) return true;
+  }
+  return false;
+}
+
+registerLoopDetector((state) =>
+  copiedHindranceHolders(state)
+    .filter((holder) => hindranceTarget(state, holder) && !anyFieldHas(state, "RS-497", ["battle"]))
+    .map((holder) => {
+      // 候補: 【変身の妨害】の制限を優先（場のキリカゲで表す。いなければ組の ID）／持ち主の効果を優先。
+      const kirikage = (["player1", "player2"] as const).flatMap((pid) => state.players[pid].rush).find((c) => isSameCardIdentity(c.cardId, "RS-497"));
+      return {
+        key: copiedHindranceLoopKey(holder.instanceId),
+        options: [kirikage?.instanceId ?? copiedHindranceLoopKey(holder.instanceId), holder.instanceId],
+        sourceCardId: "RS-497",
+        sourceInstanceId: holder.instanceId,
+      };
+    }),
+);
 
 // ---------------------------------------------------------------------------
 // 1体ずつ選んで撃破する（合計の上限・数の上限つき。途中でやめられる）

@@ -12,6 +12,8 @@ import { emitUnitLeftZoneAndResolve } from "../../events/emitUnitLeftZone";
 import { openEffectChoice } from "../pendingChoices";
 import { resolveBattlePending, tryLeaveField } from "../operationCounters";
 import { patchPlayer } from "../playerPatches";
+import { type LoopConflict, registerLoopDetector } from "../loopPriority";
+import { saimaLoopKey } from "../hellSaturn";
 import { unitFeatures } from "../addedFeatures";
 import { moveToExile } from "../exile";
 import { grantSp1ToBattleUnit, hasBattleNcEffect, markBattleNcEffect } from "../namedUnitEffects";
@@ -811,6 +813,65 @@ registerXg2Keyword("XG2-039::shin_tenku", applyTenku);
 // 継続効果・ほかの処理の場所から発動する効果。DSL からは何もしない。
 registerXg2Keyword("XG2-028::minus_energy", noop("xg2_028:battle_phase_end"));
 registerXg2Keyword("XG2-029::saima_tree", noop("xg2_029:unit_destroyed"));
+
+// XG2-029【災魔ツリー】「…BP8000以上のとき、LユニットになりSP1を得る。」（atwiki/page-1798。SP1 は rules/xg2/xg2Fields.ts）。
+// 他の効果で BP8000 以上になっても L ユニットになる（Q1）。サイズは行動の後に合わせる（仮面ライダーアークの※と同じく sizeOverride "L"）。
+// S のときの BP が 8000 以上でも、L にすると 8000 を下回る（S ユニットだけにかかる RS-364【黒き太陽神への忠誠】の BP+3000 を失う）なら
+// ループになる（Q2）。ターンプレイヤーが優先する効果を選ぶ（rules/loopPriority.ts）。総統を優先すれば（選ぶまでも）「BP+3000された S ユニット」、
+// サラマンデスを優先すれば「BPがそのままの S ユニット」（総統の効果を受けない。rules/hellSaturn.ts。atwiki/page-1798 カード評価）。
+// 「BP+3000され、SP1を得ているLユニット」のように両方を適用することはない（Q2）。
+
+function withFieldSize(state: GameState, ownerId: PlayerId, instanceId: string, size: "L" | undefined): { state: GameState; card?: CardInstance } {
+  let card: CardInstance | undefined;
+  const next = patchPlayer(state, ownerId, (p) => {
+    const patch = (cards: CardInstance[]) =>
+      cards.map((c) => {
+        if (c.instanceId !== instanceId) return c;
+        card = { ...c, sizeOverride: size };
+        return card;
+      });
+    return { ...p, rush: patch(p.rush), battle: patch(p.battle) };
+  });
+  return { state: next, card };
+}
+
+/** S ユニットとしての BP と L ユニットとしての BP。 */
+function saimaTreeBps(state: GameState, ownerId: PlayerId, instanceId: string): { asS: number; asL: number } | undefined {
+  const s = withFieldSize(state, ownerId, instanceId, undefined);
+  const l = withFieldSize(state, ownerId, instanceId, "L");
+  if (!s.card || !l.card) return undefined;
+  return { asS: effectiveBp(s.state, ownerId, s.card), asL: effectiveBp(l.state, ownerId, l.card) };
+}
+
+function saimaTrees(state: GameState): Array<{ ownerId: PlayerId; card: CardInstance }> {
+  return (["player1", "player2"] as const).flatMap((ownerId) =>
+    fieldUnits(state, ownerId).filter((c) => isSameCardIdentity(c.cardId, "XG2-029")).map((card) => ({ ownerId, card })),
+  );
+}
+
+xg2Hook("afterAction", (_before, after) => {
+  let next = after;
+  for (const { ownerId, card } of saimaTrees(after)) {
+    const bps = saimaTreeBps(next, ownerId, card.instanceId);
+    if (!bps) continue;
+    const large = bps.asS >= 8000 && bps.asL >= 8000;
+    if (large && card.sizeOverride !== "L") next = withFieldSize(next, ownerId, card.instanceId, "L").state;
+    else if (!large && card.sizeOverride === "L") next = withFieldSize(next, ownerId, card.instanceId, undefined).state;
+  }
+  return next;
+});
+
+registerLoopDetector((state) => {
+  const out: LoopConflict[] = [];
+  for (const { ownerId, card } of saimaTrees(state)) {
+    const bps = saimaTreeBps(state, ownerId, card.instanceId);
+    if (!bps || bps.asS < 8000 || bps.asL >= 8000) continue;
+    const saturn = fieldUnits(state, ownerId).find((c) => isSameCardIdentity(c.cardId, "RS-364"));
+    if (!saturn) continue;
+    out.push({ key: saimaLoopKey(card.instanceId), options: [saturn.instanceId, card.instanceId], sourceCardId: "XG2-029", sourceInstanceId: card.instanceId });
+  }
+  return out;
+});
 registerXg2Keyword("XG2-031::backup", noop("xg2_031:bp"));
 registerXg2Keyword("XG2-032::gyro_wapper", noop("xg2_032:before_battle"));
 registerXg2Keyword("XG2-033::barrier_fist", noop("xg2_033:strike_damage"));

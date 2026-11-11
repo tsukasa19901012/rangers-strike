@@ -15,6 +15,7 @@ import {
   canSelfRush,
   canSkip,
   canUseCard,
+  cardIn,
   choiceIds,
   choicePlayer,
   confirm,
@@ -287,7 +288,48 @@ describe("XG4-075 アポロガイスト（XG4）", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG4-075");
   });
 
-  it.todo("XG4-075: 公式Q&A — RK-246 ウエイクアップ！でリリースされた後でも【生命の強奪】は使え、そのとき相手は撃破を選ばなければならない（出典: atwiki/page-2062 Q1）（未対応の理由: Q の「RK-246」は RK-239 ウエイクアップ！の誤記。エンジンでは【生命の強奪】の選択が RK-239 より先に開き、ターンプレイヤーが解決順を選んでウエイクアップ！を先に処理する手段がない）");
+  // atwiki/page-2062 Q1「はい、【生命の強奪】の効果を使用することができます。また、リリース状態のユニットをリリースすることはできないので、相手は自分自身のユニットを1体選び撃破することを必ず選ばなければなりません。」
+  // Q の「RK-246 ウエイクアップ！」は RK-239 の誤記（atwiki/page-763 Q2 が同じ Q）。同時に誘発した2つの効果はターンプレイヤーが処理順を選ぶ（R-SIM-01）。
+  it("XG4-075: 公式Q&A — ウエイクアップ！（RK-239）を先に処理してリリースされた後でも【生命の強奪】は使え、相手は撃破を選ばなければならない（出典: atwiki/page-2062 Q1）", () => {
+    let s = settle(
+      enterNow(
+        battle(
+          { operation: [inst("RK-239", "wu")], rush: [{ ...inst("XG4-075", "ap"), commandHeld: true }], battle: [inst("SPEC-E-S", "own")] },
+          { battle: [inst("SPEC-E-S", "a")], deck: deckCards(3, "e") },
+        ),
+        "XG4-075:ap",
+      ),
+    );
+    // ターンプレイヤー（player1）が先に処理する効果を選ぶ。
+    expect(s.pendingEffectChoice?.effectId).toBe("simultaneous_order");
+    expect(choicePlayer(s)).toBe("player1");
+    expect([...choiceIds(s)].sort()).toEqual(["RK-239:wu", "XG4-075:ap"]);
+    s = pick(s, "RK-239:wu");
+    expectChoiceFrom(s, "player1", "RK-239");
+    s = pick(s, "SPEC-E-S:own");
+    expect(cardIn(s, "player1", "XG4-075:ap")?.commandHeld ?? false).toBe(false);
+    // 【生命の強奪】は使え、「リリースする」は選べない。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG4-075");
+    expect(choicePlayer(s)).toBe("player2");
+    expect(choiceIds(s)).toEqual(["SPEC-E-S:a"]);
+    s = resolveAll(pickAs(s, "player2", "SPEC-E-S:a"));
+    expect(zoneOf(s, "player2", "SPEC-E-S:a")).toBe("discard");
+  });
+
+  it("XG4-075: 対照 — 【生命の強奪】を先に処理すれば、相手はホールド状態のこれをリリースすることを選べる（出典: atwiki/page-2062「このユニットをリリースするかを選ぶ」・R-SIM-01）", () => {
+    let s = settle(
+      enterNow(
+        battle(
+          { operation: [inst("RK-239", "wu")], rush: [{ ...inst("XG4-075", "ap"), commandHeld: true }], battle: [inst("SPEC-E-S", "own")] },
+          { battle: [inst("SPEC-E-S", "a")], deck: deckCards(3, "e") },
+        ),
+        "XG4-075:ap",
+      ),
+    );
+    s = pick(s, "XG4-075:ap");
+    expect(choicePlayer(s)).toBe("player2");
+    expect(choiceIds(s)).toEqual(["SPEC-E-S:a", "release"]);
+  });
 });
 
 // ===========================================================================

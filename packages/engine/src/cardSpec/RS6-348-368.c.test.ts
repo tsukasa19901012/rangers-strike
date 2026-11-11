@@ -362,7 +362,21 @@ describe("RS-364 ヘルサターン総統", () => {
     expect(bpOf(b, "player1", "RS-354:red")).toBe(6000);
   });
 
-  it.todo("RS-364: 公式Q&A — 幽魔王サラマンデスとのループはターンプレイヤーがどちらかの効果を優先して処理する（出典: grnrngr/faq-card-6 RS-364 Q7）— XG2-029【災魔ツリー】の「BP8000以上のときLユニットになる」が未実装（rules/xg2/xg2Fields.ts は SP1 のみ）で、Q のループ自体が発生しない");
+  // atwiki/page-576 Q7（= atwiki/page-1798 Q2）「ターンプレイヤーが効果の優先順を選択して処理してください。なお、必ずどちらかの効果が優先されるようにしてください。」
+  // 以前の it.todo は出典を grnrngr/faq-card-6 Q7 としていたが、grnrngr の RS-364 の Q は6つで、この Q は atwiki/page-576 の Q7。
+  it("RS-364: 公式Q&A — 幽魔王サラマンデス（BP8000以上で L ユニット）とのループはターンプレイヤーがどちらかの効果を優先して処理する（出典: atwiki/page-576 Q7・atwiki/page-1798 Q2）", () => {
+    const loop = toPhase(rushPhase({ rush: [inst("RS-364", "hs"), inst("XG2-029", "y")] }, {}, SPECS), "player1", "battle");
+    expect(loop.pendingEffectChoice?.effectId).toBe("loop_priority");
+    expect(loop.pendingEffectChoice?.playerId).toBe("player1");
+    // 総統を優先: BP+3000 された S ユニット（6500 + 3000）で、総統の効果により「SP1」。
+    const saturn = pick(loop, "RS-364:hs");
+    expect(bpOf(saturn, "player1", "XG2-029:y")).toBe(9500);
+    expect(spOf(saturn, "player1", "XG2-029:y")).toBe(1);
+    // サラマンデスを優先: 総統の効果を受けない（BP はそのまま）。
+    const tree = pick(loop, "XG2-029:y");
+    expect(bpOf(tree, "player1", "XG2-029:y")).toBe(6500);
+    expect(spOf(tree, "player1", "XG2-029:y")).toBe(0);
+  });
 });
 
 // ===========================================================================

@@ -53,6 +53,16 @@ function openRefill(
   };
 }
 
+/**
+ * ownerId の【プロジェットカノン】が、ターンプレイヤー turnPlayerId のターンに自軍コマンドゾーンのカードが1枚離れたら発動できるか
+ * （捨札は離れたカードで1枚以上になる）。RS-363【パンサークロー】とのループの判定に使う（rules/legend1/set6NamedEffects348.ts）。
+ */
+export function commandLeaveRefillWouldOpen(state: GameState, ownerId: PlayerId, turnPlayerId: PlayerId): boolean {
+  if (turnPlayerId === ownerId) return false;
+  const owner = state.players[ownerId];
+  return owner.rush.some((c) => cardHasGrantKeyword(c.cardId, KEYWORD)) && owner.command.length - 1 < COMMAND_ZONE_MAX;
+}
+
 /** 自軍コマンドゾーンから `count` 枚が離れた後に呼ぶ。条件を満たせば任意の選択を開く。 */
 export function afterCommandCardsLeft(
   state: GameState,

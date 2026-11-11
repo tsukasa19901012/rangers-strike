@@ -37,6 +37,8 @@ import {
 import { XG4_CONFIRMERS, XG4_KEYWORDS, XG4_RESOLVERS, XG4_SKIPPERS, addTurnRecord, allFieldUnits, hasTurnRecordFor, isCard, noop, printedFeatures } from "./xg4Common";
 import { XG4_ATTACKRIDE_RULE, XG4_HARDSHOT_RULE, XG4_LIGHTNING_RULE, XG4_RIDOL_RULE } from "./xg4Fields";
 import { deckOrderChoice } from "../deckOrder";
+import { registerChoiceRefresher } from "../choiceRefreshers";
+import { WAKE_UP_ENTRY_TAKER, takeEntryTrigger, triggerOrderChoice } from "../triggerOrder";
 
 const COMMAND_LIMIT = 5;
 
@@ -497,20 +499,47 @@ XG4_KEYWORDS["XG4-074::ridol"] = (state, ctx) => {
 const APOLLO_EFFECT_ID = "xg4075_life_steal";
 export const XG4_APOLLO_RELEASE = "release";
 
+/** 【生命の強奪】の相手の候補（相手の場の S ユニットと、このユニットがホールド状態のときだけ「リリースする」）。 */
+function apolloLifeOptions(state: GameState, ownerId: PlayerId, enemyId: PlayerId, apolloId: string): string[] {
+  const ids = fieldUnits(state, enemyId)
+    .filter((c) => isUnit(state, c.cardId) && rk1IsSmallNow(state, c) && selectableOwnByEnemyEffect(state, enemyId, ownerId, "XG4-075", c))
+    .map((c) => c.instanceId);
+  // リリース状態のユニットはリリースできないので、相手は撃破を選ぶしかない（atwiki/page-2062 Q1）。
+  return findField(state, ownerId, apolloId)?.commandHeld ? [...ids, XG4_APOLLO_RELEASE] : ids;
+}
+
 XG4_KEYWORDS["XG4-075::life"] = (state, ctx) => {
   const id = ctx.triggerSourceInstanceId;
   if (!ownTurn(ctx) || !id) return { state, detail: "xg4075:not_own_turn" };
   const self = findField(state, ctx.playerId, id);
   if (!self?.commandHeld) return { state, detail: "xg4075:released" };
   const enemyId = opponent(ctx.playerId);
-  const ids = fieldUnits(state, enemyId)
-    .filter((c) => isUnit(state, c.cardId) && rk1IsSmallNow(state, c) && selectableOwnByEnemyEffect(state, enemyId, ctx.playerId, "XG4-075", c))
-    .map((c) => c.instanceId);
-  return {
-    state: openAfter(state, { ...base({ playerId: enemyId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: id }, "XG4-075"), effectId: APOLLO_EFFECT_ID, kind: "pick_effect_branch", validInstanceIds: [...ids, XG4_APOLLO_RELEASE], selectCount: 1, optional: false }),
-    detail: APOLLO_EFFECT_ID,
+  const life: PendingEffectChoice = {
+    ...base({ playerId: enemyId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: id }, "XG4-075"),
+    effectId: APOLLO_EFFECT_ID,
+    kind: "pick_effect_branch",
+    validInstanceIds: apolloLifeOptions(state, ctx.playerId, enemyId, id),
+    selectCount: 1,
+    optional: false,
+    // 先にウエイクアップ！等を処理したら、開くときの状態で候補を作り直す。
+    refreshOnOpen: { key: APOLLO_EFFECT_ID },
   };
+  // ホールド状態で出たときに同時に誘発したウエイクアップ！（リリースする）とは、ターンプレイヤーが処理順を選ぶ
+  // （atwiki/page-2062 Q1・page-763 Q2。先にリリースしても【生命の強奪】は使え、相手は撃破を選ぶしかない。rules/triggerOrder.ts）。
+  const wake = takeEntryTrigger(WAKE_UP_ENTRY_TAKER, state, ctx.playerId, id);
+  if (wake.choice) {
+    return { state: openAfter(wake.state, triggerOrderChoice(ctx.phasePlayerId, life, wake.choice)), detail: APOLLO_EFFECT_ID };
+  }
+  return { state: openAfter(state, life), detail: APOLLO_EFFECT_ID };
 };
+
+registerChoiceRefresher(APOLLO_EFFECT_ID, (state, choice) => {
+  const apolloId = choice.sourceInstanceId;
+  if (!apolloId) return choice;
+  const ownerId = opponent(choice.playerId);
+  const ids = apolloLifeOptions(state, ownerId, choice.playerId, apolloId);
+  return ids.length > 0 ? { ...choice, validInstanceIds: ids } : null;
+});
 
 XG4_RESOLVERS[APOLLO_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;

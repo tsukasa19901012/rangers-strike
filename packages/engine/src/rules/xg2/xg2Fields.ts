@@ -43,7 +43,7 @@ export function xg2MultiCategoryCommands(state: Board, playerId: PlayerId): numb
 
 /** XG2-004 ファイブロボ【超次元ソード】「カテゴリを2つ以上持つ自軍コマンドが2つ以上あれば「SP2」になる」（atwiki/page-1693）。 */
 // XG2-028 サラマンデスドラゴン「これは下に重なっているウラ向きのカード1枚につき「SP+1」される」（atwiki/page-1797）。
-// XG2-029 幽魔王サラマンデス【災魔ツリー】「BP8000以上のとき、…SP1を得る」（atwiki/page-1798。Lユニットになるのは未対応）。
+// XG2-029 幽魔王サラマンデス【災魔ツリー】「BP8000以上のとき、…SP1を得る」（atwiki/page-1798。Lユニットになるのは rules/xg2/xg2bEffects.ts が行動の後に合わせる）。
 export function xg2EffectiveSp(
   state: Board,
   playerId: PlayerId,

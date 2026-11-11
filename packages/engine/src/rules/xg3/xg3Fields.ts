@@ -13,6 +13,7 @@ import { cardCategories, effectiveCommandCategories, getDefinition, isVehicle, u
 import { opponent } from "../../core/helpers";
 import { logicalBattlePosition } from "../battleLine";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
+import { loopWinner } from "../loopPriority";
 
 export const IMOYOKAN_CARD_ID = "XG3-004";
 export const ZIEG_JENNE_CARD_ID = "XG3-010";
@@ -237,10 +238,31 @@ function hasOwnMVehicle(state: Pick<GameState, "players" | "definitions">, owner
 }
 
 /** いまのサイズ（XG3-029 ※「自軍Mビークルがあれば、これはMユニットになり」）。変わらなければ undefined。 */
-export function xg3SizeNow(state: Pick<GameState, "players" | "definitions">, instance: CardInstance): "M" | undefined {
+export function xg3SizeNow(state: Pick<GameState, "players" | "definitions"> & Partial<Pick<GameState, "loopPriority">>, instance: CardInstance): "M" | undefined {
   if (!isSameCardIdentity(instance.cardId, URZARD_CARD_ID)) return undefined;
   const owner = ownerOf(state, instance.instanceId);
-  return owner && hasOwnMVehicle(state, owner) ? "M" : undefined;
+  if (!owner || !hasOwnMVehicle(state, owner)) return undefined;
+  // RK-013 Jパワーの「Lユニットになる」とどちらを優先するかをターンプレイヤーが選び、J パワーを優先したら L のまま（atwiki/page-211 Q8）。
+  const jPower = urzardJPowerConflict(state, instance);
+  if (jPower && loopWinner(state, urzardSizeLoopKey(instance.instanceId)) === jPower) return undefined;
+  return "M";
+}
+
+/**
+ * RK-013 Jパワーを重ねた XG3-029 に自軍 M ビークルがあるとき（J パワーの「Lユニットになる」と※の「Mユニットになる」が重なる）、
+ * 重ねた J パワーのインスタンス ID（atwiki/page-211 Q8「ターンプレイヤーが効果の優先順を選択して処理してください」。rules/loopPriority.ts）。
+ */
+export function urzardJPowerConflict(state: Pick<GameState, "players" | "definitions">, instance: CardInstance): string | undefined {
+  if (!isSameCardIdentity(instance.cardId, URZARD_CARD_ID)) return undefined;
+  const jPower = (instance.stackedCards ?? []).find((c) => isSameCardIdentity(c.cardId, "RK-013"));
+  if (!jPower) return undefined;
+  const owner = ownerOf(state, instance.instanceId);
+  return owner && hasOwnMVehicle(state, owner) ? jPower.instanceId : undefined;
+}
+
+/** J パワーとウルザードのサイズの優先の組の ID（rules/loopPriority.ts）。 */
+export function urzardSizeLoopKey(urzardInstanceId: string): string {
+  return `rk013_xg3029:${urzardInstanceId}`;
 }
 
 /** 追加される特徴（XG3-029 ※「特徴「人型」が追加される」）。 */

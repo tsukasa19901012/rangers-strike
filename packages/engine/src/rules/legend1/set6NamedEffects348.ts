@@ -28,7 +28,7 @@ import { transformationHindranceNegates } from "./set7NamedEffectsD";
 import { afterEnterBattle, promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 import { registerOptionalEffect } from "../optionalEffects";
-import { afterCommandCardsLeft } from "../commandLeaveRefill";
+import { afterCommandCardsLeft, commandLeaveRefillWouldOpen } from "../commandLeaveRefill";
 import { rk16NamedTextNegated } from "../rk/rk16Fields";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
@@ -395,6 +395,12 @@ export function openPantherClawIfReady(state: GameState, phasePlayerId: PlayerId
   const next = { ...state, pantherClawQueue: rest.length > 0 ? rest : undefined };
   if (ids.length === 0) return openPantherClawIfReady(next, phasePlayerId);
   const source = fieldUnits(state, playerId).find((c) => c.cardId === "RS-363");
+  // 敵軍の RS-238【プロジェットカノン】が、捨札にしたカードを（ホールド状態で）置き直せるなら、また【パンサークロー】が発動する止められない
+  // ループになる。ターンプレイヤーが効果の優先順を選ぶ（grnrngr/faq-card-6 RS-363 Q2「ターンプレイヤーが「RS-363 バルパンサー（2nd）」のNCで
+  // 破壊した敵軍コマンドを、そのまま捨札にしたままにで処理を終える」。R-SIM-02）。候補にこのユニット（【パンサークロー】を優先: 捨札にして
+  // 【プロジェットカノン】は発動しない）を足す。カードを選べば今までどおり（相手が置き直すかを選ぶ）、見送れば【プロジェットカノン】側を優先したのと同じ。
+  const loopOption =
+    source && ids.length === 1 && commandLeaveRefillWouldOpen(next, opponent(playerId), phasePlayerId) ? [source.instanceId] : [];
   return openEffectChoice(next, {
     playerId,
     effectId: PANTHER_CLAW_EFFECT_ID,
@@ -403,15 +409,18 @@ export function openPantherClawIfReady(state: GameState, phasePlayerId: PlayerId
     kind: "select_command",
     commandAction: "discard",
     phasePlayerId,
-    validInstanceIds: ids,
+    validInstanceIds: [...ids, ...loopOption],
     selectCount: 1,
     optional: true,
   });
 }
 
-CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, instanceId) => {
+CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, picked) => {
   const pending = state.pendingEffectChoice!;
-  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  if (!pending.validInstanceIds.includes(picked)) return { error: "invalid_target" };
+  // 【パンサークロー】を優先（ループを止める）: 候補のカードを捨札にし、【プロジェットカノン】は発動しない（grnrngr/faq-card-6 RS-363 Q2）。
+  const loopStop = picked === pending.sourceInstanceId;
+  const instanceId = loopStop ? pending.validInstanceIds.find((id) => id !== pending.sourceInstanceId) ?? picked : picked;
   const enemyId = opponent(playerId);
   const enemy = state.players[enemyId];
   const card = enemy.command.find((c) => c.instanceId === instanceId);
@@ -426,7 +435,11 @@ CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, instanceId) => {
     }),
   };
   next = clearPending(next, pending.phasePlayerId);
-  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
+  if (loopStop) {
+    next = finish(next, pending.phasePlayerId);
+    return { state: next, log: logFor(state, playerId, "RS-363", `${PANTHER_CLAW_EFFECT_ID}:loop_priority:${cardName(state.definitions, card.cardId)}`) };
+  }
+  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId && id !== pending.sourceInstanceId);
   if (remaining.length > 0) {
     next = openEffectChoice(next, { ...pending, validInstanceIds: remaining, selectedInstanceIds: [] });
   } else {

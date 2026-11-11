@@ -11,14 +11,24 @@
  */
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition, unitEffectiveCategories, unitSizeOf } from "../core/catalog";
+import { loopWinner } from "./loopPriority";
 
 const HELL_SATURN_ID = "RS-364";
 const HELL_SATURN_NAME = "ヘルサターン総統";
+
+/**
+ * XG2-029【災魔ツリー】（BP8000以上で L ユニット）とのループの組の ID（rules/loopPriority.ts。atwiki/page-1798 Q2・grnrngr/faq-card-6 RS-364 Q7）。
+ * ターンプレイヤーがサラマンデスを優先したら、そのサラマンデスはこの効果を受けない（「BPがそのままのSユニット」）。
+ */
+export function saimaLoopKey(salamandesInstanceId: string): string {
+  return `xg2029_rs364:${salamandesInstanceId}`;
+}
 
 /** instance（playerId の S ユニット）に効果を与えている RS-364 の数。条件を満たさなければ 0。 */
 export function hellSaturnGrantCount(state: GameState, playerId: PlayerId, instance: CardInstance): number {
   const def = getDefinition(state.definitions, instance.cardId);
   if (!def || def.type !== "unit" || unitSizeOf(state.definitions, instance) !== "S" || def.name === HELL_SATURN_NAME) return 0;
+  if (loopWinner(state, saimaLoopKey(instance.instanceId)) === instance.instanceId) return 0;
   const player = state.players[playerId];
   const count =
     player.rush.filter((c) => c.cardId === HELL_SATURN_ID).length +
