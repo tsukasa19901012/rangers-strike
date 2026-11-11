@@ -129,9 +129,52 @@ describe("XG4-008 メガシルバー（XG4）", () => {
     expect(canStartRush(lBoard({ rush: [inst("XG4-008", "ms"), inst("TST-UNIT-7", "l")] }), "player1", "RS-624:fm")).toBe(false);
   });
 
-  it.todo(
-    "XG4-008: 公式Q&A — 1回のラッシュに対して【I.N.E.T.特別開発班チーフ】を複数回発動できる（合体を必要とするLユニットで、必要なユニット2体を手札から捨札にする）（出典: atwiki/page-2137 Q2）— 本範囲の ET・L・「メカ」のユニットに、追加条件で同じ種類のユニットを2体以上捨札にするもの（合体以外）がなく、合体ユニットを手札で代える公開アクションの形も決まっていないため",
-  );
+  /**
+   * XG6-020 アルティメットダイボウケン（ET・L・特徴「メカ」。合体―ダイボウケン＋ダイタンケン）を手札からラッシュする盤面。
+   * 素材の XG6-019 ダイボウケン・XG6-006 ダイタンケンはどちらも手札。リリース状態の ET のコマンドは3つ（ラッシュのカテゴリ1つ＋メガシルバー2回）。
+   */
+  const ultimateBoard = (p1: Partial<GameState["players"]["player1"]> = {}) =>
+    board({
+      hand: [inst("XG6-020", "ult"), inst("XG6-019", "dbk"), inst("XG6-006", "dtk")],
+      command: releasedCat("ET", 3),
+      power: powerCards(10),
+      rush: [inst("XG4-008", "ms")],
+      ...p1,
+    });
+
+  it("XG4-008: 公式Q&A — 1回のラッシュに対して【I.N.E.T.特別開発班チーフ】を複数回発動できる。合体ユニット2体（ダイボウケン・ダイタンケン）を両方手札から捨札にして、XG6-020 アルティメットダイボウケンをラッシュできる。ET のコマンドはラッシュの1つと発動ごとの1つで計3つホールドする（出典: atwiki/page-2137 Q2「はい、できます。」・コメント「合体を必要とするETのLユニット」「アルティメットダイボウケンでも出せるハズ」）", () => {
+    const s = ultimateBoard();
+    expect(canStartRush(s, "player1", "XG6-020:ult")).toBe(true);
+    const r = rushFromHand(s, "player1", "XG6-020:ult");
+    expect(r.ok, r.error).toBe(true);
+    const t = resolveAll(r.state);
+    expect(zoneOf(t, "player1", "XG6-020:ult")).toBe("rush");
+    expect(zoneOf(t, "player1", "XG6-019:dbk")).toBe("discard");
+    expect(zoneOf(t, "player1", "XG6-006:dtk")).toBe("discard");
+    expect(t.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(3);
+  });
+
+  it("XG4-008: 場で揃う合体ユニット（ダイタンケンのかわりのゴーゴードリル〜ゴーゴージェット。M ユニット）はそのまま捨札にし、足りないダイボウケンだけを手札で代える。発動は1回なので ET のコマンドは2つ（出典: atwiki/page-2137【I.N.E.T.特別開発班チーフ】・XG6-020「ダイタンケン（または、ゴーゴードリル＋…＋ゴーゴージェット）」）", () => {
+    const gogo = ["RS-171", "RS-172", "RS-173", "RS-174", "RS-177"].map((id) => inst(id, "g"));
+    const s = ultimateBoard({ hand: [inst("XG6-020", "ult"), inst("XG6-019", "dbk")], command: releasedCat("ET", 2), rush: [inst("XG4-008", "ms"), ...gogo] });
+    expect(canStartRush(s, "player1", "XG6-020:ult")).toBe(true);
+    const r = rushFromHand(s, "player1", "XG6-020:ult");
+    expect(r.ok, r.error).toBe(true);
+    const t = resolveAll(r.state);
+    expect(zoneOf(t, "player1", "XG6-020:ult")).toBe("rush");
+    expect(zoneOf(t, "player1", "XG6-019:dbk")).toBe("discard");
+    for (const g of gogo) expect(zoneOf(t, "player1", g.instanceId)).toBe("discard");
+    expect(t.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(2);
+  });
+
+  it("XG4-008: 公式Q&A Q2 — 発動の回数分の ET のコマンドがなければ、2体とも手札からではラッシュできない（ET のコマンドが2つ）（出典: atwiki/page-2137【I.N.E.T.特別開発班チーフ】「ETの自軍コマンドを1つホールドしてから」）", () => {
+    expect(canStartRush(ultimateBoard({ command: releasedCat("ET", 2) }), "player1", "XG6-020:ult")).toBe(false);
+  });
+
+  it("XG4-008: 自軍 L ユニット（ダイタンケン）が場にあれば、手札のダイボウケンでは代えられない（出典: atwiki/page-2137「自軍Lユニットが1体もなければ」・コメント「Lユニが出てると効果つかえない」）", () => {
+    const s = ultimateBoard({ hand: [inst("XG6-020", "ult"), inst("XG6-019", "dbk")], rush: [inst("XG4-008", "ms"), inst("XG6-006", "dtk")] });
+    expect(canStartRush(s, "player1", "XG6-020:ult")).toBe(false);
+  });
 });
 
 // ===========================================================================

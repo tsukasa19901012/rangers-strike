@@ -304,15 +304,24 @@ export function xg4IsHandSubstituteMaterial(
   card: CardInstance,
   isFieldMaterial: (card: CardInstance) => boolean,
 ): boolean {
-  const field = [...player.battle, ...player.rush];
-  if (!field.some((c) => isSameCardIdentity(c.cardId, "XG4-008"))) return false;
-  if (field.some((c) => definitions[c.cardId]?.type === "unit" && (c.sizeOverride ?? definitions[c.cardId]?.size) === "L")) return false;
-  const rushing = definitions[rushingCardId];
-  if (rushing?.type !== "unit" || rushing.size !== "L") return false;
-  if (!categoriesOfDef(rushing).includes("ET") || !((rushing as { features?: string[] }).features ?? []).includes("メカ")) return false;
   if (definitions[card.cardId]?.type !== "unit" || !isFieldMaterial(card)) return false;
+  return xg4HandSubstituteBudget(player, definitions, rushingCardId) >= 1;
+}
+
+/**
+ * XG4-008【I.N.E.T.特別開発班チーフ】を今のラッシュで何回発動できるか（手札のカードで代えられる素材の数）。
+ * 公式Q&A（atwiki/page-2137 Q2）「1回のラッシュに対して…複数回発動することはできますか？」「はい、できます。」— 1回ごとに ET の自軍コマンドを
+ * 1つホールドするので、リリース状態の ET のコマンドの数（ラッシュのカテゴリのホールドがまだなら、その1つを除く）まで。
+ */
+export function xg4HandSubstituteBudget(player: PlayerState, definitions: Record<string, CardDefinition>, rushingCardId: string): number {
+  const field = [...player.battle, ...player.rush];
+  if (!field.some((c) => isSameCardIdentity(c.cardId, "XG4-008"))) return 0;
+  if (field.some((c) => definitions[c.cardId]?.type === "unit" && (c.sizeOverride ?? definitions[c.cardId]?.size) === "L")) return 0;
+  const rushing = definitions[rushingCardId];
+  if (rushing?.type !== "unit" || rushing.size !== "L") return 0;
+  if (!categoriesOfDef(rushing).includes("ET") || !((rushing as { features?: string[] }).features ?? []).includes("メカ")) return 0;
   const categoryPending = !isCostWindowSatisfied(player, "rush_category");
-  return releasedEtCommands(player, definitions).length >= (categoryPending ? 2 : 1);
+  return Math.max(0, releasedEtCommands(player, definitions).length - (categoryPending ? 1 : 0));
 }
 
 /** 手札のカードを素材にしたとき、ET の自軍コマンドを1つホールドする（xg4IsHandSubstituteMaterial のとき）。 */
