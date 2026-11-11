@@ -377,9 +377,21 @@ describe("R-ZONE-06 バトルエリア", () => {
   });
 
   // 「任意の順番で戻すことができます」
-  it.todo(
-    "R-ZONE-06: スタートフェイズにバトルエリアの複数ユニットは任意の順番でラッシュエリアに戻せる（出典: grnrngr/faq/index.html バトルエリア Q1）— ラッシュエリアに並び順の概念がなく、戻す順番を選ぶ公開アクションもない（一括移動のみ）",
-  );
+  it("R-ZONE-06: スタートフェイズにバトルエリアの複数ユニットは任意の順番でラッシュエリアに戻せる（出典: grnrngr/faq/index.html バトルエリア Q1）", () => {
+    let s = st({
+      phase: "start",
+      player1: { battle: [inst("SPEC-S-WB", "x"), inst("SPEC-S-WB", "y")], deck: deckCards(3) },
+      player2: { deck: deckCards(3, "e") },
+    });
+    // 1体ずつ選んで戻す手が、どちらのユニットにもある（並び順の右から戻してもよい）。
+    const picks = legal(s).filter((a) => a.type === "return_all_battle_to_rush" && "instanceId" in a && a.instanceId);
+    expect(picks.map((a) => (a as { instanceId: string }).instanceId).sort()).toEqual(["SPEC-S-WB:x", "SPEC-S-WB:y"]);
+    s = unwrap(applyAction(s, { type: "return_all_battle_to_rush", playerId: "player1", instanceId: "SPEC-S-WB:y" }));
+    expect(zoneOf(s, "player1", "SPEC-S-WB:y")).toBe("rush");
+    expect(zoneOf(s, "player1", "SPEC-S-WB:x")).toBe("battle");
+    s = unwrap(applyAction(s, { type: "return_all_battle_to_rush", playerId: "player1" }));
+    expect(s.players.player1.rush.map((c) => c.instanceId)).toEqual(["SPEC-S-WB:y", "SPEC-S-WB:x"]);
+  });
 });
 
 describe("R-ZONE-07 パワーゾーン", () => {

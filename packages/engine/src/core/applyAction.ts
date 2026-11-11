@@ -52,7 +52,7 @@ import { resumeAbductionAfterChase } from "../rules/abduction";
 import { applyKyouryuumaru, canUseKyouryuumaru, filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import { currentShuffleEpoch } from "./deckShuffle";
 import { hasActiveEngineRng, runWithStateRng } from "./rng";
-import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
+import { applySwordTornadoAfterShuffle, continueUltimaStorm } from "../rules/legend1/set8NamedEffectsC";
 import {
   applySet7AStrikeCounter,
   applySet7AStrikeDamageTriggers,
@@ -1246,6 +1246,8 @@ function applyActionWithRng(
   if (next.pendingFieldAbilityAfterLeave) next = continueFieldAbilityAfterLeave(next);
   // ルール: R-KW-CHASE-01 — チェイス等の応答を待っていた、効果でコマンドゾーン等へ移す残りのカード（rules/fieldLeaveQueue.ts）。
   next = drainQueuedFieldLeaves(next);
+  // RS-566【アルティマストーム】: 間に開いた【プロジェットカノン】・ダイノガッツ等が済んだら、残りを山札に戻す（rules/legend1/set8NamedEffectsC.ts）。
+  if (next.ultimaStorm) next = continueUltimaStorm(next);
   next = continueDeferredPowerFlip(next);
   next = continueDeferredAttack(next);
   next = continueDeferredStrike(next);

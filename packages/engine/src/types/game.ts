@@ -1559,6 +1559,20 @@ export type GameState = {
    * R-KW-CHASE-01）。応答の解決後に core/applyAction.ts の後処理で順に続ける。
    */
   queuedFieldLeaves?: PendingLeave[];
+  /**
+   * RS-566【絶対究極奥義アルティマストーム】の途中（rules/legend1/set8NamedEffectsC.ts）。ターンプレイヤーが決めた順に、
+   * コマンドとユニットを1回ずつ山札に戻す。間に開いた【プロジェットカノン】・ダイノガッツ等の解決後、core/applyAction.ts の後処理で続ける
+   * （atwiki/page-1229 Q1・Q2）。
+   */
+  ultimaStorm?: {
+    playerId: PlayerId;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+    /** まだ戻していないもの（先頭から順に戻す）。 */
+    steps: Array<"commands" | "units">;
+    /** 戻し終えたら開く、割り込まれていた選択。 */
+    resumeChoice?: PendingEffectChoice;
+  };
   /** RM-026 グランドバース【収容】の、チェイス等の選択を待っている「その後、選んだビークルをパワーゾーンに送る」（rules/rm/rm2Effects.ts applyRm2AfterAction）。 */
   rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
   /** クロスギャザー ザ・ギガンティックタイタン XG6 のターン中の記録（rules/xg6/）。 */

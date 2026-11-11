@@ -638,9 +638,54 @@ describe("RS-027 ダイノガッツ", () => {
     expect(canUse(state, "player2", ctr.instanceId)).toBe(false);
   });
 
-  it.todo(
-    "RS-027: 天雷旋風神【アルティマストーム】でユニットから先に山札へ戻すとき、相手はダイノガッツを使用できる（出典: grnrngr/faq-card-1 RS-027 Q1 / atwiki/page-234 Q1）— RS-566【アルティマストーム】（rules/legend1/set8NamedEffectsC.ts applyUltimaStorm）がユニットとコマンドを一括で山札に移し、ユニットとコマンドのどちらを先に戻すかの選択も、場を離れるときの反応（ダイノガッツ・プロジェットカノン）の窓も開かないため",
-  );
+  it("RS-027: 天雷旋風神【アルティマストーム】でユニットから先に山札へ戻すとき、相手はダイノガッツを使用できる（出典: grnrngr/faq-card-1 RS-027 Q1 / atwiki/page-234 Q1）", () => {
+    // 自軍（player1）がトライコンドル＋旋風神＋轟雷神＋天空神を捨札にして天雷旋風神をラッシュする。
+    const target = inst("SPEC-S-5000", "t");
+    const ctr = inst("RS-027", "ctr");
+    let state = mk({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-566", "tr")],
+        rush: ["RS-567", "RS-095", "RS-309", "RS-481"].map((id) => inst(id, "m")),
+        command: [released(CMD.MA, "m0"), released(CMD.MA, "m1")],
+        power: powers(8),
+        deck: deck(3, "p1d"),
+      },
+      player2: { battle: [target], hand: [ctr], command: [released(CMD.WB, "w")], deck: deck(10, "p2d") },
+    });
+    state = act(state, { type: "begin_zord_setup", playerId: "player1", zordInstanceId: "RS-566:tr" });
+    for (let i = 0; i < 12 && state.pendingZordSetup; i += 1) {
+      const setup = state.pendingZordSetup;
+      state = act(
+        state,
+        setup.step === "destination"
+          ? { type: "resolve_zord_setup", playerId: "player1", destination: "discard" }
+          : setup.step === "material"
+            ? { type: "resolve_zord_setup", playerId: "player1", materialInstanceId: setup.validInstanceIds[0]! }
+            : { type: "resolve_zord_setup", playerId: "player1" },
+      );
+    }
+    for (let i = 0; i < 4 && state.pendingCommandPayment; i += 1) {
+      const p = state.pendingCommandPayment;
+      state = act(state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: p.validInstanceIds.slice(0, p.totalNeeded) });
+    }
+    for (let i = 0; i < 4 && state.pendingEffectChoice?.effectId !== "rs566_ultima_storm_order"; i += 1) {
+      const pass = legal(state).find((a) => a.type === "pass_rush_reaction");
+      if (!pass) break;
+      state = act(state, pass);
+    }
+    expect(state.pendingEffectChoice?.effectId).toBe("rs566_ultima_storm_order");
+    // ターンプレイヤーがユニットから先に戻すことを選ぶ。
+    state = choose(state, "player1", "units_first");
+    expect(state.pendingLeave?.instanceId).toBe(target.instanceId);
+    expect(canUse(state, "player2", ctr.instanceId)).toBe(true);
+    state = payAndUse(state, "player2", ctr.instanceId);
+    expect(zoneOf(state, "player2", target.instanceId)).toBe("battle");
+    // ダイノガッツは捨札になり、ユニットは場に留まった。コマンドはその後で山札に戻った。
+    expect(zoneOf(state, "player2", ctr.instanceId)).toBe("discard");
+    expect(state.players.player2.command).toHaveLength(0);
+    expect(zoneOf(state, "player2", "TST-OP:w")).toBe("deck");
+  });
 
   it("RS-027: 巨大化爆弾に重ねたユニットに使い、爆弾とユニットを場に留まらせられる（出典: grnrngr/faq-card-1 RS-027 Q2）", () => {
     // 「はい、できます。」— 敵軍ターン、巨大化爆弾を重ねた自軍ユニット（BP1000+3000）を敵軍の圧縮冷凍でパワーゾーンに送られるとき。
