@@ -59,6 +59,7 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 - 効果ラッシュ（`src/rules/effectRush.ts`。RS-180 ライドラプター等）の選択の後ろに別の選択が積まれていたら（`resumeChoice`。同じラッシュで出た RS-558 のドロー等）、効果ラッシュの選択を閉じるときに `PendingEffectRush.resumeChoice` に預け、効果ラッシュを終えたら開きます（`finishEffectRush`）。以前は閉じるときに落としていて、ライドラプターを使っても使わなくてもガンマジンのドローが出ませんでした。
 - カウンターなどの処理の途中でコマンドがコマンドゾーンを離れ、補充（RS-238）などの選択が開くときは、`pendingBattle` などの進行中のフレームを state に退避して外し、選択が済んだ後に `core/applyAction.ts` の後処理フックで戻して続きを処理します（例: `rk1MechanicNinjaResume`・`rk2RaiaResumeCounter`）。`pendingBattle` は合法手で `pendingEffectChoice` より優先されるため、外さないと選択より先にバトルが進みます。
 
+- 「特徴○○を持つ自軍ユニット」を数えるときは、ライドされていないビークルを含めません（ユニットではないため。faq-card-5 RS-216）。`fieldUnits` 系は場のビークルも返すので、`src/rules/turnEndingEffects.ts` の `isOwnVehicleFeatureUnit` のようにユニットとして扱える状態かを確かめます。
 ## テスト
 
 ```bash

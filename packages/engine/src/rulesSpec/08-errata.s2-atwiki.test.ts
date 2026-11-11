@@ -248,7 +248,7 @@ describe("R-ERR-RS106 デカレッド", () => {
     "R-ERR-RS106: 公式の読み替え告知原文との照合（出典: 08章 補足 — 修正後の文面は atwiki/page-23 にのみあり、公式FAQ card_2/card_3 は旧テキスト回答のまま）",
   );
   it.todo(
-    "R-ERR-RS106: 「AするかわりにB」整理（R-REPL-03）に伴うエラッタの適用範囲（旧テキストの Q3・Q6 以外の旧 Q&A の扱い）（出典: 08章 補足）",
+    "R-ERR-RS106: 「AするかわりにB」整理（R-REPL-03）に伴うエラッタの適用範囲（旧テキストの Q3・Q6 以外の旧 Q&A の扱い）（出典: 08章 補足）— 08章補足にも atwiki/page-23 にも Q3・Q6 以外の旧 Q&A が修正後テキストで有効かの記述がなく、期待値を決められない",
   );
 });
 
@@ -320,7 +320,7 @@ describe("R-ERR-XG1-048 仮面ライダースーパー1・EH", () => {
 
   // atwiki/page-1632 Q1:「そのターンを終える時点で、選んだユニットとバトルエリアで隣り合ったユニットを撃破する」
   it.todo(
-    "R-ERR-XG1-048: 公式Q&A — 次の相手のターン中に一時的に隣り合っただけのユニットは撃破されず、ターン終了時点で隣り合っているユニットだけ撃破（出典: atwiki/page-1632 Q1）— 選択自体が未実装で前提状態を作れない",
+    "R-ERR-XG1-048: 公式Q&A — 次の相手のターン中に一時的に隣り合っただけのユニットは撃破されず、ターン終了時点で隣り合っているユニットだけ撃破（出典: atwiki/page-1632 Q1）— 選択とターン終了時の撃破は実装済み（rules/errataCardEffects.ts）だが、バトルエリアに残ったまま並びだけが変わり隣り合わなくなる手順を公開 API で作れず、Q1 の「一時的に隣り合っただけ」の状態を組めない",
   );
 });
 
@@ -339,7 +339,7 @@ describe("R-ERR-XG2-030 ヌマ・O長官", () => {
   });
 
   it.todo(
-    "R-ERR-XG2-030: 公式Q&A — 「合体に必要なユニットのカード」を各1枚まで手札に加え、加えた枚数だけ山札に戻す（出典: atwiki/page-1689 Q1〜Q3）— ゲーム開始時効果・コマンダーの処理がエンジンにない",
+    "R-ERR-XG2-030: 公式Q&A — 「合体に必要なユニットのカード」を各1枚まで手札に加え、加えた枚数だけ山札に戻す（出典: atwiki/page-1689 Q1〜Q3）— XG2-030 のゲーム開始時効果がエンジンにない（rules/commander.ts ほかに XG2-030 の処理がなく、ゲーム開始時に発動する手段もない）",
   );
 });
 
@@ -928,9 +928,22 @@ describe("R-ERR-RS118 ゴーゴーダンプ", () => {
   });
 
   // atwiki/page-292 Q1:「ラッシュエリアに戻ったとして【アクセルグランツァー】の効果を発動することはできますか？ はい、できます。」
-  it.todo(
-    "R-ERR-RS118: Q&A — 置きかえで XP-026 仮面ライダーアクセルがラッシュエリアに移ると【アクセルグランツァー】を発動できる（出典: atwiki/page-292 Q1）— XP-026 の当該効果はエラッタ箇所と独立しており本章の範囲外",
-  );
+  it("R-ERR-RS118: Q&A — 置きかえで XP-026 仮面ライダーアクセルがラッシュエリアに移ると【アクセルグランツァー】を発動できる（出典: atwiki/page-292 Q1）", () => {
+    let s = specState(["RS-118", "XP-026"], {
+      phase: "battle",
+      player1: { rush: [inst("RS-118", "d")], battle: [inst("XP-026", "accel")], command: [released("TST-OP-ET", "et")] },
+      player2: { battle: [inst("TST-UNIT-0", "e")] },
+    });
+    s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-118:d" });
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "XP-026:accel" });
+    expect(zoneIds(s, "player1", "rush")).toContain("XP-026:accel");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XP-026");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP-ET:et" });
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-UNIT-0:e" });
+    s = resolveChoices(s);
+    expect(zoneIds(s, "player1", "hand")).toContain("TST-OP-ET:et");
+    expect(zoneIds(s, "player2", "discard")).toContain("TST-UNIT-0:e");
+  });
 });
 
 // ---------------------------------------------------------------------------

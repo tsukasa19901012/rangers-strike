@@ -621,9 +621,27 @@ describe("RS-255 巨大化爆弾", () => {
   });
 
   // faq-card-5 RS-255 Q3（atwiki Q3・faq-card-1 RS-027）「はい、できます。」
-  it.todo(
-    "RS-255: 公式Q&A — 重ねたユニットにダイノガッツを使えば、巨大化爆弾とそのユニットを場に留められる（出典: grnrngr/faq-card-5 RS-255 Q3・faq-card-1 RS-027）— 巨大化爆弾を使用する手段がエンジンになく（CARD-RS-255）、重ねた状態を公開 API で組めない",
-  );
+  it("RS-255: 公式Q&A — 重ねたユニットにダイノガッツを使えば、巨大化爆弾とそのユニットを場に留められる（出典: grnrngr/faq-card-5 RS-255 Q3・faq-card-1 RS-027）", () => {
+    let s = settle(useCard(destroyedByAttack(), "player1", "RS-255:bomb"));
+    const stacked = s.players.player1.rush.find((c) => c.instanceId === "RS-257:kai")!;
+    expect(stacked.stackedCards?.map((c) => c.instanceId)).toContain("RS-255:bomb");
+    // 次の敵軍ターン: 重ねたユニット（BP5000）がバトルエリアで BP9000 にアタックされて撃破されるところで、ダイノガッツを使う
+    s = st(
+      {
+        phase: "battle",
+        activePlayer: "player2",
+        player1: { battle: [stacked], hand: [inst("RS-027", "dg")], command: [released(CMD.WB, "w")], deck: deckCards(6) },
+        player2: { battle: [inst("SPEC-BIG", "atk2")], deck: deckCards(3, "e") },
+      },
+      [BIG],
+    );
+    s = attack(s, "SPEC-BIG:atk2", "RS-257:kai", "player2");
+    expect(canUse(s, "player1", "RS-027:dg")).toBe(true);
+    s = settle(payAndUse(s, "player1", "RS-027:dg"));
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("battle");
+    expect(s.players.player1.battle.find((c) => c.instanceId === "RS-257:kai")?.stackedCards?.map((c) => c.instanceId)).toContain("RS-255:bomb");
+    expect(zoneOf(s, "player1", "RS-255:bomb")).not.toBe("discard");
+  });
 
   // faq-card-5 RS-255 Q4（atwiki Q4）「いいえ、効果は受けません。…「Ｌユニット」として扱います。」
   it("RS-255: 公式Q&A — 巨大化爆弾を使ったユニットは L ユニットとして扱い、S ユニットを対象にした効果（ガオメインバスター）を受けない（出典: grnrngr/faq-card-5 RS-255 Q4・atwiki/page-37 Q4）", () => {
@@ -639,14 +657,50 @@ describe("RS-255 巨大化爆弾", () => {
   });
 
   // atwiki/page-37 Q5（faq-card-8 RS-582）「いいえ、できません。…カウンターを持つオペレーションが効果を発動して、すぐに捨札になったときだけです。」
-  it.todo(
-    "RS-255: Q&A — 重ねたユニットが撃破されて巨大化爆弾が捨札になっても、魔道神官メーミィで山札から巨大化爆弾を手札に加えられない（出典: atwiki/page-37 Q5・grnrngr/faq-card-8 RS-582）— 巨大化爆弾を使用する手段がエンジンになく（CARD-RS-255）、RS-582 との組み合わせを組めない",
-  );
+  it("RS-255: Q&A — 重ねたユニットが撃破されて巨大化爆弾が捨札になっても、魔道神官メーミィで山札から巨大化爆弾を手札に加えられない（出典: atwiki/page-37 Q5・grnrngr/faq-card-8 RS-582）", () => {
+    let s = settle(
+      useCard(
+        destroyedByAttack("RS-257", { rush: [inst("RS-582", "mee")], deck: [inst("RS-255", "bomb2"), ...deckCards(3)] }),
+        "player1",
+        "RS-255:bomb",
+      ),
+    );
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-255:bomb2")).toBe("deck");
+    // 次の敵軍ターン: 重ねたユニットがアタックされて撃破され、巨大化爆弾も捨札になる
+    const stacked = s.players.player1.rush.find((c) => c.instanceId === "RS-257:kai")!;
+    s = st(
+      {
+        phase: "battle",
+        activePlayer: "player2",
+        player1: { ...s.players.player1, rush: s.players.player1.rush.filter((c) => c.instanceId !== "RS-257:kai"), battle: [stacked] },
+        player2: { battle: [inst("SPEC-BIG", "atk2")], deck: deckCards(3, "e") },
+      },
+      [BIG],
+    );
+    s = attack(s, "SPEC-BIG:atk2", "RS-257:kai", "player2");
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-255:bomb")).toBe("discard");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-582");
+    s = settle(s);
+    expect(zoneOf(s, "player1", "RS-255:bomb2")).toBe("deck");
+  });
 
   // atwiki/page-37 Q6「はい、できます。…ターンプレイヤーがどちらを先に解決するか決めることができます。」
-  it.todo(
-    "RS-255: Q&A — ウルフオルフェノクが撃破されて捨札になったとき、巨大化爆弾で重ねて出した後に捨札のファイズをラッシュエリアに出せる（順番はターンプレイヤーが決める）（出典: atwiki/page-37 Q6）— 巨大化爆弾を使用する手段がエンジンになく（CARD-RS-255）、同時誘発の順番を組めない",
-  );
+  // 同じタイミングの2つの効果はどちらを先に解決しても結果（ウルフオルフェノクは巨大化爆弾に重なってラッシュエリア、ファイズもラッシュエリア）が
+  // 変わらないので、エンジンは順番の選択を開かず ※ を先に解決してから巨大化爆弾の窓を開く（rules/legend1/set5NamedEffectsA.ts）。
+  it("RS-255: Q&A — ウルフオルフェノクが撃破されて捨札になったとき、巨大化爆弾で重ねて出すことと、捨札のファイズをラッシュエリアに出すことを両方解決できる（出典: atwiki/page-37 Q6）", () => {
+    let s = destroyedByAttack("RK-206", { discard: [inst("RK-064", "faiz")] });
+    expect(zoneOf(s, "player1", "RK-206:kai")).toBe("discard");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-206");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RK-064:faiz" });
+    expect(zoneOf(s, "player1", "RK-064:faiz")).toBe("rush");
+    expect(canUse(s, "player1", "RS-255:bomb")).toBe(true);
+    s = settle(useCard(s, "player1", "RS-255:bomb"));
+    expect(zoneOf(s, "player1", "RK-206:kai")).toBe("rush");
+    expect(s.players.player1.rush.find((c) => c.instanceId === "RK-206:kai")?.stackedCards?.map((c) => c.cardId)).toEqual(["RS-255"]);
+    expect(zoneOf(s, "player1", "RK-064:faiz")).toBe("rush");
+  });
 
   // atwiki/page-37 Q7「はい、その通りです。」（場に留まったのではなく、新たにラッシュされた）
   // 巨大化爆弾はカウンター（敵軍ターン中のみ）なので、使うのは非ターンプレイヤー。ターンプレイヤーはカウンター（疾風流超忍法）を使えない
@@ -666,23 +720,56 @@ describe("RS-255 巨大化爆弾", () => {
 
   // atwiki/page-37 Q8「はい、その通りです。」（S ユニットとしてラッシュエリアに出てから、BP+3000・SP1 の L ユニットになる）
   it.todo(
-    "RS-255: Q&A — 先に S ユニットとしてラッシュエリアに出てから BP+3000・「SP1」の L ユニットになる（文頭から順番に処理）（出典: atwiki/page-37 Q8）— 巨大化爆弾を使用する手段がエンジンになく（CARD-RS-255）、途中の状態（S として出た瞬間）を観測できない",
+    "RS-255: Q&A — 先に S ユニットとしてラッシュエリアに出てから BP+3000・「SP1」の L ユニットになる（文頭から順番に処理）（出典: atwiki/page-37 Q8）— Q8 は処理の順番の確認だけで、S ユニットとして出た瞬間に働く効果を示していない。エンジンは重ねて出した時点で L・BP+3000・SP1 を持つ形で表し、途中の状態を観測する出典上の盤面がない",
   );
 
   // faq-card-6 RS-350 Q「はい、その通りです。」（暗黒の鎧はダメージにして置かれる）
-  it.todo(
-    "RS-255: 公式Q&A — 暗黒の鎧に重ねていた怪人ユニットが撃破されて捨札になったとき巨大化爆弾を使っても、暗黒の鎧は自軍パワーゾーンにダメージにして置かれる（出典: grnrngr/faq-card-6 RS-350 Q）— 巨大化爆弾を使用する手段がエンジンになく（CARD-RS-255）、暗黒の鎧の重ね状態も組めない",
-  );
+  it("RS-255: 公式Q&A — 暗黒の鎧に重ねていた怪人ユニットが撃破されて捨札になったとき巨大化爆弾を使っても、暗黒の鎧は自軍パワーゾーンにダメージにして置かれる（出典: grnrngr/faq-card-6 RS-350 Q）", () => {
+    // 暗黒の鎧を重ねたユニットは「SP1」以上のユニットにしかアタックされないので、SP1 の BP9000 でアタックする。
+    const BIG_SP = sUnit("SPEC-BIG-SP", { size: "M", bp: 9000, sp: 1 });
+    let s = st(
+      {
+        activePlayer: "player2",
+        player1: {
+          battle: [{ ...inst("RS-257", "kai"), stackedCards: [inst("RS-350", "ar")] }],
+          hand: [inst("RS-255", "bomb")],
+          command: [released(CMD.DA, "c")],
+          power: powerCards(4),
+          deck: deckCards(3),
+        },
+        player2: { battle: [inst("SPEC-BIG-SP", "atk")], deck: deckCards(3, "e") },
+      },
+      [BIG_SP],
+    );
+    s = attack(s, "SPEC-BIG-SP:atk", "RS-257:kai", "player2");
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("discard");
+    expect(canUse(s, "player1", "RS-255:bomb")).toBe(true);
+    s = settle(useCard(s, "player1", "RS-255:bomb"));
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("rush");
+    const ar = s.players.player1.power.find((c) => c.instanceId === "RS-350:ar");
+    expect(ar?.faceDown).toBe(true);
+    expect(s.players.player1.damage).toBe(1);
+  });
 
   // faq-card-5 RS-325 Q「…自軍コマンドを１つ捨札にしなくてもラッシュエリアに留まります。…捨札にすることはできません。」
   it.todo(
-    "RS-255: 公式Q&A — 天空勇者マジシャインの【マジチケット】でコマンドゾーンの巨大化爆弾を使った場合、巨大化爆弾は捨札になるタイミングがないのでラッシュエリアに留まる（出典: grnrngr/faq-card-5 RS-325 Q）— 巨大化爆弾を使用する手段がエンジンになく（CARD-RS-255）、マジチケット経由の使用を組めない",
+    "RS-255: 公式Q&A — 天空勇者マジシャインの【マジチケット】でコマンドゾーンの巨大化爆弾を使った場合、巨大化爆弾は捨札になるタイミングがないのでラッシュエリアに留まる（出典: grnrngr/faq-card-5 RS-325 Q）— 【マジチケット】は自軍ラッシュフェイズの通常オペレーションにしか対応しておらず（rules/legend1/set5NamedEffects.ts magiTicketUsable）、コマンドゾーンのカウンター（巨大化爆弾）を敵軍ターンに発動する経路がない",
   );
 
   // faq-rider_2 RK-161 Q「はい、「ＳＰ１」になります。」
-  it.todo(
-    "RS-255: 公式Q&A — 巨大化爆弾を重ねたショッカーライダーがコンビネーションの途中にいても、6番目のショッカーライダーは「SP1」になる（出典: grnrngr/faq-rider_2 RK-161 Q）— 巨大化爆弾を使用する手段がエンジンになく（CARD-RS-255）、重ねた状態を組めない",
-  );
+  it("RS-255: 公式Q&A — 巨大化爆弾を重ねたショッカーライダーがコンビネーションの途中にいても、6番目のショッカーライダーは「SP1」になる（出典: grnrngr/faq-rider_2 RK-161 Q）", () => {
+    let s = settle(useCard(destroyedByAttack("RK-161"), "player1", "RS-255:bomb"));
+    const stacked = s.players.player1.rush.find((c) => c.instanceId === "RK-161:kai")!;
+    expect(stacked.stackedCards?.map((c) => c.cardId)).toEqual(["RS-255"]);
+    const rider = (id: string) => inst("RK-161", id);
+    s = st({
+      phase: "battle",
+      player1: { battle: [rider("r0"), rider("r1"), stacked, rider("r3"), rider("r4")], rush: [rider("six")], deck: deckCards(5) },
+      player2: { deck: deckCards(5, "e") },
+    });
+    s = enter(s, "RK-161:six");
+    expect(spOf(s, "player1", "RK-161:six")).toBe(1);
+  });
 });
 
 // ===========================================================================

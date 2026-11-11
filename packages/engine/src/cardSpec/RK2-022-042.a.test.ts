@@ -53,9 +53,11 @@ import {
   resolveAll,
   rideOff,
   ridingPair,
+  spOf,
   settle,
   skip,
   st,
+  toPhase,
   strike,
   sUnit,
   zoneIds,
@@ -267,9 +269,16 @@ describe("RK-022 ライダーパス", () => {
   );
   // 公式Q&A（grnrngr/faq-rider-1 RK-053 Q2: ガタックバルカンを受けたユニットをライダーパスで置き換えると、効果は引き継がない）は、RK-053 の照合の後
   // RK3-043-063.b の RK-053 で実テストにした（以前はここの it.todo）。
-  it.todo(
-    "RK-022: 公式Q&A — 置き換えて出したユニットは「ラッシュ」として扱い、VRVマスターの【乗ってみないか？】が発動する（出典: grnrngr/faq-rider-1 RK-022 Q5）— RS-299 側の未実装（cardSpec/RS5-285-305.c.test.ts に it.todo）。ラッシュ扱い自体は RS5-audit-crossref で照合済み",
-  );
+  // faq-rider-1 RK-022 Q5「はい、発動します。ユニットカードが、ラッシュエリアやバトルエリアに置かれて「ユニット」になたっとき、すべて「ラッシュ」として扱います。」
+  it("RK-022: 公式Q&A — 置き換えて出したユニットは「ラッシュ」として扱い、VRVマスターの【乗ってみないか？】が発動する（出典: grnrngr/faq-rider-1 RK-022 Q5）", () => {
+    const MECHA_M = sUnit("SPEC-MECHA-M", { size: "M", bp: 5000, powerCost: 3, features: ["メカ"] });
+    const base = passBoard([inst("SPEC-DENO", "u"), inst("RS-299", "vrv")], [inst("SPEC-DENO2", "s")], {
+      deck: [inst("SPEC-MECHA-M", "top"), ...deckCards(4)],
+    });
+    const s = settle(swap({ ...base, definitions: { ...base.definitions, "SPEC-MECHA-M": MECHA_M } }, "SPEC-DENO2:s", "SPEC-DENO:u"));
+    expect(zoneOf(s, "player1", "SPEC-DENO2:s")).toBe("rush");
+    expect(zoneOf(s, "player1", "SPEC-MECHA-M:top")).toBe("hand");
+  });
 });
 
 // ===========================================================================
@@ -351,9 +360,24 @@ describe("RK-023 仮面ライダー1号", () => {
     expect(canCounter(s)).toBe(true);
   });
 
-  it.todo(
-    "RK-023: 公式Q&A（相互参照）— SK-002 仮面ライダーV3【ダブルタイフーン】でホールドした1号の RC は「SP1」を含めて V3 の効果として発動する（出典: grnrngr/faq-rider-2 SK-002 Q1・Q2）— SK-002 は本範囲外のカード",
-  );
+  // faq-rider-2 SK-002 Q1「はい、SP1を得ます。…【技の1号】の「SP1」を「SK-002 仮面ライダーV3」の効果として発動することになり」
+  it("RK-023: 公式Q&A（相互参照）— SK-002 仮面ライダーV3【ダブルタイフーン】でホールドした1号の RC は「SP1」を含めて V3 の効果として発動する（出典: grnrngr/faq-rider-2 SK-002 Q1・Q2）", () => {
+    let s = rideOff(
+      mount(board({ rush: [inst("SK-002", "v3"), inst("RK-058", "v")], command: [inst("RK-023", "one")] }, { battle: ridingPair("SPEC-RC3500", "e", "RK-024", "ev") }), "SK-002:v3", "RK-058:v"),
+      true,
+    );
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("SK-002");
+    s = settle(pick(s, "RK-023:one"));
+    expect(cardIn(s, "player1", "RK-023:one")?.commandHeld).toBe(true);
+    // 「SP1」を V3 の効果として得る（2番目に並んだ V3 は SP1/5 のままなら SP を持たない）。
+    expect(spOf(s, "player1", "SK-002:v3")).toBe(1);
+    expect(canStrike(s, "SK-002:v3")).toBe(true);
+    // 【技の1号】の残り（敵軍ユニットの BP を本来の値としてバトル）も V3 の効果: BP4000 の V3 がライドで BP4500 の相手（本来 3500）に勝つ。
+    expect(bpOf(s, "player2", "SPEC-RC3500:e")).toBe(4500);
+    s = resolveAll(attack(s, "SK-002:v3", "SPEC-RC3500:e"));
+    expect(zoneOf(s, "player2", "SPEC-RC3500:e")).toBe("discard");
+    expect(zoneOf(s, "player1", "SK-002:v3")).toBe("battle");
+  });
 });
 
 // ===========================================================================
@@ -533,9 +557,39 @@ describe("RK-026 がんがんじい", () => {
 
   // 公式Q&A（grnrngr/faq-rider-1 RK-050 Q: 仮面ライダー裁鬼は NC の効果があってもがんがんじいにアタックできない）は、RK-050 の照合の後
   // RK3-043-063.b の RK-050 で実テストにした（以前はここの it.todo）。
-  it.todo(
-    "RK-026: 公式Q&A（相互参照）— 戻すときにタイムロボβ／αで置き換えたユニットは、戻したユニットとしては扱わず再びバトルエリアに出られる（出典: grnrngr/faq-card-6 RS-394 Q）— RS-394/395 の置き換えと RS-203 の特徴追加の連鎖が必要（cardSpec/RS6-390-410.a.test.ts に it.todo）",
-  );
+  // faq-card-6 RS-394 Q2「その場合、…戻したユニットとしては扱わず、再びバトルエリアに出ることができます。」
+  it("RK-026: 公式Q&A（相互参照）— 戻すときにタイムロボβ／αで置き換えたユニットは、戻したユニットとしては扱わず再びバトルエリアに出られる（出典: grnrngr/faq-card-6 RS-394 Q）", () => {
+    let s = st(
+      {
+        phase: "rush",
+        player1: {
+          hand: [inst("RS-203", "ra")],
+          rush: [inst("SPEC-KAMEN", "k"), inst("RS-394", "a"), inst("RK-026", "g")],
+          command: releasedCat("DA", 1),
+          power: [inst("RS-395", "b"), ...powerCards(5)],
+          deck: deckCards(5),
+        },
+        player2: { deck: deckCards(5, "e") },
+      },
+      EXTRA,
+    );
+    // 特徴「仮面ライダー」のユニットを追加条件で捨札にして大帝ラー・デウスをラッシュし、すべてのユニットに「仮面ライダー」を追加する。
+    const rush = legal(s).find(
+      (x) => x.type === "initiate_command_payment" && x.sourceInstanceId === "RS-203:ra" && (x as { zordMaterialInstanceIds?: string[] }).zordMaterialInstanceIds?.includes("SPEC-KAMEN:k"),
+    );
+    expect(rush).toBeDefined();
+    s = toPhase(settle(act(s, rush!)), "player1", "battle");
+    s = passEntry(settle(enter(s, "RS-394:a")));
+    // がんがんじいでタイムロボαを戻すとき、【チェンジフォーメーション】でパワーのタイムロボβと置き換える。
+    s = enter(s, "RK-026:g");
+    expect(choiceIds(s)).toEqual(["RS-394:a"]);
+    s = pick(s, "RS-394:a");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-394");
+    s = passEntry(settle(pick(s, "RS-395:b")));
+    expect(zoneOf(s, "player1", "RS-395:b")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-394:a")).toBe("power");
+    expect(canEnter(s, "RS-395:b")).toBe(true);
+  });
 });
 
 // ===========================================================================
@@ -608,9 +662,29 @@ describe("RK-027 仮面ライダーBLACK", () => {
     expect(zoneOf(s, "player2", "SPEC-E5000:e")).toBe("battle");
   });
 
-  it.todo(
-    "RK-027: 公式Q&A（相互参照）— マシンゼクトロンにライドしている BLACK に J パワーを使うと、下からマシンゼクトロン・J パワー・BLACK の順に重ねる（出典: grnrngr/faq-rider-1 RK-058 Q）— J パワー（RK-013）は照合済み（RK1-001-021.b）だが、ビークル・J パワー・ユニットの重ね順は公開 API で観測できない",
-  );
+  // faq-rider-1 RK-058 Q「…ユニットでなくなるまで「RK-013 Jパワー」の上に重ねたまま扱いますので、…下から「Rk-058 マシンゼクトロン」
+  // 「RK-013 Jパワー」「RK-027 仮面ライダーBLACK」の順で重ねるようにしてください。」
+  // エンジンは J パワーを BLACK の stackedCards に持ち、BLACK はビークルにライドしたまま（ビークルには何も重ねない）。これが「ビークル・J パワー・BLACK」の順に当たる。
+  it("RK-027: 公式Q&A（相互参照）— マシンゼクトロンにライドしている BLACK に J パワーを使うと、下からマシンゼクトロン・J パワー・BLACK の順に重ね、ライドオフしても J パワーは BLACK の下に残る（出典: grnrngr/faq-rider-1 RK-058 Q）", () => {
+    let s = st({
+      phase: "rush",
+      player1: { hand: [inst("RK-013", "jp")], rush: ridingPair("RK-027", "bk", "RK-058", "v"), command: releasedCat("MA", 1), power: powerCards(4), deck: deckCards(5) },
+      player2: { deck: deckCards(5, "e") },
+    });
+    const r = playOp(s, "player1", "RK-013:jp");
+    expect(r.ok, r.error).toBe(true);
+    // 重ねるのは BLACK だけ（ビークルとセットでは選ばない）。
+    expect(choiceIds(r.state)).toEqual(["RK-027:bk"]);
+    s = settle(pick(r.state, "RK-027:bk"));
+    expect(cardIn(s, "player1", "RK-027:bk")?.stackedCards?.map((c) => c.instanceId)).toEqual(["RK-013:jp"]);
+    expect(cardIn(s, "player1", "RK-027:bk")?.mountedOnInstanceId).toBe("RK-058:v");
+    expect(cardIn(s, "player1", "RK-058:v")?.stackedCards ?? []).toEqual([]);
+    // ライドオフしても、BLACK はユニットでなくなるまで J パワーに重ねたまま。
+    s = toPhase(s, "player1", "battle");
+    s = rideOff(act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RK-027:bk" }), true);
+    expect(cardIn(s, "player1", "RK-027:bk")?.mountedOnInstanceId).toBeUndefined();
+    expect(cardIn(s, "player1", "RK-027:bk")?.stackedCards?.map((c) => c.instanceId)).toEqual(["RK-013:jp"]);
+  });
 });
 
 // ===========================================================================

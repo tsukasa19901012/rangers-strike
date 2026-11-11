@@ -335,7 +335,30 @@ describe("SK-004 仮面ライダークウガUF", () => {
     expect(zoneOf(s, "player1", "SPEC-C1:b")).toBe("discard");
   });
 
-  it.todo(
-    "SK-004: 公式Q&A — 敵軍の XG7-059 トリガードーパント【ゲームスタート……】で【凄まじき戦士】の前半を無効にしても、「また」以降（ユニットでなくなるときに留まる）は無効にならない（出典: atwiki/page-1411 Q3「「また」で続く効果は、それ以前の効果とは独立した効果」）— XG7-059 は本範囲外のカードで、ラッシュしたときの効果に割り込んで無効にする盤面を本範囲のテストで作っていない",
-  );
+  // atwiki/page-1411 Q3「いいえ、それはできません。「また」で続く効果は、それ以前の効果とは独立した効果だと考えてください。」
+  it("SK-004: 公式Q&A — 敵軍の XG7-059 トリガードーパント【ゲームスタート……】で【凄まじき戦士】の前半を無効にしても、「また」以降（ユニットでなくなるときに留まる）は無効にならない（出典: atwiki/page-1411 Q3「「また」で続く効果は、それ以前の効果とは独立した効果」）", () => {
+    const s0 = rushPhase(
+      { operation: ops(4), hand: [inst("SK-004", "uf")], command: releasedCat("MA", 1), power: powerCards(7), battle: [inst("SPEC-C1", "b")] },
+      { power: [faceUpPower("XG7-059", "tg")] },
+      EXTRA,
+    );
+    const r = rushVia(s0, "player1", "SK-004:uf");
+    expect(r.ok, r.error).toBe(true);
+    let s = r.state;
+    expectChoiceFrom(s, "player2", "XG7-059");
+    s = resolveAll(act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "XG7-059:tg" }));
+    expect(zoneOf(s, "player2", "XG7-059:tg")).toBe("rush");
+    // 前半は無効: 何も重ねず、4枚重ねなかったときの「ほかの自軍ユニットをすべて捨札」も起きない。
+    expect(zoneOf(s, "player1", "SK-004:uf")).toBe("rush");
+    expect(stacked(s)).toEqual([]);
+    expect(zoneOf(s, "player1", "SPEC-C1:b")).toBe("battle");
+    // 「また」以降は独立した効果: ウラ向きで重ねたカードがあれば、ユニットでなくなるときにその場に留まる
+    // （無効にしたのは【ゲームスタート……】が止めたラッシュしたときの効果だけで、このユニット自身に無効の印は残らない）。
+    const uf = withStacked(cardIn(s, "player1", "SK-004:uf")!, ops(2).map((c) => ({ ...c, faceDown: true })));
+    let t = attackedInEnemyTurn({ battle: [uf] }, "SK-004:uf");
+    expectChoiceFrom(t, "player1", "SK-004");
+    t = resolveAll(pick(t, "TST-OP:o0"));
+    expect(zoneOf(t, "player1", "TST-OP:o0")).toBe("discard");
+    expect(zoneOf(t, "player1", "SK-004:uf")).toBe("battle");
+  });
 });

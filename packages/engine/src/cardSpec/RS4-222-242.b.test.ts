@@ -237,9 +237,38 @@ describe("RS-230 アバレッドAM", () => {
   });
 
   // faq-card-4 RS-230 Q5「同時タイミングで発動した処理はターンプレイヤーが任意の順番で実行できます」
-  it.todo(
-    "RS-230: 公式Q&A — オーグリーンの NC で敵軍アバレッドAM を撃破したとき、ダメージにして置く処理とアバレッドが戻る処理の順番はターンプレイヤーが選べる（出典: grnrngr/faq-card-4 RS-230 Q5）— オーグリーン（RS-212、BP3000）が BP5500 のアバレッドAM をバトルで撃破する盤面に、さらに同時誘発の順番選択（simultaneous_order）が開くかどうかを公開 API だけで安定して組み立てられなかった（オーグリーン側の処理は RS-212 の担当範囲）",
-  );
+  it("RS-230: 公式Q&A — オーグリーンの NC で敵軍アバレッドAM を撃破したとき、ダメージにして置く処理とアバレッドが戻る処理の順番はターンプレイヤーが選べる（出典: grnrngr/faq-card-4 RS-230 Q5）", () => {
+    // 3番目のオーグリーン（NC 成立）が、BP+3000 してアバレッドAM（BP5500）をバトルで撃破する。
+    let s = st({
+      player1: { battle: fillers(2), rush: [{ ...inst("RS-212", "og"), bpModifier: 3000 }], deck: deckCards(5) },
+      player2: { battle: [inst("RS-230", "am")], discard: [inst("RS-054", "red"), inst("TST-OP", "x")], deck: deckCards(5, "e") },
+    });
+    s = attack(enter(s, "RS-212:og"), "RS-212:og", "RS-230:am");
+    expect(s.pendingEffectChoice?.kind).toBe("simultaneous_order");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    const opened = s;
+    /** 開いた選択を順に解決する（アバレッドを選べれば選び、選べなければ見送るか、残りのカードを選ぶ）。 */
+    const run = (first: string) => {
+      let t = act(opened, { type: "resolve_effect_choice", playerId: "player1", instanceId: first });
+      for (let i = 0; i < 4 && t.pendingEffectChoice; i++) {
+        const p = t.pendingEffectChoice;
+        const choose = legal(t).find((a) => a.type === "resolve_effect_choice" && a.instanceId === "RS-054:red");
+        const fallback =
+          legal(t).find((a) => a.type === "skip_effect_choice" && a.playerId === p.playerId) ??
+          legal(t).find((a) => a.type === "resolve_effect_choice" && a.instanceId === "TST-OP:x");
+        t = act(t, choose ?? fallback!);
+      }
+      return settle(t);
+    };
+    // オーグリーンを先に: 捨札のアバレッドをダメージにして置けば、アバレッドAM の※で戻るアバレッドはいない。
+    const ogFirst = run("RS-212:og");
+    expect(zoneOf(ogFirst, "player2", "RS-054:red")).toBe("power");
+    expect(ogFirst.players.player2.damage).toBe(1);
+    // アバレッドAM の※を先に: アバレッドがラッシュエリアに戻ってから、オーグリーンは残りのカードをダメージにして置く。
+    const amFirst = run("recruit_abaredo_on_destroy");
+    expect(zoneOf(amFirst, "player2", "RS-054:red")).toBe("rush");
+    expect(amFirst.players.player2.damage).toBe(1);
+  });
 });
 
 // ===========================================================================
@@ -547,9 +576,23 @@ describe("RS-234 アバレキラー", () => {
     expect(spOf(s, "player1", "SPEC-WB-M5SP:m")).toBe(1);
   });
 
-  it.todo(
-    "RS-234: atwiki Q&A — 知恵の樹モークでユニットとして扱われているギンガレオン（M ビークル）をアバレキラーからコンビネーションさせると、ターンを終えるとき撃破される（出典: atwiki/page-26 Q3）— 知恵の樹モーク（XG2-019）でビークルをユニットとして扱う処理は XG 系の担当範囲で、公開 API での組み立てを確認できなかった",
-  );
+  // atwiki/page-26 Q3「はい、撃破されます。…「自分がターンを終えるとき」とはまだ自分のターン中であり、「RS-466 ギンガレオン」はユニットとして扱われているからです。」
+  it("RS-234: atwiki Q&A — 知恵の樹モークでユニットとして扱われているギンガレオン（M ビークル）をアバレキラーからコンビネーションさせると、ターンを終えるとき撃破される（出典: atwiki/page-26 Q3）", () => {
+    let s = st({
+      player1: { operation: [{ ...inst("XG2-019", "mk"), stackedCards: [] }], rush: [inst("RS-234", "kl"), inst("RS-466", "leo")], deck: deckCards(5) },
+      player2: { deck: deckCards(5, "e") },
+    });
+    s = act(s, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "XG2-019:mk" });
+    s = settle(pick(s, "RS-466:leo"));
+    s = passEntry(enter(s, "RS-234:kl"));
+    s = passEntry(enter(s, "RS-466:leo"));
+    expect(zoneOf(s, "player1", "RS-466:leo")).toBe("battle");
+    // モークで BP3000 の WB の M ユニットとして扱い、アバレキラーからのコンビネーションで BP+3000。
+    expect(bpOf(s, "player1", "RS-466:leo")).toBe(6000);
+    s = endTurn(s);
+    expect(zoneOf(s, "player1", "RS-466:leo")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-234:kl")).not.toBe("discard");
+  });
 });
 
 // ===========================================================================

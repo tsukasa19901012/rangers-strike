@@ -440,8 +440,11 @@ export function finishMagiTicketStaging(state: GameState, playerId: PlayerId, co
   const player = state.players[playerId];
   const standInId = `${commandInstanceId}${MAGI_TICKET_STAND_IN_SUFFIX}`;
   const command = player.command.filter((c) => c.instanceId !== standInId);
-  // 手札に残っていれば（使用に失敗）コマンドゾーンに戻す。
-  const leftInHand = player.hand.find((c) => c.instanceId === commandInstanceId);
+  // 手札に残っていれば（使用に失敗）コマンドゾーンに戻す。ただし、効果を実行する前の割り込み（RK-251 ゴルゴムの仕業の確認など）が
+  // 開いているなら使用の途中なので手札に置いたまま記録し、無効にされて捨札になったときも「かわりに」を選べるようにする
+  // （grnrngr/faq-card-1 RS-011「はい、できます。」）。
+  const inUse = !!state.pendingEffectChoice;
+  const leftInHand = inUse ? undefined : player.hand.find((c) => c.instanceId === commandInstanceId);
   const next = {
     ...state,
     ...updatePlayer(state, playerId, {

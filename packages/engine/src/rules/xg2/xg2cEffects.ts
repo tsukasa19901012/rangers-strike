@@ -559,13 +559,17 @@ export function xg2RejectsOperationTarget(state: GameState, playerId: PlayerId, 
   return !collectTargetInstanceIds(state, playerId, first.valid, operationCard.instanceId, operationCard.cardId).includes(targetInstanceId);
 }
 
+// ユナイトベントが（RK-321【スネーキングデスブレイク】等で）先に下から離れていても、ウラ向きのカードはターゲットの下に残り、
+// ターゲットがユニットでなくなれば捨札になる（atwiki/page-1253 Q1「ウラ向きのカードがそのままエリアに留まるのはルールとして不適切ですので、
+// ウラ向きのカードは捨札になります」）。そのため、ユナイトベントがなくても、どこにも置かれなかったウラ向きのカードは捨札にする。
 xg2Hook("afterUnitLeft", (state, left) => {
   const stacked = left.card.stackedCards ?? [];
-  if (!stacked.some((c) => isSameCardIdentity(c.cardId, "XG2-052") && !c.faceDown)) return state;
+  const hasVent = stacked.some((c) => isSameCardIdentity(c.cardId, "XG2-052") && !c.faceDown);
+  if (!hasVent && !stacked.some((c) => c.faceDown)) return state;
   if (findField(state, left.ownerPlayerId, left.card.instanceId)) return state;
   const p = state.players[left.ownerPlayerId];
   const placed = new Set([...p.discard, ...p.power, ...p.hand, ...p.command, ...p.deck, ...p.rush, ...p.battle, ...(p.exile ?? [])].map((c) => c.instanceId));
-  const lost = stacked.filter((c) => !placed.has(c.instanceId));
+  const lost = stacked.filter((c) => (hasVent || c.faceDown) && !placed.has(c.instanceId));
   if (lost.length === 0) return state;
   return patchPlayer(state, left.ownerPlayerId, (q) => ({ ...q, discard: [...q.discard, ...lost.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))] }));
 });

@@ -172,7 +172,17 @@ describe("XG2-029 幽魔王サラマンデス", () => {
     expect(spOf(three, "player1", "XG2-029:y")).toBe(1);
   });
 
-  it.todo("XG2-029: 公式Q&A Q1（【災魔ツリー】以外の効果で BP8000 以上になっても L ユニットになり SP1 を得る）・Q2（RS-364 ヘルサターン総統とのループはターンプレイヤーが優先する効果を選ぶ）— 【災魔ツリー】の L ユニット化・SP1 がエンジンになく（上の it.fails）、効果の優先順を選ぶ合法手もないため、盤面を進められない（出典: atwiki/page-1798 Q1・Q2）");
+  // atwiki/page-1798 Q1「はい、できます。」— ほかの効果による BP 上昇（インスタンスの bpModifier で表す）で BP8000 以上にする。
+  it("XG2-029: 公式Q&A — 【災魔ツリー】以外の効果で BP8000 以上になっても「SP1」を得る（出典: atwiki/page-1798 Q1）", () => {
+    const boosted = p1Battle({ battle: [{ ...inst("XG2-029", "y"), bpModifier: 1500 }] });
+    expect(bpOf(boosted, "player1", "XG2-029:y")).toBe(8000);
+    expect(spOf(boosted, "player1", "XG2-029:y")).toBe(1);
+    expect(canStrike(boosted, "XG2-029:y")).toBe(true);
+    const short = p1Battle({ battle: [{ ...inst("XG2-029", "y"), bpModifier: 1000 }] });
+    expect(spOf(short, "player1", "XG2-029:y")).toBe(0);
+  });
+
+  it.todo("XG2-029: 公式Q&A Q1 の後半（BP8000 以上で L ユニットになる）・Q2（RS-364 ヘルサターン総統とのループはターンプレイヤーが優先する効果を選ぶ）（出典: atwiki/page-1798 Q1・Q2）— 【災魔ツリー】の L ユニット化はエンジン未対応（サイズは定義から決まり、BP で変わらない。rules/xg2/xg2Fields.ts）で、ループ時に優先する効果を選ぶ合法手もないため");
 
   it("XG2-029: 【災魔ツリー】撃破されてユニットでなくなるとき、下のウラ向きのカードから1枚選び（ウラ向きのまま）手札に加え、残りを捨札にする（出典: atwiki/page-1798「この下に重ねたウラ向きのカードから、ウラ向きのまま1枚選び手札に加えて、残りを捨札にする」）", () => {
     const s = resolveAll(attackedInEnemyTurn({ battle: [withStacked(inst("XG2-029", "y"), [faceDown("XG2-036", "s1"), faceDown("RS-674", "s2")])] }, "XG2-029:y"), ["RS-674:s2"]);
