@@ -172,18 +172,105 @@ describe("RS-208 キリンレンジャー", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
-  it.todo(
-    "RS-208: 公式Q&A — やり直すとき「バトルフェイズを終えるとき」の効果（ブルースワロー等）は発動する（出典: grnrngr/faq-card-4 RS-208 Q2）— 時間返し自体が未実装で、かつ BP2000 以下のブルースワローは時間返しで手札に戻るため、範囲内のカードで観測可能な組み立てができない",
-  );
-  it.todo(
-    "RS-208: 公式Q&A — やり直したラッシュフェイズでシーロンの光を再び発動できる（出典: grnrngr/faq-card-4 RS-208 Q3）— RS-013 のカード本文がカタログに無く（text 未収録）、起動手順を確認できない",
-  );
-  it.todo(
-    "RS-208: 公式Q&A — 猫だましで出したダイボウケンを素材にしたスーパーダイボウケンはターン終了時に捨札にならない（出典: grnrngr/faq-card-4 RS-208 Q4・faq-card-2/5）— RS-326・RS-236 の合体ラッシュ手順に依存し、時間返しが未実装のため組み立てられない",
-  );
-  it.todo(
-    "RS-208: atwiki Q&A — 【語る背中】の装甲響鬼はやり直したラッシュフェイズの終了時にも再び発動する（出典: atwiki/page-119 Q9）— XG5-050 は範囲外の弾のカードで、時間返しも未実装",
-  );
+  // faq-card-4 RS-208 Q2「はい、発動します。現在のフェイズから別のフェイズに移るときには、もれなくフェイズを終えてから移っていると考えてください。」
+  it("RS-208: 公式Q&A — やり直すとき「バトルフェイズを終えるとき」の効果（ブルースワロー等）は発動する（出典: grnrngr/faq-card-4 RS-208 Q2）", () => {
+    // BP2000 以下で手札に戻るブルースワローのかわりに、BP8000 で残る XG2-028 サラマンデスドラゴン【マイナスエネルギー吸収】
+    // （「自軍ラッシュエリアにある間、自軍バトルフェイズを終えるときに1度だけ」）で確かめる。
+    let s = st({
+      player1: {
+        battle: [...fillers(2), inst("TST-UNIT-2", "m3000")],
+        rush: [inst("RS-208", "k"), inst("XG2-028", "sd")],
+        discard: [inst("XG2-029", "minus")],
+        deck: deckCards(5),
+      },
+      player2: { power: powerCards(3, "e"), deck: deckCards(5, "e") },
+    });
+    s = confirmIfAsked(enter(s, "RS-208:k"), "player1");
+    s = settle(s);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG2-028");
+    expect(choiceIds(s)).toEqual(["XG2-029:minus"]);
+    s = settle(pick(s, "player1", "XG2-029:minus"));
+    expect(zoneOf(s, "player1", "XG2-029:minus")).toBeNull();
+    expect(s.phase).toBe("rush");
+    expect(s.activePlayer).toBe("player1");
+  });
+  // faq-card-4 RS-208 Q3「はい、できます。」
+  it("RS-208: 公式Q&A — やり直したラッシュフェイズでシーロンの光を再び発動できる（出典: grnrngr/faq-card-4 RS-208 Q3）", () => {
+    const canShiron = (g: GameState) => legal(g).some((a) => a.type === "shiron_light" && a.playerId === "player1");
+    let s = st({
+      phase: "rush",
+      player1: {
+        operation: [inst("RS-013", "sl")],
+        battle: [...fillers(2), inst("TST-UNIT-2", "m3000")],
+        rush: [inst("RS-208", "k")],
+        hand: [inst("TST-OP", "h1")],
+        deck: deckCards(5),
+      },
+      player2: { power: powerCards(3, "e"), deck: deckCards(5, "e") },
+    });
+    // 自軍ラッシュフェイズにシーロンの光を発動する（相手が手札のオペレーションを選ぶので、ラッシュエリアには何も出ない）。
+    expect(canShiron(s)).toBe(true);
+    s = act(s, { type: "shiron_light", playerId: "player1", operationInstanceId: "RS-013:sl" });
+    s = act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "TST-OP:h1" });
+    s = act(s, { type: "confirm_shiron_reveal", playerId: "player2" });
+    s = settle(s);
+    expect(canShiron(s)).toBe(false);
+    // バトルフェイズに4番目にキリンレンジャーを出し、時間返しでラッシュフェイズからやり直す。
+    s = toPhase(s, "player1", "battle");
+    s = confirmIfAsked(enter(s, "RS-208:k"), "player1");
+    s = settle(s);
+    expect(s.phase).toBe("rush");
+    expect(canShiron(s)).toBe(true);
+  });
+  // faq-card-4 RS-208 Q4「いいえ、捨札にはなりません。…捨札にする対象の「RS-117 ダイボウケン」はすでに捨札になっているため、「RS-236 スーパーダイボウケン」はその場に残ります。」
+  it("RS-208: 公式Q&A — 猫だましで出したダイボウケンを素材にしたスーパーダイボウケンはターン終了時に捨札にならない（出典: grnrngr/faq-card-4 RS-208 Q4・faq-card-2/5）", () => {
+    const FOUR = ["RS-171", "RS-172", "RS-173", "RS-174"].map((id) => inst(id, "m"));
+    let s = st({
+      player1: {
+        battle: fillers(2),
+        rush: [inst("RS-326", "sm"), inst("RS-208", "k"), ...FOUR],
+        hand: [inst("RS-117", "db"), inst("RS-236", "sdb")],
+        command: releasedN(1, "TST-OP-ET"),
+        power: powerCards(7),
+        deck: deckCards(5),
+      },
+      player2: { power: powerCards(3, "e"), deck: deckCards(5, "e") },
+    });
+    // 3番目に魔法猫スモーキーを出し、【究極奥義・猫だまし】で手札のダイボウケンを自軍ラッシュエリアに出す。
+    s = enter(s, "RS-326:sm");
+    expect(choiceIds(s)).toContain("RS-117:db");
+    s = passEntry(settle(pick(s, "player1", "RS-117:db")));
+    expect(zoneOf(s, "player1", "RS-117:db")).toBe("rush");
+    // 4番目にキリンレンジャーを出し、時間返しでラッシュフェイズからやり直す。
+    s = settle(confirmIfAsked(enter(s, "RS-208:k"), "player1"));
+    expect(s.phase).toBe("rush");
+    // やり直したラッシュフェイズで、ダイボウケンと4体を捨札にしてスーパーダイボウケンをラッシュする。
+    const r = rushFromHand(s, "player1", "RS-236:sdb");
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    expect(zoneOf(s, "player1", "RS-117:db")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-236:sdb")).toBe("rush");
+    s = endTurn(s);
+    expect(zoneOf(s, "player1", "RS-236:sdb")).toBe("rush");
+  });
+  // atwiki/page-119 Q9「はい、そのとおりです。」（合計で BP+6000）
+  it("RS-208: atwiki Q&A — 【語る背中】の装甲響鬼はやり直したラッシュフェイズの終了時にも再び発動する（出典: atwiki/page-119 Q9）", () => {
+    let s = st({
+      phase: "rush",
+      player1: { battle: [...fillers(2), inst("TST-UNIT-2", "m3000")], rush: [inst("XG5-050", "hb"), inst("RS-208", "k")], deck: deckCards(5) },
+      player2: { rush: [inst("TST-UNIT-0", "sp1")], power: powerCards(3, "e"), deck: deckCards(5, "e") },
+    });
+    // 1回目のラッシュフェイズを終えるとき「SP1」の敵軍ユニットがあるので BP+3000（BP7000）。
+    s = toPhase(s, "player1", "battle");
+    expect(bpOf(s, "player1", "XG5-050:hb")).toBe(7000);
+    // 4番目にキリンレンジャーを出し、時間返しでラッシュフェイズからやり直す（BP4000 以上の装甲響鬼は手札に戻らない）。
+    s = settle(confirmIfAsked(enter(s, "RS-208:k"), "player1"));
+    expect(s.phase).toBe("rush");
+    expect(zoneOf(s, "player1", "XG5-050:hb")).toBe("rush");
+    // やり直したラッシュフェイズを終えるときにも発動し、合計 BP+6000（BP10000）。
+    s = toPhase(s, "player1", "battle");
+    expect(bpOf(s, "player1", "XG5-050:hb")).toBe(10000);
+  });
 });
 
 // ===========================================================================
