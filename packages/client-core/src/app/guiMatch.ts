@@ -1487,8 +1487,12 @@ export class GuiMatch {
       const orderOf = (id: string) => (orderChoice?.selectedInstanceIds ?? []).indexOf(id) + 1;
       const checked = new Set(this.checkMode() ? this.checkDraft().picks : []);
       // 選べるカードと一緒に出る、見るだけのカード（「自軍山札を見て…」の山札の残りなど）は「対象外」。選べるカードが
-      // ない窓（山札の上の1枚を見て上か下かを選ぶ、選べるカードがない山札を見る窓）では「選択対象」。
-      const viewNote = cardItems.some((i) => i.items.length > 0) ? "対象外" : "選択対象";
+      // ない窓のうち、山札の上の1枚を見て上か下かを選ぶ窓では、見ているカードが「選択対象」。「自軍山札を見て…を選び」で
+      // 選べるカードがない窓（engine rules/deckLook.ts、XG3-063 ドレイクMF【キャストオフ】でドレイクRFがない）は山札が
+      // 見えるだけなので、全部「対象外」。
+      const deckLook = new Set(state.pendingEffectChoice?.deckLookInstanceIds ?? []);
+      const anyPickable = cardItems.some((i) => i.items.length > 0);
+      const viewNoteOf = (id: string) => (anyPickable || deckLook.has(id) ? "対象外" : "選択対象");
       // 選べるカードの下: 山札から選ぶ窓（「自軍山札を見て…を選び」）は「選択可能」、山札に戻す順番の窓は「選択対象」、
       // ほかはカードのある場所（自バトル など）。
       const pickCaption = (at: { player: string; zone: string }) =>
@@ -1499,6 +1503,7 @@ export class GuiMatch {
         shown.forEach((item, slot) => {
           const at = locateInstance(state, item.id)!;
           const viewing = item.items.length === 0;
+          const viewNote = viewNoteOf(item.id);
           // A card the human is looking at is face up to them, even from the enemy deck.
           const tile = cardTile(this.engine, state, viewing ? HUMAN : at.player, at.zone, at.card, fitTile, !viewing, false);
           const index = this.dialogOffset + slot;
