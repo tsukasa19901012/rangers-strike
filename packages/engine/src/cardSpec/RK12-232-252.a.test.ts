@@ -528,9 +528,12 @@ describe("RK-238 キャッスルドラン", () => {
 
   // atwiki/page-941 Q1「いいえ、できません。【スカイキック】等の効果に書かれた「BP0以下になったユニットは撃破される」とはルールの補足であり、
   // 「XG4-087 スカイライダー」がユニットを撃破したとは扱われません。」
-  it.todo(
-    "RK-238: 公式Q&A — XG4-087 スカイライダー【スカイキック】で BP0 以下になって撃破されたユニットは、スカイライダーが撃破したことにならないのでドローできない（出典: atwiki/page-941 Q1）— XG4-087【スカイキック】の BP-500 が未実装（本範囲外のカード。RK1-001-021.b の RK-012 Q7 と同じ）で、BP0 以下にする場面を作れない",
-  );
+  it("RK-238: 公式Q&A — XG4-087 スカイライダー【スカイキック】で BP0 以下になって撃破されたユニットは、スカイライダーが撃破したことにならないのでドローできない（出典: atwiki/page-941 Q1）", () => {
+    const s = resolveAll(settle(enter(board({ rush: [inst("XG4-087", "sk"), inst("RK-238", "cd")] }, { battle: [inst("SPEC-BP500", "e")] }), "XG4-087:sk")));
+    expect(zoneOf(s, "player2", "SPEC-BP500:e")).toBe("discard");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-238");
+    expect(s.players.player1.hand).toHaveLength(0);
+  });
 
   it.todo(
     "RK-238: 特徴「仮面ライダー」を持つユニットが効果（「撃破する」と書かれたテキスト）で撃破したときもドローできる（出典: atwiki/page-941・grnrngr/faq-rider-1 RK-005 Q（撃破を行う起点は「撃破する」と直接書かれているテキストの持ち主））— エンジンが効果による撃破の起点のユニットを記録していない（RK-005 の効果による撃破と同じ未対応）",

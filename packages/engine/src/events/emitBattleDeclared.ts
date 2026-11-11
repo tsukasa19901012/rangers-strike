@@ -1,7 +1,7 @@
 import type { GameState, PendingBattle } from "../types/game";
 import { withSyncedEffectStack } from "../rules/effectStack";
 import { applyResidentOpsOnAllyAttacked } from "../rules/residentOps";
-import { findInZone, updatePlayer } from "../core/helpers";
+import { findInZone } from "../core/helpers";
 import { buildBattleDeclaredEvent } from "./builders";
 import { getEngineEventDispatcher } from "./globalDispatcher";
 
@@ -13,22 +13,25 @@ export function emitBattleDeclaredAndResolve(
   // カウンター解決後・バトル解決の直前に適用される（wiki Q&A: 否定文優先）。
   const prevented = applyResidentOpsOnAllyAttacked(state, pending);
   if (prevented?.preventBattle) {
-    let next = prevented.state;
-    const attackerOwner = next.players[pending.attackerPlayerId];
-    const markActed = (cards: typeof attackerOwner.battle) =>
-      cards.map((c) =>
-        c.instanceId === pending.attackerInstanceId ? { ...c, battleActed: true } : c,
-      );
-    next = {
-      ...next,
-      ...updatePlayer(next, pending.attackerPlayerId, {
-        ...attackerOwner,
-        battle: markActed(attackerOwner.battle),
-        rush: markActed(attackerOwner.rush),
-      }),
-    };
+    // バトルは行われない扱い（battleCancelled）で解決し、アタックした側の行動済み・反応ウィンドウ（pendingBattle）の後始末・手番の戻しを
+    // 通常のバトル解決と同じ手順で行う。カウンター（隠流忍術等）の反応ウィンドウを経た後でも pendingBattle が残って
+    // クロックアップが繰り返し発動しないようにする（atwiki/page-173 Q2・grnrngr/faq-rider-1 RK-021 Q2: 否定文優先でバトルは行われない）。
+    const cancelled: PendingBattle = { ...pending, battleCancelled: true };
+    const next = prevented.state;
+    const event = buildBattleDeclaredEvent({
+      state: next,
+      phasePlayerId: cancelled.phasePlayerId,
+      attackerPlayerId: cancelled.attackerPlayerId,
+      attackerInstanceId: cancelled.attackerInstanceId,
+      attackerCardId: findInZone(next.players[cancelled.attackerPlayerId], "battle", cancelled.attackerInstanceId)?.card.cardId ?? cancelled.attackerInstanceId,
+      defenderPlayerId: cancelled.defenderPlayerId,
+      defenderInstanceId: cancelled.defenderInstanceId,
+      defenderCardId: cancelled.defenderInstanceId,
+      pending: cancelled,
+    });
+    const outcome = getEngineEventDispatcher().dispatch(event, next);
     return {
-      state: withSyncedEffectStack(next),
+      state: withSyncedEffectStack(outcome.state),
       log: prevented.log ?? "バトルは行われない",
     };
   }

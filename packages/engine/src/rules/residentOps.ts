@@ -6,6 +6,7 @@
  */
 import { applyXg2ResidentPlaced } from "./xg2/xg2Effects";
 import { rk12ResidentsNegated } from "./rk/rk12Fields";
+import { opponentInfiniteChainBlocks } from "./turnModifiers";
 import { applyRk2ResidentPlaced } from "./rk/rk2UnitEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../types/game";
@@ -271,6 +272,8 @@ export function applyResidentOpsOnAllyAttacked(
   const defenderDef = getDefinition(state.definitions, defender.cardId);
   // RK-248 パラダイス・ロスト: このターン、相手の常駐オペレーションは無効（rules/rk/rk12Fields.ts）。
   if (rk12ResidentsNegated(state, ownerId)) return null;
+  // RS-072 無限連鎖カード: このターン、相手の常駐オペレーションは無効（常駐置き場には留まる。atwiki/page-173 Q1・grnrngr/faq-rider-1 RK-021 Q1）。
+  if (opponentInfiniteChainBlocks(state, ownerId)) return null;
 
   for (const op of player.operation) {
     const runtime = runtimeForCard(op.cardId);

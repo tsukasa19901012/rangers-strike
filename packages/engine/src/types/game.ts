@@ -896,6 +896,8 @@ export type PendingEffectChoice = {
   discardAsDamageInstanceIds?: string[];
   optional?: boolean;
   maxBp?: number;
+  /** 発生源がユニットではない（手札から見せたカードの効果。XG6-003【爆竜マルチコンバイン】）。ブレイカーは防げない（atwiki/page-2355 Q5）。 */
+  sourceNotUnit?: boolean;
   /** RS-178 sagas_sniper: デッキサーチ用の破壊ユニットパワーコスト上限。 */
   maxPowerCost?: number;
   /** 印刷BPの合計上限（例: RS-106 ジュウクンドー）。 */

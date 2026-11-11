@@ -135,10 +135,36 @@ describe("R-KW-BREAKER-03 選ばれない範囲", () => {
   });
 
   // 「【俺達の必殺技】の効果は敵軍ユニットを選んではいない」
-  it.todo("R-KW-BREAKER-03: XG5-052 電王CF【俺達の必殺技】でバトルで撃破したブレイカー持ちをパワーゾーンに送れる（出典: atwiki/page-2355 Q4。【俺達の必殺技】が DSL 未実装）");
+  it("R-KW-BREAKER-03: XG5-052 電王CF【俺達の必殺技】でバトルで撃破したブレイカー持ちをパワーゾーンに送れる（出典: atwiki/page-2355 Q4）", () => {
+    let s = state([BRK, realDef("XG5-052")], {
+      phase: "battle",
+      player1: { battle: [inst("XG5-052", "dn")] },
+      player2: { battle: [inst(BRK.id, "b")] },
+    });
+    s = act(s, { type: "battle", playerId: "player1", attackerInstanceId: "XG5-052:dn", defenderInstanceId: `${BRK.id}:b` });
+    s = passWindows(s);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG5-052");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: `${BRK.id}:b` });
+    expect(where(s, "player2", `${BRK.id}:b`)).toBe("power");
+  });
 
   // 「手札から見せたカードの効果は、ユニットの効果ではない」
-  it.todo("R-KW-BREAKER-03: XG6-003 で手札から見せた RS-168【爆竜必殺クロスサンダー】ではブレイカー持ちを選べる（出典: atwiki/page-2355 Q5。手札公開効果の起動経路がない）");
+  it("R-KW-BREAKER-03: XG6-003 で手札から見せた RS-168【爆竜必殺クロスサンダー】ではブレイカー持ちを選べる（出典: atwiki/page-2355 Q5）", () => {
+    let s = state([BRK, OTHER, realDef("XG6-003"), realDef("RS-168")], {
+      phase: "battle",
+      player1: { battle: [inst(OTHER.id, "o")], rush: [inst("XG6-003", "k")], hand: [inst("RS-168", "h")] },
+      player2: { battle: [inst(BRK.id, "b"), inst(OTHER.id, "e")] },
+    });
+    s = passWindows(act(s, { type: "move_to_battle", playerId: "player1", instanceId: "XG6-003:k" }));
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG6-003");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-168:h" });
+    // 【爆竜必殺クロスサンダー】自軍の BP5000 以下を1体、次に敵軍の BP5000 以下を1体選んで撃破する。
+    expect(s.pendingEffectChoice?.effectId).toBe("cross_thunder");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: `${OTHER.id}:o` });
+    expect(s.pendingEffectChoice?.validInstanceIds ?? []).toContain(`${BRK.id}:b`);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: `${BRK.id}:b` });
+    expect(where(s, "player2", `${BRK.id}:b`)).toBe("discard");
+  });
 
   // 「【戦いのリセット】の効果はユニットを選んではいない」
   it("R-KW-BREAKER-03: RK-286 オーディン【戦いのリセット】で必要パワーを満たしていないブレイカー持ちも撃破される（出典: atwiki/page-2355 Q6）", () => {

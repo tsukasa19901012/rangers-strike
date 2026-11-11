@@ -24,6 +24,7 @@ import {
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { bounceToHand } from "./bounce";
+import { applyXg2BattlePhaseEnd } from "./xg2/xg2Core";
 import { applyUnitLeave } from "./pendingChoices";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEffects";
 import { addTurnFeatureModifier, DEUS_GENE_RULE_ID, KIRIGAKURE_RULE_ID, unitFeatures } from "./addedFeatures";
@@ -318,13 +319,15 @@ registerOptionalEffect(TIME_RETURN_EFFECT_ID, {
       next = { ...next, ...updatePlayer(next, playerId, { ...player, battle: mark(player.battle), rush: mark(player.rush) }) };
     }
     // もう一度自軍ラッシュフェイズからやり直す（ホールド・ダメージ等の結果はそのまま。Q6/Q8）。
-    return {
+    const returned: GameState = {
       ...next,
       phase: "rush",
       activePlayer: playerId,
       pendingBattleEntry: undefined,
       deferredBattleEntry: undefined,
     };
+    // ラッシュフェイズからやり直すときも「自軍バトルフェイズを終えるとき」の効果は発動する（faq-card-4 RS-208）。
+    return state.phase === "battle" ? applyXg2BattlePhaseEnd(returned, playerId) : returned;
   },
   cpuAccepts: () => false,
 });
