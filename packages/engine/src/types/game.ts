@@ -1357,6 +1357,11 @@ export type GameState = {
   /** RK-177【催眠音波】の選択を終えたら、このプレイヤーのラッシュフェイズを終える（core/applyAction.ts）。 */
   rk9RushEndAdvance?: PlayerId;
   /**
+   * R-BP-02 のルールの撃破を待っている間に、BP を0以下にした効果の持ち主が場を離れたとき、それでも撃破するユニット
+   * （RS-026 疾風流超忍法で山札に戻されたゴーマ16世の【大地動転の玉】。grnrngr/faq-card-4 RS-210 Q1。core/applyAction.ts）。
+   */
+  bpZeroRuleDestroyIds?: string[];
+  /**
    * モーフで出たユニットの「ラッシュしたとき」（または他のカードの「ラッシュされたとき」）の選択待ちのため、まだ続けていない
    * モーフの処理（残りのモーフ・「ラッシュされたとき」の誘発・カウンター窓）。選択がすべて終わった時点で続ける
    * （R-REPL-04「エリアに出る方はラッシュに含まれる」。keywords/morphReaction.ts resumeMorphAfterEntry）。

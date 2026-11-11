@@ -1116,6 +1116,20 @@ export function applyShippuNinjaCounter(
     };
   }
 
+  // ラッシュしたユニットの効果で BP0 以下になっていたユニットは、それが山札に戻されても撃破される
+  // （RS-210 ゴーマ16世【大地動転の玉】「はい、発動します。」grnrngr/faq-card-4 RS-210 Q1）。撃破は R-BP-02 のルールの撃破で行う。
+  const bpZero: string[] = [];
+  for (const pid of ["player1", "player2"] as const) {
+    for (const zone of ["battle", "rush"] as const) {
+      for (const c of discarded.state.players[pid][zone]) {
+        if (c.instanceId === pending.rushedInstanceId) continue;
+        const def = discarded.state.definitions[c.cardId];
+        if (!def || def.type !== "unit" || typeof def.bp !== "number" || def.bp <= 0) continue;
+        if (effectiveBp(discarded.state, pid, c) <= 0) bpZero.push(c.instanceId);
+      }
+    }
+  }
+
   const [, rush] = removeAt(owner.rush, found.index);
   const nextOwner = {
     ...owner,
@@ -1127,6 +1141,7 @@ export function applyShippuNinjaCounter(
     state: {
       ...discarded.state,
       ...updatePlayer(discarded.state, ownerId, nextOwner),
+      ...(bpZero.length > 0 ? { bpZeroRuleDestroyIds: [...(discarded.state.bpZeroRuleDestroyIds ?? []), ...bpZero] } : {}),
     },
     log: buildLogEntry(defenderId, "play_counter", discarded.cardId, state.definitions, "shippu_ninja"),
   };

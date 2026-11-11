@@ -35,6 +35,7 @@ import {
   passEntry,
   pick,
   powerCards,
+  released,
   releasedN,
   rushFromHand,
   settle,
@@ -42,6 +43,7 @@ import {
   strike,
   substitutes,
   toPhase,
+  useCard,
   useNinja,
   zoneOf,
 } from "./RS4-201-221.helpers";
@@ -444,18 +446,70 @@ describe("RS-210 ゴーマ16世", () => {
     expect(bpOf(s, "player1", "RS-208:k")).toBe(5000);
   });
 
-  it.todo(
-    "RS-210: 公式Q&A — 疾風流超忍法で山札の上に戻されても【大地動転の玉】は発動する（出典: grnrngr/faq-card-4 RS-210 Q1・faq-card-1）— RS-026 のカード本文がカタログに無く（text 未収録）、カウンター手順を確認できない",
-  );
-  it.todo(
-    "RS-210: 公式Q&A — ゴーマ16世がある状態で BP3000 以下のユニットに巨大化爆弾を使うと撃破される（出典: grnrngr/faq-card-5 RS-255）— 巨大化爆弾の重ねて再ラッシュする手順（範囲外カード）に依存し、大地動転の玉も未実装",
-  );
-  it.todo(
-    "RS-210: 公式Q&A — 気力で＋されていた自軍ユニットが敵軍ターン中のゴーマ16世ラッシュで BP0 以下になったときマジマザーの効果を使える（出典: grnrngr/faq-card-5）— RS-324 の撃破置換の手順（範囲外カード）に依存し、大地動転の玉も未実装",
-  );
-  it.todo(
-    "RS-210: 公式Q&A — ジーク【頭が高い！】とゴーマ16世が重なるときはジークが優先される（出典: grnrngr/faq-rider_2）— RK-154 ジーク・RK-024 サイクロン号は照合済み（RK8-148-168・RK2-022-042）だが、RS-210【大地動転の玉】が未実装",
-  );
+  // faq-card-4 RS-210 Q1「はい、発動します。」
+  it("RS-210: 公式Q&A — 疾風流超忍法で山札の上に戻されても【大地動転の玉】は発動する（出典: grnrngr/faq-card-4 RS-210 Q1・faq-card-1）", () => {
+    // 自軍ラッシュエリアにイエローフォー（BP1000・ナンバーあり）、常駐に恐竜やのカレー（＋2000 → －2000）。
+    let s = st({
+      phase: "rush",
+      player1: { rush: [inst("RS-201", "y")], hand: [inst("RS-210", "g")], operation: [inst("RS-179", "cur")], power: powerCards(4), command: releasedN(1, "TST-OP-DA"), deck: deckCards(5) },
+      player2: { hand: [inst("RS-026", "ctr")], command: releasedN(1, "TST-OP-MA", "em"), power: powerCards(3, "e"), deck: deckCards(5, "e") },
+    });
+    s = useCard(s, "player1", "RS-210:g");
+    // 相手は疾風流超忍法（BP8000 以下のユニットがラッシュされたとき）でゴーマ16世を山札の上に戻す。
+    s = settle(useCard(s, "player2", "RS-026:ctr"));
+    expect(s.players.player1.deck[0]?.instanceId).toBe("RS-210:g");
+    // それでも【大地動転の玉】は発動し、BP0 以下になったイエローフォーは撃破されている。
+    expect(zoneOf(s, "player1", "RS-201:y")).toBe("discard");
+  });
+  // faq-card-5 RS-255 Q1「はい、その通りです。」
+  it("RS-210: 公式Q&A — ゴーマ16世がある状態で BP3000 以下のユニットに巨大化爆弾を使うと撃破される（出典: grnrngr/faq-card-5 RS-255）", () => {
+    // 敵軍（player2）ターン、敵軍ラッシュエリアにゴーマ16世。BP13000 のユニットが自軍の野球仮面（怪人・BP2000・CN1）を撃破する。
+    let s = st({
+      activePlayer: "player2",
+      player1: { battle: [inst("RS-257", "kai")], hand: [inst("RS-255", "bomb")], command: releasedN(1, "TST-OP-DA"), power: powerCards(4), deck: deckCards(3) },
+      player2: { battle: [inst("TST-UNIT-7", "atk")], rush: [inst("RS-210", "goma")], deck: deckCards(3, "e") },
+    });
+    s = attack(s, "TST-UNIT-7:atk", "RS-257:kai", "player2");
+    s = settle(useCard(s, "player1", "RS-255:bomb"));
+    // 巨大化爆弾の BP+3000 が－3000 になり BP0 以下で撃破され、巨大化爆弾も捨札になる。
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-255:bomb")).toBe("discard");
+  });
+  // faq-card-5 RS-324 Q3「はい、できます。」
+  it("RS-210: 公式Q&A — 気力で＋されていた自軍ユニットが敵軍ターン中のゴーマ16世ラッシュで BP0 以下になったときマジマザーの効果を使える（出典: grnrngr/faq-card-5）", () => {
+    // 自軍: 常駐の気力（敵軍ターン中、リリース状態の自軍コマンド1つにつき BP+1000）・コマンド3つ → ゴーマ16世で－3000。
+    let s = st({
+      activePlayer: "player2",
+      phase: "rush",
+      player1: { rush: [inst("RS-324", "mm"), inst("RS-201", "y")], operation: [inst("RS-017", "kiryoku")], command: releasedN(3, "TST-OP-MA"), deck: deckCards(3) },
+      player2: { hand: [inst("RS-210", "goma")], command: [released("TST-OP-DA", "dc")], power: powerCards(4, "ep"), deck: deckCards(3, "e") },
+    });
+    const r = rushFromHand(s, "player2", "RS-210:goma");
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    const mother = legal(s).find((a) => a.playerId === "player1" && JSON.stringify(a).includes("RS-324:mm"));
+    expect(mother).toBeDefined();
+    s = settle(act(s, mother!));
+    expect(zoneOf(s, "player1", "RS-324:mm")).toBe("discard");
+  });
+  // faq-rider-2 RK-154 Q「…効果の優先順位は「RK-154 ジーク」が最も高いため、「RS-210 ゴーマ16世」の有無に関わらず、「RK-024 サイクロン号」の効果による計算は行われない」
+  it("RS-210: 公式Q&A — ジーク【頭が高い！】とゴーマ16世が重なるときはジークが優先される（出典: grnrngr/faq-rider_2）", () => {
+    let s = st({
+      phase: "rush",
+      player1: { hand: [inst("RK-154", "zk")], rush: [inst("RS-210", "g")], command: releasedN(1, "TST-OP-OT"), power: powerCards(3), deck: deckCards(5) },
+      player2: { battle: [inst("RK-024", "cy"), { ...inst("RK-023", "one"), mountedOnInstanceId: "RK-024:cy" }], deck: deckCards(5, "e") },
+    });
+    // ゴーマ16世があると、サイクロン号の BP+1000 は－1000 になる（4000－1000）。
+    expect(bpOf(s, "player2", "RK-023:one")).toBe(3000);
+    const r = rushFromHand(s, "player1", "RK-154:zk");
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    expect(choiceIds(s)).toContain("RK-023:one");
+    s = confirmIfAsked(pick(s, "player1", "RK-023:one"), "player1");
+    s = settle(s);
+    // 「BP500 になる」が最も優先され、サイクロン号の修正（ゴーマ16世で反転したもの）は計算されない。
+    expect(bpOf(s, "player2", "RK-023:one")).toBe(500);
+  });
 });
 
 // ===========================================================================
