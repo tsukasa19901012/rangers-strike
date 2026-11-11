@@ -197,12 +197,37 @@ describe("RK-043 ライドシューター", () => {
     expect(heldCount(r.state)).toBe(0);
   });
 
-  it.todo(
-    "RK-043: 公式Q&A（相互参照）— 【突入】の直後に XG5-066 仮面ライダーベルデの【コピーベント】でラッシュするミラーライダーも3少なくなる（出典: atwiki/page-187 Q1・Q7）— XG5-066 は本範囲外のカード",
-  );
-  it.todo(
-    "RK-043: 公式Q&A（相互参照）— XG7-054 オーズドライバーと併用すると必要パワーは6少なくなる（出典: atwiki/page-187 Q2）— XG7-054 は本範囲外のカード",
-  );
+  // atwiki Q1「はい、そのとおりです。必要パワーの数字は３少なくなります。」（Q7 の「バトルフェイズに【コピーベント】」は、【コピーベント】の
+  // 現行の本文「自軍ラッシュフェイズ中」と合わないので、ラッシュフェイズ中の Q1 だけを確かめる）
+  it("RK-043: 公式Q&A（相互参照）— 【突入】の直後に XG5-066 仮面ライダーベルデの【コピーベント】でラッシュするミラーライダーも3少なくなる（出典: atwiki/page-187 Q1・Q7）", () => {
+    const board = () => rushPhase({ rush: [inst("RK-043", "rs"), inst("XG5-066", "v")], power: [...powerCards(2), { ...inst("SPEC-MIRROR6", "m"), faceDown: false }] });
+    // 【突入】なし: パワー3では必要パワー6のミラーライダーを選べない
+    expect(canActivateField(board(), "XG5-066:v")).toBe(false);
+    let s = activateField(board(), "RK-043:rs");
+    s = activateField(s, "XG5-066:v");
+    expect(choiceIds(s)).toEqual(["SPEC-MIRROR6:m"]);
+    s = resolveAll(pick(s, "SPEC-MIRROR6:m"));
+    expect(zoneOf(s, "player1", "SPEC-MIRROR6:m")).toBe("rush");
+    expect(zoneOf(s, "player1", "XG5-066:v")).toBe("power");
+  });
+
+  // atwiki Q2「はい、そのとおりです。」（オーズドライバー◎2 の −3 と【突入】の −3 で6少なくなる）
+  it("RK-043: 公式Q&A（相互参照）— XG7-054 オーズドライバーと併用すると必要パワーは6少なくなる（出典: atwiki/page-187 Q2）", () => {
+    const MIRROR9 = sUnit("SPEC-MIRROR9", { category: "WB", bp: 5000, powerCost: 9, features: ["仮面ライダー", "ミラーライダー"] });
+    const board = () =>
+      st({ phase: "rush", player1: { rush: [inst("RK-043", "rs")], hand: [inst("XG7-054", "od"), inst("SPEC-MIRROR9", "m")], command: releasedCat("WB", 2), power: powerCards(3), deck: deckCards(5) }, player2: { deck: deckCards(5, "e") } }, [...EXTRA, MIRROR9]);
+    // 【突入】だけ（−3）では必要パワー6 > パワー3
+    expect(rushOffered(activateField(board(), "RK-043:rs"), "SPEC-MIRROR9:m")).toBe(false);
+    const r = playOp(board(), "player1", "XG7-054:od");
+    expect(r.ok, r.error).toBe(true);
+    let s = r.state;
+    expect(choiceIds(s)).toContain("mode2_cost");
+    s = settle(pick(s, "mode2_cost"));
+    s = activateField(s, "RK-043:rs");
+    const rush = declareRush(s, "player1", "SPEC-MIRROR9:m");
+    expect(rush.ok, rush.error).toBe(true);
+    expect(zoneOf(settle(rush.state), "player1", "SPEC-MIRROR9:m")).toBe("rush");
+  });
 });
 
 // ===========================================================================

@@ -1489,7 +1489,9 @@ export type GameState = {
   /** 「選んだ1枚ごとにラッシュエリアに出す」効果の進行（R-RUSH-21, R-RUSH-23）。 */
   pendingEffectRush?: PendingEffectRush;
   /** RS-325【マジチケット】で発動したオペレーション（捨札になるときの「かわりに」の選択待ち。rules/legend1/set5NamedEffects.ts）。 */
-  magiTicketPending?: { playerId: PlayerId; instanceId: string };
+  magiTicketPending?: { playerId: PlayerId; instanceId: string; staged?: boolean };
+  /** RS-296【編隊出撃】: 同じタイミングの別の「ラッシュしたとき」の選択が済んでから処理する（rules/onRushUnitEffects.ts・core/applyAction.ts）。 */
+  formationDeployResume?: { playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId };
   /** RS-418【炎の眼光】: 進入中のユニットの NC の効果を無効にするかの決定（進入処理の NC の段階で使い、消す）。 */
   ncNegationDecision?: { instanceId: string; negate: boolean };
   /** RS-477 ガオウルフ【威圧する咆哮】: NC の効果を発動する前の発動確認を済ませた進入中ユニット（進入処理の NC の段階で使い、消す）。 */

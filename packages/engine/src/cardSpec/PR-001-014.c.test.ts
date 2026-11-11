@@ -13,19 +13,26 @@ import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
 import {
   act,
+  advanceToBattle,
   attack,
   canCounter,
   canStartRush,
   canStrike,
   canUseCard,
+  confirm,
   deckCards,
+  endTurn,
+  attackTargets,
   enter,
+  enterWithHold,
   expectCatalogText,
   expectOp,
   expectUnit,
   fillers,
   inst,
   legal,
+  pick,
+  passEntry,
   powerCards,
   released,
   releasedCat,
@@ -197,9 +204,32 @@ describe("PR-012 隠流忍術", () => {
     expect(zoneOf(s, "player1", "RS-062:red")).toBe("battle");
   });
 
-  it.todo(
-    "PR-012: 公式Q&A（RS-018 と同じ本文）— ジョイントコンビネーションしたユニットやそのLユニットを選べる／JC 中のバキケロナグルスが撃破されても L ユニットの効果は残る（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q5〜Q7）— ジョイントコンビネーション成立状態を公開 API で組み立てられない（RS1-001-023.part3 の RS-018 と同じ）",
-  );
+  it("PR-012: 公式Q&A（RS-018 と同じ本文）— ジョイントコンビネーションしたユニットやそのLユニットを選べる／JC 中のバキケロナグルスが撃破されても L ユニットの効果は残る（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q5〜Q7）", () => {
+    // 敵軍（player1）が RS-167 バキケロナグルス → TST-UNIT-7（WB・L）でジョイントコンビネーション
+    let s = st(
+      {
+        player1: { rush: [inst("RS-167", "b"), inst("TST-UNIT-7", "L")], command: [released("TST-OP", "c")], deck: deckCards(3) },
+        player2: {
+          battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")],
+          hand: [inst("PR-012", "n")],
+          command: [released("TST-OP-MA", "ma"), released("TST-OP-MA", "ma2")],
+          power: powerCards(5, "e"),
+          deck: deckCards(3, "e"),
+        },
+      },
+      EXTRA,
+    );
+    s = passEntry(enterWithHold(s, "RS-167:b", ["TST-OP:c"]));
+    s = enter(s, "TST-UNIT-7:L");
+    s = attack(s, "TST-UNIT-7:L", "TST-UNIT-0:e1");
+    // Q6・Q7: JC しているユニット（バキケロ）を選べる。アタックしてきた L ユニット自身は選べない（R-ERR-RS018）
+    expect(substitutes(s, N)).toContain("RS-167:b");
+    expect(substitutes(s, N)).not.toContain("TST-UNIT-7:L");
+    // Q5: バキケロが撃破されても、L ユニットが得た能力は有効のまま
+    s = settle(useNinja(s, N, "RS-167:b"));
+    expect(zoneOf(s, "player1", "RS-167:b")).toBe("discard");
+    expect(attackTargets(s, "TST-UNIT-7:L")).toContain("TST-UNIT-0:e1");
+  });
 });
 
 // ===========================================================================
@@ -255,9 +285,33 @@ describe("PR-013 スーパーダイボウケン", () => {
     expect(legal(s).some((a) => a.type === "battle" && a.attackerInstanceId === "PR-013:sdb")).toBe(true);
   });
 
-  it.todo(
-    "PR-013: 公式Q&A（RS-236 と同じ本文）— 魔法猫スモーキーで出したダイボウケンを素材にしたスーパーダイボウケンは、ターンを終えるとき捨札にならない（出典: grnrngr/faq-card-4 RS-236 Q1）— スモーキー（RS-326）→キリンレンジャー（RS-208）の時間返しの流れを公開 API で組み立てられない（RS4-222-242.c の RS-236 と同じ）",
-  );
+  it("PR-013: 公式Q&A（RS-236 と同じ本文）— 魔法猫スモーキーで出したダイボウケンを素材にしたスーパーダイボウケンは、ターンを終えるとき捨札にならない（出典: grnrngr/faq-card-4 RS-236 Q1）", () => {
+    // スモーキー（3番目）でダイボウケンをラッシュエリアに出す → キリンレンジャー（4番目）の時間返しでラッシュフェイズからやり直す
+    let s = st({
+      player1: {
+        battle: fillers(2),
+        rush: [inst("RS-326", "sm"), inst("RS-208", "k"), ...FOUR.map((id) => inst(id, "m"))],
+        hand: [inst("RS-117", "db"), inst("PR-013", "sdb")],
+        command: [released("TST-OP-ET", "et")],
+        power: powerCards(7),
+        deck: deckCards(5),
+      },
+      player2: { power: powerCards(3, "ep"), deck: deckCards(5, "e") },
+    });
+    s = enter(s, "RS-326:sm");
+    s = passEntry(settle(pick(s, "RS-117:db")));
+    expect(zoneOf(s, "player1", "RS-117:db")).toBe("rush");
+    s = enter(s, "RS-208:k");
+    if (s.pendingEffectChoice?.kind === "confirm") s = confirm(s);
+    expect(s.phase).toBe("rush");
+    const r = rushFromHand(s, "player1", "PR-013:sdb");
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    expect(zoneOf(s, "player1", "RS-117:db")).toBe("discard");
+    s = passEntry(enter(advanceToBattle(s, "player1"), "PR-013:sdb"));
+    s = endTurn(s);
+    expect(zoneOf(s, "player1", "PR-013:sdb")).toBe("battle");
+  });
 });
 
 // ===========================================================================

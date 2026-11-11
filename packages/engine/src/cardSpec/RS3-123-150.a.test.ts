@@ -458,9 +458,37 @@ describe("RS-125 百獣アニマルハート", () => {
   });
 
   // faq-card-5（RS-265 の項）「はい、発動できます。」— アニマルハートで撃破されたジェットシーカーのラウンドレーダー
-  it.todo(
-    "RS-125: 公式Q&A — 百獣アニマルハートで撃破されたジェットシーカーの【ラウンドレーダー】は発動できる（出典: grnrngr/faq-card-5 RS-265）— 撃破されたユニット自身の「オペレーション使用時」誘発をエンジンの公開 API で観測する手段がない",
-  );
+  it("RS-125: 公式Q&A — 百獣アニマルハートで撃破されたジェットシーカーの【ラウンドレーダー】は発動できる（出典: grnrngr/faq-card-5 RS-265）", () => {
+    let s = st(
+      {
+        phase: "rush",
+        player1: { hand: [inst("RS-125", "ah")], battle: [inst("SPEC-WBM", "b0")], command: [released("TST-OP", "wb")], power: powerCards(8, "p1") },
+        player2: { rush: [inst("RS-265", "seeker")], power: powerCards(3, "ep") },
+      },
+      EXTRA,
+    );
+    s = useCard(s, "player1", "RS-125:ah");
+    let radar = false;
+    for (let i = 0; i < 10; i += 1) {
+      const p = s.pendingEffectChoice;
+      if (!p) break;
+      if (p.sourceCardId === "RS-265") {
+        // 撃破されても（撃破されるユニットでも）ラウンドレーダーで敵軍パワーゾーンのカードを捨札にできる
+        radar = true;
+        s = act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: p.validInstanceIds[0]! });
+        continue;
+      }
+      if (p.playerId === "player1" && p.validInstanceIds.includes("RS-265:seeker") && !(p.selectedInstanceIds ?? []).includes("RS-265:seeker")) {
+        s = pick(s, "RS-265:seeker");
+        continue;
+      }
+      s = settle(confirm(s));
+    }
+    s = settle(s);
+    expect(radar).toBe(true);
+    expect(zoneOf(s, "player2", "RS-265:seeker")).toBe("discard");
+    expect(s.players.player1.discard.some((c) => c.instanceId.startsWith("TST-P:p1"))).toBe(true);
+  });
 });
 
 // ===========================================================================
@@ -676,9 +704,27 @@ describe("RS-127 バイオロボ", () => {
   });
 
   // faq-card-6（RS-359 の項）「はい、できます。」（デンジ犬アイシー2体でバイオジェット1号・2号を山札から捨札にしてラッシュ）
-  it.todo(
-    "RS-127: 公式Q&A — デンジ犬アイシー2体の【最後の手段】で山札のバイオジェット1号・2号を捨札にしてバイオロボをラッシュできる（出典: grnrngr/faq-card-6 RS-359）— デンジ犬アイシーの L ラッシュ置きかえの手順（2体分の連続使用）は RS-359 側の仕様テストで扱う範囲で、RS-127 側から公開 API で組む手順が定まっていない",
-  );
+  it("RS-127: 公式Q&A — デンジ犬アイシー2体の【最後の手段】で山札のバイオジェット1号・2号を捨札にしてバイオロボをラッシュできる（出典: grnrngr/faq-card-6 RS-359）", () => {
+    const s = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-127", "bio")],
+        rush: [inst("RS-359", "i1"), inst("RS-359", "i2")],
+        command: [released("TST-OP-OT", "ot")],
+        power: powerCards(6),
+        deck: [inst("RS-128", "j1"), inst("RS-129", "j2")],
+      },
+    });
+    const r = rushFromHand(s, "player1", "RS-127:bio", { materials: ["RS-128:j1", "RS-129:j2"] });
+    expect(r.ok, r.error).toBe(true);
+    let t = settle(r.state);
+    for (let i = 0; i < 8 && t.pendingEffectChoice; i += 1) t = settle(drain(t, t.pendingEffectChoice.playerId, ["RS-128:j1", "RS-129:j2"]));
+    expect(zoneOf(t, "player1", "RS-127:bio")).toBe("rush");
+    expect(zoneOf(t, "player1", "RS-128:j1")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-129:j2")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-359:i1")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-359:i2")).toBe("discard");
+  });
 });
 
 // ===========================================================================

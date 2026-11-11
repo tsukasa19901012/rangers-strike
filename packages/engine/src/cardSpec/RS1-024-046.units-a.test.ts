@@ -730,9 +730,38 @@ describe("RS-039 守護獣プテラノドン", () => {
     expect(zoneOf(state, "player2", "TST-OP-ET:r")).toBe("command");
   });
 
-  it.todo(
-    "RS-039: レスキューファイターがある状態で隠流忍術により相撃ちにされたとき、捨札かパワーゾーンかはターンプレイヤーが処理順で選べる（出典: grnrngr/faq-card-1 RS-039 Q1）— RS-018 隠流忍術の相撃ちと RS-089 の置換の処理順をターンプレイヤーが選ぶ公開アクションが確認できない",
-  );
+  // faq-card-1 RS-039 Q1「正確にはターンプレイヤーが、捨札にするかパワーゾーンに送るかを選択できます。…先に「RS-039 守護獣プテラノドン」を捨札にすることにした場合は…パワーゾーンに送ります。逆に、先に「RS-089 レスキューファイター」を捨札にした場合は、「RS-039 守護獣プテラノドン」も捨札になります。」
+  it("RS-039: レスキューファイターがある状態で隠流忍術により相撃ちにされたとき、捨札かパワーゾーンかはターンプレイヤーが処理順で選べる（出典: grnrngr/faq-card-1 RS-039 Q1）", () => {
+    const mutual = (first: string) => {
+      let s = mk({
+        phase: "battle",
+        player1: { rush: [inst("RS-089", "rf")], battle: [inst("RS-039", "pt")], deck: deck(3) },
+        player2: { battle: [inst("TST-UNIT-2", "eb")], hand: [inst("RS-018", "n1")], command: [released(CMD.MA, "m1")], power: powers(5), deck: deck(3) },
+      });
+      s = attack(s, "player1", "RS-039:pt", "TST-UNIT-2:eb");
+      s = act(s, { type: "initiate_command_payment", playerId: "player2", kind: "category_use", sourceInstanceId: "RS-018:n1", substituteInstanceId: "RS-089:rf" } as never);
+      let chose = false;
+      for (let i = 0; i < 12; i += 1) {
+        const order = legal(s).find((a) => a.type === "resolve_effect_choice" && a.playerId === "player1" && a.instanceId.includes(first));
+        if (order && !chose) {
+          chose = true;
+          s = act(s, order);
+          continue;
+        }
+        const next = s.pendingLeave || s.pendingEffectChoice || s.pendingDamagePayment || s.pendingCommandPayment ? legal(s)[0] : undefined;
+        if (!next) break;
+        s = act(s, next);
+      }
+      expect(chose).toBe(true);
+      return s;
+    };
+    const pteraFirst = mutual("RS-039:pt");
+    expect(zoneOf(pteraFirst, "player1", "RS-039:pt")).toBe("power");
+    expect(zoneOf(pteraFirst, "player1", "RS-089:rf")).toBe("discard");
+    const rescueFirst = mutual("RS-089:rf");
+    expect(zoneOf(rescueFirst, "player1", "RS-039:pt")).toBe("discard");
+    expect(zoneOf(rescueFirst, "player1", "RS-089:rf")).toBe("discard");
+  });
 
   it("RS-039: ホールド状態の「アタックされる以外では相手に選ばれない」ユニットカード（ガタックRF）は選べない（出典: atwiki/page-81 Q2）", () => {
     // 「敵軍プレイヤーは…を選ぶことは出来ません」

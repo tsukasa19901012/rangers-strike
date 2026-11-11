@@ -188,7 +188,21 @@ describe("XG4-046 腑破十臓", () => {
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.todo("XG4-046: 公式Q&A — 敵軍バトルエリアにレジストを持たない BP3000 以下のユニットだけがいるとき、XG3-034 恐竜折神からコンビネーションした腑破十臓は【キョウリュウマル】を発動できる（出典: atwiki/page-2149 Q1）（未対応の理由: 恐竜折神からのジョイントコンビネーションで【キョウリュウマル】を発動させる盤面を公開 API で組む手段がない）");
+  it("XG4-046: 公式Q&A — 敵軍バトルエリアにレジストを持たない BP3000 以下のユニットだけがいるとき、XG3-034 恐竜折神からコンビネーションした腑破十臓は【キョウリュウマル】を発動できる（出典: atwiki/page-2149 Q1）", () => {
+    let s = st(
+      { player1: { rush: [inst("XG3-034", "k"), inst("XG4-046", "jz")], command: releasedCat("DA", 1), deck: deckCards(5) }, player2: { battle: [inst("SPEC-E-3000", "a"), inst("SPEC-E-S", "b")], deck: deckCards(5, "e") } },
+      EXTRA,
+    );
+    s = passEntry(resolveAll(enter(s, "XG3-034:k")));
+    s = resolveAll(enter(s, "XG4-046:jz"));
+    // ※によりアタックできる敵軍ユニットはないが、「アタックするかわりに」は発動できる。
+    expect(targetsOf(s, "XG4-046:jz")).toEqual([]);
+    s = act(s, { type: "use_juu_kun_do", playerId: "player1", attackerInstanceId: "XG4-046:jz" });
+    expectChoiceFrom(s, "player1", "XG3-034");
+    s = resolveAll(s, ["SPEC-E-3000:a", "SPEC-E-S:b"]);
+    expect(zoneOf(s, "player2", "SPEC-E-3000:a")).toBe("discard");
+    expect(zoneOf(s, "player2", "SPEC-E-S:b")).toBe("discard");
+  });
 });
 
 // ===========================================================================

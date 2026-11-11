@@ -231,9 +231,20 @@ describe("RK-115 仮面ライダーゾルダ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-115");
   });
 
-  it.todo(
-    "RK-115: コミュニティQ&A — 撃破する対象は発動を解決し始めたときに決まり、解決中にホールド状態になったユニット（ダイノガッツ・仮面ライダーキバのホールド状態でのラッシュ）は撃破されない（出典: atwiki/page-627 コメント欄）— 【エンドオブワールド】の撃破の処理途中に、撃破されたユニットの効果でホールド状態のユニットを場に出す手順を公開 API で組めないため",
-  );
+  // atwiki/page-627 コメント欄「効果発動時点で対象が決まり処理するので、その後ホールドされたとしてもゾルダの撃破対象にはなりません。…例2の仮面ライダーキバも撃破されません」
+  it("RK-115: コミュニティQ&A — 撃破する対象は発動を解決し始めたときに決まり、解決中にホールド状態になったユニット（ダイノガッツ・仮面ライダーキバのホールド状態でのラッシュ）は撃破されない（出典: atwiki/page-627 コメント欄）", () => {
+    // 例2: ホールド状態の RK-313 仮面ライダーキバDGBKF が撃破され、※で捨札の RK-245 仮面ライダーキバがラッシュエリアに出る
+    let s = enter(
+      board({ battle: [inst("RK-116", "mg")], rush: [inst("RK-115", "zo")] }, { battle: [heldUnit("RK-313", "dg")], discard: [inst("RK-245", "kiba")] }),
+      "RK-115:zo",
+    );
+    s = confirm(s);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-313");
+    s = settle(pick(s, "RK-245:kiba"));
+    expect(zoneOf(s, "player2", "RK-313:dg")).toBe("discard");
+    // 解決を始めたときには場にいなかったので撃破されない
+    expect(zoneOf(s, "player2", "RK-245:kiba")).toBe("rush");
+  });
 });
 
 // ===========================================================================

@@ -544,6 +544,13 @@ export function settleDarkArmor(before: GameState, after: GameState): GameState 
   return next;
 }
 
+/** 場を離れた（離れる）ユニットに重ねていた鎧を、いま持ち主のパワーゾーンにダメージにして置く（同時に処理する効果のため）。 */
+export function placeDarkArmorAsDamage(state: GameState, ownerId: PlayerId, unit: Pick<CardInstance, "stackedCards">): GameState {
+  let next = state;
+  for (const armor of (unit.stackedCards ?? []).filter((c) => c.cardId === DARK_ARMOR_CARD_ID)) next = moveArmorToDamage(next, ownerId, armor.instanceId);
+  return next;
+}
+
 function moveArmorToDamage(state: GameState, ownerId: PlayerId, armorId: string): GameState {
   let next = state;
   let found: CardInstance | undefined;

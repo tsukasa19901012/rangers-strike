@@ -532,9 +532,22 @@ describe("RS-296 バラクティカ", () => {
   });
 
   // faq-card-6 RS-353 Q「はい、できます。同時タイミングの処理になりますので、ターンプレイヤーが「RS-353 デンジファイター」の効果を先に処理してから…」
-  it.todo(
-    "RS-296: 公式Q&A — デンジファイターの【ファイターチェンジ】で手札に加えたデンジファイターを、ターンプレイヤーが先に処理する順を選べば【編隊出撃】で出せる（出典: grnrngr/faq-card-6 RS-353 Q）— デンジファイターのラッシュの合法手は出る（RS5-audit-crossref）が、【ファイターチェンジ】（オモテにした中のメカの L ユニットを手札に加える）が未実装で、手札に加えたカードで【編隊出撃】する状況を作れない",
-  );
+  it("RS-296: 公式Q&A — デンジファイターの【ファイターチェンジ】で手札に加えたデンジファイターを、ターンプレイヤーが先に処理する順を選べば【編隊出撃】で出せる（出典: grnrngr/faq-card-6 RS-353 Q）", () => {
+    const s0 = formation({ hand: [inst("RS-353", "df")], rush: [inst("RS-296", "b"), ...fillers(5)], power: powerCards(5), deck: [inst("RS-353", "df2"), ...deckCards(4)] });
+    const r = rushFromHand(s0, "player1", "RS-353:df");
+    expect(r.ok, r.error).toBe(true);
+    let s = r.state;
+    // 先に【ファイターチェンジ】で山札の上のデンジファイターを手札に加える
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-353");
+    s = confirm(s);
+    s = pick(s, "RS-353:df2");
+    s = skip(s);
+    expect(zoneOf(s, "player1", "RS-353:df2")).toBe("hand");
+    // その後【編隊出撃】で、そのデンジファイターをラッシュエリアに出す
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-296");
+    s = settle(pick(s, "RS-353:df2"));
+    expect(zoneOf(s, "player1", "RS-353:df2")).toBe("rush");
+  });
 });
 
 // ===========================================================================

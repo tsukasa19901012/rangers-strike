@@ -489,9 +489,22 @@ describe("RS-374 魔女バンドーラ", () => {
   });
 
   // grnrngr/faq-card-6 RS-374 Q1「いいえ、捨札にはなりません。…自軍コマンドも敵軍コマンドもホールドを行っておりません」
-  it.todo(
-    "RS-374: 公式Q&A — タックの効果で（敵軍コマンドをリリースして）ホールドしたことにした恐竜ユニットのラッシュでは、何も捨札にならない（出典: grnrngr/faq-card-6 RS-374 Q1）— RS-223 タックの「ホールドしたことにできる」を選ぶ合法手がエンジンにない（rsCatchall の汎用キーワードのみ）ため駆動できない",
-  );
+  it("RS-374: 公式Q&A — タックの効果で（敵軍コマンドをリリースして）ホールドしたことにした恐竜ユニットのラッシュでは、何も捨札にならない（出典: grnrngr/faq-card-6 RS-374 Q1）", () => {
+    const s = st({
+      phase: "rush",
+      player1: { hand: [inst("RS-039", "pt")], rush: [inst("RS-223", "tk")], command: [], power: powerCards(4), deck: deckCards(3) },
+      player2: { rush: [inst("RS-374", "b")], command: [{ ...inst("TST-OP", "eh"), commandHeld: true }], deck: deckCards(3, "e") },
+    });
+    const r = rushFromHand(s, "player1", "RS-039:pt");
+    expect(r.ok, r.error).toBe(true);
+    const t = resolveAll(r.state);
+    expect(zoneOf(t, "player1", "RS-039:pt")).toBe("rush");
+    // タックの効果で敵軍コマンドをリリースした（ホールドしたことにした）
+    expect(t.players.player2.command[0]?.commandHeld ?? false).toBe(false);
+    // 実際にはどのコマンドもホールドしていないので、バンドーラの効果で捨札になるカードはない
+    expect(zoneOf(t, "player2", "TST-OP:eh")).toBe("command");
+    expect(t.players.player1.discard).toHaveLength(0);
+  });
 
   // grnrngr/faq-card-6 RS-374 Q2「いいえ、捨札にはなりません。…「RS-249 Vコマンダー」の効果によってであり」
   it("RS-374: 公式Q&A — Vコマンダーの効果で恐竜ユニットをラッシュしても、Vコマンダーの使用でホールドしたコマンドは捨札にならない（出典: grnrngr/faq-card-6 RS-374 Q2）", () => {
@@ -659,9 +672,30 @@ describe("RS-375 レッドレーサー（2nd）", () => {
     expect(choiceIds(s)).toEqual(expect.arrayContaining(["RS-375:eb", "RS-370:e1"]));
   });
 
-  it.todo(
-    "RS-375: 公式Q&A — ダイデンジン【ダイデンジンブーメラン】で参照するパワーゾーンのカードの必要パワーも1増える（出典: grnrngr/faq-card-6 RS-375 Q1）— パワーゾーンのカードの必要パワーを参照する効果を発生させるには相手の効果でパワーゾーンのカードを離れさせる必要があり、RS-352 の処理経路が本ファイルの範囲を超えて複雑なため、RS-352 のスペックで扱う",
-  );
+  // grnrngr/faq-card-6 RS-375 Q1「はい、パワーゾーンのカードにも効果を及ぼします。」
+  it("RS-375: 公式Q&A — ダイデンジン【ダイデンジンブーメラン】で参照するパワーゾーンのカードの必要パワーも1増える（出典: grnrngr/faq-card-6 RS-375 Q1）", () => {
+    // 自軍エリアにダイデンジンとレッドレーサー（2nd）。バイオジェット1号の※で、パワーゾーンのデンジレッド（必要パワー3→4）が離れる。
+    let s = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-128", "bj")],
+        rush: [inst("RS-352", "dd"), inst("RS-375", "rr"), ...fillers(2)],
+        command: releasedCat("OT", 1),
+        power: [inst("RS-354", "pc"), ...powerCards(5)],
+        deck: deckCards(3),
+      },
+      player2: { battle: [inst("RS-360", "c4"), inst("RS-361", "c5")], deck: deckCards(3, "e") },
+    });
+    const r = rushFromHand(s, "player1", "RS-128:bj", { materials: ["TST-UNIT-0:fill0", "TST-UNIT-0:fill1"] });
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    if (s.pendingEffectChoice?.validInstanceIds.includes("RS-354:pc")) s = pick(s, "RS-354:pc");
+    expect(zoneOf(s, "player1", "RS-354:pc")).toBe("discard");
+    // 必要パワー4以下（ヘドリアン女王）は選べ、5（バルイーグル）は選べない
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(choiceIds(s)).toContain("RS-360:c4");
+    expect(choiceIds(s)).not.toContain("RS-361:c5");
+  });
 
   // grnrngr/faq-card-6 RS-375 Q3「はい、コマンドゾーンのカードにも効果を及ぼします。」
   it("RS-375: 公式Q&A — ギンガグリーン【キバショット】で参照するコマンドゾーンのカードの必要パワーも1増える（出典: grnrngr/faq-card-6 RS-375 Q3）", () => {

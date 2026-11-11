@@ -269,6 +269,10 @@ export function applyOnRushUnitEffects(
     );
     nextState = formation.state;
     logs.push(...formation.logs);
+  } else if (!options.viaEffect && zone === "rush") {
+    // 同じタイミングの「ラッシュしたとき」（RS-353【ファイターチェンジ】等）の選択が開いている。ターンプレイヤーはそれを先に処理して
+    // から【編隊出撃】を処理する順を選べる（grnrngr/faq-card-6 RS-353 Q2）ので、選択が済んでから手札を見る（core/applyAction.ts）。
+    nextState = { ...nextState, formationDeployResume: { playerId: ownerPlayerId, instanceId, phasePlayerId } };
   }
   // RS-180 ライドラプター（自軍コマンドをホールドして S ユニットをラッシュしたとき）。
   if (!nextState.pendingEffectChoice && !options.viaEffect) {

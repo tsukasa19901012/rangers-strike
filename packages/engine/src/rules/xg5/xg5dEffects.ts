@@ -12,6 +12,7 @@ import { listDslEffectsForTrigger } from "../../dsl/effectLookup";
 import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import { patchPlayer } from "../playerPatches";
+import { consumeRideShooterRushRule, isRideShooterRushTarget } from "../fieldActivatedAbilities";
 import {
   type BaseCtx,
   close,
@@ -239,8 +240,13 @@ function copyVentTargets(state: GameState, playerId: PlayerId): string[] {
   const p = state.players[playerId];
   const power = countAvailablePower(state, playerId);
   return [...p.power.filter((c) => !c.faceDown), ...p.discard]
-    .filter((c) => isUnit(state, c) && printedFeatures(state, c.cardId).includes("ミラーライダー") && printedCostNumber(state, c.cardId) <= power)
+    .filter((c) => isUnit(state, c) && printedFeatures(state, c.cardId).includes("ミラーライダー") && copyVentCost(state, playerId, c.cardId) <= power)
     .map((c) => c.instanceId);
+}
+/** RK-043【突入】の後なら、【コピーベント】で置き換えるミラーライダーも必要パワーの数字が3少なくなる（atwiki/page-2212 Q1・page-187 Q1）。 */
+function copyVentCost(state: GameState, playerId: PlayerId, cardId: string): number {
+  const cost = printedCostNumber(state, cardId);
+  return isRideShooterRushTarget(state, playerId, cardId) ? Math.max(0, cost - 3) : cost;
 }
 HAND_ACTIVATIONS.push({
   list: (state, playerId) => {
@@ -257,7 +263,10 @@ HAND_ACTIVATIONS.push({
 });
 CHOICE_RESOLVERS[COPY_VENT] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  const next = swapFieldWith(close(state, pending), playerId, pending.sourceInstanceId ?? "", instanceId);
+  const incoming = [...state.players[playerId].power, ...state.players[playerId].discard].find((c) => c.instanceId === instanceId);
+  let next = swapFieldWith(close(state, pending), playerId, pending.sourceInstanceId ?? "", instanceId);
+  // 【突入】の「次にラッシュする」1枚はこれで使い切る。
+  if (incoming) next = patchPlayer(next, playerId, (p) => consumeRideShooterRushRule(next, playerId, p, incoming.cardId));
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG5-066", `${COPY_VENT}:${instanceId}`) };
 };
 CHOICE_SKIPPERS[COPY_VENT] = simpleSkip();
