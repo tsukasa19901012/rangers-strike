@@ -68,11 +68,12 @@ const E3000 = sUnit("SPEC-E3000", { bp: 3000, powerCost: 3 });
 const E3500 = sUnit("SPEC-E3500", { bp: 3500, powerCost: 3 });
 const L3000 = sUnit("SPEC-L3000", { bp: 3000, powerCost: "7+" as never, size: "L" });
 const C1 = sUnit("SPEC-C1", { bp: 1000, powerCost: 1 });
+const NOSP_C1 = sUnit("SPEC-NOSP-C1", { sp: undefined, bp: 1000, powerCost: 1 });
 const C3 = sUnit("SPEC-C3", { bp: 1000, powerCost: 3 });
 const M1 = sUnit("SPEC-M1", { bp: 1000, powerCost: 1, size: "M" });
 const MORPH = sUnit("SPEC-MORPH", { bp: 2000, powerCost: 1, features: ["仮面ライダー", "男"], text: KW_MORPH } as never);
 const MORPH_T = sUnit("SPEC-MORPH-T", { bp: 6000, powerCost: 5, features: ["仮面ライダー", "男"] });
-const EXTRA = [PLAIN_VEHICLE, NOSP_ATTACKER, DA3, DA2, WB3, OPDA3, RESIST1, RESIST_M, E2000, E3000, E3500, L3000, C1, C3, M1, MORPH, MORPH_T];
+const EXTRA = [PLAIN_VEHICLE, NOSP_ATTACKER, DA3, DA2, WB3, OPDA3, RESIST1, RESIST_M, E2000, E3000, E3500, L3000, C1, NOSP_C1, C3, M1, MORPH, MORPH_T];
 
 const rushPhase = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) => boardOf("rush", "player1", p1, p2, EXTRA);
 const battlePhase = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) => boardOf("battle", "player1", p1, p2, EXTRA);
@@ -400,9 +401,13 @@ describe("RK-194 仮面ライダーG3-X", () => {
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("battle");
   });
 
-  it.todo(
-    "RK-194: 公式Q&A — 敵軍バトルエリアに G3-X と凱聖クールギン（RM-035）があるとき、特徴「メカ」の S ユニットは G3-X にアタック・ストライクできる（出典: atwiki/page-999 Q1）— Q の前提（バトルエリアのクールギンが G3-X の効果で選べない）が本文「自軍ラッシュエリアの」と合わず、どの効果で選べないのかを決められない",
-  );
+  // atwiki/page-999 Q1（敵軍バトルエリアに G3-X と凱聖クールギン RM-035 があるとき、クールギンを選べない前提の問答）は
+  // 本文「自軍ラッシュエリアの」と前提が合わないため対象外とし、本文どおりに扱う（ユーザー確認 2026-11-11）。
+  it("RK-194: ※ 守られるのは自軍ラッシュエリアのユニットだけで、G3-X と同じバトルエリアの SP 空欄ユニットは相手に選ばれる（出典: atwiki/page-999「自軍ラッシュエリアのSPが空欄のユニットは相手に選ばれない」。Q1 は本文と前提が合わず対象外）", () => {
+    const s = rc(2, { battle: [inst("RK-194", "eg3"), inst("SPEC-NOSP-C1", "nosp")], rush: [] });
+    expectChoiceFrom(s, "player1", "RK-194");
+    expect(choiceIds(s)).toEqual(["SPEC-NOSP-C1:nosp"]);
+  });
 });
 
 // ===========================================================================
