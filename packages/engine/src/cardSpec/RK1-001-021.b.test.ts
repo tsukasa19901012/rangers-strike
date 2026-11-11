@@ -605,9 +605,43 @@ describe("RK-012 宏のオルゴール時計", () => {
     expect(canCounter(rushOpen(s, "player1", "SPEC-S5000:u"), "RK-012:mb")).toBe(false);
   });
 
-  it.todo(
-    "RK-012: 公式Q&A — アポロガイストがいるとき【神出鬼没の疾風】でラッシュしたサイクロン・ドーパント（BP4000）のリード ET の効果で使える（出典: atwiki/page-198 Q1）— XG7-055【神出鬼没の疾風】の置き換えで直接バトルエリアに出たユニットに「ラッシュされたとき」のカウンターの窓（pendingRush）が開かず、置き換えのあとそのままバトルが解決されるため",
-  );
+  // atwiki/page-198 Q1「はい、できます。」
+  it("RK-012: 公式Q&A — アポロガイストがいるとき【神出鬼没の疾風】でラッシュしたサイクロン・ドーパント（BP4000）のリード ET の効果で使える（出典: atwiki/page-198 Q1）", () => {
+    let s = enemyAttack(
+      { battle: [inst("TST-UNIT-0", "d")], rush: [inst("RK-099", "ap")], hand: [inst("RK-012", "mb")], command: [released("XG7-055", "cy")], power: powerCards(4) },
+      "TST-UNIT-0:d",
+      "SPEC-ATK-S:atk",
+    );
+    // 【神出鬼没の疾風】でアタックされたユニットとコマンドゾーンのサイクロン・ドーパントを置き換える。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG7-055");
+    s = pick(s, "XG7-055:cy");
+    expect(zoneOf(s, "player1", "XG7-055:cy")).toBe("battle");
+    // アポロガイスト【怪人の監視権限】で BP3000+1000 の S ユニットがラッシュされた: 「ラッシュされたとき」の窓が開く。
+    expect(bpOf(s, "player1", "XG7-055:cy")).toBe(4000);
+    expect(canCounter(s, "RK-012:mb")).toBe(true);
+    // リード ET で、バトルエリアのサイクロン・ドーパントをホールドしてコマンドのかわりにする。
+    const pay = (legal(s) as unknown as Record<string, unknown>[]).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-012:mb");
+    expect(pay).toBeDefined();
+    let r = tryAct(s, pay as never);
+    expect(r.ok, r.error).toBe(true);
+    if (r.state.pendingCommandPayment) {
+      expect(r.state.pendingCommandPayment.validInstanceIds).toContain("XG7-055:cy");
+      r = tryAct(r.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["XG7-055:cy"] });
+      expect(r.ok, r.error).toBe(true);
+    }
+    s = r.state;
+    const play = (legal(s) as unknown as Record<string, unknown>[]).find((a) => a.type === "play_counter" && a.instanceId === "RK-012:mb");
+    if (play) s = act(s, play as never);
+    expect(zoneOf(s, "player1", "RK-012:mb")).toBe("discard");
+    // 窓を閉じた後、置き換えたサイクロン・ドーパント（リードでホールド状態）が BP2500 のユニットとバトルし、
+    // その後は敵軍バトルフェイズを終えるだけになる（RK-012「このターン、相手はバトルフェイズを飛ばす」）。
+    s = settle(s);
+    expect(zoneOf(s, "player2", "SPEC-ATK-S:atk")).toBe("discard");
+    expect(cardIn(s, "player1", "XG7-055:cy")?.commandHeld).toBe(true);
+    expect(s.pendingRush).toBeUndefined();
+    expect(s.pendingBattle).toBeUndefined();
+    expect(legal(s).map((a) => a.type)).toEqual(["end_phase"]);
+  });
 
   // atwiki/page-198 Q5「…効果の処理の途中であった【エンドオブワールド】の効果の続き…を実行する事はできますが、…「RK-115 仮面ライダーゾルダ」がアタックやストライクをすることはできません。」
   it("RK-012: 公式Q&A — 【エンドオブワールド】で撃破されたボウケンレッドAT の効果でボウケンレッドが出たときに使うと、【エンドオブワールド】の続き（S ユニットをすべてホールド）は実行され、ゾルダはアタック・ストライクできずにバトルフェイズを終える（出典: atwiki/page-198 Q5）", () => {
