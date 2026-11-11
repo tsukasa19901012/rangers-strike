@@ -16,7 +16,8 @@ import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { cardHasRegisterKeyword } from "../../keywords/registerReaction";
 import { crossValueForCard } from "../../keywords/battleKeywords";
 import { openEffectChoice } from "../pendingChoices";
-import { sendFieldCardsToCommandOrDiscard } from "../fieldLeaveQueue";
+import { fieldMoveIntent, sendFieldCardsToCommandOrDiscard } from "../fieldLeaveQueue";
+import { tryLeaveField } from "../operationCounters";
 import { patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { startEffectRush } from "../effectRush";
@@ -806,7 +807,11 @@ function applyGoldenHope(state: GameState, ctx: GrantKeywordContext): GrantKeywo
     .map((c) => c.instanceId);
   next = destroyAll(next, ctxBase(ctx), "XG7-041", "xg7041_golden_hope_destroy", ids);
   if (next.players[ctx.playerId].discard.length > next.players[enemyId].discard.length && findField(next, ctx.playerId, self.instanceId)) {
-    next = setSpOverride(next, ctx.playerId, self.instanceId, 2);
+    // 期限の指定がないので、ターンを終えても「SP2」のまま（ユニットである間。atwiki/page-2130 Q1）。
+    next = patchPlayer(next, ctx.playerId, (p) => {
+      const set = (cards: CardInstance[]) => cards.map((c) => (c.instanceId === self.instanceId ? { ...c, spUntilLeave: 2 as const } : c));
+      return { ...p, battle: set(p.battle), rush: set(p.rush) };
+    });
   }
   return { state: next, detail: `xg7041:golden_hope:${ids.length}` };
 }
@@ -829,6 +834,13 @@ export function openXg7bTurnEndEntry(state: GameState, endingPlayerId: PlayerId,
   const [kind, instanceId] = entry.split(/:(.*)/s) as [string, string];
   if (!findField(state, endingPlayerId, instanceId)) return state;
   if (kind === "exile") {
+    // ライド中なら離場の処理を通し、チェイス（XP-018 ゴールド寿司で得たもの等）で留まる機会を出す（atwiki/page-2130 Q1・R-KW-CHASE-01）。
+    // 除外は xg7Exile（捨札にするかわりに除外）で表す。留まったユニットは「SP2」等、解決済みの効果を持ったまま（同 Q1）。
+    const intent = findField(state, endingPlayerId, instanceId)?.mountedOnInstanceId ? fieldMoveIntent(state, endingPlayerId, instanceId, endingPlayerId, "discard") : undefined;
+    if (intent) {
+      const left = tryLeaveField(state, { ...intent, xg7Exile: true }).state;
+      return { ...left, log: [...left.log, logFor(state, endingPlayerId, "XG7-041", "xg7041:exile")] };
+    }
     const next = exileFieldCard(state, endingPlayerId, instanceId);
     return { ...next, log: [...next.log, logFor(state, endingPlayerId, "XG7-041", "xg7041:exile")] };
   }

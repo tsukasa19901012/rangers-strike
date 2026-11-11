@@ -4,6 +4,7 @@
  * 選択・キーワードは rules/xg7/xg7Registry.ts に登録し、入口は rules/xg7/xg7Effects.ts。継続効果の判定は rules/xg7/xg7Fields.ts。
  * 選択の組み立ては rules/rm/rm1Effects.ts の部品と rules/xg7/xg7aEffects.ts・xg7bEffects.ts の共通部品を使う。
  */
+import { xg7GameStartResume } from "./xg7GameStartResume";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { commandCategoriesOf, cardName, effectiveBp, getDefinition } from "../../core/catalog";
@@ -523,7 +524,10 @@ CHOICE_SKIPPERS[MUSCLE_EFFECT_ID] = declineLeaveStay(MUSCLE_EFFECT_ID, "XG7-058"
 
 const GAME_START_EFFECT_ID = "xg7059_game_start";
 
-export function openXg7cBeforeOnRush(state: GameState, ownerId: PlayerId, instanceId: string, cardId: string, phasePlayerId: PlayerId): GameState | null {
+// ほかの効果で発動した「ラッシュしたとき」（XG5-010 恐竜剣ゴッドホーン。atwiki/page-2277 Q2「ユニットの効果であるとして【ゲームスタート……】の対象となります」）
+// も resume を渡して開く。見送ったときは runRk10OnRush ではなく resume（rules/xg7/xg7GameStartResume.ts）でその効果を続ける。
+
+export function openXg7cBeforeOnRush(state: GameState, ownerId: PlayerId, instanceId: string, cardId: string, phasePlayerId: PlayerId, resume?: string): GameState | null {
   const holder = opponent(ownerId);
   const trigger = state.players[holder].power.find((c) => isCard(c.cardId, "XG7-059") && !c.faceDown);
   if (!trigger) return null;
@@ -532,9 +536,16 @@ export function openXg7cBeforeOnRush(state: GameState, ownerId: PlayerId, instan
   return openAfter(
     state,
     selectOne({ playerId: holder, phasePlayerId, sourceInstanceId: trigger.instanceId }, "XG7-059", GAME_START_EFFECT_ID, [trigger.instanceId], true, {
-      xg7Meta: { owner: ownerId, target: instanceId },
+      xg7Meta: { owner: ownerId, target: instanceId, ...(resume ? { tags: [resume] } : {}) },
     }),
   );
+}
+
+/** 【ゲームスタート……】の後で、その「ラッシュしたとき」を実行する（nullified なら自身の効果は実行しない）。 */
+function continueGameStart(state: GameState, pending: PendingEffectChoice, ownerId: PlayerId, target: string, nullified: boolean): GameState {
+  const resume = xg7GameStartResume(pending.xg7Meta?.tags?.[0]);
+  if (resume) return nullified ? state : resume(state, ownerId, target, pending.phasePlayerId);
+  return runRk10OnRush(state, ownerId, target, pending.phasePlayerId, nullified);
 }
 
 CHOICE_RESOLVERS[GAME_START_EFFECT_ID] = (state, playerId, instanceId) => {
@@ -550,7 +561,7 @@ CHOICE_RESOLVERS[GAME_START_EFFECT_ID] = (state, playerId, instanceId) => {
   // ただし出た時点でこれはユニットなので、RK-334 電王LF 等で効果名を持つテキストが無効なら「そうしたとき」以降も無効で、
   // その効果はそのまま実行する（atwiki/page-1369 Q1）。
   const nullified = !(card && namedTextNegated(next, playerId, card));
-  if (target && findField(next, ownerId, target)) next = runRk10OnRush(next, ownerId, target, pending.phasePlayerId, nullified);
+  if (target && findField(next, ownerId, target)) next = continueGameStart(next, pending, ownerId, target, nullified);
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG7-059", `${GAME_START_EFFECT_ID}:${nullified ? "nullify" : "negated"}`) };
 };
 CHOICE_SKIPPERS[GAME_START_EFFECT_ID] = (state, playerId) => {
@@ -558,7 +569,7 @@ CHOICE_SKIPPERS[GAME_START_EFFECT_ID] = (state, playerId) => {
   const ownerId = pending.xg7Meta?.owner ?? opponent(playerId);
   const target = pending.xg7Meta?.target;
   let next = close(state, pending);
-  if (target && findField(next, ownerId, target)) next = runRk10OnRush(next, ownerId, target, pending.phasePlayerId, false);
+  if (target && findField(next, ownerId, target)) next = continueGameStart(next, pending, ownerId, target, false);
   return { state: proceed(next, pending), log: skipLog(state, playerId, "XG7-059", GAME_START_EFFECT_ID) };
 };
 

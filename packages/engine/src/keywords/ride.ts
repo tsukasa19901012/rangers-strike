@@ -407,6 +407,8 @@ export function sanitizeUnitLeavingField(
   toZone: ZoneName,
 ): CardInstance {
   const next: CardInstance = { ...card };
+  // 期限の指定のない「SPn」はユニットである間だけ（atwiki/page-2130 Q1）。
+  delete next.spUntilLeave;
   if (fromZone === "rush" || fromZone === "battle") {
     if (toZone === "discard" || toZone === "power") {
       delete next.registerHeld;

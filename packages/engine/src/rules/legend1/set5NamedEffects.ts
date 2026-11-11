@@ -417,7 +417,9 @@ export function magiMergeAllowsRushAttack(state: GameState, attackerPlayerId: Pl
 // 発動は通常の play_operation と同じ解決を使う（カードを手札に、同じカードのホールド状態の写しをコマンドゾーンに一時的に置く）。
 
 export const MAGI_TICKET_KEEP_EFFECT_ID = "rs325_magi_ticket_keep";
-const MAGI_TICKET_STAND_IN_SUFFIX = "#magi_ticket";
+import { MAGI_TICKET_STAND_IN_SUFFIX, magiTicketCounterCandidates, stageMagiTicket } from "../magiTicketStage";
+
+export { magiTicketCounterCandidates, stageMagiTicket };
 
 /** マジチケットで発動できるコマンドゾーンのオペレーションか（タイミング以外の条件。タイミングは呼び出し側＝ラッシュフェイズの合法手）。 */
 export function magiTicketUsable(
@@ -434,26 +436,6 @@ export function magiTicketUsable(
   const def = getDefinition(state.definitions, command.cardId);
   if (!def || def.type !== "operation" || !isNormalOperation(command.cardId)) return false;
   return availablePower >= parsePowerCost(def.powerCost);
-}
-
-/**
- * play_operation を通すための仮の状態: コマンドゾーンのカードを手札へ移し、同じカードのホールド状態の写しをコマンドゾーンに置く。
- */
-export function stageMagiTicket(state: GameState, playerId: PlayerId, commandInstanceId: string): GameState | null {
-  const player = state.players[playerId];
-  const found = findInZone(player, "command", commandInstanceId);
-  if (!found) return null;
-  const { commandHeld: _h, paymentHeld: _p, mothershipHold: _m, ...card } = found.card;
-  const standIn: CardInstance = {
-    ...card,
-    instanceId: `${card.instanceId}${MAGI_TICKET_STAND_IN_SUFFIX}`,
-    commandHeld: true,
-    paymentHeld: true,
-  };
-  const command = [...player.command];
-  command[found.index] = standIn;
-  const staged = satisfyCostWindow({ ...player, command, hand: [...player.hand, card] }, "operation_category");
-  return { ...state, ...updatePlayer(state, playerId, staged) };
 }
 
 /** play_operation の後: 写しを取り除き、捨札になるときの選択（applyAction の後処理）のために記録する。 */

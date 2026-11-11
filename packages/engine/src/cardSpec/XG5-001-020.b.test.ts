@@ -238,9 +238,19 @@ describe("XG5-010 恐竜剣ゴッドホーン", () => {
     expect(zoneOf(s, "player2", "TST-OP:eh")).toBe("discard");
     expect(zoneOf(s, "player2", "RK-251:g")).toBe("hand");
   });
-  it.todo(
-    "XG5-010: 公式Q&A — ゴッドホーンで発動した RS-039【プテラビーム】はユニットの効果として XG7-059 トリガードーパント【ゲームスタート……】の対象になる（出典: atwiki/page-2277 Q2）— XG7-059 は本範囲外で照合がまだのため",
-  );
+  it("XG5-010: 公式Q&A — ゴッドホーンで発動した RS-039【プテラビーム】はユニットの効果として XG7-059 トリガードーパント【ゲームスタート……】の対象になる（出典: atwiki/page-2277 Q2「ユニットの効果であるとして【ゲームスタート……】の対象となります」）", () => {
+    const enemy = () => ({ ...ENEMY(), power: [{ ...inst("XG7-059", "tr"), faceDown: false }] });
+    const s = pick(used(OWN(), enemy()), "RS-039:pt");
+    expectChoiceFrom(s, "player2", "XG7-059");
+    // 【ゲームスタート……】を発動すると、トリガードーパントがラッシュエリアに出て【プテラビーム】は無効
+    const nullified = resolveAll(pick(s, "XG7-059:tr"), ["TST-OP:eh"]);
+    expect(zoneOf(nullified, "player2", "XG7-059:tr")).toBe("rush");
+    expect(zoneOf(nullified, "player2", "TST-OP:eh")).toBe("command");
+    // 見送れば【プテラビーム】をそのまま実行する
+    const fired = resolveAll(skip(s), ["TST-OP:eh"]);
+    expect(zoneOf(fired, "player2", "XG7-059:tr")).toBe("power");
+    expect(zoneOf(fired, "player2", "TST-OP:eh")).toBe("discard");
+  });
 });
 
 // ===========================================================================

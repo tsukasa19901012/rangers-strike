@@ -257,9 +257,36 @@ describe("RS-279 グリーンサイ", () => {
   });
 
   // rider_1 RK-005 Q「「RS-279 グリーンサイ」に使用してください。…実際に撃破する効果を持っているのが「RS-279 グリーンサイ」だから」
-  it.todo(
-    "RS-279: 公式Q&A — スワンウィングで出させたユニットをサイカッターで撃破したとき、超電子ダイナモ（RK-005）はグリーンサイに使っていれば相手に1点ダメージ（出典: grnrngr/faq-rider_1 RK-005）— グリーンサイに「改造人間」を付ける手段（RS-203 デウス等）を使っても、RK-005 の対象判定（rules/rk/rk1NamedEffects.ts の unitFeaturesOf）が付与された特徴を見ないため対象にできず、また効果による撃破（サイカッター）の撃破者をエンジンが記録しておらずダイナモの1点ダメージ（applyRk1DestroyerDamage はバトル撃破のみ）を起こせないため",
-  );
+  it("RS-279: 公式Q&A — スワンウィングで出させたユニットをサイカッターで撃破したとき、超電子ダイナモ（RK-005）はグリーンサイに使っていれば相手に1点ダメージ（出典: grnrngr/faq-rider_1 RK-005「「RS-279 グリーンサイ」に使用してください。これは、実際に撃破する効果を持っているのが「RS-279 グリーンサイ」だからです」）", () => {
+    // RK-001 改造人間（※常駐。「男」「女」に「改造人間」を追加）があるので、グリーンサイ（男）にもホワイトスワン（女）にもダイナモを使える。
+    const run = (dynamoOn: string) => {
+      let s = st(
+        {
+          turn: 3,
+          phase: "rush",
+          player1: { rush: [inst("RS-279", "s"), inst("TST-UNIT-0", "m"), inst("RS-284", "w")], operation: [inst("RK-001", "kz")], hand: [inst("RK-005", "dy")], command: [released("TST-OP-ET", "c")], power: powerCards(1), deck: deckCards(5) },
+          player2: { command: [held("TST-UNIT-0", "u1")], deck: deckCards(5, "e") },
+        },
+        SPECS,
+      );
+      const r = playOp(s, "player1", "RK-005:dy");
+      expect(r.ok, r.error).toBe(true);
+      s = resolveChoices(r.state, [dynamoOn]);
+      s = nextPhase(s);
+      s = passEntry(enter(s, "RS-279:s"));
+      s = passEntry(enter(s, "TST-UNIT-0:m"));
+      s = enter(s, "RS-284:w");
+      s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "swan_wing_deploy_enemy_command_s" });
+      return settle(s);
+    };
+    const onSai = run("RS-279:s");
+    expect(zoneOf(onSai, "player2", "TST-UNIT-0:u1")).toBe("discard");
+    expect(onSai.players.player2.damage).toBe(1);
+    // スワンウィングで出させたホワイトスワンに使っても、撃破したのはグリーンサイなのでダメージはない
+    const onSwan = run("RS-284:w");
+    expect(zoneOf(onSwan, "player2", "TST-UNIT-0:u1")).toBe("discard");
+    expect(onSwan.players.player2.damage).toBe(0);
+  });
 });
 
 // ===========================================================================

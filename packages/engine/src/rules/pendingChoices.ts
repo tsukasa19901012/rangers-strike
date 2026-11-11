@@ -173,6 +173,7 @@ import { isXg4ChoiceEffect, tryConfirmXg4Choice, tryResolveXg4Choice, trySkipXg4
 import { isPromoChoiceEffect, promoInterceptDeckReveal, tryConfirmPromoChoice, tryResolvePromoChoice, trySkipPromoChoice } from "./promo";
 import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryResolveRm2Choice, trySkipRm2Choice } from "./rm/rm2Effects";
 import { isXg5ChoiceEffect, tryConfirmXg5Choice, tryResolveXg5Choice, trySkipXg5Choice } from "./xg5/xg5Effects";
+import { openXg5WarpOnDeckReveal } from "./xg5/xg5eEffects";
 import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryResolveRm3Choice, trySkipRm3Choice } from "./rm/rm3Effects";
 import { isXg7ChoiceEffect, tryConfirmXg7Choice, tryResolveXg7Choice, trySkipXg7Choice } from "./xg7/xg7Effects";
 import { isXg3ChoiceEffect, tryCompleteXg3HoldChoice, tryConfirmXg3Choice, tryResolveXg3Choice, trySkipXg3Choice } from "./xg3/xg3Effects";
@@ -5778,6 +5779,9 @@ export function applyEffectChoiceSelect(
       if (pending.effectId === "arino" && instanceId === "reveal_top") {
         const top = state.players[pending.playerId].deck[0];
         if (!top) return finishChoice(state, pending, "empty_deck");
+        // XG5-085【ワープ】: オモテになったグランナスカを対象にする前に出すか（rules/xg5/xg5eEffects.ts。見送れば分身魔球へ）。
+        const warp = openXg5WarpOnDeckReveal(state, pending, top.instanceId);
+        if (warp) return { state: warp };
         // SR-006【超忍法・分身魔球】: オモテにしたカードを効果の対象にする前に（rules/promo/promo2Effects.ts）。
         const promoIntercepted = promoInterceptDeckReveal(state, pending, top.instanceId);
         if (promoIntercepted) return { state: promoIntercepted };

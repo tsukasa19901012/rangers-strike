@@ -16,6 +16,7 @@ import { activate, onlyActivateOrSkip } from "./revealGate.helpers";
 import { pickEffectChoice } from "../ai/helpers";
 import { applyAction } from "../core/applyAction";
 import { getLegalActions } from "../core/legalActions";
+import { nextPhase, playOp } from "./RK1-001-021.helpers";
 import { HOMERUN_HOLD_EFFECT_ID, HOMERUN_REVEAL_EFFECT_ID } from "../rules/legend1/set5NamedEffectsA";
 import { deckCopyUnlimited, validateDeckEntries, type CardDefinition } from "@rangers-strike/cards";
 import {
@@ -274,6 +275,30 @@ describe("RS-259 モモレンジャー", () => {
     return s;
   }
 
+  /**
+   * 自軍ラッシュフェイズに RK-001 改造人間（※常駐。「男」「女」に「改造人間」を追加）のもとで RK-005 超電子ダイナモを dynamoOn に使い、
+   * バトルフェイズでモモ→キ→ミド→アオ→アカの順にコンビネーションする。
+   */
+  function dynamoChain(dynamoOn: string, p2: Partial<GameState["players"]["player2"]>) {
+    let s = st(
+      {
+        phase: "rush",
+        player1: { rush: GORENGER.map((id) => inst(id.split(":")[0]!, id.split(":")[1]!)), operation: [inst("RK-001", "kz")], hand: [inst("RK-005", "dy")], command: [released("TST-OP-ET", "c")], deck: deckCards(5) },
+        player2: { deck: deckCards(5, "e"), ...p2 },
+      },
+      [E8, E9],
+    );
+    const r = playOp(s, "player1", "RK-005:dy");
+    expect(r.ok, r.error).toBe(true);
+    s = nextPhase(pickAll(r.state, [dynamoOn]));
+    for (const id of GORENGER) {
+      s = enter(s, id);
+      s = settle(pickAll(drain(s, "player1", []), []));
+      if (id !== GORENGER.at(-1)) s = passEntry(s);
+    }
+    return s;
+  }
+
   it("RS-259: カタログ本文・スペックが出典と一致（出典: atwiki/page-460）", () => {
     expectCatalogText("RS-259", TEXT);
     expectStats("RS-259", { name: "モモレンジャー", category: "ET", size: "S", bp: 2000, sp: undefined, powerCost: 0, comboNumber: 1, features: ["ピンク", "女"] });
@@ -311,9 +336,12 @@ describe("RS-259 モモレンジャー", () => {
   });
 
   // faq-card-5 RS-259 Q1（atwiki Q1）「その場合は「RS-259 モモレンジャー」が撃破したことになります。」
-  it.todo(
-    "RS-259: 公式Q&A — ゴレンジャーハリケーンで撃破したのはモモレンジャー（出典: grnrngr/faq-card-5 RS-259 Q1・atwiki/page-460 Q1・faq-rider_1 RK-005）— 「どのユニットが撃破したか」を公開 API で観測する手段がない（超電子ダイナモ RK-005 の対象は特徴「改造人間」のユニットに限られ、モモレンジャーには使えない）",
-  );
+  it("RS-259: 公式Q&A — ゴレンジャーハリケーンで撃破したのはモモレンジャー（超電子ダイナモをモモレンジャーに使っていれば、撃破した SP のあるユニット1体につき1点）（出典: grnrngr/faq-card-5 RS-259 Q1・atwiki/page-460 Q1「その場合は「RS-259 モモレンジャー」が撃破したことになります」・faq-rider_1 RK-005）", () => {
+    const s = dynamoChain("RS-259:momo", { battle: [inst("SPEC-E8", "b8")], rush: [inst("SPEC-E8", "r8")] });
+    expect(zoneOf(s, "player2", "SPEC-E8:b8")).toBe("discard");
+    expect(zoneOf(s, "player2", "SPEC-E8:r8")).toBe("discard");
+    expect(s.players.player2.damage).toBe(2);
+  });
 
   // faq-card-5 RS-259 Q2（atwiki Q2）「はい、SP２になります。」
   it("RS-259: 公式Q&A — 1体も撃破できなくても、そのアカレンジャーは「SP2」になる（出典: grnrngr/faq-card-5 RS-259 Q2・atwiki/page-460 Q2）", () => {
@@ -413,9 +441,13 @@ describe("RS-259 モモレンジャー", () => {
   });
 
   // faq-rider_1 RK-005 Q「「RS-259 モモレンジャー」に使用してください。これは、実際に撃破する効果を持っているのが「RS-259 モモレンジャー」だからです。」
-  it.todo(
-    "RS-259: 公式Q&A — 超電子ダイナモは、撃破する効果を持つモモレンジャーに使う（出典: grnrngr/faq-rider_1 RK-005 Q）— RK-005 の対象は特徴「改造人間」のユニットだけで、モモレンジャー（特徴ピンク／女）を対象にする手順を公開 API で組めない",
-  );
+  it("RS-259: 公式Q&A — 超電子ダイナモは、撃破する効果を持つモモレンジャーに使う（アカレンジャーに使ってもダメージはない）（出典: grnrngr/faq-rider_1 RK-005 Q「「RS-259 モモレンジャー」に使用してください」）", () => {
+    const onAka = dynamoChain("RS-126:aka", { battle: [inst("SPEC-E8", "b8")] });
+    expect(zoneOf(onAka, "player2", "SPEC-E8:b8")).toBe("discard");
+    expect(onAka.players.player2.damage).toBe(0);
+    const onMomo = dynamoChain("RS-259:momo", { battle: [inst("SPEC-E8", "b8")] });
+    expect(onMomo.players.player2.damage).toBe(1);
+  });
 });
 
 // ===========================================================================

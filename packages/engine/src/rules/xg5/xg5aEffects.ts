@@ -2,6 +2,8 @@
  * クロスギャザー XG5 XG5-001〜XG5-020（ゴーグルレッド〜ボウケンレッド）のカード固有の効果（cardSpec XG5-001-020 の監査）。
  * 登録先は rules/xg5/xg5Core.ts（DSL の `xg5::cardId::name`・選択・後処理）。継続効果の判定は rules/xg5/xg5Fields.ts。
  */
+import { registerXg7GameStartResume } from "../xg7/xg7GameStartResume";
+import { openXg7BeforeOnRush } from "../xg7/xg7Effects";
 import { lookCtx, openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingStrike, PlayerId } from "../../types/game";
@@ -378,24 +380,28 @@ function godHorn(state: GameState, ctx: BaseCtx): GameState {
   return openAfter(state, selectOne(ctx, "XG5-010", GOD_HORN, ids, true));
 }
 XG5_KEYWORDS["XG5-010::god_horn"] = (state, ctx) => ({ state: godHorn(state, ctxBase(ctx)), detail: GOD_HORN });
+/** 選んだユニットの「ラッシュしたとき」の効果を発動する。 */
+function fireGodHorn(state: GameState, playerId: PlayerId, instanceId: string, phasePlayerId: PlayerId): GameState {
+  const unit = state.players[playerId].rush.find((c) => c.instanceId === instanceId);
+  if (!unit) return state;
+  const fired = tryResolveDslTriggeredEffects({ state, cardId: unit.cardId, instanceId, playerId, phasePlayerId, triggerType: "on_rush", logAction: "named_effect" });
+  let next = { ...fired.state, log: [...fired.state.log, ...fired.logs] };
+  if (!fired.handled) {
+    const named = resolveNamedOnRushEffects(next, playerId, instanceId, phasePlayerId);
+    next = { ...named.state, log: [...named.state.log, ...named.logs] };
+  }
+  return next;
+}
+// 発動するのはそのユニットの効果なので、相手は XG7-059【ゲームスタート……】で無効にできる（atwiki/page-2277 Q2）。見送られたら続ける。
+registerXg7GameStartResume(GOD_HORN, fireGodHorn);
 CHOICE_RESOLVERS[GOD_HORN] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
   const unit = state.players[playerId].rush.find((c) => c.instanceId === instanceId)!;
-  const fired = tryResolveDslTriggeredEffects({
-    state: close(state, pending),
-    cardId: unit.cardId,
-    instanceId,
-    playerId,
-    phasePlayerId: pending.phasePlayerId,
-    triggerType: "on_rush",
-    logAction: "named_effect",
-  });
-  let next = { ...fired.state, log: [...fired.state.log, ...fired.logs] };
-  if (!fired.handled) {
-    const named = resolveNamedOnRushEffects(next, playerId, instanceId, pending.phasePlayerId);
-    next = { ...named.state, log: [...named.state.log, ...named.logs] };
-  }
-  return { state: proceed(next, pending), log: logFor(state, playerId, "XG5-010", `${GOD_HORN}:${instanceId}`) };
+  const closed = close(state, pending);
+  const log = logFor(state, playerId, "XG5-010", `${GOD_HORN}:${instanceId}`);
+  const gated = openXg7BeforeOnRush(closed, playerId, instanceId, unit.cardId, pending.phasePlayerId, GOD_HORN);
+  if (gated) return { state: proceed(gated, pending), log };
+  return { state: proceed(fireGodHorn(closed, playerId, instanceId, pending.phasePlayerId), pending), log };
 };
 CHOICE_SKIPPERS[GOD_HORN] = simpleSkip();
 COMMAND_OPS.push({ cardId: "XG5-010", category: "WB", run: godHorn });

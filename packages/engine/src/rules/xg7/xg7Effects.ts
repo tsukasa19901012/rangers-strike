@@ -198,8 +198,8 @@ export function consumeXg7NextCardCost(state: GameState, playerId: PlayerId): Ga
 }
 
 /** 手札からラッシュされたユニットの「ラッシュしたとき」を実行する前（XG7-059【ゲームスタート……】。rules/onRushUnitEffects.ts）。開けなければ null。 */
-export function openXg7BeforeOnRush(state: GameState, ownerId: PlayerId, instanceId: string, cardId: string, phasePlayerId: PlayerId): GameState | null {
-  return openXg7cBeforeOnRush(state, ownerId, instanceId, cardId, phasePlayerId);
+export function openXg7BeforeOnRush(state: GameState, ownerId: PlayerId, instanceId: string, cardId: string, phasePlayerId: PlayerId, resume?: string): GameState | null {
+  return openXg7cBeforeOnRush(state, ownerId, instanceId, cardId, phasePlayerId, resume);
 }
 
 /** アタックされたとき（XG7-055【神出鬼没の疾風】。core/applyAction.ts continueAttackAfterDeclaration）。開けなければ null。 */

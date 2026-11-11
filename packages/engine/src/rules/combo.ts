@@ -955,7 +955,7 @@ export function strikeDamageFor(
 
   const def = getDefinition(definitions, instance.cardId);
   const modifier = instance.spModifier ?? 0;
-  const printed = instance.spOverride ?? def?.sp;
+  const printed = instance.spOverride ?? instance.spUntilLeave ?? def?.sp;
   if (printed === "special") return modifier;
   if (typeof printed === "number") return printed + modifier;
   if (typeof printed === "string" && printed.includes("/")) return modifier;

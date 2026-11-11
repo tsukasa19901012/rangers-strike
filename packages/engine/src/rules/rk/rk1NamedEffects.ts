@@ -7,6 +7,7 @@
  *   それぞれの処理の場所（operationCounters・restrictions・addedFeatures・fieldAuras・leaveEffects 等）から呼ぶ。
  * 構成は rules/legend1/set9NamedEffectsD.ts と同じ。
  */
+import { unitFeatures } from "../addedFeatures";
 import type { Category } from "@rangers-strike/cards";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type {
@@ -442,7 +443,9 @@ export function applyRk1BattleCounterEffect(
 //  SPが空欄ではないユニットを撃破したとき、相手に1点ダメージを与える。」（atwiki/page-193）
 // - 2枚使えば2点（Q4）。能力は選んだユニット（instance）がこのターンに持つ。
 // - 撃破は「バトルによる撃破を行ったユニット」（grnrngr/faq-rider-1 RK-005 Q3）。効果で撃破したときは「撃破する」と書かれた
-//   テキストの持ち主が能力を持てばよい（同 Q）。RS-319【ディーソードベガ】は rules/legend1/set5NamedEffects.ts から呼ぶ。
+//   テキストの持ち主が能力を持てばよい（同 Q）。効果の撃破からは、撃破したユニット（テキストの持ち主）を渡して applyRk1DestroyerDamage を呼ぶ:
+//   RS-319【ディーソードベガ】は rules/legend1/set5NamedEffects.ts、RS-279【サイカッター】は rules/rs/rsCatchallRuntime.ts、
+//   RS-259【ゴレンジャーハリケーン】は rules/legend3/gorengerHurricane.ts。
 
 export const DYNAMO_EFFECT_ID = "rk005_dynamo";
 const DYNAMO_RULE = "rk005_dynamo_grant";
@@ -450,7 +453,8 @@ const DYNAMO_RULE = "rk005_dynamo_grant";
 function applyDynamo(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const pid = ctx.playerId;
   const ids = fieldUnits(state, pid)
-    .filter((c) => isUnitCard(state, c.cardId) && rk1IsSmallNow(state, c) && unitFeaturesOf(state, pid, c).includes("改造人間"))
+    // 特徴は効果で追加されたもの（RS-203【デウス遺伝子】等。rules/addedFeatures.ts）も見る（faq-rider-1 RK-005 Q のグリーンサイ・モモレンジャー）。
+    .filter((c) => isUnitCard(state, c.cardId) && rk1IsSmallNow(state, c) && (unitFeaturesOf(state, pid, c).includes("改造人間") || unitFeatures(state, pid, c).includes("改造人間")))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: `${DYNAMO_EFFECT_ID}:no_targets` };
   return {

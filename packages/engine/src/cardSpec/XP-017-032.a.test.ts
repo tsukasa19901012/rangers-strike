@@ -19,6 +19,7 @@ import {
   canSkip,
   canStrike,
   canUseCard,
+  chaseTargets,
   choiceIds,
   damageCards,
   damageOf,
@@ -36,10 +37,12 @@ import {
   morphCandidates,
   passEntry,
   payableFor,
+  PLAIN_VEHICLE,
   pick,
   playOp,
   powerCards,
   rcBoard,
+  raw,
   rcUnit,
   registerOffered,
   released,
@@ -49,6 +52,7 @@ import {
   rushFromHand,
   rushPhase,
   settle,
+  spOf,
   st,
   strike,
   sUnit,
@@ -67,6 +71,9 @@ const SAMURAI = sUnit("SPEC-SAMURAI", { category: "WB", bp: 1000, features: ["�
 const SILVER = sUnit("SPEC-SILVER", { category: "WB", bp: 1000, features: ["シルバー"] });
 const PLAIN = sUnit("SPEC-PLAIN", { category: "WB", bp: 1000 });
 const EXTRA = [ENEMY0, E1500, E2000, RC3500, WB_MA, MA_ONLY, WB_ET, SAMURAI, SILVER, PLAIN];
+const MA_NOSP = sUnit("SPEC-MA-NOSP", { category: "MA", bp: 1000, sp: undefined });
+const RC_SAMURAI = rcUnit("SPEC-RC-SAMURAI", { category: "WB", bp: 1000, features: ["侍"] });
+const ET_S = sUnit("SPEC-ET-S", { category: "ET", bp: 1000, powerCost: 1 });
 
 // ===========================================================================
 describe("XP-017 仮面ライダーディケイド激情態", () => {
@@ -186,8 +193,66 @@ describe("XP-018 ゴールド寿司", () => {
     expect(registerOffered(attackedSushi("SPEC-PLAIN:p"))).toBe(false);
   });
 
-  it.todo("XP-018: MA があればタクスMA、OT があればチェイス、ET があればコールET を得る（出典: atwiki/page-2130）— 付与のレジストが働いていない（既知の不具合 CARD-XP-018）ため、ほかの付与もまとめて未確認");
-  it.todo("XP-018: 公式Q&A — 【黄金の希望】で「SP2」になった XG7-041 W・CJGX がゴールド寿司のチェイスで場に留まっても「SP2」のまま（出典: atwiki/page-2130 Q1）— ゴールド寿司の「OTがあればチェイスを得る」付与が未実装（rules/promo/xp2Effects.ts の付与はレジストだけ）で、XG7-041 の※（ターンを終えるときの除外）にチェイスで留まる手順を起こせないため");
+  it("XP-018: MA があればタクスMA を得る（特徴「侍」の S ユニットの右隣、バトルエリア3番目の MA の S ユニットが SP1）（出典: atwiki/page-2130「MAがあればタクスMAを得る」・R-KW-TAKUS-01）", () => {
+    const board = (command = releasedCat("MA", 1)) =>
+      st({ phase: "battle", player1: { battle: [inst("SPEC-PLAIN", "p"), inst("SPEC-SAMURAI", "h"), inst("SPEC-MA-NOSP", "m")], operation: [inst("XP-018", "gs")], command, deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } }, [...EXTRA, MA_NOSP]);
+    expect(spOf(board(), "player1", "SPEC-MA-NOSP:m")).toBe(1);
+    expect(spOf(board(releasedCat("WB", 1)), "player1", "SPEC-MA-NOSP:m")).toBe(0);
+  });
+
+  it("XP-018: OT があればチェイスを得る（ライド中に撃破されるとき、ライドされていない自軍ビークルに乗り換えられる）（出典: atwiki/page-2130「OTがあればチェイスを得る」・R-KW-CHASE-01）", () => {
+    const chased = (command: ReturnType<typeof releasedCat>) => {
+      const s = st(
+        {
+          player1: { rush: [inst("TST-UNIT-7", "a")], deck: deckCards(3) },
+          player2: { operation: [inst("XP-018", "gs")], command, battle: ridingPair("SPEC-RC-SAMURAI", "r", "SPEC-VEHICLE", "v"), rush: [inst("SPEC-VEHICLE", "v2")], deck: deckCards(3, "e") },
+        },
+        [...EXTRA, RC_SAMURAI, PLAIN_VEHICLE],
+      );
+      return attack(enter(s, "TST-UNIT-7:a"), "TST-UNIT-7:a", "SPEC-RC-SAMURAI:r");
+    };
+    expect(chaseTargets(chased(releasedCat("OT", 1)), "player2")).toEqual(["SPEC-VEHICLE:v2"]);
+    expect(chaseTargets(chased(releasedCat("WB", 1)), "player2")).toEqual([]);
+  });
+
+  it("XP-018: ET があればコールET を得る（ET のユニットをラッシュするためのコマンドとしてホールドできる）（出典: atwiki/page-2130「ETがあればコールETを得る」・R-KW-CALL-01）", () => {
+    const board = (command: ReturnType<typeof releasedCat>) =>
+      rushPhase({ hand: [inst("SPEC-ET-S", "h")], rush: [inst("SPEC-SAMURAI", "c")], operation: [inst("XP-018", "gs")], command, power: powerCards(1) }, {}, [...EXTRA, ET_S]);
+    const s = raw(board(releasedCat("ET", 1)), { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: "SPEC-ET-S:h" });
+    expect(s.pendingCommandPayment?.validInstanceIds).toContain("SPEC-SAMURAI:c");
+    // ET のコマンドがなければコールET を得ず、WB のコマンドだけでは ET のユニットのラッシュに払えない
+    expect(legal(board(releasedCat("WB", 1))).some((a) => a.type === "initiate_command_payment" && "sourceInstanceId" in a && a.sourceInstanceId === "SPEC-ET-S:h")).toBe(false);
+  });
+  it("XP-018: 公式Q&A — 【黄金の希望】で「SP2」になった XG7-041 W・CJGX がゴールド寿司のチェイスで場に留まっても「SP2」のまま（出典: atwiki/page-2130 Q1「ラッシュ時に発動して解決を完了した、期限の指定のない効果は、そのユニットがユニットである間有効です」）", () => {
+    // ライド中の XG7-041（【黄金の希望】で SP2）。自軍コマンドゾーンに OT、ラッシュエリアにライドされていないビークル。
+    // ビークルは RS-393 コマンドアタッカー（「ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる」。XG7-041 は ET の S ユニット）。
+    const [v, gx] = ridingPair("XG7-041", "gx", "RS-393", "v");
+    const board = st(
+      {
+        player1: { battle: [v!, { ...gx!, spUntilLeave: 2 }], rush: [inst("RS-393", "v2")], command: releasedCat("OT", 1), operation: [inst("XP-018", "gs")], deck: deckCards(3) },
+        player2: { deck: deckCards(3, "e") },
+      },
+      EXTRA,
+    );
+    expect(spOf(board, "player1", "XG7-041:gx")).toBe(2);
+    // 自分がターンを終えるとき、※で除外されるかわりにチェイスで乗り換える
+    let s = settle(board);
+    for (let i = 0; i < 10 && !s.pendingChase; i++) {
+      const end = legal(s).find((a) => a.type === "end_phase");
+      if (!end) break;
+      s = raw(s, end);
+    }
+    expect(chaseTargets(s, "player1")).toEqual(["RS-393:v2"]);
+    const atChase = s;
+    s = settle(raw(s, legal(s).find((a) => a.type === "resolve_chase" && a.playerId === "player1")!));
+    expect(zoneOf(s, "player1", "XG7-041:gx")).toBe("rush");
+    // ターンを終えて相手のターンになっても SP2 のまま
+    expect(s.activePlayer).toBe("player2");
+    expect(spOf(s, "player1", "XG7-041:gx")).toBe(2);
+    // チェイスしなければ※のとおり除外される
+    const passed = settle(raw(atChase, { type: "pass_chase", playerId: "player1" }));
+    expect((passed.players.player1.exile ?? []).map((c) => c.instanceId)).toContain("XG7-041:gx");
+  });
 });
 
 // ===========================================================================

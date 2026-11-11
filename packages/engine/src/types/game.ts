@@ -58,6 +58,11 @@ export type CardInstance = {
   spModifier?: number;
   /** ターン中の SP 上書き（例: オペで「SP1/4」になる）。 */
   spOverride?: import("@rangers-strike/cards").SpValue;
+  /**
+   * 期限の指定のない効果で「SPn」になった値（XG7-041【黄金の希望】）。ユニットである間有効で、ターンを終えても消えず、
+   * 場を離れると消える（atwiki/page-2130 Q1）。spOverride（このターンの上書き）があればそちらを優先する。
+   */
+  spUntilLeave?: import("@rangers-strike/cards").SpValue;
   /** バトル進入時に発動したNC効果ID（ターン終了時にクリア）。 */
   activatedNcEffects?: string[];
   /** RS-222【戦闘指揮】で成立させた NC の効果を発動するときにリリースする敵軍コマンドの数（【ジュウクンドー】）。 */

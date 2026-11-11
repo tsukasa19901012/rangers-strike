@@ -6,6 +6,7 @@
  * - 継続効果・制限の参照関数（BP/SP 補正、バトル進入・アタック・支払いの制限）。
  * 型・構成は rules/legend1/set4NamedEffects.ts と同じ。
  */
+import { magiTicketCounterCandidates } from "./set5NamedEffects";
 import { placeDarkArmorAsDamage } from "./set6NamedEffects348";
 import { lookCtx, openDeckLook } from "../deckLook";
 import { filthyAirActive } from "./otherLinesNamedEffects";
@@ -1223,6 +1224,17 @@ function giantBombWindowBlocked(state: GameState): boolean {
   return radarBlocked(state) || !!(state.pendingBattle || state.pendingStrike || state.pendingRush || state.pendingMorph || state.pendingGiantBomb);
 }
 
+/**
+ * 巨大化爆弾を使えるか: 手札にあるか、RS-325【マジチケット】でコマンドゾーンのものを使えるか（faq-card-5 RS-325 Q3。
+ * 使うときは core/legalActions.ts の use_magi_ticket（counter）。手札に移したものとして applyGiantBombCounter が解決する）。
+ */
+function giantBombAvailable(state: GameState, ownerId: PlayerId): boolean {
+  return (
+    state.players[ownerId].hand.some((c) => c.cardId === GIANT_BOMB_CARD_ID) ||
+    magiTicketCounterCandidates(state, ownerId).some((c) => c.cardId === GIANT_BOMB_CARD_ID)
+  );
+}
+
 /** applyAction の後処理: 敵軍ターン中に「怪人」の自軍ユニットが捨札になり、手札に巨大化爆弾があれば窓を開く。 */
 export function openGiantBombWindow(before: GameState, after: GameState): GameState {
   if (after.winner) return after;
@@ -1232,7 +1244,7 @@ export function openGiantBombWindow(before: GameState, after: GameState): GameSt
   const ownerId = opponent(turnPlayer);
   const owner = after.players[ownerId];
   const prevField = fieldUnits(before, ownerId);
-  const fresh = owner.hand.some((c) => c.cardId === GIANT_BOMB_CARD_ID) && turnPlayer !== ownerId
+  const fresh = giantBombAvailable(after, ownerId) && turnPlayer !== ownerId
     ? owner.discard
         .filter((c) => hasFeature(after, c.cardId, "怪人"))
         .filter((c) => prevField.some((p) => p.instanceId === c.instanceId))
@@ -1249,7 +1261,7 @@ export function openGiantBombWindow(before: GameState, after: GameState): GameSt
     return { ...after, deferredGiantBomb: { ownerId, unitInstanceIds: ids, phasePlayerId: turnPlayer } };
   }
   const cleared: GameState = deferred ? { ...after, deferredGiantBomb: undefined } : after;
-  if (deferred && deferredIds.length > 0 && cleared.players[deferred.ownerId].hand.some((c) => c.cardId === GIANT_BOMB_CARD_ID)) {
+  if (deferred && deferredIds.length > 0 && giantBombAvailable(cleared, deferred.ownerId)) {
     const ids = deferred.ownerId === ownerId ? [...new Set([...deferredIds, ...fresh])] : deferredIds;
     return { ...cleared, pendingGiantBomb: { ownerId: deferred.ownerId, unitInstanceIds: ids, phasePlayerId: deferred.phasePlayerId }, activePlayer: deferred.ownerId };
   }

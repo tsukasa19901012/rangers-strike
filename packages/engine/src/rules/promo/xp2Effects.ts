@@ -78,12 +78,13 @@ registerPromoKeyword("XP-017::world_destroyer", applyWorldDestroyer);
 // XP-018 ゴールド寿司（※常駐）
 // 「特徴に「シルバー」または「ゴールド」または「侍」を持つ自軍Sユニットは、自軍コマンドゾーンにあるカードのカテゴリごとに次の能力を得る⇒
 //  WBがあればレジストを得る。MAがあればタクスMAを得る。OTがあればチェイスを得る。ETがあればコールETを得る。」（atwiki/page-2130）
-// コマンドゾーンのカードはリリース・ホールドを問わない。特徴・サイズは今のもので見る。いまはレジストだけ（rules/resist.ts canOfferRegister）。
-// タクスMA・チェイス・コールET の付与は未実装（XP-gaps.md の it.todo）。
+// コマンドゾーンのカードはリリース・ホールドを問わない。特徴・サイズは今のもので見る。
+// 見る場所: レジストは rules/resist.ts canOfferRegister、タクスMA は keywords/battleKeywords.ts taxisSpFloor、
+// チェイスは keywords/cardKeywords.ts cardHasKeyword、コールET は rules/callLead.ts。
 
 const GOLD_SUSHI_ID = "XP-018";
 const SUSHI_FEATURES = ["シルバー", "ゴールド", "侍"];
-const SUSHI_GRANTS: Record<string, string> = { register: "WB" };
+const SUSHI_GRANTS: Record<string, string> = { register: "WB", taxis_MA: "MA", chase: "OT", call_ET: "ET" };
 
 registerPromoKeywordGrant((state, ownerId, unit, keyword) => {
   const category = SUSHI_GRANTS[keyword];

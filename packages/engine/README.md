@@ -64,6 +64,12 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 
 - 「特徴○○を持つ自軍ユニット」を数えるときは、ライドされていないビークルを含めません（ユニットではないため。faq-card-5 RS-216）。`fieldUnits` 系は場のビークルも返すので、`src/rules/turnEndingEffects.ts` の `isOwnVehicleFeatureUnit` のようにユニットとして扱える状態かを確かめます。
 - BP0 のルール撃破（`src/core/applyAction.ts` の `applyBpZeroRuleDestruction`）は、ラッシュへのカウンターの窓（`pendingRush`）が開いていても止めません（grnrngr/faq-card-1 RS-026 Q5/Q8。ラッシュしたユニットが疾風流超忍法で山札に戻されても、その前の効果で BP0 になった敵軍ユニットは撃破される）。新しい操作待ちを `hasBlockingInteraction` に足すときは、ルール処理を待たせてよいものかを確かめてください。
+- マジチケット（RS-325）でコマンドゾーンのカウンターを使えるようにするには、`src/rules/magiTicketStage.ts` の `magiTicketCounterCandidates` / `stageMagiTicket(..., "counter_category")` を使います。合法手は `use_magi_ticket`（`counter: true`）で、カウンターの窓を開くかどうかの判定（`hasBattleCounterReactions`・巨大爆弾の `giantBombAvailable`）も手札だけでなくこの候補を見ます。
+- 効果による撃破でも RK-005【超電子ダイナモ】の1点ダメージを起こすときは、撃破のあとに撃破した効果のカードを撃破者として `applyRk1DestroyerDamage` を呼びます。特徴は効果で付いたもの（`addedFeatures`）も見ます。
+- 「期限なし」で SP を変える効果（XP-018 黄金の希望の SP2）は、ターン終了で消える `spOverride` ではなく `spUntilLeave` に書きます。場を離れたとき（`sanitizeUnitLeavingField`・`sanitizeBouncedCard`）に消えます。
+- プロモの「○○があれば△△を得る」の付与（XP-018 のタクシス・チェイス・コール）は `promoGrantsKeyword` で引き、キーワードの判定（`cardHasKeyword`・`taxisSpFloor` 等）からも見ます。
+- ゲーム開始時の効果の前に XG7-059 の選択を開くときは、`openXg7BeforeOnRush` に `resume` を渡し、`src/rules/xg7/xg7GameStartResume.ts` に再開の処理を登録します（XG5-010 ゴッドホーン）。
+- 山札の一番上を公開する効果に割り込む効果は、XG5-085【ワープ】（`openXg5WarpOnDeckReveal`）を先に確認し、使わなかったときだけ SR-006【超忍法・分身魔球】（`promoInterceptDeckReveal`）を確認します。
 ## テスト
 
 ```bash
