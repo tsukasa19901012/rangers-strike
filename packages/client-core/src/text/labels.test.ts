@@ -66,5 +66,18 @@ describe("describeAction option tokens", () => {
     expect(pick("xg5_007_gogo_change", "release")).toBe("選ぶ: リリース状態で置く");
     expect(pick("rs384_water_discharge", "rs384_water_discharge")).toBe("選ぶ: 使う");
     expect(pick("rs485_hamster_destroy_draw", "draw:2")).toBe("選ぶ: 2枚ドロー");
+    expect(pick("rs566_ultima_storm_order", "commands_first")).toBe("選ぶ: コマンドから先に山札に戻す");
+    expect(pick("rs566_ultima_storm_order", "units_first")).toBe("選ぶ: ユニットから先に山札に戻す");
+  });
+});
+
+describe("describeAction magi ticket counter", () => {
+  it("marks a command-zone counter used through the magi ticket", () => {
+    const state = testEngine.createStarterGame({ player1Starter: "abarenoh", player2Starter: "dekaranger", seed: 1 });
+    const card = state.players.player1.hand[0]!;
+    const name = state.definitions[card.cardId]!.name;
+    expect(describeAction(state, { type: "use_magi_ticket", playerId: "player1", instanceId: card.instanceId, counter: true } as never)).toBe(
+      `マジチケット: ${name}（カウンターとして）`,
+    );
   });
 });
