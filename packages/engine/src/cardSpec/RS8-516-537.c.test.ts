@@ -148,9 +148,25 @@ describe("RS-533 チェンジフェニックス", () => {
     expect(s.log.some((l) => l.includes("number_combo") && l.includes("RS-533"))).toBe(false);
   });
 
-  it.todo(
-    "RS-533: Q&A — 【フェニックスファイヤー】を発動したターンに冥府神トードの【魂のコレクション】で敵軍 S ユニットをダメージにして置けばドローできる（出典: grnrngr/faq-card-8 RS-533 Q「はい、可能です」）— 【フェニックスファイヤー】自体が未実装（上の it.fails）で、トードとの組み合わせでもドローの機会が生じない（RS6-411-431 の RS-416 todo と同じ）",
-  );
+  it("RS-533: Q&A — 【フェニックスファイヤー】を発動したターンに冥府神トードの【魂のコレクション】で敵軍 S ユニットをダメージにして置けばドローできる（出典: grnrngr/faq-card-8 RS-533 Q「はい、可能です」）", () => {
+    const rush = [inst("RS-533", "ph"), inst("RS-416", "td"), inst("TST-UNIT-0", "r1")];
+    let s = st({
+      player1: { rush, hand: [inst("TST-OP", "h0")], deck: deckCards(3) },
+      player2: { power: [{ ...inst("TST-P", "ed"), faceDown: true }, inst("TST-P", "eu")], damage: 1, battle: [inst("TST-UNIT-0", "es")], deck: deckCards(3, "e") },
+    });
+    s = passEntry(resolveAll(enter(s, "RS-533:ph")));
+    s = enter(s, "RS-416:td");
+    if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:r1")) s = pick(s, "TST-UNIT-0:r1");
+    if (zoneOf(s, "player1", "RS-416:td") === "rush") s = enter(s, "RS-416:td");
+    expect(zoneOf(s, "player1", "RS-416:td")).toBe("battle");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-416");
+    s = pick(s, "TST-P:ed");
+    if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:es")) s = pick(s, "TST-UNIT-0:es");
+    expect(zoneOf(s, "player2", "TST-UNIT-0:es")).toBe("power");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-533");
+    s = resolveAll(s, ["TST-OP:dk0"]);
+    expect(s.players.player1.hand).toHaveLength(2);
+  });
 });
 
 // ===========================================================================

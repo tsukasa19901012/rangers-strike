@@ -31,7 +31,7 @@ import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice, requestDrawFromDeck } from "../pendingChoices";
 import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
-import { patchPlayer } from "../playerPatches";
+import { moveRiddenOffToRight, patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import { applyDamageToPlayer } from "../damagePayment";
@@ -694,7 +694,7 @@ CHOICE_CONFIRMERS[OMEGA_DRAW_EFFECT_ID] = drawConfirmer("RK-199");
 // ---------------------------------------------------------------------------
 // RK-200 マガゼール【群れの襲撃】
 // 「自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを、特徴「レイヨウ型」を持つ自軍ユニットの数まで選んでもよい。そうしたとき、
-//  選んだユニットをライドオフさせる。」（atwiki/page-923）。ライドオフさせたユニットはその場に残る（RK-039 と同じ）。
+//  選んだユニットをライドオフさせる。」（atwiki/page-923）。ライドオフさせたユニットはその場に残る（敵軍ターン中のバトルエリアでは一番右。RK-039 と同じ）。
 
 export const MAGA_EFFECT_ID = "rk200_herd_raid";
 
@@ -720,7 +720,12 @@ function finishHerdRaid(state: GameState, pending: PendingEffectChoice, ids: str
     const { mountedOnInstanceId: _m, ...rest } = c;
     return rest;
   };
-  const next = patchPlayer(close(state, pending), enemyId, (p) => ({ ...p, battle: p.battle.map(unmount), rush: p.rush.map(unmount) }));
+  // 敵軍ターン中にバトルエリアでライドオフさせたユニットは一番右に置き直す（atwiki/page-141 Q10/A10）。
+  const next = moveRiddenOffToRight(
+    patchPlayer(close(state, pending), enemyId, (p) => ({ ...p, battle: p.battle.map(unmount), rush: p.rush.map(unmount) })),
+    enemyId,
+    ids,
+  );
   return { state: proceed(next, pending), log: logFor(state, pending.playerId, "RK-200", `${MAGA_EFFECT_ID}:${ids.length}`) };
 }
 CHOICE_RESOLVERS[MAGA_EFFECT_ID] = pickUpTo(finishHerdRaid);

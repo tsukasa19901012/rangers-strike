@@ -462,7 +462,8 @@ export function finishMagiTicketStaging(state: GameState, playerId: PlayerId, co
  */
 export function settleMagiTicket(state: GameState): GameState {
   const ticket = state.magiTicketPending;
-  if (!ticket) return state;
+  // 相手の RK-251 ゴルゴムの仕業の選択を待っている間（使用の途中）はまだ片付けない（core/applyAction.ts）。
+  if (!ticket || ticket.staged) return state;
   const cleared: GameState = { ...state, magiTicketPending: undefined };
   const player = cleared.players[ticket.playerId];
   if (!player.discard.some((c) => c.instanceId === ticket.instanceId)) return cleared;

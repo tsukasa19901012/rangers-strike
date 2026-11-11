@@ -6,6 +6,7 @@
  * - 継続効果・制限の参照関数（BP/SP 補正、バトル進入・アタック・支払いの制限）。
  * 型・構成は rules/legend1/set4NamedEffects.ts と同じ。
  */
+import { placeDarkArmorAsDamage } from "./set6NamedEffects348";
 import { lookCtx, openDeckLook } from "../deckLook";
 import { filthyAirActive } from "./otherLinesNamedEffects";
 import { shuffleCards as shuffleDeckCards } from "../../core/deckShuffle";
@@ -796,11 +797,15 @@ function resolveRockDrop(state: GameState, playerId: PlayerId, instanceId: strin
 
 export const MAG_REPAIR_EFFECT_ID = "mag_repair_faceup";
 
-export function canActivateMagRepair(state: GameState, playerId: PlayerId): boolean {
-  return state.players[playerId].power.some((c) => c.faceDown);
+export function canActivateMagRepair(state: GameState, playerId: PlayerId, card?: CardInstance): boolean {
+  if (state.players[playerId].power.some((c) => c.faceDown)) return true;
+  // RS-350 暗黒の鎧に重ねたマグなら、捨札にしたとき同時にダメージになる鎧をオモテにできる（grnrngr/faq-card-6 RS-350 Q2）。
+  return (card?.stackedCards ?? []).some((c) => c.cardId === "RS-350");
 }
 
-export function openMagRepair(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+export function openMagRepair(stateIn: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  // 重ねていた暗黒の鎧は、マグを捨札にしたのと同時にダメージになる。そのダメージもオモテにできる（grnrngr/faq-card-6 RS-350 Q2）。
+  const state = placeDarkArmorAsDamage(stateIn, playerId, card);
   const ids = state.players[playerId].power.filter((c) => c.faceDown).map((c) => c.instanceId);
   if (ids.length === 0) return state;
   return openEffectChoice(state, {

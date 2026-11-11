@@ -15,6 +15,7 @@ import {
   skipXg7Attacked,
   skipXg7Strike,
 } from "../rules/xg7/xg7Effects";
+import { OOO_COST_FLAG } from "../rules/xg7/xg7cEffects";
 import { payMirrorWorldSelection } from "../rules/mirrorWorldSelection";
 import { memoizeInSearch, sharePerCardCacheInSearch } from "./searchCache";
 import { isInstancePlacedAnywhere } from "./helpers";
@@ -24,7 +25,8 @@ import { applyRk7AfterAction, openRk7LocustReplace } from "../rules/rk/rk7UnitEf
 import { openRk11UndeadReplace } from "../rules/rk/rk11UnitEffects";
 import { rk11IsHandSubstitute } from "../rules/rk/rk11Fields";
 import { rk12PlacesHeldOnRush } from "../rules/rk/rk12Fields";
-import { openRk12GorgomWindow, trackRk12UnitHolds } from "../rules/rk/rk12UnitEffects";
+import { tryFormationDeployOnRush } from "../rules/formationDeploy";
+import { GORGOM_EFFECT_ID, openRk12GorgomWindow, trackRk12UnitHolds } from "../rules/rk/rk12UnitEffects";
 import { xg1dTrackHandDiscards } from "../rules/xg1/xg1dEffects";
 import { isXg1eAttackedChoice, openXg1eAttacked, resolveXg1eAttacked, skipXg1eAttacked, xg1eAfterAction } from "../rules/xg1/xg1eEffects";
 import { applyRk13AfterAction } from "../rules/rk/rk13UnitEffects";
@@ -1081,6 +1083,23 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
 /** applyAction の入れ子の深さ（外側の呼び出しだけで行う後処理のため）。 */
 let applyActionDepth = 0;
 
+/**
+ * RS-325【マジチケット】で、仮に手札に移したコマンドゾーンのオペレーションを play_operation で使う。
+ * 実際には手札から使用していないので、XG7-054 ◎2「次に自分が手札から使用するカード」の軽減は受けず、記録も消えない
+ * （atwiki/page-485 Q1・Q2）。解決の間だけ記録を外し、後で戻す。
+ */
+function playMagiTicketOperation(
+  staged: GameState,
+  op: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string },
+): ReturnType<typeof applyAction> {
+  const flags = staged.xg7?.flags ?? [];
+  const kept = flags.filter((f) => f.key === OOO_COST_FLAG && f.playerId === op.playerId);
+  const input: GameState = kept.length === 0 ? staged : { ...staged, xg7: { ...staged.xg7, flags: flags.filter((f) => !kept.includes(f)) } };
+  const played = applyAction(input, { type: "play_operation", ...op }, { trustLegality: true });
+  if (!played.ok || kept.length === 0) return played;
+  return { ...played, state: { ...played.state, xg7: { ...played.state.xg7, flags: [...kept, ...(played.state.xg7?.flags ?? [])] } } };
+}
+
 export function applyAction(
   state: GameState,
   action: GameAction,
@@ -1156,7 +1175,9 @@ function applyActionWithRng(
   // RK-251 ゴルゴムの仕業を使わなかった: オペレーションの使用（効果の実行）を続ける（rules/rk/rk12UnitEffects.ts）。
   if (next.rk12ResumeOperation && !next.pendingEffectChoice) {
     const op = next.rk12ResumeOperation;
-    const resumed = applyAction({ ...next, rk12ResumeOperation: undefined }, { type: "play_operation", ...op }, { trustLegality: true });
+    const viaTicket = next.magiTicketPending?.staged === true && next.magiTicketPending.instanceId === op.instanceId;
+    const cleared: GameState = { ...next, rk12ResumeOperation: undefined };
+    const resumed = viaTicket ? playMagiTicketOperation(cleared, op) : applyAction(cleared, { type: "play_operation", ...op }, { trustLegality: true });
     next = resumed.ok
       ? { ...resumed.state, rk12GorgomPassedOp: undefined }
       : { ...next, rk12ResumeOperation: undefined, rk12GorgomPassedOp: undefined };
@@ -1186,6 +1207,16 @@ function applyActionWithRng(
       finished.battleCancelled ? { ...pendingBattle, battleCancelled: true } : pendingBattle,
     );
     next = { ...resolved.state, log: [...resolved.state.log, finished.log, resolved.log], winner: checkWinner(resolved.state) };
+  }
+  // RS-296【編隊出撃】: 同じタイミングの「ラッシュしたとき」の選択が済んだら、手札の同じカード名のユニットカードを選ぶ（faq-card-6 RS-353 Q2）。
+  if (next.formationDeployResume && !hasBlockingInteraction(next) && !next.winner) {
+    const f = next.formationDeployResume;
+    next = tryFormationDeployOnRush({ ...next, formationDeployResume: undefined }, f.playerId, f.instanceId, f.phasePlayerId).state;
+  }
+  // RS-325【マジチケット】で使ったオペレーションへのゴルゴムの仕業の選択が済んだら、使用の途中の状態を片付ける。
+  if (next.magiTicketPending?.staged && next.pendingEffectChoice?.effectId !== GORGOM_EFFECT_ID && !next.rk12ResumeOperation) {
+    const ticket = next.magiTicketPending;
+    next = finishMagiTicketStaging({ ...next, magiTicketPending: undefined }, ticket.playerId, ticket.instanceId);
   }
   // 「…を捨札にしなければバトルエリアに出られない」の捨てるカードを選んだ後: そのまま move_to_battle を続ける。
   if (next.battleEntryResumeMove && !next.pendingEffectChoice) {
@@ -2052,22 +2083,20 @@ function applyActionCore(
       if (state.phase !== "rush") return fail("wrong_phase");
       const staged = stageMagiTicket(state, playerId, action.instanceId);
       if (!staged) return fail("card_not_in_command");
-      const played = applyAction(
-        staged,
-        {
-          type: "play_operation",
-          playerId,
-          instanceId: action.instanceId,
-          targetInstanceId: action.targetInstanceId,
-          extraInstanceId: action.extraInstanceId,
-        },
-        { trustLegality: true },
-      );
+      const played = playMagiTicketOperation(staged, {
+        playerId,
+        instanceId: action.instanceId,
+        targetInstanceId: action.targetInstanceId,
+        extraInstanceId: action.extraInstanceId,
+      });
       if (!played.ok) return played;
-      return ok(
-        finishMagiTicketStaging(played.state, playerId, action.instanceId),
-        buildLogEntry(playerId, "named_effect", "RS-325", state.definitions, "maji_chiketto"),
-      );
+      const log = buildLogEntry(playerId, "named_effect", "RS-325", state.definitions, "maji_chiketto");
+      // 相手が RK-251 ゴルゴムの仕業を使うかを選ぶ間は、使用の途中（カードは仮に手札）のまま待つ。選んだ後に後処理で片付ける
+      // （無効にされて捨札になるときも「かわりに」を選べる。atwiki/page-485 Q7）。
+      if (played.state.pendingEffectChoice?.effectId === GORGOM_EFFECT_ID) {
+        return ok({ ...played.state, magiTicketPending: { playerId, instanceId: action.instanceId, staged: true } }, log);
+      }
+      return ok(finishMagiTicketStaging(played.state, playerId, action.instanceId), log);
     }
 
     case "play_operation": {

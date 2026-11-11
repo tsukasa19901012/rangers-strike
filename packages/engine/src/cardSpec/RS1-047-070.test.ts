@@ -716,9 +716,39 @@ describe("RS-052 爆竜トリケラトプス", () => {
   });
 
   // card_1 RS-052 Q1（ゴレンジャーハリケーン）
-  it.todo(
-    "RS-052: 公式Q&A — ゴレンジャーハリケーンの対象の1体目を2体目のトリケラが守れば、1体目は場にとどまる（出典: grnrngr/faq-card-1 RS-052 Q1）— RS-259 の5体コンビネーション（キ→ミド→アオ→アカ）を組み、撃破順をターンプレイヤーが1体ずつ選ぶ公開 API が無く状況を構成できない",
-  );
+  // 「はい、場にとどまります。…撃破の処理は対象になったユニットの中からターンプレイヤーが１体づつ順に選び行います。」
+  it("RS-052: 公式Q&A — ゴレンジャーハリケーンの対象の1体目を2体目のトリケラが守れば、1体目は場にとどまる（出典: grnrngr/faq-card-1 RS-052 Q1）", () => {
+    const GORENGER = ["RS-259:momo", "RS-189:ki", "RS-190:mido", "RS-258:ao", "RS-126:aka"];
+    let s = st({
+      player1: { rush: GORENGER.map((id) => inst(id.split(":")[0]!, id.split(":")[1]!)), deck: deckCards(5) },
+      player2: { battle: [inst("RS-052", "t1"), inst("RS-052", "t2")], deck: deckCards(5, "e") },
+    });
+    for (const id of GORENGER) {
+      s = enter(s, id);
+      for (let i = 0; i < 12; i += 1) {
+        const acts = legal(s);
+        // 相手: 1体目（t1）が撃破されるとき、2体目（t2）の【超シールド進化】でかわりに捨札にする
+        const shield = acts.find((a) => a.type === "use_super_shield" && a.playerId === "player2");
+        if (shield && zoneOf(s, "player2", "RS-052:t2") === "battle") {
+          s = act(s, shield);
+          if (s.pendingEffectChoice?.playerId === "player2" && s.pendingEffectChoice.validInstanceIds.includes("RS-052:t2")) s = act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "RS-052:t2" });
+          continue;
+        }
+        if (s.pendingEffectChoice?.playerId === "player1") {
+          const next = acts.find((a) => a.type === "confirm_effect_choice") ?? acts.find((a) => a.type === "resolve_effect_choice");
+          if (!next) break;
+          s = act(s, next);
+          continue;
+        }
+        const pass = acts.find((a) => a.type.startsWith("pass_") && a.type !== "pass_battle_entry");
+        if (!pass) break;
+        s = act(s, pass);
+      }
+      if (id !== GORENGER.at(-1)) s = passEntry(s);
+    }
+    expect(zoneOf(s, "player2", "RS-052:t2")).toBe("discard");
+    expect(zoneOf(s, "player2", "RS-052:t1")).toBe("battle");
+  });
 
   // card_1 RS-052 Q2「「RS-052 爆竜トリケラトプス」自身は撃破扱いにならないため」
   it("RS-052: 公式Q&A — かわりに捨札になったトリケラはレスキューファイターの【救護活動】でパワーゾーンに送られない（出典: grnrngr/faq-card-1 RS-052 Q2）", () => {
@@ -1248,9 +1278,45 @@ describe("RS-057 マジレッド", () => {
   });
 
   // card_1 RS-057 Q2（バトルコサック）
-  it.todo(
-    "RS-057: 公式Q&A — バトルコサックの【コサックダンス】で手札に戻したマジレッドの「同じカード名」としてマジフェニックスをラッシュできる（出典: grnrngr/faq-card-1 RS-057 Q2）— バトルフェイズ中にバトルエリアからラッシュエリアへ戻す効果と【コサックダンス】の連鎖を公開 API で構成する手段が見つからない",
-  );
+  // 「はい、可能です。」— バトルエリアからラッシュエリアへ戻す「なんらかの効果」には、RS-203 大帝ラー・デウスで特徴「仮面ライダー」を
+  // 得たマジレッドを RK-026 がんがんじい【日本一の正義の味方】で戻す手順を使う。
+  it("RS-057: 公式Q&A — バトルコサックの【コサックダンス】で手札に戻したマジレッドの「同じカード名」としてマジフェニックスをラッシュできる（出典: grnrngr/faq-card-1 RS-057 Q2）", () => {
+    const KAMEN = sUnit("SPEC-KAMEN-RIDER", { features: ["仮面ライダー"] });
+    const choose = (t: GameState, id: string) => act(t, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+    let s = st(
+      {
+        phase: "rush",
+        player1: {
+          hand: [inst("RS-203", "deus"), inst("RS-576", "phx")],
+          rush: [inst("SPEC-KAMEN-RIDER", "kr"), inst("RS-441", "ck"), inst("RS-057", "red"), inst("RK-026", "gan")],
+          command: [released("TST-OP-DA", "da"), released("TST-OP-DA", "da2"), released("TST-OP-ET", "et")],
+          power: powerCards(7),
+          deck: deckCards(5),
+        },
+        player2: { deck: deckCards(5, "e") },
+      },
+      [KAMEN],
+    );
+    // ラー・デウスを「仮面ライダー」のユニットを捨札にしてラッシュ（このターン、すべてのユニットが「仮面ライダー」を得る）
+    s = actLegal(s, (a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RS-203:deus" && ((a as { zordMaterialInstanceIds?: string[] }).zordMaterialInstanceIds ?? []).includes("SPEC-KAMEN-RIDER:kr"));
+    s = advanceToBattle(settle(s), "player1");
+    // バトルコサック1番目・マジレッド2番目、がんがんじいでマジレッドをラッシュエリアに戻す
+    s = passEntry(settle(enter(s, "RS-441:ck")));
+    s = passEntry(settle(enter(s, "RS-057:red")));
+    s = enter(s, "RK-026:gan");
+    s = choose(s, "RS-057:red");
+    // 【コサックダンス】: 戻ったマジレッドを手札に戻し、同じカード名（「マジフェニックス」としてつかえる）のマジフェニックスを出す
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-441");
+    s = choose(s, "RS-057:red");
+    expect(zoneOf(s, "player1", "RS-057:red")).toBe("hand");
+    expect(s.pendingEffectChoice?.validInstanceIds).toContain("RS-576:phx");
+    s = choose(s, "RS-576:phx");
+    for (let i = 0; i < 4 && s.pendingCommandPayment?.playerId === "player1"; i += 1) {
+      s = act(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: s.pendingCommandPayment.validInstanceIds.slice(0, s.pendingCommandPayment.totalNeeded) });
+    }
+    s = settle(s);
+    expect(zoneOf(s, "player1", "RS-576:phx")).toBe("rush");
+  });
 });
 
 // ===========================================================================

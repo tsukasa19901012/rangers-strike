@@ -277,7 +277,7 @@ const ABILITIES: FieldActivatedAbility[] = [
     effectId: "mag_repair",
     zones: ["rush"],
     phase: "start",
-    canActivate: (state, playerId) => canActivateMagRepair(state, playerId),
+    canActivate: (state, playerId, card) => canActivateMagRepair(state, playerId, card),
     resolve: (state, playerId, card) => openMagRepair(state, playerId, card),
   },
   {

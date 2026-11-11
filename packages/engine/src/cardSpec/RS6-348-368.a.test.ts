@@ -339,7 +339,31 @@ describe("RS-350 暗黒の鎧", () => {
     expect(ar?.faceDown).toBe(true);
   });
 
-  it.todo("RS-350: 公式Q&A — 鎧に重ねたマグを【修復作業】で捨札にしたとき、同時にダメージになった鎧を【修復作業】でオモテにできる（出典: grnrngr/faq-card-6 RS-350 Q2）— 鎧のダメージ化が未実装（上の it.fails）で前提が作れない");
+  // grnrngr/faq-card-6 RS-350 Q2「はい、できます。」
+  it("RS-350: 公式Q&A — 鎧に重ねたマグを【修復作業】で捨札にしたとき、同時にダメージになった鎧を【修復作業】でオモテにできる（出典: grnrngr/faq-card-6 RS-350 Q2）", () => {
+    let s = st({
+      phase: "start",
+      player1: { rush: [{ ...inst("RS-271", "mg"), stackedCards: [inst("RS-350", "ar")] }], power: powerCards(2), command: [held("TST-OP", "c1")], deck: deckCards(5) },
+      player2: { deck: deckCards(5, "e") },
+    });
+    const magAction = (t: GameState) =>
+      legal(t).find((a) => {
+        const r = a as unknown as Record<string, unknown>;
+        return r.sourceInstanceId === "RS-271:mg" || r.instanceId === "RS-271:mg" || r.unitInstanceId === "RS-271:mg";
+      });
+    if (!magAction(s)) s = act(s, { type: "release_start_commands", playerId: "player1" });
+    const a = magAction(s);
+    expect(a).toBeDefined();
+    s = act(s, a!);
+    expect(zoneOf(s, "player1", "RS-271:mg")).toBe("discard");
+    // 同時にダメージになった鎧を選んでオモテにできる
+    expect(choiceIds(s)).toContain("RS-350:ar");
+    s = settle(pick(s, "RS-350:ar"));
+    const ar = s.players.player1.power.find((c) => c.instanceId === "RS-350:ar");
+    expect(ar).toBeDefined();
+    expect(ar?.faceDown ?? false).toBe(false);
+    expect(s.players.player1.damage).toBe(0);
+  });
 });
 
 // ===========================================================================
@@ -486,7 +510,33 @@ describe("RS-352 ダイデンジン", () => {
     expect(zoneOf(s, "player2", "RS-361:c5")).toBe("battle");
   });
 
-  it.todo("RS-352: 公式Q&A — 《モーフ》の「置き換え」でパワーゾーンのカードが離れても発動する（出典: grnrngr/faq-card-6 RS-352 Q2）— 置き換え元の電王SF/RF とモーフの手順を API で組めない（ブーメラン自体も未実装）");
+  // atwiki/page-550 Q2「はい、発動できます。「置き換え」であっても、それまでオモテ向きであったカードがパワーゾーンを離れているので…」
+  it("RS-352: 公式Q&A — 《モーフ》の「置き換え」でパワーゾーンのカードが離れても発動する（出典: grnrngr/faq-card-6 RS-352 Q2）", () => {
+    const RUSHER = sUnit("SPEC-MORPH-RUSHER", { bp: 1000, powerCost: 0 });
+    let s = st(
+      {
+        phase: "rush",
+        activePlayer: "player2",
+        player1: { battle: [inst("RK-305", "sf")], rush: [inst("RS-352", "dd")], power: [inst("RK-304", "rf"), ...powerCards(3)], deck: deckCards(5) },
+        player2: { hand: [inst("SPEC-MORPH-RUSHER", "e")], battle: [inst("TST-UNIT-2", "c2"), inst("RS-361", "c5")], command: releasedCat("WB", 1), deck: deckCards(5, "e") },
+      },
+      [RUSHER],
+    );
+    const r = rushFromHand(s, "player2", "SPEC-MORPH-RUSHER:e");
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    // 自軍の電王SF（モーフ）とパワーゾーンの電王RF（必要パワー3）を置き換える
+    expect(s.pendingEffectChoice?.effectId).toBe("morph_replacement");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RK-304:rf" });
+    for (let i = 0; i < 4 && s.pendingEffectChoice?.playerId === "player1"; i += 1) s = resolveAll(s);
+    expect(zoneOf(s, "player1", "RK-304:rf")).toBe("battle");
+    // 【ダイデンジンブーメラン】: 相手は必要パワー3以下の自分自身のユニットを撃破する
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(choiceIds(s)).toContain("TST-UNIT-2:c2");
+    expect(choiceIds(s)).not.toContain("RS-361:c5");
+    s = resolveAll(pick(s, "TST-UNIT-2:c2"));
+    expect(zoneOf(s, "player2", "TST-UNIT-2:c2")).toBe("discard");
+  });
 
   // grnrngr/faq-card-6 RS-375 Q「はい、パワーゾーンのカードにも効果を及ぼします。」
   it("RS-352: 公式Q&A — レッドレーサー（2nd）の「必要パワーの数字は1増える」は、ブーメランで参照するパワーゾーンのカードにも及ぶ（必要パワー3 → 4 以下を撃破）（出典: grnrngr/faq-card-6 RS-375 Q）", () => {
@@ -570,5 +620,19 @@ describe("RS-353 デンジファイター", () => {
     expect(s.players.player1.deck[0]?.instanceId).toBe("TST-OP:o1");
   });
 
-  it.todo("RS-353: 公式Q&A — バラクティカがある状態でこれをラッシュし、【ファイターチェンジ】で手札に加えたデンジファイターを【編隊出撃】でラッシュエリアに出せる（ターンプレイヤーが処理順を選ぶ）（出典: grnrngr/faq-card-6 RS-353 Q2）— 【ファイターチェンジ】が手札に加えられない（上の it.fails）ため前提が作れない");
+  // grnrngr/faq-card-6 RS-353 Q2「はい、できます。同時タイミングの処理になりますので、ターンプレイヤーが「RS-353 デンジファイター」の効果を先に処理してから…」
+  it("RS-353: 公式Q&A — バラクティカがある状態でこれをラッシュし、【ファイターチェンジ】で手札に加えたデンジファイターを【編隊出撃】でラッシュエリアに出せる（ターンプレイヤーが処理順を選ぶ）（出典: grnrngr/faq-card-6 RS-353 Q2）", () => {
+    const r = rushFromHand(rushPhase({ hand: [inst("RS-353", "df")], rush: [inst("RS-296", "bara"), ...fillers(5)], command: releasedCat("OT", 1), power: powerCards(5), deck: [inst("RS-353", "df2"), ...deckCards(4)] }), "player1", "RS-353:df");
+    expect(r.ok, r.error).toBe(true);
+    let s = r.state;
+    // 先に【ファイターチェンジ】: 山札の上のデンジファイターをオモテにして手札に加える
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-353");
+    s = pick(activate(s), "RS-353:df2");
+    s = skip(s);
+    expect(zoneOf(s, "player1", "RS-353:df2")).toBe("hand");
+    // その後【編隊出撃】: 手札に加えたデンジファイターをラッシュエリアに出す
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-296");
+    s = resolveAll(pick(s, "RS-353:df2"));
+    expect(zoneOf(s, "player1", "RS-353:df2")).toBe("rush");
+  });
 });
