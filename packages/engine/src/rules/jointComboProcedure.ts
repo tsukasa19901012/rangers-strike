@@ -80,8 +80,11 @@ function isJointLPartnerMatch(
   battle?: CardInstance[],
 ): boolean {
   const anchorDef = definitionWithCategories(definitions, anchor, categoriesOf);
-  const partnerDef = definitionWithCategories(definitions, partner, categoriesOf);
-  if (!anchorDef || !partnerDef) return false;
+  const baseDef = definitionWithCategories(definitions, partner, categoriesOf);
+  if (!anchorDef || !baseDef) return false;
+  // RK-013 Jパワー等で L ユニットになった S ユニットも L ユニットとしてコンビネーションする（grnrngr/faq-rider-1 RK-013 Q「SP2になります」）。
+  const size = unitSizeOf(definitions, partner);
+  const partnerDef = size && size !== baseDef.size ? ({ ...baseDef, size } as CardDefinition) : baseDef;
   return matchesJointLPartnerById(anchor.cardId, anchorDef, withCrossAdjustedSp(partnerDef, battle, partner));
 }
 
