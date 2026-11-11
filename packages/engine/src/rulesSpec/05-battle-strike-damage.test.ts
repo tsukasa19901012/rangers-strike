@@ -34,6 +34,13 @@ import {
   zoneOf,
 } from "./05-helpers";
 import type { GameState } from "../types/game";
+import { allCardsCatalog } from "@rangers-strike/cards";
+import { buildDefinitionMap } from "../core/catalog";
+import { wasRushedThisTurn } from "../rules/turnModifiers";
+import { legendDefinitions } from "../testing/battleEntry";
+
+/** ライダーのカード（RK-058 ビークル・RK-199/RK-200）も含む定義。 */
+const RIDER_DEFS = { ...legendDefinitions, ...buildDefinitionMap([allCardsCatalog.cards]) };
 
 /** RS-100 の「アタックするかわりに」効果を起動するアクション（battle/strike/pass 以外で RS-100 を参照するもの）。 */
 function insteadOfAttackActions(state: GameState, instanceId: string) {
@@ -209,12 +216,40 @@ describe("R-BA-02 並び順と配置位置", () => {
     expect(ids(s.players.player2.battle)).toEqual(["TST-UNIT-0:right", "TST-UNIT-2:left"]);
   });
 
-  it.todo(
-    "R-BA-02: 敵軍ターン中にライドオフさせられたユニットはバトルエリアの一番右に置く（出典: atwiki/page-141 Q10）— 敵軍ターン中に強制ライドオフさせる効果をエンジン API で起こせないため",
-  );
-  it.todo(
-    "R-BA-02: 敵軍ターン中のライドオフで置き直したユニットはラッシュされたことにならない（出典: atwiki/page-141 Q11）— 同上",
-  );
+  /**
+   * 敵軍（player2）ターン: player2 が RK-200 マガゼール【群れの襲撃】（RK-199 オメガゼールがあるのでホールドなしで出られる）で、
+   * player1 のバトルエリアでライドしている r をライドオフさせる。
+   */
+  const herdRaidRideOff = (): GameState => {
+    let s = battleState({
+      activePlayer: "player2",
+      definitions: RIDER_DEFS,
+      player1: {
+        battle: [inst("RK-058", "v"), { ...inst("TST-UNIT-0", "r"), mountedOnInstanceId: "RK-058:v" }, inst("TST-UNIT-2", "x")],
+        deck: deckCards(3),
+      },
+      player2: { rush: [inst("RK-199", "om"), inst("RK-200", "mg")], deck: deckCards(3, "e") },
+    });
+    s = enter(s, "RK-200:mg", "player2");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-200");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "TST-UNIT-0:r" });
+    if (s.pendingEffectChoice?.sourceCardId === "RK-200") s = act(s, { type: "confirm_effect_choice", playerId: "player2" });
+    return s;
+  };
+
+  // 「バトルエリアにユニットを出すときと同じように、バトルエリアの一番右に置きます」
+  it("R-BA-02: 敵軍ターン中にライドオフさせられたユニットはバトルエリアの一番右に置く（出典: atwiki/page-141 Q10）", () => {
+    const s = herdRaidRideOff();
+    expect(ids(s.players.player1.battle)).toEqual(["RK-058:v", "TST-UNIT-2:x", "TST-UNIT-0:r"]);
+    expect(s.players.player1.battle.find((c) => c.instanceId === "TST-UNIT-0:r")?.mountedOnInstanceId).toBeUndefined();
+  });
+
+  // 「いいえ、バトルエリアを離れたわけではありませんので、ラッシュされたことにはなりません」
+  it("R-BA-02: 敵軍ターン中のライドオフで置き直したユニットはラッシュされたことにならない（出典: atwiki/page-141 Q11）", () => {
+    const s = herdRaidRideOff();
+    expect(zoneOf(s, "player1", "TST-UNIT-0:r")).toBe("battle");
+    expect(wasRushedThisTurn(s.players.player1, "TST-UNIT-0:r")).toBe(false);
+  });
 });
 
 describe("R-BA-03 出る制限は直前に判定", () => {

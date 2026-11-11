@@ -392,9 +392,54 @@ describe("RS-238 ゴーゴーファイヤー", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:d0")).toBe("discard");
   });
 
-  it.todo(
-    "RS-238: 公式Q&A — 天雷旋風神【アルティマストーム】でコマンドから先に山札に戻すなら【プロジェットカノン】を使える（ユニットから先ならダイノガッツを使える）（出典: grnrngr/faq-card-4 RS-238 Q1・atwiki/page-403 Q1）— 【アルティマストーム】（rules/legend1/set8NamedEffectsC.ts applyUltimaStorm）は両軍のユニットとコマンドを一括で山札に戻す実装で、戻す順番（コマンドが先かユニットが先か）を選ぶ手段も、途中で【プロジェットカノン】（afterCommandCardsLeft）やダイノガッツの反応を開く処理もない",
-  );
+  it("RS-238: 公式Q&A — 天雷旋風神【アルティマストーム】でコマンドから先に山札に戻すなら【プロジェットカノン】を使える（ユニットから先ならダイノガッツを使える）（出典: grnrngr/faq-card-4 RS-238 Q1・atwiki/page-403 Q1）", () => {
+    // 自軍（player1）が合体で天雷旋風神をラッシュする。敵軍（player2）のラッシュエリアにゴーゴーファイヤー、バトルエリアにユニット、手札にダイノガッツ。
+    const storm = () => {
+      const s = st({
+        phase: "rush",
+        player1: {
+          hand: [inst("RS-566", "tr")],
+          rush: ["RS-567", "RS-095", "RS-309", "RS-481"].map((id) => inst(id, "m")),
+          command: [released("TST-OP-MA", "c0"), released("TST-OP-MA", "c1")],
+          power: powerCards(8),
+          deck: deckCards(3),
+        },
+        player2: {
+          rush: [inst("RS-238", "gf")],
+          battle: [inst("TST-UNIT-2", "eb")],
+          hand: [inst("RS-027", "dg")],
+          command: [released("TST-OP", "ec0")],
+          discard: [inst("TST-UNIT-0", "d0")],
+          deck: deckCards(10, "e"),
+        },
+      });
+      const r = rushFromHand(s, "player1", "RS-566:tr");
+      expect(r.ok).toBe(true);
+      let t = settle(r.state);
+      for (let i = 0; i < 6 && t.pendingEffectChoice && t.pendingEffectChoice.effectId !== "rs566_ultima_storm_order"; i++) t = settle(drain(t, t.pendingEffectChoice.playerId));
+      expect(t.pendingEffectChoice?.effectId).toBe("rs566_ultima_storm_order");
+      return t;
+    };
+
+    // コマンドから先: コマンドが離れたときに【プロジェットカノン】で捨札のカードをコマンドゾーンに置ける。
+    let c = pick(storm(), "commands_first");
+    expect(c.pendingEffectChoice?.effectId).toBe("command_leave_refill_from_discard");
+    c = settle(pick(c, "TST-UNIT-0:d0"));
+    for (let i = 0; i < 6 && c.pendingEffectChoice; i++) c = settle(drain(c, c.pendingEffectChoice.playerId));
+    expect(zoneOf(c, "player2", "TST-UNIT-0:d0")).toBe("command");
+    expect(zoneOf(c, "player2", "RS-238:gf")).toBe("deck");
+
+    // ユニットから先: ゴーゴーファイヤーのコマンドはまだ離れておらず、場を離れるユニットにダイノガッツを使える。
+    let u = pick(storm(), "units_first");
+    for (let i = 0; i < 4 && u.pendingLeave && u.pendingLeave.instanceId !== "TST-UNIT-2:eb"; i++) u = act(u, legal(u).find((a) => a.type === "pass_leave_reaction")!);
+    expect(u.pendingLeave?.instanceId).toBe("TST-UNIT-2:eb");
+    const use = legal(u).find((a) => a.playerId === "player2" && JSON.stringify(a).includes("RS-027:dg"));
+    expect(use).toBeDefined();
+    u = settle(act(u, use!));
+    for (let i = 0; i < 6 && u.pendingEffectChoice; i++) u = settle(drain(u, u.pendingEffectChoice.playerId));
+    expect(zoneOf(u, "player2", "TST-UNIT-2:eb")).toBe("battle");
+    expect(u.players.player2.command.map((x) => x.instanceId)).not.toContain("TST-OP:ec0");
+  });
 
   it.todo(
     "RS-238: 公式Q&A（相互参照）— メカニック忍者でコマンドゾーンのカードがラッシュエリアに出たときも【プロジェットカノン】を発動でき、その後アタックされたユニットをコマンドゾーンに置ける（ライア併用時は2回）（出典: grnrngr/faq-rider-1 RK-008・RK-036）— メカニック忍者の処理（rules/operationCounters.ts applyMechanicNinjaCounter）はコマンドゾーンのカードを出してからアタックされたユニットを置くまでを一括で行い、途中で【プロジェットカノン】（afterCommandCardsLeft）を呼ばない。カウンターの反応ウィンドウ中は activePlayer が防御側になるため、refillSources の「敵軍ターン中」判定も満たさない（処理の中断と再開が必要）",

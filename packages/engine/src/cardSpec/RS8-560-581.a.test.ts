@@ -21,6 +21,7 @@ import {
   choiceIds,
   damageCards,
   deckCards,
+  drain,
   enter,
   enterBattleByEffect,
   enterWithHold,
@@ -494,11 +495,76 @@ describe("RS-566 天雷旋風神", () => {
     expect(zoneOf(resolveAll(r.state), "player1", "RS-566:tr")).toBe("rush");
   });
 
-  it.todo(
-    "RS-566: Q&A — 山札に戻す順番はターンプレイヤーが決める（出典: atwiki/page-1229 Q1「はい、その通りです。」）— エンジンの【アルティマストーム】は両軍のユニットとコマンドを一度にまとめて山札に戻すため、戻す順番を選ぶ手順（選択ウィンドウ）自体がない",
-  );
-  it.todo(
-    "RS-566: Q&A — コマンドから先に戻せば敵軍ゴーゴーファイヤーの【プロジェットカノン】、ユニットから先に戻せばダイノガッツを相手は使える（出典: atwiki/page-1229 Q2「はい、どちらの場合も可能です。」）— エンジンの【アルティマストーム】は一度にまとめて戻すため、戻す順番の選択と、途中で【プロジェットカノン】（コマンドが離れたとき）・ダイノガッツ（ユニットが場を離れるとき）を挟む反応ウィンドウがない",
-  );
+  /** 合体でラッシュしたあと、【アルティマストーム】の戻す順番の選択まで進める（ラッシュの反応はパス）。 */
+  const stormOrder = (p2: Partial<GameState["players"]["player2"]>) => {
+    const base = rushState(["RS-567", "RS-095", "RS-309", "RS-481"]);
+    const r = rushFromHand({ ...base, players: { ...base.players, player2: { ...base.players.player2, ...p2 } } }, "player1", "RS-566:tr");
+    expect(r.ok).toBe(true);
+    let s = settle(r.state);
+    for (let i = 0; i < 6 && s.pendingEffectChoice && s.pendingEffectChoice.effectId !== "rs566_ultima_storm_order"; i++) s = settle(drain(s, s.pendingEffectChoice.playerId));
+    return s;
+  };
+
+  // 「はい、その通りです。」
+  it("RS-566: Q&A — 山札に戻す順番はターンプレイヤーが決める（出典: atwiki/page-1229 Q1「はい、その通りです。」）", () => {
+    const s = stormOrder({});
+    expect(s.pendingEffectChoice?.effectId).toBe("rs566_ultima_storm_order");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect(choiceIds(s)).toEqual(["commands_first", "units_first"]);
+    expect(canSkip(s)).toBe(false);
+    // 選ぶまではまだ何も戻っていない。
+    expect(zoneOf(s, "player2", "TST-UNIT-2:eb")).toBe("battle");
+    expect(zoneOf(s, "player2", "TST-OP:ec0")).toBe("command");
+    // どちらを選んでも、すべて戻し終えたら同じく両軍の場とコマンドゾーンは空になる。
+    for (const order of ["commands_first", "units_first"]) {
+      const t = resolveAll(pick(s, order));
+      expect(t.ultimaStorm).toBeUndefined();
+      expect(t.players.player1.rush.map((c) => c.instanceId)).toEqual(["RS-566:tr"]);
+      expect(t.players.player2.battle).toHaveLength(0);
+      expect(t.players.player2.command).toHaveLength(0);
+      for (const id of ["TST-UNIT-0:er", "TST-UNIT-2:eb", "TST-OP:ec0"]) expect(zoneOf(t, "player2", id)).toBe("deck");
+    }
+  });
+
+  // 「はい、どちらの場合も可能です。」— コマンドから先: 【プロジェットカノン】
+  it("RS-566: Q&A — コマンドから先に戻せば、敵軍ゴーゴーファイヤーの【プロジェットカノン】を相手は使える（出典: atwiki/page-1229 Q2「はい、どちらの場合も可能です。」）", () => {
+    let s = stormOrder({ rush: [inst("RS-238", "gf")], discard: [inst("TST-UNIT-0", "d0")] });
+    s = pick(s, "commands_first");
+    // コマンドが戻った時点で、ユニットはまだ場にある。
+    expect(zoneOf(s, "player2", "TST-OP:ec0")).toBe("deck");
+    expect(zoneOf(s, "player2", "RS-238:gf")).toBe("rush");
+    expect(s.pendingEffectChoice?.effectId).toBe("command_leave_refill_from_discard");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    s = pick(s, "TST-UNIT-0:d0");
+    s = resolveAll(s);
+    // 置いたカードはコマンドゾーンに残り、ゴーゴーファイヤーはその後のユニットと一緒に山札に戻る。
+    expect(zoneOf(s, "player2", "TST-UNIT-0:d0")).toBe("command");
+    expect(zoneOf(s, "player2", "RS-238:gf")).toBe("deck");
+    expect(s.players.player2.battle).toHaveLength(0);
+  });
+
+  // 「はい、どちらの場合も可能です。」— ユニットから先: ダイノガッツ
+  it("RS-566: Q&A — ユニットから先に戻せば、相手はダイノガッツを使える（出典: atwiki/page-1229 Q2「はい、どちらの場合も可能です。」）", () => {
+    let s = stormOrder({ battle: [inst("TST-UNIT-2", "eb")], rush: [], hand: [inst("RS-027", "dg")], deck: deckCards(10, "e") });
+    s = pick(s, "units_first");
+    // 自軍（player1）のユニットから戻り、player2 のユニットが場を離れるときにダイノガッツの機会が出る。
+    expect(s.pendingLeave?.instanceId).toBe("TST-UNIT-2:eb");
+    expect(zoneOf(s, "player2", "TST-OP:ec0")).toBe("command");
+    const use = legal(s).find((a) => a.playerId === "player2" && JSON.stringify(a).includes("RS-027:dg"));
+    expect(use).toBeDefined();
+    s = resolveAll(act(s, use!));
+    expect(zoneOf(s, "player2", "RS-027:dg")).toBe("discard");
+    // ダイノガッツで場に留まった。コマンドはその後で山札に戻る。
+    expect(zoneOf(s, "player2", "TST-UNIT-2:eb")).toBe("battle");
+    expect(s.players.player2.command).toHaveLength(0);
+    expect(s.ultimaStorm).toBeUndefined();
+  });
+
+  it("RS-566: コマンドから先に戻すと、ユニットが戻るときにはホールドするコマンドがなく、ダイノガッツは使えない（出典: atwiki/page-1229 Q2・R-CTR-01「カウンターを使う場合にも、コマンドをホールドする」）", () => {
+    let s = stormOrder({ battle: [inst("TST-UNIT-2", "eb")], rush: [], hand: [inst("RS-027", "dg")], deck: deckCards(10, "e") });
+    s = settle(pick(s, "commands_first"));
+    expect(zoneOf(s, "player2", "TST-UNIT-2:eb")).toBe("deck");
+    expect(zoneOf(s, "player2", "RS-027:dg")).toBe("hand");
+  });
 });
 

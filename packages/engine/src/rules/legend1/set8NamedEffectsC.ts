@@ -17,6 +17,8 @@ import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
+import { afterCommandCardsLeft } from "../commandLeaveRefill";
+import { leaveFieldInOrder } from "../fieldLeaveQueue";
 import { findCardInField } from "../fieldLookup";
 import { unitFeatures } from "../addedFeatures";
 import { applyDamageToPlayer } from "../damagePayment";
@@ -339,33 +341,153 @@ CHOICE_RESOLVERS[ROLLING_THUNDER_RETURN_EFFECT_ID] = (state, playerId, instanceI
 // 「これをラッシュしたとき、これ以外のすべてのユニットと、すべてのコマンドゾーンのカードを持ち主の山札に戻してシャッフルする。」
 // （atwiki/page-1229）— 両軍のバトル・ラッシュエリアのユニット（ビークルはユニットではないので残る）とコマンドゾーンのカード。
 // 重ねたカード（常駐の重ね等）は持ち主の捨札にする（R-ZONE-04）。
+// 戻す順番はターンプレイヤーが決める（同 Q1「はい、その通りです。」）。コマンドから先に戻せば敵軍ゴーゴーファイヤーの
+// 【プロジェットカノン】、ユニットから先に戻せばダイノガッツを相手は使える（同 Q2「はい、どちらの場合も可能です。」・
+// atwiki/page-403 Q1・page-234 Q1）。そこで「コマンド」「ユニット」を1回ずつ戻し、間に開いた反応の解決後に続ける
+// （GameState.ultimaStorm。core/applyAction.ts の後処理で continueUltimaStorm）。ユニットは1体ずつ離場の処理
+// （rules/fieldLeaveQueue.ts）を通して山札の下に置き、すべて戻し終えてから両軍の山札をシャッフルする。
+
+export const ULTIMA_STORM_ORDER_EFFECT_ID = "rs566_ultima_storm_order";
+export const ULTIMA_STORM_COMMANDS_FIRST = "commands_first";
+export const ULTIMA_STORM_UNITS_FIRST = "units_first";
+
+type UltimaStorm = NonNullable<GameState["ultimaStorm"]>;
+
+function ultimaStormUnits(state: GameState, self: string | undefined, turnPlayer: PlayerId): CardInstance[] {
+  return [turnPlayer, opponent(turnPlayer)].flatMap((pid) =>
+    [...state.players[pid].battle, ...state.players[pid].rush].filter((c) => c.instanceId !== self && isUnitCard(state, c.cardId)),
+  );
+}
 
 function applyUltimaStorm(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const self = ctx.triggerSourceInstanceId;
-  let next = state;
-  let count = 0;
-  for (const pid of ["player1", "player2"] as const) {
-    next = patchPlayer(next, pid, (p) => {
-      const leaving = (c: CardInstance) => c.instanceId !== self && isUnitCard(next, c.cardId);
-      const units = [...p.battle, ...p.rush].filter(leaving);
-      const ids = new Set(units.map((c) => c.instanceId));
-      const unmount = (c: CardInstance) => {
-        if (!c.mountedOnInstanceId || !ids.has(c.mountedOnInstanceId)) return c;
-        const { mountedOnInstanceId: _m, ...rest } = c;
-        return rest as CardInstance;
-      };
-      count += units.length + p.command.length;
-      return {
-        ...p,
-        battle: p.battle.filter((c) => !ids.has(c.instanceId)).map(unmount),
-        rush: p.rush.filter((c) => !ids.has(c.instanceId)).map(unmount),
-        command: [],
-        discard: [...p.discard, ...[...units, ...p.command].flatMap((c) => (c.stackedCards ?? []).map(strip))],
-        deck: shuffleCards([...p.deck, ...units.map(strip), ...p.command.map(strip)]),
-      };
-    });
+  const turnPlayer = ctx.phasePlayerId;
+  const hasCommands = state.players.player1.command.length + state.players.player2.command.length > 0;
+  const hasUnits = ultimaStormUnits(state, self, turnPlayer).length > 0;
+  const storm: UltimaStorm = {
+    playerId: ctx.playerId,
+    ...(self ? { sourceInstanceId: self } : {}),
+    phasePlayerId: turnPlayer,
+    steps: ["commands", "units"],
+  };
+  // どちらか一方しかなければ順番は関係ないので、そのまま戻す。
+  if (!hasCommands || !hasUnits) {
+    const next = continueUltimaStorm({ ...state, ultimaStorm: storm }, true);
+    return { state: next, detail: "rs566_ultima_storm" };
   }
-  return { state: next, detail: `rs566_ultima_storm:${count}` };
+  // 戻す順番はターンプレイヤーが決める（atwiki/page-1229 Q1）。
+  return {
+    state: openEffectChoice(
+      { ...state, ultimaStorm: storm },
+      {
+        playerId: turnPlayer,
+        effectId: ULTIMA_STORM_ORDER_EFFECT_ID,
+        sourceCardId: "RS-566",
+        ...(self ? { sourceInstanceId: self } : {}),
+        kind: "pick_effect_branch",
+        phasePlayerId: turnPlayer,
+        validInstanceIds: [ULTIMA_STORM_COMMANDS_FIRST, ULTIMA_STORM_UNITS_FIRST],
+        selectedInstanceIds: [],
+        optional: false,
+      },
+    ),
+    detail: ULTIMA_STORM_ORDER_EFFECT_ID,
+  };
+}
+
+CHOICE_RESOLVERS[ULTIMA_STORM_ORDER_EFFECT_ID] = (state, playerId, mode) => {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(mode)) return { error: "invalid_target" };
+  const storm = state.ultimaStorm;
+  if (!storm) return { state: finish(state, pending) };
+  const steps: UltimaStorm["steps"] = mode === ULTIMA_STORM_UNITS_FIRST ? ["units", "commands"] : ["commands", "units"];
+  const next = continueUltimaStorm({
+    ...close(state, pending),
+    ultimaStorm: { ...storm, steps, ...(pending.resumeChoice ? { resumeChoice: pending.resumeChoice } : {}) },
+  });
+  return { state: next, log: logFor(state, playerId, "RS-566", `${ULTIMA_STORM_ORDER_EFFECT_ID}:${mode}`) };
+};
+
+/** 反応（離場の応答・【プロジェットカノン】の選択等）が開いていて、アルティマストームの続きを待つか。 */
+function ultimaStormBlocked(state: GameState): boolean {
+  return !!(
+    state.winner ||
+    state.pendingLeave ||
+    state.pendingChase ||
+    state.pendingRegister ||
+    state.pendingEffectChoice ||
+    state.pendingDamagePayment ||
+    state.pendingScry ||
+    (state.queuedFieldLeaves?.length ?? 0) > 0
+  );
+}
+
+/** すべてのコマンドゾーンのカードを持ち主の山札（下）に置く。離れた枚数だけ【プロジェットカノン】の機会がある（rules/commandLeaveRefill.ts）。 */
+function ultimaStormCommands(state: GameState, turnPlayer: PlayerId): GameState {
+  let next = state;
+  const counts: Array<[PlayerId, number]> = [];
+  for (const pid of [turnPlayer, opponent(turnPlayer)]) {
+    const cards = next.players[pid].command;
+    counts.push([pid, cards.length]);
+    if (cards.length === 0) continue;
+    next = patchPlayer(next, pid, (p) => ({
+      ...p,
+      command: [],
+      discard: [...p.discard, ...cards.flatMap((c) => (c.stackedCards ?? []).map(strip))],
+      deck: [...p.deck, ...cards.map(strip)],
+    }));
+  }
+  for (const [pid, count] of counts) next = afterCommandCardsLeft(next, pid, count);
+  return next;
+}
+
+/** これ以外のすべてのユニットを、ターンプレイヤーの側から1体ずつ離場の処理に通して山札（下）に置く（場を離れるときの応答が出る）。 */
+function ultimaStormUnitsLeave(state: GameState, self: string | undefined, turnPlayer: PlayerId): GameState {
+  const intents: PendingLeave[] = [];
+  for (const pid of [turnPlayer, opponent(turnPlayer)]) {
+    for (const zone of ["battle", "rush"] as const) {
+      for (const c of state.players[pid][zone]) {
+        if (c.instanceId === self || !isUnitCard(state, c.cardId)) continue;
+        intents.push({
+          ownerPlayerId: pid,
+          instanceId: c.instanceId,
+          fromZone: zone,
+          toZone: "deck_bottom",
+          leavingCardId: c.cardId,
+          phasePlayerId: turnPlayer,
+          notDestruction: true,
+          skipRegister: true,
+        });
+      }
+    }
+  }
+  return leaveFieldInOrder(state, intents);
+}
+
+/**
+ * アルティマストームの続き。反応が開いていなければ、残りの「コマンド」「ユニット」を順に戻し、戻し終えたら両軍の山札を
+ * シャッフルして終える。反応が開いたらそこで止める（解決後に core/applyAction.ts の後処理から再び呼ぶ）。
+ */
+export function continueUltimaStorm(state: GameState, fromTrigger = false): GameState {
+  let next = state;
+  for (let guard = 0; guard < 4; guard += 1) {
+    const storm = next.ultimaStorm;
+    if (!storm || ultimaStormBlocked(next)) return next;
+    const [step, ...rest] = storm.steps;
+    if (!step) {
+      // 戻し終えた: 両軍の山札をシャッフルする（「持ち主の山札に戻してシャッフルする」）。
+      let done: GameState = { ...next, ultimaStorm: undefined };
+      for (const pid of ["player1", "player2"] as const) {
+        done = patchPlayer(done, pid, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
+      }
+      if (storm.resumeChoice) return openEffectChoice(done, storm.resumeChoice);
+      // 選択・反応の後から終えたときは、選択を閉じたあとと同じく保留中のバトル進入を続ける（proceed と同じ）。
+      return fromTrigger ? done : promoteDeferredBattleEntry(done);
+    }
+    next = { ...next, activePlayer: storm.phasePlayerId, ultimaStorm: { ...storm, steps: rest } };
+    next = step === "commands" ? ultimaStormCommands(next, storm.phasePlayerId) : ultimaStormUnitsLeave(next, storm.sourceInstanceId, storm.phasePlayerId);
+  }
+  return next;
 }
 
 // ---------------------------------------------------------------------------
