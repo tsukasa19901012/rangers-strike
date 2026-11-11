@@ -1084,6 +1084,9 @@ export function hasCommandForCardUse(
   callLeadKind?: CallLeadKind,
 ): boolean {
   if (categories.length === 0) return true;
+  // ルール: R-KW-CALL-01 補足 — 単色のカードなら、コマンドゾーンにそのカテゴリがなくてもコール／リードで支払える
+  // （支払いの候補 rules/commandPayment.ts getCategoryPaymentOptions と同じ。atwiki/page-198 Q1 のリードET で使うカウンター）。
+  if (callLeadKind && categories.length === 1 && heldCallLeadMatchesCategories(player, definitions, callLeadKind, categories)) return true;
   if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
   if (hasHeldCommandForCategories(player, definitions, categories)) return true;
   if (

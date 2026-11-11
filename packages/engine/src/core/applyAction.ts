@@ -31,6 +31,7 @@ import { xg1dTrackHandDiscards } from "../rules/xg1/xg1dEffects";
 import { isXg1eAttackedChoice, openXg1eAttacked, resolveXg1eAttacked, skipXg1eAttacked, xg1eAfterAction } from "../rules/xg1/xg1eEffects";
 import { applyRk13AfterAction } from "../rules/rk/rk13UnitEffects";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
+import { resumeXg7UltimateStrike } from "../rules/xg7/xg7bEffects";
 import { applyRk10AfterAction, rk10CraneDeclined, rk10CraneIntercept, runRk10OnRush } from "../rules/rk/rk10UnitEffects";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
 import {
@@ -230,6 +231,7 @@ import {
 } from "../events/emitUnitRushed";
 import { continuePendingEffectRush } from "../rules/effectRush";
 import { applySuperRadarOnRush } from "../rules/legend3/rushEffects";
+import { openRushCounterWindow } from "../rules/rushEffects";
 import { tryRsCatchallOnEnemyRush } from "../rules/rs/rsCatchallRuntime";
 import { MOBIL_MISSILE_EFFECT_ID, openMobilMissileChoice, selectMobilMissileCommand } from "../rules/mobilMissile";
 import { RUSH_PHASE_RULE_IDS } from "../types/scopedModifiers";
@@ -1208,6 +1210,13 @@ function applyActionWithRng(
     );
     next = { ...resolved.state, log: [...resolved.state.log, finished.log, resolved.log], winner: checkWinner(resolved.state) };
   }
+  // XG7-055【神出鬼没の疾風】で出たユニットへの「ラッシュされたとき」の窓が閉じたら、置き換えたユニットでバトルを続ける（atwiki/page-198 Q1）。
+  if (next.xg7CycloneResumeAttack && !next.pendingRush && !next.pendingEffectChoice && !next.pendingCommandPayment) {
+    const cr = next.xg7CycloneResumeAttack;
+    const cleared: GameState = { ...next, xg7CycloneResumeAttack: undefined, activePlayer: cr.battle.phasePlayerId };
+    const resumed = continueAttackAfterDeclaration(cleared, cr.battle, cr.wingAttackFromRush);
+    next = resumed.ok ? resumed.state : cleared;
+  }
   // RS-296【編隊出撃】: 同じタイミングの「ラッシュしたとき」の選択が済んだら、手札の同じカード名のユニットカードを選ぶ（faq-card-6 RS-353 Q2）。
   if (next.formationDeployResume && !hasBlockingInteraction(next) && !next.winner) {
     const f = next.formationDeployResume;
@@ -1283,6 +1292,12 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRk9AfterAction(state, next, turnPlayerOf(state));
   // RK-195【再起動と暴走】（rules/rk/rk10UnitEffects.ts）。
   if (applyActionDepth === 0) next = applyRk10AfterAction(state, next, turnPlayerOf(state));
+  // XG7-028【アルティメットストライク】のリリースの途中に割り込んだ【再起動と暴走】が済んだら、残りのリリースを続ける
+  // （R-TIME-04・atwiki/page-1974。続きでまた RK-195 をリリースしたら、その選択を開いてまた止まる）。
+  for (let guard = 0; guard < 8 && applyActionDepth === 0 && next.xg7UltimateResume && !next.pendingEffectChoice && !next.rk10DeferredChoices && !hasBlockingInteraction(next); guard++) {
+    const beforeResume = next;
+    next = applyRk10AfterAction(beforeResume, resumeXg7UltimateStrike(beforeResume), turnPlayerOf(state));
+  }
   // RK-260【体内マグマ】の「ユニットでなくなるとき」・RK-271【ライジングマイティキック】の撃破（rules/rk/rk13UnitEffects.ts）。
   if (applyActionDepth === 0) next = applyRk13AfterAction(state, next);
   // RM-017 オメデトロフィー（自軍ユニットがバトルエリアに出たとき。rules/rm/rm1Effects.ts）。
@@ -3526,6 +3541,17 @@ function applyActionCore(
       if (isXg7AttackedChoice(pending)) {
         const picked = resolveXg7Attacked(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
+        // 置き換えで出たサイクロン・ドーパントはラッシュされたユニット: 「ラッシュされたとき」のカウンター（RK-012 等）の窓を
+        // 開き、窓を閉じてからバトルを続ける（後処理の xg7CycloneResumeAttack。atwiki/page-198 Q1・page-698 Q1「はい、できます」）。
+        if (picked.battle.defenderInstanceId === action.instanceId && findInZone(picked.state.players[playerId], "battle", action.instanceId)) {
+          const opened = openRushCounterWindow(picked.state, playerId, action.instanceId, picked.battle.phasePlayerId);
+          if (opened.pendingRush) {
+            return ok(
+              { ...opened, xg7CycloneResumeAttack: { battle: picked.battle, wingAttackFromRush: picked.wingAttackFromRush } },
+              buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId),
+            );
+          }
+        }
         return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
       if (isXg7StrikeChoice(pending)) {

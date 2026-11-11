@@ -126,9 +126,26 @@ describe("RS-605 異次元からの翼", () => {
     expect(s.players.player1.deck).toHaveLength(2);
   });
 
-  it.todo(
-    "RS-605: Q&A — セイクウオーを出すとき、追加条件を満たすためにデンジ犬アイシーの【最後の手段】を使える（出典: atwiki/page-1448 Q1「はい、できます」）— 効果そのものが未実装で、効果解決中に別の効果を割り込ませる手順を公開 API で組めないため",
-  );
+  // atwiki/page-1448 Q1「はい、できます。１つの効果の解決中に新たな効果が発動した場合、新しい効果を即時解決した後、もとの効果の解決を再開してください。」
+  it("RS-605: Q&A — セイクウオーを出すとき、追加条件を満たすためにデンジ犬アイシーの【最後の手段】を使える（出典: atwiki/page-1448 Q1「はい、できます」）", () => {
+    // 合体―トリプター（RS-668）＋ジェットラス（RS-666）＋ジャン・ボエール（RS-667）。ジャン・ボエールは山札にしかない。
+    let s = play(
+      board([inst("RS-686", "s"), inst("RS-667", "jb"), ...deckCards(3)], {
+        rush: [inst("RS-359", "icy"), inst("RS-668", "p0"), inst("RS-666", "p1")],
+        command: releasedCat("OT", 2),
+        power: powerCards(6),
+      }),
+    );
+    expect(choiceIds(s)).toContain("RS-686:s");
+    // 異次元からの翼の解決中に【最後の手段】を割り込ませ、山札のジャン・ボエールを捨札にしてから、セイクウオーを出す続きに戻る。
+    s = resolveAll(pick(s, "RS-686:s"), ["RS-667:jb"]);
+    expect(zoneOf(s, "player1", "RS-686:s")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-359:icy")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-667:jb")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-668:p0")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-666:p1")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-605:op")).toBe("discard");
+  });
   it.todo("RS-605: その後、山札をシャッフルする（出典: atwiki/page-1448）— シャッフル結果は乱数に依存し、公開 API で確かめられないため");
 });
 

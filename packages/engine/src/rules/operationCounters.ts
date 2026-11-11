@@ -1,3 +1,4 @@
+import { collectCallLeadFieldUnits } from "./callLead";
 import { afterCommandCardsLeft } from "./commandLeaveRefill";
 import { applyXg5AttackWin, XG5_CONFINE_WINDOW_EFFECT_ID } from "./xg5/xg5Core";
 import { xg5BattleUsesPrintedBp } from "./xg5/xg5Fields";
@@ -322,6 +323,15 @@ export function canPayCounterCategoryHold(
   if (categories.length === 0) return true;
   // RK-036 仮面ライダーライア【運命への反抗】: 同じカテゴリのカードを自軍コマンドゾーンから捨札にして使える（rules/rk/rk2UnitEffects.ts）。
   if (rk2RaiaDiscardCandidates(player, definitions, categories).length > 0) return true;
+  // リード（XG7-055 ※リードET 等）を持つ場のユニットも、カウンターを使うためのコマンドとしてホールドできる（R-KW-READ-01・
+  // atwiki/page-2250 A2）。単色なら、コマンドゾーンにそのカテゴリがなくてもよい（R-KW-CALL-01 補足）。以前はここで見ておらず、
+  // 場のリードしか払えるものがないと「ラッシュされたとき」の窓が開かなかった（atwiki/page-198 Q1）。
+  if (
+    collectCallLeadFieldUnits(player, definitions, "lead", categories).length > 0 &&
+    (categories.length === 1 || allCategoriesExistInCommandZone(player, definitions, categories))
+  ) {
+    return true;
+  }
   if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
   if (hasReleasedCommandForCategories(player, definitions, categories)) return true;
   return (

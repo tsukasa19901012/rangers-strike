@@ -396,9 +396,46 @@ describe("RS-238 ゴーゴーファイヤー", () => {
     "RS-238: 公式Q&A — 天雷旋風神【アルティマストーム】でコマンドから先に山札に戻すなら【プロジェットカノン】を使える（ユニットから先ならダイノガッツを使える）（出典: grnrngr/faq-card-4 RS-238 Q1・atwiki/page-403 Q1）— 【アルティマストーム】（rules/legend1/set8NamedEffectsC.ts applyUltimaStorm）は両軍のユニットとコマンドを一括で山札に戻す実装で、戻す順番（コマンドが先かユニットが先か）を選ぶ手段も、途中で【プロジェットカノン】（afterCommandCardsLeft）やダイノガッツの反応を開く処理もない",
   );
 
-  it.todo(
-    "RS-238: 公式Q&A（相互参照）— メカニック忍者でコマンドゾーンのカードがラッシュエリアに出たときも【プロジェットカノン】を発動でき、その後アタックされたユニットをコマンドゾーンに置ける（ライア併用時は2回）（出典: grnrngr/faq-rider-1 RK-008・RK-036）— メカニック忍者の処理（rules/operationCounters.ts applyMechanicNinjaCounter）はコマンドゾーンのカードを出してからアタックされたユニットを置くまでを一括で行い、途中で【プロジェットカノン】（afterCommandCardsLeft）を呼ばない。カウンターの反応ウィンドウ中は activePlayer が防御側になるため、refillSources の「敵軍ターン中」判定も満たさない（処理の中断と再開が必要）",
-  );
+  // faq-rider-1 RK-008 Q1「はい、できます。」・Q2「…【プロジェットカノン】が発動できますので、捨札からカードを1枚選んでコマンドゾーンに置きます。…最後に、…アタックされたSユニットをコマンドゾーンに置いて、一連の処理を終了します。」
+  it("RS-238: 公式Q&A（相互参照）— メカニック忍者でコマンドゾーンのカードがラッシュエリアに出たときも【プロジェットカノン】を発動でき、その後アタックされたユニットをコマンドゾーンに置ける（出典: grnrngr/faq-rider-1 RK-008・RK-036）", () => {
+    const KAIZO = sUnit("SPEC-KAIZO", { category: "ET", bp: 3000, features: ["男", "改造人間"] });
+    let s = attack(
+      st(
+        {
+          activePlayer: "player2",
+          player1: {
+            battle: [inst("TST-UNIT-0", "d")],
+            rush: [inst("RS-238", "gf")],
+            hand: [inst("RK-008", "nin")],
+            command: [released("SPEC-KAIZO", "k"), released("TST-OP-ET", "et")],
+            discard: [inst("TST-OP", "x")],
+            power: powerCards(4),
+            deck: deckCards(5),
+          },
+          player2: { battle: [inst("TST-UNIT-7", "atk")], deck: deckCards(5, "e") },
+        },
+        [KAIZO],
+      ),
+      "TST-UNIT-7:atk",
+      "TST-UNIT-0:d",
+      "player2",
+    );
+    // メカニック忍者を使い（ET のコマンドをホールド）、出す改造人間に SPEC-KAIZO を選ぶ。
+    const pay = (legal(s) as unknown as Record<string, unknown>[]).find(
+      (a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-008:nin" && a.substituteInstanceId === "SPEC-KAIZO:k",
+    );
+    expect(pay).toBeDefined();
+    s = act(s, pay as never);
+    // メカニック忍者の途中（改造人間を出した直後）に【プロジェットカノン】が開き、アタックされたユニットはまだバトルエリアにある。
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect(s.pendingEffectChoice?.validInstanceIds).toContain("TST-OP:x");
+    expect(zoneOf(s, "player1", "SPEC-KAIZO:k")).toBe("rush");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("battle");
+    s = settle(pick(s, "TST-OP:x"));
+    expect(zoneOf(s, "player1", "TST-OP:x")).toBe("command");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("command");
+    expect(s.pendingBattle).toBeUndefined();
+  });
 
   // faq-card-6 RS-363 Q2「ターンプレイヤーが効果の優先順を選択して処理してください。…ターンプレイヤーが「RS-363 バルパンサー（２nd）」のＮＣで破壊した敵軍コマンドを、そのまま捨札にしたままで処理を終えることになります。」
   it("RS-238: 公式Q&A（相互参照）— バルパンサー（2nd）の NC 中にゴーゴーファイヤーで置いたユニットカードを捨札にでき、繰り返しはターンプレイヤーが処理順を選ぶ（出典: grnrngr/faq-card-6 RS-363）", () => {

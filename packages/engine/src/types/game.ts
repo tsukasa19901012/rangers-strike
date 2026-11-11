@@ -1353,6 +1353,10 @@ export type GameState = {
   rk12ResumeOperation?: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string };
   /** RK-008 メカニック忍者の解決の途中で割り込んだ選択（RS-238【プロジェットカノン】）の後で続ける「その後、」（core/applyAction.ts の後処理）。 */
   rk1MechanicNinjaResume?: { defenderId: PlayerId; activePlayer: PlayerId; pendingBattle: PendingBattle };
+  /** XG7-028【アルティメットストライク】の1回ごとのリリースの間に RK-195【再起動と暴走】が割り込んだ: 残りのリリースの続き（core/applyAction.ts の後処理）。 */
+  xg7UltimateResume?: { pending: PendingEffectChoice; selected: string[]; next: number };
+  /** XG7-055【神出鬼没の疾風】で置き換えたユニットへの「ラッシュされたとき」の窓の後で続けるバトル（core/applyAction.ts の後処理）。 */
+  xg7CycloneResumeAttack?: { battle: PendingBattle; wingAttackFromRush: boolean };
   /** RK-036 ライアの支払いで割り込んだ選択（RS-238【プロジェットカノン】）の後で続けるカウンターの使用（core/applyAction.ts の後処理）。 */
   rk2RaiaResumeCounter?: {
     playerId: PlayerId;

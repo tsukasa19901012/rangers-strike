@@ -139,9 +139,44 @@ describe("RK-099 アポロガイスト", () => {
     expect(spOf(s, "player1", "RK-099:ap")).toBe(0);
   });
 
-  it.todo(
-    "RK-099: 公式Q&A — アポロガイストがいるとき【神出鬼没の疾風】でラッシュしたサイクロン・ドーパントのリード ET で宏のオルゴール時計を発動できる（出典: atwiki/page-698 Q1）— XG7-055【神出鬼没の疾風】の置き換えで直接バトルエリアに出たユニットに「ラッシュされたとき」のカウンターの窓（pendingRush）が開かず、置き換えのあとそのままバトルが解決されるため（cardSpec/RK1-001-021.b の RK-012 Q1 と同じ）",
-  );
+  // atwiki/page-698 Q1「はい、できます。」
+  it("RK-099: 公式Q&A — アポロガイストがいるとき【神出鬼没の疾風】でラッシュしたサイクロン・ドーパントのリード ET で宏のオルゴール時計を発動できる（出典: atwiki/page-698 Q1）", () => {
+    /** 敵軍の BP3000 のユニットが自軍 S ユニットにアタックし、コマンドゾーンのサイクロン・ドーパントと置き換える。 */
+    const swapped = (rush: CardInstance[]) => {
+      const s = attack(
+        enemyTurn(
+          { battle: [inst("SPEC-NON", "d")], rush, hand: [inst("RK-012", "mb")], command: [released("XG7-055", "cy")], power: powerCards(4) },
+          { battle: [inst("SPEC-ATK3000", "a")] },
+        ),
+        "SPEC-ATK3000:a",
+        "SPEC-NON:d",
+        "player2",
+      );
+      expect(s.pendingEffectChoice?.sourceCardId).toBe("XG7-055");
+      return pick(s, "XG7-055:cy");
+    };
+    const canMusicBox = (s: GameState) =>
+      legal(s).some(
+        (a) =>
+          a.playerId === "player1" &&
+          ((a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-012:mb") || (a.type === "play_counter" && a.instanceId === "RK-012:mb")),
+      );
+    // アポロガイストがいれば、置き換えで出たサイクロン・ドーパント（怪人）は BP4000 で、宏のオルゴール時計を使える。
+    let s = swapped([inst("RK-099", "ap")]);
+    expect(bpOf(s, "player1", "XG7-055:cy")).toBe(4000);
+    expect(canMusicBox(s)).toBe(true);
+    const pay = legal(s).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-012:mb");
+    s = act(s, pay!);
+    const play = legal(s).find((a) => a.type === "play_counter" && a.instanceId === "RK-012:mb");
+    if (play) s = act(s, play);
+    expect(zoneOf(s, "player1", "RK-012:mb")).toBe("discard");
+    // 支払いはリード ET（バトルエリアのサイクロン・ドーパントをホールド）。
+    expect(cardIn(s, "player1", "XG7-055:cy")?.commandHeld).toBe(true);
+    // アポロガイストがいなければ BP3000 なので使えない（バトルはそのまま行われる）。
+    const without = swapped([]);
+    expect(bpOf(without, "player1", "XG7-055:cy")).toBe(3000);
+    expect(canMusicBox(without)).toBe(false);
+  });
   // atwiki/page-698 Q2 = atwiki/page-1399 Q4「いいえ、なりません。バトルで撃破されたユニットはすでに「撃破」されており、その状態からさらに効果などで重複して撃破されることはありません。」
   it("RK-099: 公式Q&A — クウガRM の RC で撃破されたアポロガイストは、すでにバトルで撃破されているので【ライジングマイティキック】の効果での撃破の対象にならない（レジストで留まれば場に残り、BP がそれ以下の他の S ユニットだけが撃破される）（出典: atwiki/page-698 Q2・atwiki/page-1399 Q4）", () => {
     let s = rcRideOff(board({ rush: [inst("RK-271", "rm"), inst("SPEC-VEHICLE", "v")] }, { battle: [inst("RK-099", "ap"), inst("SPEC-E2", "e2")] }), "RK-271:rm", "SPEC-VEHICLE:v");

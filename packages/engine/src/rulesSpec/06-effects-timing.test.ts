@@ -36,6 +36,15 @@ import { addTurnRuleModifier } from "../core/scopedModifiers";
 import { PINK_BARRIER_RULE_ID } from "../rules/powerFlipEffects";
 import { wasRushedThisTurn } from "../rules/turnModifiers";
 import {
+  cardIn as gCardIn,
+  enter as gEnter,
+  heldN as gHeldN,
+  p1Battle as gP1Battle,
+  pick as gPick,
+  sUnit as gSUnit,
+  zoneOf as gZoneOf,
+} from "../cardSpec/RK1-001-021.helpers";
+import {
   act as xAct,
   enter as xEnter,
   nextPhase as xNextPhase,
@@ -544,9 +553,41 @@ describe("R-TIME-04 入れ子の割り込み", () => {
     expect(inZone(s, "player1", "hand", "RS-106:dr")).toBe(true);
   });
 
-  it.todo(
-    "R-TIME-04: ゴセイアルティメットの5回リリース処理の途中で仮面ライダーG4がリリースされたら、割り込んでG4の効果を発動できる（出典: atwiki/page-1974 Q&A）— XG7-028【アルティメットストライク】はリリースするカードを最大5つまとめて選び、確定時に一括でリリースする（rules/xg7/xg7bEffects.ts の registerMultiPick）ため、1回ごとのリリースの間に G4【再起動と暴走】を割り込ませる窓がない（G4 の選択は一括リリース後に開く）",
-  );
+  // atwiki/page-1974「…3回目でG4をリリースしたとき、割り込んでG4の効果を発動できますか？…」「↑割り込んでG4の効果を発動できます」
+  it("R-TIME-04: ゴセイアルティメットの5回リリース処理の途中で仮面ライダーG4がリリースされたら、割り込んでG4の効果を発動できる（出典: atwiki/page-1974 Q&A）", () => {
+    const C3 = gSUnit("SPEC-C3", { bp: 1000, powerCost: 3 });
+    const C9 = gSUnit("SPEC-C9", { bp: 1000, powerCost: 9 });
+    let s = gEnter(
+      gP1Battle(
+        {
+          rush: [inst("XG7-028", "ga")],
+          battle: [{ ...inst("RK-195", "g4"), commandHeld: true }, inst("TST-UNIT-0", "s")],
+          command: gHeldN(2, "TST-OP-MA", "hc"),
+        },
+        { battle: [inst("SPEC-C3", "e3"), inst("SPEC-C9", "e9")] },
+        [C3, C9],
+      ),
+      "XG7-028:ga",
+    );
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG7-028");
+    // 【アルティメットストライク】でコマンド → G4 → コマンドの順に3回リリースする（ホールド状態のものを全部選ぶと確定する）。
+    for (const id of ["TST-OP-MA:hc0", "RK-195:g4", "TST-OP-MA:hc1"]) s = gPick(s, id);
+    // 2回目（G4）のリリースで【再起動と暴走】が割り込む: 3回目のコマンドはまだホールド状態。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-195");
+    expect(gCardIn(s, "player1", "RK-195:g4")?.commandHeld ?? false).toBe(false);
+    expect(gCardIn(s, "player1", "TST-OP-MA:hc0")?.commandHeld ?? false).toBe(false);
+    expect(gCardIn(s, "player1", "TST-OP-MA:hc1")?.commandHeld).toBe(true);
+    s = gPick(s, "TST-UNIT-0:s");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-195");
+    s = gPick(s, "SPEC-C9:e9");
+    expect(gZoneOf(s, "player2", "SPEC-C9:e9")).toBe("discard");
+    // G4 の効果を解決した後、元の効果の解決を再開する: 3回目をリリースし、3回以下の必要パワーの敵軍ユニットを選ぶ。
+    expect(gCardIn(s, "player1", "TST-OP-MA:hc1")?.commandHeld ?? false).toBe(false);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG7-028");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["SPEC-C3:e3"]);
+    s = gPick(s, "SPEC-C3:e3");
+    expect(gZoneOf(s, "player2", "SPEC-C3:e3")).toBe("power");
+  });
 });
 
 describe("R-TIME-05 1タイミングに複数発動可", () => {
