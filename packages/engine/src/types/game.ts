@@ -67,6 +67,11 @@ export type CardInstance = {
    * partnerInstanceId のユニットが左隣にいる間だけ有効。バトルエリアに出直すと消える。
    */
   jointComboGrants?: JointComboGrant[];
+  /**
+   * RS-440【武器換装】でラッシュエリアに戻したユニット: 次にバトルエリアに出たとき、前に得た JC の能力を持ち越す
+   * （atwiki/page-780 Q2・page-353 Q1「重複し、相手に2点ダメージ」）。出たときに消える。
+   */
+  jointComboGrantsKept?: boolean;
   /** バトルフェイズ: このターンにこのユニットがバトルまたはストライク済みなら true。 */
   battleActed?: boolean;
   /**

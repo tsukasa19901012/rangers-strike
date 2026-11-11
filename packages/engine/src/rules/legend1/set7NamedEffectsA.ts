@@ -1013,9 +1013,18 @@ export function activateHoldReturnSelf(state: GameState, playerId: PlayerId, car
   return completeHoldReturnSelf(state, playerId, card.instanceId, released.slice(0, n));
 }
 
+/** バトルエリアからラッシュエリアへ戻したカード（rules/bounce.ts と同じくエリアでの状態を消す。JC の能力は持ち越す）。 */
+function returnedToRush(card: CardInstance): CardInstance {
+  const { battleActed: _a, activatedNcEffects: _n, registerHeld: _r, mountedOnInstanceId: _m, ...rest } = card;
+  return rest.jointComboGrants?.length ? { ...rest, jointComboGrantsKept: true } : rest;
+}
+
 /** 選んだ自軍コマンドをホールドし（支払いで既にホールドしていればそのまま）、これをラッシュエリアに戻す。 */
 function completeHoldReturnSelf(state: GameState, playerId: PlayerId, instanceId: string, holdIds: string[]): GameState {
-  const card = state.players[playerId].battle.find((c) => c.instanceId === instanceId);
+  const found = state.players[playerId].battle.find((c) => c.instanceId === instanceId);
+  // 戻して再びコンビネーションしたとき、前に得た JC の能力と重複する（atwiki/page-780 Q2「はい、できます」）。
+  // ラッシュエリアに戻ったので、出直したユニットとしてアタックできる（Q2 は戻して出し直した後に撃破している）。
+  const card = found ? returnedToRush(found) : undefined;
   let next = patchPlayer(state, playerId, (p) => ({
     ...p,
     command: p.command.map((c) => (holdIds.includes(c.instanceId) && !c.commandHeld ? { ...c, commandHeld: true } : c)),

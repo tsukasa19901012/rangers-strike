@@ -290,9 +290,31 @@ describe("RS-440 バトルフィーバーロボ（2nd）", () => {
     expect(weaponActions(s).length).toBeGreaterThan(0);
   });
 
-  it.todo(
-    "RS-440: 【武器換装】で戻して再びゴーゴードリルとコンビネーションしたとき、BP20000 以上ならゴーゴードリルの「相手に1点ダメージ」は重複して2点になる（出典: atwiki/page-780 Q2・page-353 Q1「はい、できます」）— 【武器換装】が未実装で、かつ BP20000 以上（L/R ナンバー10体相当）の盤面を公開 API で組めないため",
-  );
+  it("RS-440: 【武器換装】で戻して再びゴーゴードリルとコンビネーションしたとき、BP20000 以上ならゴーゴードリルの「相手に1点ダメージ」は重複して2点になる（出典: atwiki/page-780 Q2・page-353 Q1「はい、できます」）", () => {
+    const R = sUnit("SPEC-R", { category: "ET", comboNumber: "R" as never });
+    const specs = [1, 2, 3, 4, 5].map((n) => inst("SPEC-R", `r${n}`));
+    let s = st(
+      {
+        player1: {
+          battle: [...specs, inst("RS-171", "l")],
+          rush: [inst("RS-440", "bf")],
+          command: releasedCat("ET", 3),
+          deck: deckCards(3),
+        },
+        player2: { battle: [inst("TST-UNIT-0", "e")], power: powerCards(3, "e"), deck: deckCards(3, "e") },
+      },
+      [...SPECS, R],
+    );
+    s = enterSeq(s, ["RS-440:bf"]);
+    s = resolveAll(act(s, weaponActions(s)[0]!));
+    expect(zoneOf(s, "player1", "RS-440:bf")).toBe("rush");
+    s = enter(passEntry(s), "RS-440:bf");
+    // 6000 + L/R ナンバー6体×1000 + ドリルの能力2回分×4000
+    expect(bpOf(s, "player1", "RS-440:bf")).toBe(20000);
+    s = resolveAll(attack(s, "RS-440:bf", "TST-UNIT-0:e"));
+    expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
+    expect(s.players.player2.damage).toBe(2);
+  });
 });
 
 // ===========================================================================

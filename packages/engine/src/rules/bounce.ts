@@ -33,6 +33,7 @@ function sanitizeBouncedCard(
     delete next.mountedOnInstanceId;
     delete next.activatedNcEffects;
     delete next.jointComboGrants;
+    delete next.jointComboGrantsKept;
   }
   if (fromZone === "power") {
     next.faceDown = false;

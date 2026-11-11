@@ -224,7 +224,15 @@ export function resolveEnterBattleEffectsImpl(
     state.players[playerId].battle.filter((c) => c.instanceId !== card.instanceId);
 
   let battleCard = card;
-  if (!resumeFrom && card.jointComboGrants) {
+  if (!resumeFrom && card.jointComboGrantsKept) {
+    // RS-440【武器換装】で戻したユニットは前に得た JC の能力を持ち越す（atwiki/page-780 Q2）。
+    const { jointComboGrantsKept: _kept, ...kept } = card;
+    battleCard = kept;
+    nextState = patchPlayer(nextState, playerId, (player) => ({
+      ...player,
+      battle: player.battle.map((c) => (c.instanceId === card.instanceId ? kept : c)),
+    }));
+  } else if (!resumeFrom && card.jointComboGrants) {
     // バトルエリアに出直したユニットは、前に得た JC の能力を持たない（R-CN-06）。
     const { jointComboGrants: _stale, ...fresh } = card;
     battleCard = fresh;
