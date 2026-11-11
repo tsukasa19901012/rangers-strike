@@ -20,6 +20,7 @@ import type { GameState } from "../types/game";
 import {
   KW_MORPH,
   PLAIN_VEHICLE,
+  act,
   activate,
   attack,
   attackUntilRegister,
@@ -44,7 +45,9 @@ import {
   expectRarityIn,
   expectStats,
   faceDown,
+  faceUp,
   inst,
+  legal,
   morphCandidates,
   ncEnter,
   p1Battle,
@@ -328,9 +331,18 @@ describe("RK-333 仮面ライダー龍騎サバイブ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-333");
   });
 
-  it.todo(
-    "RK-333: 公式Q&A — XG5-066 仮面ライダーベルデ【コピーベント】で龍騎サバイブと置き換えるときは、追加条件で必要パワーを0にできない（出典: atwiki/page-1243 Q2）— XG5-066【コピーベント】が未実装（本範囲外のカード。RK3-043-063.a の RK-043 の it.todo と同じ）",
-  );
+  // atwiki/page-1243 Q2「いいえ、それはできません。【コピーベント】には追加条件に関する特記がなく…必要パワーを0にすることができないからです。」
+  it("RK-333: 公式Q&A — XG5-066 仮面ライダーベルデ【コピーベント】で龍騎サバイブと置き換えるときは、追加条件で必要パワーを0にできない（出典: atwiki/page-1243 Q2）", () => {
+    // 自軍エリアにベルデと龍騎（RK-332）、自軍パワーゾーンにオモテ向きの龍騎サバイブ（必要パワー10）とナイト（XG5-067。必要パワー4）。
+    const copyVent = (power: number) =>
+      activate(rushPhase({ rush: [inst("XG5-066", "v"), inst("RK-332", "ry")], power: [faceUp("RK-333", "sv"), faceUp("XG5-067", "n"), ...powerCards(power - 2)] }), "XG5-066:v");
+    // パワー6（10未満）: 龍騎を捨札にして必要パワー0にすることはできず、龍騎サバイブは選べない。
+    const s = copyVent(6);
+    expectChoiceFrom(s, "player1", "XG5-066");
+    expect(choiceIds(s)).toEqual(["XG5-067:n"]);
+    // パワー10 なら必要パワーを満たすので選べる。
+    expect(choiceIds(copyVent(10)).sort()).toEqual(["RK-333:sv", "XG5-067:n"]);
+  });
 });
 
 // ===========================================================================
@@ -389,9 +401,32 @@ describe("RK-334 仮面ライダー電王LF（2nd）", () => {
     expect(spOf(s, "player1", "RK-334:lf")).toBe(0);
   });
 
-  it.todo(
-    "RK-334: 公式Q&A — 場にあっても XG7-059 トリガードーパント【ゲームスタート……】は発動できるが、ラッシュエリアに出た時点でユニットになるので「そうしたとき」以降は無効になる（出典: atwiki/page-1369 Q1）— XG7-059 が未実装（本範囲外のカード）",
-  );
+  // atwiki/page-1369 Q1「はい、できます。ただし、…ラッシュエリアに出した時点で…ユニットとなり、…「そうしたとき」以降のテキストは無効となり発動もできなくなります。」
+  it("RK-334: 公式Q&A — 場にあっても XG7-059 トリガードーパント【ゲームスタート……】は発動できるが、ラッシュエリアに出た時点でユニットになるので「そうしたとき」以降は無効になる（出典: atwiki/page-1369 Q1）", () => {
+    // 敵軍（player2）が XG7-049 ガタキリバコンボ（必要パワー4。「手札からラッシュしたとき」【分身体】）を手札からラッシュする。
+    // 自軍バトルエリアに電王LF、自軍パワーゾーンにオモテ向きのトリガー・ドーパント（必要パワー2）。
+    const s0 = st(
+      {
+        phase: "rush",
+        activePlayer: "player2",
+        player1: { battle: [inst("RK-334", "lf")], power: [faceUp("XG7-059", "tg")], deck: deckCards(5) },
+        player2: { hand: [inst("XG7-049", "g")], command: releasedCat("WB", 1, "ew"), power: powerCards(6, "ep"), deck: [inst("XG7-049", "e1"), inst("TST-OP", "e2"), ...deckCards(3, "e")] },
+      },
+      EXTRA,
+    );
+    const r = rushFromHand(s0, "player2", "XG7-049:g");
+    expect(r.ok, r.error).toBe(true);
+    let s = r.state;
+    // 【ゲームスタート……】は発動できる（ラッシュエリアに出すかを選べる）。
+    const offer = legal(s).find((a) => a.playerId === "player1" && JSON.stringify(a).includes("XG7-059:tg") && a.type !== "end_phase");
+    expect(offer !== undefined || s.pendingEffectChoice?.sourceCardId === "XG7-059").toBe(true);
+    if (offer && !s.pendingEffectChoice) s = act(s, offer);
+    s = resolveAll(s, ["XG7-059:tg", "confirm"]);
+    expect(zoneOf(s, "player1", "XG7-059:tg")).toBe("rush");
+    // 出た時点で必要パワー2のユニットになり【ゲームスタート……】は無効 — 【分身体】は無効にならず、山札の XG7-049 がラッシュエリアに出る。
+    expect(zoneOf(s, "player2", "XG7-049:e1")).toBe("rush");
+    expect(zoneOf(s, "player2", "TST-OP:e2")).toBe("discard");
+  });
 });
 
 // ===========================================================================
