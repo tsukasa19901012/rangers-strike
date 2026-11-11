@@ -612,9 +612,13 @@ describe("RS-255 巨大化爆弾", () => {
   });
 
   // faq-card-5 RS-255 Q2（atwiki Q2）「はい、発動させることができます。」
-  it.todo(
-    "RS-255: 公式Q&A — 巨大化爆弾に重ねられているユニットはナンバーコンビネーションの効果を発動できる（出典: grnrngr/faq-card-5 RS-255 Q2・atwiki/page-37 Q2）— 巨大化爆弾を使用する手段がエンジンになく（CARD-RS-255）、重ねた状態を公開 API で組めない",
-  );
+  it("RS-255: 公式Q&A — 巨大化爆弾に重ねられているユニットはナンバーコンビネーションの効果を発動できる（野球仮面が1番目にバトルエリアに出て【予告ホームラン】）（出典: grnrngr/faq-card-5 RS-255 Q2・atwiki/page-37 Q2）", () => {
+    let s = settle(useCard(destroyedByAttack(), "player1", "RS-255:bomb"));
+    s = toPhase(s, "player1", "battle");
+    s = withPlayer(s, "player2", { battle: [inst("SPEC-BIG", "def")], deck: deckCards(3, "e") });
+    s = enter(s, "RS-257:kai");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-257");
+  });
 
   // faq-card-5 RS-255 Q3（atwiki Q3・faq-card-1 RS-027）「はい、できます。」
   it.todo(
