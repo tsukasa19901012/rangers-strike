@@ -28,6 +28,7 @@ import {
   legal,
   legalOfType,
   passEntry,
+  playOp,
   powerCards,
   released,
   held,
@@ -165,9 +166,42 @@ describe("RS-171 ゴーゴードリル", () => {
   });
 
   // faq-card-3 RS-171 Q1（RS-440 バトルフィーバーロボ【武器換装】で再びコンビネーション）「はい、できます。」
-  it.todo(
-    "RS-171: 公式Q&A — 武器換装で戻して再び出し、もう一度ドリルとコンビネーションしたバトルフィーバーロボ（2nd）は、BP20000以上で撃破すると重複して2点与える（出典: atwiki/page-353 Q1）— RS-440 を BP20000 以上にする手段（JC の BP+4000 が適用されないことに加え、他の強化カード）を組み立てられない。単発の1点も上の it.fails のとおり発生しない",
-  );
+  it("RS-171: 公式Q&A — 武器換装で戻して再び出し、もう一度ドリルとコンビネーションしたバトルフィーバーロボ（2nd）は、BP20000以上で撃破すると重複して2点与える（出典: atwiki/page-353 Q1）", () => {
+    let s = st({
+      phase: "rush",
+      player1: {
+        rush: [inst("RS-171", "d"), inst("RS-440", "bf")],
+        hand: [inst("RS-025", "g1"), inst("RS-025", "g2")],
+        command: [...releasedN(2, "TST-OP", "wb"), ...releasedN(3, "TST-OP-ET", "et")],
+        power: powerCards(4),
+        deck: deckCards(5),
+      },
+      player2: { battle: [inst("TST-UNIT-0", "e")], power: powerCards(3, "e"), deck: deckCards(5, "e") },
+    });
+    // ガオ・ソウル（BP+4000）を2枚、バトルフィーバーロボに使う。
+    for (const g of ["RS-025:g1", "RS-025:g2"]) {
+      const r = playOp(s, "player1", g, "RS-440:bf");
+      expect(r.ok, r.error).toBe(true);
+      s = drain(r.state, "player1", ["RS-440:bf"]);
+    }
+    s = toPhase(s, "player1", "battle");
+    s = passEntry(enter(s, "RS-171:d"));
+    s = enter(s, "RS-440:bf");
+    // 6000 + ガオ・ソウル 8000 + ドリル 4000 + L/R ナンバー（ドリル）1000。
+    expect(bpOf(s, "player1", "RS-440:bf")).toBe(19000);
+    s = passEntry(s);
+    const weapon = legal(s).find(
+      (a) => a.playerId === "player1" && !["battle", "strike", "move_to_battle"].includes(a.type) && Object.values(a as Record<string, unknown>).includes("RS-440:bf"),
+    );
+    expect(weapon).toBeDefined();
+    s = settle(act(s, weapon!));
+    expect(zoneOf(s, "player1", "RS-440:bf")).toBe("rush");
+    s = enter(s, "RS-440:bf");
+    expect(bpOf(s, "player1", "RS-440:bf")).toBe(23000);
+    s = settle(attack(s, "RS-440:bf", "TST-UNIT-0:e"));
+    expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
+    expect(s.players.player2.damage).toBe(2);
+  });
 });
 
 // ===========================================================================
@@ -275,9 +309,27 @@ describe("RS-172 ゴーゴーショベル", () => {
   });
 
   // faq-card-8 RS-524 Q「ユニット同士のコンビネーションは成立していますので…【ショベルディフェンス】の効果は有効となります」
-  it.todo(
-    "RS-172: 公式Q&A — 呉越同舟で ET を追加した L ユニットからコンビネーションしたショベルの効果は、追加カテゴリが失われた次のターンも有効（出典: grnrngr/faq-card-8 RS-524 Q）— 【ショベルディフェンス】自体が未実装（上の it.fails）であり、呉越同舟の常駐・タッグ手順も組み立てていない",
-  );
+  it("RS-172: 公式Q&A — 呉越同舟で ET を追加した L ユニットからコンビネーションしたショベルの効果は、追加カテゴリが失われた次のターンも有効（出典: grnrngr/faq-card-8 RS-524 Q）", () => {
+    let s = st(
+      {
+        turn: 3,
+        player1: { operation: [inst("RS-524", "gd")], hand: [inst("TST-OP", "h")], battle: [inst("SPEC-WB-L", "L")], rush: [inst("RS-172", "r")], deck: deckCards(5) },
+        player2: { rush: [inst("TST-UNIT-0", "st")], power: powerCards(3, "e"), deck: deckCards(5, "e") },
+      },
+      [WB_L],
+    );
+    // 呉越同舟: 手札を見せ、WB の L ユニットを選んで ET を宣言する。
+    s = act(s, legal(s).find((a) => a.type === "activate_resident_operation" && a.playerId === "player1")!);
+    for (const id of ["TST-OP:h", "SPEC-WB-L:L", "ET"]) s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+    expect(s.pendingEffectChoice).toBeUndefined();
+    s = enter(s, "RS-172:r");
+    expect(s.pendingEffectChoice?.effectId).toBe("shovel_defense");
+    s = accept(s, "shovel_defense");
+    s = endTurn(passEntry(s));
+    s = toPhase(s, "player2", "battle");
+    s = enter(s, "TST-UNIT-0:st", "player2");
+    expect(canStrike(s, "TST-UNIT-0:st", "player2")).toBe(false);
+  });
 });
 
 // ===========================================================================

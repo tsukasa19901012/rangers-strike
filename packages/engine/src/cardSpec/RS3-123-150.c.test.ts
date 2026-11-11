@@ -262,9 +262,26 @@ describe("RS-145 ダッシュレオン", () => {
   });
 
   // faq-card-7（RS-440 の項）「はい、できます。」
-  it.todo(
-    "RS-145: 公式Q&A — バトルフィーバーロボの【武器換装】で戻した後、ダッシュレオンでコマンドをリリースすれば、再び出して【武器換装】を使える（出典: grnrngr/faq-card-7 RS-440）— RS-440【武器換装】（自軍コマンドを3つホールドしてラッシュエリアに戻す）の起動アクションを公開 API で特定できず、RS-440 側の仕様テストの範囲",
-  );
+  it("RS-145: 公式Q&A — バトルフィーバーロボの【武器換装】で戻した後、ダッシュレオンでコマンドをリリースすれば、再び出して【武器換装】を使える（出典: grnrngr/faq-card-7 RS-440）", () => {
+    /** 【武器換装】の合法手（RS-440 を指すもの）。 */
+    const weaponActions = (x: GameState) =>
+      legal(x).filter(
+        (a) =>
+          a.playerId === "player1" &&
+          !["battle", "strike", "move_to_battle"].includes(a.type) &&
+          Object.values(a as Record<string, unknown>).includes("RS-440:bf"),
+      );
+    let s = st({ player1: { battle: [inst("TST-UNIT-0", "f")], rush: [inst("RS-440", "bf"), inst("RS-145", "dl")], command: releasedN(3, "TST-OP-ET", "et"), deck: deckCards(3) } });
+    s = passEntry(enter(s, "RS-440:bf"));
+    s = settle(act(s, weaponActions(s)[0]!));
+    expect(zoneOf(s, "player1", "RS-440:bf")).toBe("rush");
+    expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(3);
+    s = settle(passEntry(enter(s, "RS-145:dl")));
+    expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(0);
+    s = passEntry(enter(s, "RS-440:bf"));
+    expect(zoneOf(s, "player1", "RS-440:bf")).toBe("battle");
+    expect(weaponActions(s).length).toBeGreaterThan(0);
+  });
 });
 
 // ===========================================================================

@@ -26,7 +26,7 @@ export function addJointComboGrant(
     battle: player.battle.map((c) => {
       if (c.instanceId !== instanceId) return c;
       const grants = c.jointComboGrants ?? [];
-      return { ...c, jointComboGrants: [...grants, grant] };
+      return { ...c, jointComboGrants: [...grants, { turn: state.turn, ...grant }] };
     }),
   }));
 }

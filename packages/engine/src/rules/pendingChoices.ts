@@ -148,7 +148,7 @@ import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, tryS
 import { isSet8DChoiceEffect, tryResolveSet8DChoice, trySkipSet8DChoice } from "./legend1/set8NamedEffectsD";
 import { isSet9AChoiceEffect, tryConfirmSet9AChoice, tryResolveSet9AChoice, trySkipSet9AChoice } from "./legend1/set9NamedEffectsA";
 import { isSet9DChoiceEffect, tryResolveSet9DChoice, trySkipSet9DChoice } from "./legend1/set9NamedEffectsD";
-import { isRk1ChoiceEffect, tryResolveRk1Choice, trySkipRk1Choice } from "./rk/rk1NamedEffects";
+import { isRk1ChoiceEffect, takeHybridRevealedToHand, tryResolveRk1Choice, trySkipRk1Choice } from "./rk/rk1NamedEffects";
 import { isRk2ChoiceEffect, tryResolveRk2Choice, trySkipRk2Choice } from "./rk/rk2UnitEffects";
 import { isRk3ChoiceEffect, tryConfirmRk3Choice, tryResolveRk3Choice, trySkipRk3Choice } from "./rk/rk3UnitEffects";
 import { isRk4ChoiceEffect, tryConfirmRk4Choice, tryResolveRk4Choice, trySkipRk4Choice } from "./rk/rk4UnitEffects";
@@ -866,6 +866,9 @@ export function applySeabedDrawPlacement(
 
   const meta = pending.seabedDrawMeta ?? { drawCount: 1 };
   const from = placement === "bottom" ? "bottom" : "top";
+  // RK-010 ハイブリッドエネルギー: 下からひくのは「ドロー以外で山札の状態が変更される操作」なので、
+  // オモテにしたカードを手札に加えてから下のカードをひく（grnrngr/faq-rider-1 RK-010 Q3）。
+  if (from === "bottom") state = takeHybridRevealedToHand(state, playerId);
   const player = state.players[playerId];
   if (meta.toDiscard) {
     const taken = takeFromDeck(player, meta.drawCount, from);

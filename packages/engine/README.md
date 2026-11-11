@@ -56,6 +56,8 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 - 「Sユニットをラッシュしたとき」のように「ユニット」と書いてある誘発は、サイズ（`isSmallUnit`）だけでなく種類が `unit` かも見ます。ビークルにもサイズがあるので、見ないと S ビークル（XG4-049 アクロバッター）のラッシュでも発動します（RS-180 ライドラプターの報告）。
 - 「追加条件を実行して満たしたとき」（RS-558 ガンマジン【鍵の持ち主の願い】）は、追加条件で捨札にしたカード（`PlayerState.lastZordDiscard`）と、手札に戻す・コマンドをホールドするなど捨札以外で動かしたカード（`lastZordExecuted`。`src/core/applyAction.ts` の手札からのラッシュで記録）のどちらかがあれば満たしたことにします。以前は捨札しか見ておらず、XG2-080 リュウキドラグレッダー（「自軍「仮面ライダー龍騎」1体を手札に戻す」）で発動しませんでした。場の状況を見るだけの追加条件（「〜がある」）は今までどおり対象外です（grnrngr/faq-card-8 RS-558 Q3）。
 - 効果ラッシュ（`src/rules/effectRush.ts`。RS-180 ライドラプター等）の選択の後ろに別の選択が積まれていたら（`resumeChoice`。同じラッシュで出た RS-558 のドロー等）、効果ラッシュの選択を閉じるときに `PendingEffectRush.resumeChoice` に預け、効果ラッシュを終えたら開きます（`finishEffectRush`）。以前は閉じるときに落としていて、ライドラプターを使っても使わなくてもガンマジンのドローが出ませんでした。
+- カウンターなどの処理の途中でコマンドがコマンドゾーンを離れ、補充（RS-238）などの選択が開くときは、`pendingBattle` などの進行中のフレームを state に退避して外し、選択が済んだ後に `core/applyAction.ts` の後処理フックで戻して続きを処理します（例: `rk1MechanicNinjaResume`・`rk2RaiaResumeCounter`）。`pendingBattle` は合法手で `pendingEffectChoice` より優先されるため、外さないと選択より先にバトルが進みます。
+
 ## テスト
 
 ```bash

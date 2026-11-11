@@ -30,7 +30,10 @@ import {
   expectCatalogText,
   expectOpStats,
   expectRarityIn,
+  enter,
+  confirm,
   held,
+  heldUnit,
   inst,
   lastBattleBps,
   legal,
@@ -43,6 +46,7 @@ import {
   resolveAll,
   settle,
   skip,
+  spOf,
   st,
   sUnit,
   toPhase,
@@ -73,7 +77,11 @@ const ET_S = sUnit("SPEC-ET-S", { category: "ET", bp: 1000 });
 const RIDER = sUnit("SPEC-RIDER", { category: "MA", bp: 1000, features: ["仮面ライダー", "男"] });
 const POLICE = sUnit("SPEC-POLICE", { category: "MA", bp: 1000, features: ["警察"] });
 const POLICE_RIDER = sUnit("SPEC-POLICE-RIDER", { category: "MA", bp: 1000, features: ["仮面ライダー", "警察"] });
-const EXTRA = [KAIZO, KAIZO4, KAIZO_M, KAIZO_COND, MALE, MALE_M, ATK_S, ATK_M, S5000, S4000, S3000, M4000, ET_S, RIDER, POLICE, POLICE_RIDER];
+const RC_RIDER = sUnit("SPEC-RC-RIDER", { category: "MA", bp: 2000, comboNumber: "RC", features: ["仮面ライダー", "男"] } as Partial<CardDefinition>);
+const S_VEHICLE = { id: "SPEC-VEHICLE", name: "SPEC-VEHICLE", type: "vehicle", category: "ET", rarity: "N", expansion: "card-spec", powerCost: 0, size: "S", features: ["メカ"] } as unknown as CardDefinition;
+const DECADE_HUMANOID = sUnit("SPEC-DECADE-H", { category: "OT", bp: 3000, features: ["仮面ライダー", "男", "ディケイドライバー", "人型"] });
+const MA_SP13 = sUnit("SPEC-MA-SP13", { category: "MA", bp: 3000, sp: "1/3" } as Partial<CardDefinition>);
+const EXTRA = [MA_SP13, DECADE_HUMANOID, RC_RIDER, S_VEHICLE, KAIZO, KAIZO4, KAIZO_M, KAIZO_COND, MALE, MALE_M, ATK_S, ATK_M, S5000, S4000, S3000, M4000, ET_S, RIDER, POLICE, POLICE_RIDER];
 
 /** 自軍（player1）ラッシュフェイズ。 */
 const rushBoard = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
@@ -221,9 +229,62 @@ describe("RK-008 メカニック忍者", () => {
     expect(canCounter(s, "RK-008:nin")).toBe(false);
   });
 
-  it.todo(
-    "RK-008: 公式Q&A — ゴーゴーファイヤー【プロジェットカノン】をメカニック忍者の処理の途中（カードがコマンドゾーンを離れたとき）に発動してから、続きとしてアタックされたユニットをコマンドゾーンに置ける（ライアと併用なら2回）（出典: grnrngr/faq-rider-1 RK-008 Q1・Q2）— 「その後」の処理の途中に別の効果を割り込ませる手順（効果の解決の中断と再開）を公開 API で組めないため",
-  );
+  // faq-rider-1 RK-008 Q1「はい、できます。」・Q2「…【プロジェットカノン】が発動できますので、捨札からカードを1枚選んでコマンドゾーンに置きます。…最後に、…アタックされたSユニットをコマンドゾーンに置いて、一連の処理を終了します。」
+  it("RK-008: 公式Q&A — ゴーゴーファイヤーがあるとき、メカニック忍者でカードがコマンドゾーンを離れたら【プロジェットカノン】で捨札のカードを置いてから、続きとしてアタックされたユニットをコマンドゾーンに置く（出典: grnrngr/faq-rider-1 RK-008 Q1）", () => {
+    let s = enemyAttack(
+      { battle: [inst("TST-UNIT-0", "d")], rush: [inst("RS-238", "gf")], hand: [inst("RK-008", "nin")], command: [released("SPEC-KAIZO", "k"), ...releasedCat("ET", 1)], discard: [inst("TST-OP", "x")], power: powerCards(4) },
+      "TST-UNIT-0:d",
+      "TST-UNIT-7:atk",
+    );
+    s = useCounter(s, "RK-008:nin", "player1", "SPEC-KAIZO:k");
+    // 【プロジェットカノン】の選択中は、まだアタックされたユニットはバトルエリアにある。
+    expect(s.pendingEffectChoice?.validInstanceIds).toContain("TST-OP:x");
+    expect(zoneOf(s, "player1", "SPEC-KAIZO:k")).toBe("rush");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("battle");
+    s = settle(pick(s, "TST-OP:x"));
+    expect(cardIn(s, "player1", "TST-OP:x")?.commandHeld).toBe(true);
+    expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("command");
+    expect(s.pendingBattle).toBeUndefined();
+  });
+
+  it("RK-008: 公式Q&A — ゴーゴーファイヤーがあるときライアの効果でメカニック忍者を使うと、ライアで捨札にしたとき・メカニック忍者で出したときの2回【プロジェットカノン】を発動し、最後にアタックされたユニットをコマンドゾーンに置く（出典: grnrngr/faq-rider-1 RK-008 Q2）", () => {
+    let s = enemyAttack(
+      {
+        battle: [inst("TST-UNIT-0", "d"), inst("RK-036", "ra")],
+        rush: [inst("RS-238", "gf")],
+        hand: [inst("RK-008", "nin")],
+        command: [released("SPEC-KAIZO", "k"), released("TST-OP-ET", "pay")],
+        discard: [inst("TST-OP", "x1"), inst("TST-OP", "x2")],
+        power: powerCards(4),
+      },
+      "TST-UNIT-0:d",
+      "TST-UNIT-7:atk",
+    );
+    const pay = (legal(s) as unknown as Record<string, unknown>[]).find(
+      (a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-008:nin" && a.raiaDiscard === true && a.substituteInstanceId === "SPEC-KAIZO:k",
+    );
+    expect(pay).toBeDefined();
+    let r = tryAct(s, pay as never);
+    expect(r.ok, r.error).toBe(true);
+    // ライアの効果で、同じカテゴリ（ET）のカードを自軍コマンドゾーンから捨札にする。
+    r = tryAct(r.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP-ET:pay"] });
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    const trace: string[] = [];
+    for (let i = 0; i < 4; i++) {
+      const p = s.pendingEffectChoice;
+      const x = p?.playerId === "player1" ? ["TST-OP:x1", "TST-OP:x2"].find((id) => p.validInstanceIds.includes(id)) : undefined;
+      if (!x) break;
+      trace.push(`${x}@${zoneOf(s, "player1", "SPEC-KAIZO:k")}/${zoneOf(s, "player1", "TST-UNIT-0:d")}`);
+      s = pick(s, x);
+    }
+    s = settle(s);
+    // 1回目はライアで捨札にしたとき（メカニック忍者の解決前）、2回目はメカニック忍者で出したとき（アタックされたユニットを置く前）。
+    expect(trace).toEqual(["TST-OP:x1@command/battle", "TST-OP:x2@rush/battle"]);
+    expect(zoneOf(s, "player1", "TST-OP-ET:pay")).toBe("discard");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("command");
+    expect(s.pendingBattle).toBeUndefined();
+  });
 });
 
 // ===========================================================================
@@ -360,9 +421,18 @@ describe("RK-010 ハイブリッドエネルギー", () => {
     expect(zoneOf(s, "player1", "SPEC-RIDER:rd")).toBe("rush");
   });
 
-  it.todo(
-    "RK-010: 公式Q&A — ゴーゴーマリン【海底調査】で山札の下からドローするときは、オモテのカードを手札に加えてから下のカードをドローする（出典: grnrngr/faq-rider-1 RK-010 Q3・atwiki/page-210 Q3）— 【海底調査】（RS-122）の処理は RS 系の担当範囲で、ハイブリッドエネルギーとの割り込み手順を公開 API で確認できなかったため",
-  );
+  // faq-rider-1 RK-010 Q3「…そのオモテになっているカードを手札に加えてから、山札の下のカードをドローすることになります。」
+  it("RK-010: 公式Q&A — ゴーゴーマリン【海底調査】で山札の下からドローするときは、オモテのカードを手札に加えてから下のカードをドローする（出典: grnrngr/faq-rider-1 RK-010 Q3・atwiki/page-210 Q3）", () => {
+    let s = endTurn(board({ rush: [inst("TST-UNIT-0", "wb"), inst("RS-122", "gm")], deck: [inst("TST-OP", "top"), ...deckCards(3), inst("TST-UNIT-0", "bot")] }));
+    s = toPhase(s, "player1", "start");
+    s = act(s, { type: "draw", playerId: "player1" });
+    expect(s.pendingEffectChoice?.kind).toBe("seabed_draw");
+    s = act(s, { type: "resolve_seabed_draw", playerId: "player1", placement: "bottom" });
+    expect(zoneOf(s, "player1", "TST-OP:top")).toBe("hand");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:bot")).toBe("hand");
+    expect(s.players.player1.deck).toHaveLength(3);
+    expect(bpOf(s, "player1", "TST-UNIT-0:wb")).toBe(1000);
+  });
   // atwiki/page-210 Q4・page-672 Q1「いいえ、オモテにしたカードを手札に加えてから、「RK-146 デネブ」の効果を解決してください。」
   it("RK-010: 公式Q&A — 敵軍ターン中に相手がデネブをラッシュし、自分が【デネブキャンディー】で山札を見るときは、オモテのカードを手札に加えてから解決する（出典: atwiki/page-210 Q4・atwiki/page-672 Q1）", () => {
     let s = endTurn(board({ deck: [inst("TST-UNIT-0", "top"), inst("TST-OP", "o1"), ...deckCards(4)] }));
@@ -535,17 +605,74 @@ describe("RK-012 宏のオルゴール時計", () => {
   });
 
   it.todo(
-    "RK-012: 公式Q&A — 【神出鬼没の疾風】でラッシュしたサイクロン・ドーパントのリード ET の効果で使える（出典: atwiki/page-198 Q1）— XG7-055 サイクロン・ドーパント（【神出鬼没の疾風】・リード ET）の照合がまだのため（RK-099 アポロガイストは cardSpec/RK5-085-105.c で照合済み）",
+    "RK-012: 公式Q&A — アポロガイストがいるとき【神出鬼没の疾風】でラッシュしたサイクロン・ドーパント（BP4000）のリード ET の効果で使える（出典: atwiki/page-198 Q1）— XG7-055【神出鬼没の疾風】の置き換えで直接バトルエリアに出たユニットに「ラッシュされたとき」のカウンターの窓（pendingRush）が開かず、置き換えのあとそのままバトルが解決されるため",
   );
-  it.todo(
-    "RK-012: 公式Q&A — 使用後はバトルフェイズ中に発動する効果・ユニットの行動はできず、使用時に処理中だった効果（【エンドオブワールド】の続き）と同じタイミングの効果（モーフ）だけを実行してバトルフェイズを終える（出典: atwiki/page-198 Q5）— RK-115 仮面ライダーゾルダ【エンドオブワールド】の処理途中に割り込む手順を公開 API で組めないため",
-  );
-  it.todo(
-    "RK-012: 公式Q&A — ラッシュされた時点の BP で判定する（ラッシュしたときの効果で BP6000 になった仮面ライダーアギトには使えない）（出典: atwiki/page-198 Q6）— XG3-076 仮面ライダーアギト【覚醒】が本範囲外のため",
-  );
-  it.todo(
-    "RK-012: 公式Q&A — スカイライダーがあるとき、ウイングを持たない本来の BP が4000の S ユニットのラッシュには使えない（出典: atwiki/page-198 Q7）— XG4-087 スカイライダー【スカイキック】が本範囲外のため",
-  );
+
+  // atwiki/page-198 Q5「…効果の処理の途中であった【エンドオブワールド】の効果の続き…を実行する事はできますが、…「RK-115 仮面ライダーゾルダ」がアタックやストライクをすることはできません。」
+  it("RK-012: 公式Q&A — 【エンドオブワールド】で撃破されたボウケンレッドAT の効果でボウケンレッドが出たときに使うと、【エンドオブワールド】の続き（S ユニットをすべてホールド）は実行され、ゾルダはアタック・ストライクできずにバトルフェイズを終える（出典: atwiki/page-198 Q5）", () => {
+    let s = st(
+      {
+        activePlayer: "player2",
+        player1: {
+          battle: [heldUnit("RS-241", "at")],
+          discard: [inst("RS-062", "red")],
+          hand: [inst("RK-012", "mb")],
+          command: releasedCat("ET", 1),
+          power: powerCards(4),
+          deck: deckCards(5),
+        },
+        player2: { battle: [inst("RK-116", "mg")], rush: [inst("RK-115", "zo")], deck: deckCards(5, "e") },
+      },
+      EXTRA,
+    );
+    s = enter(s, "RK-115:zo", "player2");
+    s = confirm(s);
+    for (let i = 0; i < 4 && s.pendingEffectChoice?.playerId === "player1" && !canCounter(s, "RK-012:mb"); i++) s = pick(s, "RS-062:red");
+    expect(zoneOf(s, "player1", "RS-062:red")).toBe("rush");
+    expect(canCounter(s, "RK-012:mb")).toBe(true);
+    s = settle(useCounter(s, "RK-012:mb"));
+    // 処理の途中だった【エンドオブワールド】の続き（「その後、Sユニットをすべてホールドする」）は実行できる。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-115");
+    s = settle(confirm(s));
+    expect(cardIn(s, "player1", "RS-062:red")?.commandHeld).toBe(true);
+    expect(cardIn(s, "player2", "RK-115:zo")?.commandHeld).toBe(true);
+    // ゾルダはアタック・ストライクを選べず（何もしないだけ）、その後はバトルフェイズを終えることだけができる。
+    expect(legal(s).map((a) => a.type)).toEqual(["pass_battle_entry"]);
+    s = act(s, legal(s)[0]!);
+    expect(legal(s).map((a) => a.type)).toEqual(["end_phase"]);
+  });
+  // atwiki/page-198 Q6「…ラッシュされた時点では BP4000以下なので、その後「ラッシュしたとき」の効果でBPが上昇したとしても、…発動条件を満たしません。」
+  it("RK-012: 公式Q&A — ラッシュされた時点の BP で判定する（ラッシュしたときの【覚醒】で BP6000 になった仮面ライダーアギトには使えない）（出典: atwiki/page-198 Q6）", () => {
+    let s = st(
+      {
+        phase: "rush",
+        activePlayer: "player2",
+        player1: { hand: [inst("RK-012", "mb")], command: releasedCat("ET", 1), power: powerCards(4), deck: deckCards(5) },
+        player2: { hand: [inst("XG3-076", "ag")], rush: [inst("SPEC-MALE", "em")], command: releasedCat("MA", 1, "e"), power: powerCards(4, "ep"), deck: deckCards(5, "e") },
+      },
+      EXTRA,
+    );
+    s = rushOpen(s, "player2", "XG3-076:ag");
+    for (let i = 0; i < 3 && s.pendingEffectChoice?.playerId === "player2"; i++) s = pick(s, "SPEC-MALE:em");
+    expect(zoneOf(s, "player2", "SPEC-MALE:em")).toBe("discard");
+    expect(bpOf(s, "player2", "XG3-076:ag")).toBe(6000);
+    expect(canCounter(s, "RK-012:mb")).toBe(false);
+  });
+  // atwiki/page-198 Q7「いいえ、できません。「XG4-087 スカイライダー」の【スカイキック】はユニットとして場にある間、常に効果を発揮し続ける効果だからです。」
+  it("RK-012: 公式Q&A — スカイライダーがあるとき、ウイングを持たない本来の BP が4000の S ユニットのラッシュには使えない（出典: atwiki/page-198 Q7）", () => {
+    let s = st(
+      {
+        phase: "rush",
+        activePlayer: "player2",
+        player1: { hand: [inst("RK-012", "mb")], command: releasedCat("ET", 1), power: powerCards(4), deck: deckCards(5) },
+        player2: { hand: [inst("SPEC-S4000", "u")], rush: [inst("XG4-087", "sky")], command: releasedCat("WB", 1, "e"), deck: deckCards(5, "e") },
+      },
+      EXTRA,
+    );
+    s = rushOpen(s, "player2", "SPEC-S4000:u");
+    expect(bpOf(s, "player2", "SPEC-S4000:u")).toBe(3500);
+    expect(canCounter(s, "RK-012:mb")).toBe(false);
+  });
   // faq-rider-2 RK-127 Q「はい、できます。」
   it("RK-012: 公式Q&A — 自分の手札が2枚のとき相手が仮面ライダーカリス（BP5000）をラッシュし、手札から使って手札が1枚になりカリスが BP3000 になっても、相手のバトルフェイズを飛ばせる（出典: grnrngr/faq-rider-2 RK-127 Q・atwiki/page-648 Q1）", () => {
     let s = st(
@@ -671,23 +798,67 @@ describe("RK-013 Jパワー", () => {
     expect(unitFeatures(s, "player1", k)).toContain("人型");
   });
 
-  it.todo(
-    "RK-013: 公式Q&A — CN3 で SP1 になる MA の S ユニットが J パワーで L ユニットになり、トータスハンマーから JC して3番目に並ぶと SP2（出典: grnrngr/faq-rider-1 RK-013 Q1）— RS-224 トータスハンマーの JC 手順を伴い、RS4-222-242.a の todo と同じ理由で組めないため",
-  );
+  // faq-rider-1 RK-013 Q1「はい、SP2になります。」
+  it("RK-013: 公式Q&A — SP1/3 を持つ MA の S ユニットが J パワーで L ユニットになり、トータスハンマーからコンビネーションして3番目に並ぶと SP2（出典: grnrngr/faq-rider-1 RK-013 Q1・atwiki/page-211 Q1）", () => {
+    let s = resolveAll(
+      played(board({ rush: [inst("SPEC-MA-SP13", "ma")], battle: [inst("TST-UNIT-0", "b1"), inst("RS-224", "th")] }), "RK-013:jp"),
+      ["SPEC-MA-SP13:ma"],
+    );
+    s = nextPhase(s);
+    s = enter(s, "SPEC-MA-SP13:ma");
+    expect(s.players.player1.battle.map((c) => c.instanceId)).toEqual(["TST-UNIT-0:b1", "RS-224:th", "SPEC-MA-SP13:ma"]);
+    expect(spOf(s, "player1", "SPEC-MA-SP13:ma")).toBe(2);
+  });
   // 公式Q&A（grnrngr/faq-rider-1 RK-013 Q3・RK-016 Q2: ミラーワールドに重ねたカードと同名の S ユニットが J パワーで L ユニットになっても能力は続く）は
   // RK1-001-021.c の RK-016 で実テストにした（以前はここの it.todo）。
+  // faq-rider-1 RK-013 Q5「はい、できます。」
+  it("RK-013: 公式Q&A — RC を持つユニットは J パワーで L ユニットになっても S ビークルにライドできる（出典: grnrngr/faq-rider-1 RK-013 Q5）", () => {
+    let s = resolveAll(
+      played(board({ rush: [inst("SPEC-RC-RIDER", "rc"), inst("SPEC-VEHICLE", "v")] }), "RK-013:jp"),
+      ["SPEC-RC-RIDER:rc"],
+    );
+    expect(unitSizeOf(s.definitions, cardIn(s, "player1", "SPEC-RC-RIDER:rc")!)).toBe("L");
+    s = nextPhase(s);
+    const ride = legal(s).find((a) => a.type === "mount_ride" && a.riderInstanceId === "SPEC-RC-RIDER:rc" && a.vehicleInstanceId === "SPEC-VEHICLE:v");
+    expect(ride).toBeDefined();
+    s = act(s, ride!);
+    expect(zoneOf(s, "player1", "SPEC-RC-RIDER:rc")).toBe("battle");
+    expect(cardIn(s, "player1", "SPEC-RC-RIDER:rc")?.mountedOnInstanceId).toBe("SPEC-VEHICLE:v");
+  });
+  // faq-rider-1 RK-013 Q7「…その特徴の並び順は「仮面ライダー/男/ディケイドライバー/人型」となり、並び順が不一致なのでモーフすることはできません。」
+  it("RK-013: 公式Q&A — 特徴の並び順が変わるので、J パワーを使った「仮面ライダー/男/ディケイドライバー」のユニットは「仮面ライダー/男/人型/ディケイドライバー」の XG3-075 へモーフできない（並び順が一致するカードにはできる）（出典: grnrngr/faq-rider-1 RK-013 Q7・atwiki/page-211 Q7）", () => {
+    const decade = { ...inst("XG1-077", "dc"), stackedCards: [inst("RK-013", "jp")] };
+    let s = st(
+      {
+        phase: "rush",
+        activePlayer: "player2",
+        player1: { rush: [decade], command: [released("XG3-075", "cf"), released("SPEC-DECADE-H", "dh")], deck: deckCards(5) },
+        player2: { hand: [inst("TST-UNIT-0", "eu")], command: releasedCat("WB", 1, "e"), deck: deckCards(5, "e") },
+      },
+      EXTRA,
+    );
+    expect(unitFeatures(s, "player1", cardIn(s, "player1", "XG1-077:dc")!)).toEqual(["仮面ライダー", "男", "ディケイドライバー", "人型"]);
+    s = rushOpen(s, "player2", "TST-UNIT-0:eu");
+    const sel = legal(s).find((a) => a.type === "select_morph_unit" && a.morphUnitInstanceId === "XG1-077:dc");
+    if (sel) s = act(s, sel);
+    expect(s.pendingEffectChoice?.effectId).toBe("morph_replacement");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["SPEC-DECADE-H:dh"]);
+  });
   it.todo(
-    "RK-013: 公式Q&A — RC を持つユニットは J パワーで L ユニットになっても S ビークルにライドできる（出典: grnrngr/faq-rider-1 RK-013 Q5）— ラッシュエリアの L ユニットのライドの合法手（mount_ride）がバトルエリアへの進入と一体で、ライドの可否だけを公開 API で取り出せないため",
+    "RK-013: 公式Q&A — J パワーを重ねた魔導騎士ウルザードのサイズ変更とは、ターンプレイヤーが優先順を選ぶ（出典: atwiki/page-211 Q8）— J パワーの「Lユニットになる」と XG3-029 ※の「Mユニットになる」が重なったとき、ターンプレイヤーが適用の順を選ぶ選択がエンジンにない（サイズは固定の優先で決まる）ため",
   );
-  it.todo(
-    "RK-013: 公式Q&A — 特徴の並び順が変わるので、J パワーを使ったユニットは「仮面ライダー/男/人型/ディケイドライバー」へのモーフができない（出典: grnrngr/faq-rider-1 RK-013 Q7）— XG3-075 が本範囲外のため",
-  );
-  it.todo(
-    "RK-013: 公式Q&A — J パワーを重ねた魔導騎士ウルザードのサイズ変更とは、ターンプレイヤーが優先順を選ぶ（出典: atwiki/page-211 Q8）— XG3-029 が本範囲外のため",
-  );
-  it.todo(
-    "RK-013: 公式Q&A — ライド中のユニットに使うと、下から「ビークル」「J パワー」「ユニット」の順に重ねる（出典: grnrngr/faq-rider-1 RK-058 Q）— ライド中のユニットへの使用でビークルの扱いを公開 API で観測できないため",
-  );
+  // faq-rider-1 RK-058 Q「「RK-013 Jパワー」の対象に選んだ「RK-027 仮面ライダーBLACK」は、ユニットでなくなるまで「RK-013 Jパワー」の上に重ねたまま扱いますので、…下から「Rk-058 マシンゼクトロン」「RK-013 Jパワー」「RK-027 仮面ライダーBLACK」の順で重ねる」
+  it("RK-013: 公式Q&A — ライド中のユニットに使うと、J パワーに重ねるのはユニットだけで、ビークルはその下でライドしたまま（下から「ビークル」「J パワー」「ユニット」）（出典: grnrngr/faq-rider-1 RK-058 Q）", () => {
+    const s = resolveAll(
+      played(board({ rush: [inst("RK-058", "mz"), { ...inst("RK-027", "bk"), mountedOnInstanceId: "RK-058:mz" }] }), "RK-013:jp"),
+      ["RK-027:bk"],
+    );
+    const bk = cardIn(s, "player1", "RK-027:bk")!;
+    expect((bk.stackedCards ?? []).map((c) => c.instanceId)).toEqual(["RK-013:jp"]);
+    expect(bk.mountedOnInstanceId).toBe("RK-058:mz");
+    expect(zoneOf(s, "player1", "RK-058:mz")).toBe("rush");
+    expect(unitSizeOf(s.definitions, bk)).toBe("L");
+  });
   // faq-rider-2 RK-088 Q「その場合、「RK-088 イマジンとの契約」と「RK-013 Ｊパワー」の2枚を選んだ自軍Sユニットの下に重ねることになります。」
   it("RK-013: 公式Q&A — イマジンとの契約を使ったユニットに続けて使うと、2枚ともそのユニットの下に重ねる（出典: grnrngr/faq-rider-2 RK-088 Q）", () => {
     let s = board({ hand: [inst("RK-088", "ct"), inst("RK-013", "jp")], command: [...releasedCat("DA", 1), ...releasedCat("MA", 1)] });

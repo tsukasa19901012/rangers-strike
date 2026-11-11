@@ -37,6 +37,8 @@ export type JointComboGrant = {
   sourceCardId: string;
   /** コンビネーションの相手（kind "l" は L ナンバーのカード、kind "r" は左隣の L ユニット）。 */
   partnerInstanceId: string;
+  /** 得たターン（GameState.turn）。期限のない「次の能力を得る」はそのターンの間有効（R-CN-06）。 */
+  turn?: number;
 };
 
 export type CardInstance = {
@@ -1340,6 +1342,17 @@ export type GameState = {
   rk12OpPaid?: { instanceId: string; commandIds: string[] };
   /** RK-251 ゴルゴムの仕業を使わなかった: このオペレーションの使用を続ける（core/applyAction.ts の後処理）。 */
   rk12ResumeOperation?: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string };
+  /** RK-008 メカニック忍者の解決の途中で割り込んだ選択（RS-238【プロジェットカノン】）の後で続ける「その後、」（core/applyAction.ts の後処理）。 */
+  rk1MechanicNinjaResume?: { defenderId: PlayerId; activePlayer: PlayerId; pendingBattle: PendingBattle };
+  /** RK-036 ライアの支払いで割り込んだ選択（RS-238【プロジェットカノン】）の後で続けるカウンターの使用（core/applyAction.ts の後処理）。 */
+  rk2RaiaResumeCounter?: {
+    playerId: PlayerId;
+    instanceId: string;
+    substituteInstanceId?: string;
+    activePlayer: PlayerId;
+    /** 選択の間は止めておく反応ウィンドウ（再開時に戻す）。 */
+    suspended: Pick<GameState, "pendingBattle" | "pendingRush" | "pendingLeave" | "pendingStrike">;
+  };
   /** RK-251 の選択を済ませたオペレーション（同じ使用で2度は尋ねない）。 */
   rk12GorgomPassedOp?: string;
   /** 「…を捨札にしなければバトルエリアに出られない」の捨てるカードを選んだ後で続ける move_to_battle（core/applyAction.ts の後処理）。 */
