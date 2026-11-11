@@ -235,9 +235,22 @@ describe("RS-216 暴走皇帝エグゾス", () => {
     expect(zoneOf(s, "player1", "RS-216:x")).not.toBe("deck");
   });
 
-  it.todo(
-    "RS-216: 公式Q&A — 【噛みつき】で S ユニットになっているライジンゴーがあれば、ターン終了時エグゾスは山札に戻らない（出典: atwiki/page-385 Q2）— XG3-103 の【噛みつき】（範囲外カード）の手順に依存する",
-  );
+  // atwiki/page-385 Q2「いいえ、そのようにはなりません。…「RS-216 暴走皇帝エグゾス」の「自分がターンを終えるとき」の処理は「XG3-103 ライジンゴー」の
+  // Sユニットとして扱いが切れる前に行います。」
+  it("RS-216: 公式Q&A — 【噛みつき】で S ユニットになっているライジンゴーがあれば、ターン終了時エグゾスは山札に戻らない（出典: atwiki/page-385 Q2）", () => {
+    const board = () =>
+      st({
+        player1: { battle: [inst("RS-216", "x")], rush: [inst("XG3-103", "rg")], command: [{ ...inst("TST-OP-ET", "et"), commandHeld: false }], deck: deckCards(5) },
+        player2: { deck: deckCards(5, "e") },
+      });
+    // 【噛みつき】で自軍コマンドを1つホールドし、このターン S ユニットとして扱う（大宇宙ハイウェイ計画で可能ならバトルエリアに出る）。
+    let s = settle(act(board(), { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: "XG3-103:rg" }));
+    s = passEntry(settle(enter(s, "XG3-103:rg")));
+    s = endTurn(s);
+    expect(zoneOf(s, "player1", "RS-216:x")).toBe("battle");
+    // 対照: 【噛みつき】を使わなければ、ライドされていないビークルはユニットではないので、エグゾスは山札に戻る。
+    expect(zoneOf(endTurn(board()), "player1", "RS-216:x")).toBe("deck");
+  });
 });
 
 // ===========================================================================

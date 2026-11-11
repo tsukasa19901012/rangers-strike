@@ -402,9 +402,24 @@ describe("RS-011 オーラパワー", () => {
     expect(bpOf(s, "player1", u.instanceId)).toBe(1000);
   });
 
-  it.todo(
-    "RS-011: 公式Q&A — マジシャインでコマンドゾーンから使ったオーラパワーがゴルゴムの仕業で無効になっても、コマンドを1つ捨札にしてコマンドゾーンに留められる（出典: grnrngr/faq-card-1 RS-011）— RS-325【マジチケット】がエンジン未実装（catchall の注記のみ）でコマンドゾーンから使用する手段がなく検証不能",
-  );
+  // faq-card-1 RS-011「はい、できます。」
+  it("RS-011: 公式Q&A — マジシャインでコマンドゾーンから使ったオーラパワーがゴルゴムの仕業で無効になっても、コマンドを1つ捨札にしてコマンドゾーンに留められる（出典: grnrngr/faq-card-1 RS-011）", () => {
+    let s = specState(["RS-011", "RS-325", "RK-251"], {
+      phase: "rush",
+      player1: { rush: [inst("RS-325", "ms"), inst("CS-S1", "u")], command: [released("RS-011", "aura"), released("TST-OP-MA", "spare")], power: powerCards(3), damage: 1, deck: deckCards(3) },
+      player2: { hand: [inst("RK-251", "gg")], command: [released("TST-OP-DA", "da")], power: powerCards(3, "ep"), deck: deckCards(3, "e") },
+    });
+    s = act(s, { type: "use_magi_ticket", playerId: "player1", instanceId: "RS-011:aura", targetInstanceId: "CS-S1:u" });
+    // 相手はゴルゴムの仕業でオーラパワーの効果を無効にして捨札にする。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-251");
+    s = act(s, { type: "confirm_effect_choice", playerId: "player2" });
+    expect(bpOf(s, "player1", "CS-S1:u")).toBe(1000);
+    // 捨札になるとき、リリース状態の自軍コマンドをかわりに1つ捨札にすればコマンドゾーンに留まる。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-325");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-OP-MA:spare" });
+    expect(zoneOf(s, "player1", "RS-011:aura")).toBe("command");
+    expect(zoneOf(s, "player1", "TST-OP-MA:spare")).toBe("discard");
+  });
 });
 
 // ===========================================================================
@@ -780,9 +795,37 @@ describe("RS-015 バードニックウェーブ", () => {
     expect(triggered).toBe(true);
   });
 
-  it.todo(
-    "RS-015: 公式Q&A — タイムピンク【戦闘指揮】で発動させるユニットのNC用ナンバー（＝リリースする敵軍コマンド数）も1少なくなる（出典: grnrngr/faq-card-1 RS-015 Q2）— 【戦闘指揮】の「ナンバーと同じ数だけ敵軍コマンドをリリース」の支払い数を公開APIで観測する手段が見つからず未検証",
-  );
+  // faq-card-1 RS-015 Q2「はい、その通りです。」— 支払い数はリリースされた敵軍コマンドの数で観測する（RS-254 再録の atwiki/page-256 Q2 と同じ）。
+  it("RS-015: 公式Q&A — タイムピンク【戦闘指揮】で発動させるユニットのNC用ナンバー（＝リリースする敵軍コマンド数）も1少なくなる（出典: grnrngr/faq-card-1 RS-015 Q2）", () => {
+    // タイムピンクは CN4 なので、ウェーブを使うときは3番目、使わないときは4番目に出して【戦闘指揮】を発動させる。
+    const run = (waves: number) => {
+      const fillers = waves > 0 ? ["f0", "f1"] : ["f0", "f1", "f2"];
+      const ws = Array.from({ length: waves }, (_, i) => inst("RS-015", `w${i}`));
+      let s = specState(["RS-015", "RS-222", "RS-104"], {
+        phase: "rush",
+        player1: {
+          hand: ws,
+          power: powerCards(2),
+          command: ws.map((_, i) => held("TST-OP-ET", `c${i}`)),
+          rush: [...fillers.map((id) => inst("CS-S1", id)), inst("RS-222", "tp"), inst("RS-104", "y")],
+          deck: deckCards(4),
+        },
+        player2: { command: [held("TST-OP", "h0"), held("TST-OP", "h1"), held("TST-OP", "h2")], deck: deckCards(4, "e") },
+      });
+      for (const w of ws) s = playOp(s, w.instanceId);
+      s = actLegal(s, (a) => a.type === "end_phase");
+      for (const f of fillers) s = enter(s, `CS-S1:${f}`);
+      s = enter(s, "RS-222:tp");
+      // 次に出るアバレイエロー（CN3）の NC を【戦闘指揮】で発動させる。
+      s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-104:y" });
+      expect(s.pendingEffectChoice?.effectId).toBe("battle_command");
+      s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
+      return s.players.player2.command.filter((c) => !c.commandHeld).length;
+    };
+    // バードニックウェーブで CN3→2 なので2つ。使わなければ本来のナンバー3と同じ3つ。
+    expect(run(1)).toBe(2);
+    expect(run(0)).toBe(3);
+  });
 
   it("RS-015: 公式Q&A — 効果は重複する（2枚でCN4のユニットが2番目でNC）（出典: grnrngr/faq-card-1 RS-015 Q3）", () => {
     // 「はい、重複します」

@@ -24,6 +24,7 @@ import {
   KW_MORPH,
   PLAIN_VEHICLE,
   accept,
+  attack,
   attackUntilRegister,
   bpOf,
   canEnter,
@@ -482,9 +483,24 @@ describe("RK-321 仮面ライダーサガ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-321");
   });
 
-  it.todo(
-    "RK-321: 公式Q&A — ターゲットに重ねた XG2-052 ユナイトベントを【スネーキングデスブレイク】で移動しても、ウラ向きに重ねたカードはターゲットの下に残る（ユニットでなくなったら捨札）（出典: atwiki/page-1253 Q1）— XG2-052 ユナイトベント（重ねたカードの上にさらに重ねる効果）が未実装（本範囲外のカード）",
-  );
+  // atwiki/page-1253 Q1「そのままターゲットになっていたユニットの下に残ります。ただし、…ユニットでなくなった場合、…ウラ向きのカードは捨札になります。」
+  it("RK-321: 公式Q&A — ターゲットに重ねた XG2-052 ユナイトベントを【スネーキングデスブレイク】で移動しても、ウラ向きに重ねたカードはターゲットの下に残る（ユニットでなくなったら捨札）（出典: atwiki/page-1253 Q1）", () => {
+    // ユナイトベントの解決後と同じ重ね方（rules/legend1/otherLinesNamedEffects.ts: ターゲットの下にユナイトベント、その下にウラ向きのユニット）。
+    const target = withStacked(inst("SPEC-C3", "tg"), [inst("XG2-052", "vent"), faceDown("SPEC-C1", "bd")]);
+    let s = accept(enter(board({ rush: [inst("RK-321", "sg")] }, { rush: [target] }), "RK-321:sg"));
+    expect(choiceIds(s)).toEqual(["SPEC-C1:bd", "XG2-052:vent"]);
+    s = resolveAll(pick(s, "XG2-052:vent"));
+    expect(zoneOf(s, "player2", "XG2-052:vent")).toBe("power");
+    expect(damageOf(s, "player2")).toBe(1);
+    const left = cardIn(s, "player2", "SPEC-C3:tg")!;
+    expect(zoneOf(s, "player2", "SPEC-C3:tg")).toBe("rush");
+    expect(left.stackedCards?.map((c) => [c.instanceId, c.faceDown])).toEqual([["SPEC-C1:bd", true]]);
+    // ターゲットがユニットでなくなれば（バトルで撃破）、下に残ったウラ向きのカードは捨札になる。
+    let t = board({ battle: [inst("TST-UNIT-7", "atk")] }, { battle: [left] });
+    t = resolveAll(settle(attack(t, "TST-UNIT-7:atk", "SPEC-C3:tg")));
+    expect(zoneOf(t, "player2", "SPEC-C3:tg")).toBe("discard");
+    expect(zoneOf(t, "player2", "SPEC-C1:bd")).toBe("discard");
+  });
 });
 
 // ===========================================================================

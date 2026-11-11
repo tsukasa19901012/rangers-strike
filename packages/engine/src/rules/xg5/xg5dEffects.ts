@@ -6,6 +6,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { effectiveBp } from "../../core/catalog";
 import { countAvailablePower } from "../../core/power";
+import { consumeRideShooterRushRule, isRideShooterRushTarget } from "../fieldActivatedAbilities";
 import { addTurnRestrictionModifier, addTurnRuleModifier, TURN_RULE_IDS } from "../../core/scopedModifiers";
 import type { GrantKeywordContext } from "../../dsl/grantKeyword";
 import { listDslEffectsForTrigger } from "../../dsl/effectLookup";
@@ -239,8 +240,16 @@ function copyVentTargets(state: GameState, playerId: PlayerId): string[] {
   const p = state.players[playerId];
   const power = countAvailablePower(state, playerId);
   return [...p.power.filter((c) => !c.faceDown), ...p.discard]
-    .filter((c) => isUnit(state, c) && printedFeatures(state, c.cardId).includes("ミラーライダー") && printedCostNumber(state, c.cardId) <= power)
+    .filter((c) => isUnit(state, c) && printedFeatures(state, c.cardId).includes("ミラーライダー") && copyVentCost(state, playerId, c.cardId) <= power)
     .map((c) => c.instanceId);
+}
+/**
+ * 置き換えて出すカードの必要パワーの数字。RK-043【突入】の直後なら3少なくなる（atwiki/page-2212 Q1「はい、そのとおりです。必要パワーの数字は3少なくなります」）。
+ * 追加条件を実行するタイミングはないので、「－」の追加条件で必要パワーを減らすことはできない（同 Q2）— 印刷の数字のまま。
+ */
+function copyVentCost(state: GameState, playerId: PlayerId, cardId: string): number {
+  const printed = printedCostNumber(state, cardId);
+  return isRideShooterRushTarget(state, playerId, cardId) ? Math.max(0, printed - 3) : printed;
 }
 HAND_ACTIVATIONS.push({
   list: (state, playerId) => {
@@ -257,7 +266,10 @@ HAND_ACTIVATIONS.push({
 });
 CHOICE_RESOLVERS[COPY_VENT] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  const next = swapFieldWith(close(state, pending), playerId, pending.sourceInstanceId ?? "", instanceId);
+  const incoming = [...state.players[playerId].power, ...state.players[playerId].discard].find((c) => c.instanceId === instanceId);
+  let next = swapFieldWith(close(state, pending), playerId, pending.sourceInstanceId ?? "", instanceId);
+  // 【突入】の「次にラッシュする」ミラーライダーはこのカードで終わる。
+  if (incoming) next = patch(next, playerId, (p) => consumeRideShooterRushRule(next, playerId, p, incoming.cardId));
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG5-066", `${COPY_VENT}:${instanceId}`) };
 };
 CHOICE_SKIPPERS[COPY_VENT] = simpleSkip();

@@ -31,6 +31,7 @@ import { openEffectChoice } from "../pendingChoices";
 import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
 import { grantSp1OnPlayer, patchPlayer } from "../playerPatches";
 import { markBattleBlocked } from "../turnModifiers";
+import { trySet6BBattleToRush } from "../legend1/set6NamedEffectsB";
 import { unitFeatures } from "../addedFeatures";
 import { rk1IsSmallNow } from "./rk1Features";
 import { tryLeaveField } from "../operationCounters";
@@ -487,7 +488,10 @@ CHOICE_RESOLVERS[SEIGI_EFFECT_ID] = (state, playerId, instanceId) => {
     const cards = p.battle.filter((c) => moving.has(c.instanceId));
     return markBattleBlocked({ ...p, battle: p.battle.filter((c) => !moving.has(c.instanceId)), rush: [...p.rush, ...cards] }, instanceId);
   });
-  return { state: proceed(close(moved, pending), pending), log: logFor(state, playerId, "RK-026", `${SEIGI_EFFECT_ID}:${unit.cardId}`) };
+  // RS-394/RS-395【チェンジフォーメーション】: バトルエリアからラッシュエリアに戻るとき置き換えてもよい。置き換えて出たユニットは
+  // 「戻したユニット」として扱わず、再びバトルエリアに出られる（grnrngr/faq-card-6 RS-394 Q2）。
+  const closed = trySet6BBattleToRush(close(moved, pending), playerId, unit, pending.phasePlayerId);
+  return { state: proceed(closed, pending), log: logFor(state, playerId, "RK-026", `${SEIGI_EFFECT_ID}:${unit.cardId}`) };
 };
 CHOICE_SKIPPERS[SEIGI_EFFECT_ID] = simpleSkip();
 

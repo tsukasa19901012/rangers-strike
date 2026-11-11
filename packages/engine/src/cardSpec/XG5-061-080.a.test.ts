@@ -240,8 +240,26 @@ describe("XG5-066 仮面ライダーベルデ", () => {
     expect(canActivateField(s, "XG5-066:v")).toBe(false);
   });
 
-  it.todo("XG5-066: 公式Q&A — RK-043 ライドシューター【突入】の直後に【コピーベント】でラッシュするミラーライダーは、必要パワーの数字が3少なくなる（出典: atwiki/page-2212 Q1「はい、そのとおりです」）—【コピーベント】の起動自体がエンジンにないため、【突入】との組み合わせを組めない");
-  it.todo("XG5-066: 公式Q&A —「－」の追加条件（RK-333 仮面ライダー龍騎サバイブ）を満たして必要パワーを減らすことはできない（出典: atwiki/page-2212 Q2「いいえ、それはできません」）—【コピーベント】の起動自体がエンジンになく、選べないことが Q2 によるものか確かめられない");
+  it("XG5-066: 公式Q&A — RK-043 ライドシューター【突入】の直後に【コピーベント】でラッシュするミラーライダーは、必要パワーの数字が3少なくなる（出典: atwiki/page-2212 Q1「はい、そのとおりです」）", () => {
+    // パワー6: ナイトサバイブ（必要パワー7）は、【突入】がなければ選べず、【突入】の後なら 7−3=4 で選べる。
+    const shooter = () => rushBoard({ rush: [inst("XG5-066", "v"), inst("RK-043", "rs")], power: [faceUp("XG5-067", "n"), faceUp("XG5-068", "ns"), ...powerCards(4)] }, {}, EXTRA);
+    expect(choiceIds(activateField(shooter(), "XG5-066:v"))).toEqual(["XG5-067:n"]);
+    let s = settle(activateField(shooter(), "RK-043:rs"));
+    expect(zoneOf(s, "player1", "RK-043:rs")).toBe("discard");
+    s = activateField(s, "XG5-066:v");
+    expect(choiceIds(s)).toEqual(["XG5-067:n", "XG5-068:ns"]);
+    s = resolveAll(pick(s, "XG5-068:ns"));
+    expect(zoneOf(s, "player1", "XG5-068:ns")).toBe("rush");
+    expect(zoneOf(s, "player1", "XG5-066:v")).toBe("power");
+  });
+
+  it("XG5-066: 公式Q&A —「－」の追加条件（RK-333 仮面ライダー龍騎サバイブ）を満たして必要パワーを減らすことはできない（出典: atwiki/page-2212 Q2「いいえ、それはできません」）", () => {
+    // 自軍エリアに RK-332 仮面ライダー龍騎があっても、パワー6では龍騎サバイブ（10-）を選べない。パワー10なら選べる（対照）。
+    const survive = (n: number) =>
+      rushBoard({ rush: [inst("XG5-066", "v"), inst("RK-332", "ry")], power: [faceUp("RK-333", "sv"), faceUp("XG5-067", "n"), ...powerCards(n)] }, {}, EXTRA);
+    expect(choiceIds(activateField(survive(4), "XG5-066:v"))).toEqual(["XG5-067:n"]);
+    expect(choiceIds(activateField(survive(8), "XG5-066:v"))).toEqual(["RK-333:sv", "XG5-067:n"]);
+  });
 });
 
 // ===========================================================================

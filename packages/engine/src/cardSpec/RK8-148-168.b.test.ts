@@ -10,7 +10,7 @@
  * レアリティは atwiki の「ノーマル／ノーマルレア／レア／スーパーレア」を N／NR／R／SR として照合する。
  *
  * 既存の照合で済んでいるもの（重複させない）:
- *  - RK-161 公式Q&A Q3（巨大化爆弾・暗黒の鎧を重ねたショッカーライダーを含んでも SP1）— cardSpec/RS5-243-263.b.test.ts RS-255 の it.todo（巨大化爆弾の手順がエンジンにない）
+ *  - RK-161 公式Q&A Q3（巨大化爆弾・暗黒の鎧を重ねたショッカーライダーを含んでも SP1）— cardSpec/RS5-243-263.b.test.ts RS-255 で照合（巨大化爆弾）
  *  - RK-157 ※「バトルエリアに出たとき撃破される」— rules/imaginDestroyOnEnter.test.ts
  */
 import { describe, expect, it } from "vitest";

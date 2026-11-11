@@ -13,6 +13,7 @@
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
 import {
+  act,
   attack,
   attackUntilRegister,
   bpOf,
@@ -362,6 +363,19 @@ describe("XG5-074 仮面ライダーキバ", () => {
     expect(spOf(s, "player1", "SPEC-DA-NOSP:u")).toBe(1);
   });
 
-  it.todo("XG5-074: 公式Q&A — RS-010 プリズムパワー・RS-519 インフェルシアの花嫁・RS-170 エージェント・アブレラの効果のためにホールドしたときは【ファンガイアの王】にならない（出典: atwiki/page-2245 Q1〜Q3「いいえ、そのようにはなりません」）— 常駐・他のカードの効果でホールドする盤面が本範囲の公開 API の手順で組めず、テストできない");
+  it("XG5-074: 公式Q&A — RS-170 エージェント・アブレラの効果（パワー不足分のホールド）のためにこれをホールドしてDAのユニットをラッシュしても【ファンガイアの王】にならない（出典: atwiki/page-2245 Q3「いいえ、そのようにはなりません」）", () => {
+    const DA4 = sUnit("SPEC-DA-S4", { category: "DA", bp: 1000, powerCost: 4, sp: undefined });
+    const board = (withAbrella: boolean) =>
+      st({ phase: "rush", player1: { hand: [inst("SPEC-DA-S4", "u")], rush: withAbrella ? [inst("RS-170", "ab")] : [], command: [...releasedCat("DA", 1), ...releasedCat("WB", 1, "w"), inst("XG5-074", "kv")], power: powerCards(2), deck: deckCards(5) }, player2: { deck: deckCards(5, "e") } }, [...EXTRA, DA4]);
+    const start = { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: "SPEC-DA-S4:u" };
+    // 対照: アブレラがなければパワーが足りずラッシュできない
+    expect(legal(board(false)).some((a) => a.type === "initiate_command_payment")).toBe(false);
+    const s = act(board(true), start as never);
+    expect(zoneOf(s, "player1", "SPEC-DA-S4:u")).toBe("rush");
+    expect(cardIn(s, "player1", "XG5-074:kv")?.commandHeld).toBe(true);
+    expect(bpOf(s, "player1", "SPEC-DA-S4:u")).toBe(1000);
+  });
+
+  it.todo("XG5-074: 公式Q&A — RS-010 プリズムパワー・RS-519 インフェルシアの花嫁の効果のためにホールドしたときは【ファンガイアの王】にならない（出典: atwiki/page-2245 Q1〜Q2「いいえ、そのようにはなりません」）— プリズムパワーの代用ホールドとインフェルシアの花嫁のホールドでこれを選ぶ盤面を本範囲のヘルパーで組めておらず未検証");
 });
 
