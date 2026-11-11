@@ -29,7 +29,9 @@ import {
   fill,
   inst,
   pick,
+  playOp,
   powerCards,
+  released,
   releasedCat,
   resolveAll,
   rushFromHand,
@@ -349,9 +351,31 @@ describe("RS-592 エンジンオーG6", () => {
     expect(zoneOf(s, "player2", "SPEC-BP6000:a")).toBe("battle");
   });
 
-  it.todo(
-    "RS-592: 公式Q&A — スーパーフォーメーション（RS-347）で足りない合体ユニットをリリース状態の自軍コマンドから捨札にして追加条件を満たせる（出典: grnrngr/faq-card-8 RS-569 Q1「はい、できます」）— RS-347 は「特徴「メカ」を持つユニット」が対象だが、RS-592 の特徴は「人型／炎神」（atwiki/page-1223）で本文どおりには適用できず、Q&A と本文の食い違いを判断できないため保留（「合体ユニットをパワー送り」の形の追加条件での適用は RS-569 側 cardSpec/RS8-560-581.b.test.ts で検証済み）",
-  );
+  // grnrngr/faq-card-8 RS-569 Q1 は「合体ユニットをパワーゾーンに送る」形の追加条件でもスーパーフォーメーションを使える例で、
+  // RS-592 自体に使えるという回答ではない。RS-347 の対象は特徴「メカ」を持つユニットで、RS-592 は「人型／炎神」なので使えない
+  // （atwiki/page-388・atwiki/page-1223。2026-11-11 ユーザー確認）。
+  it("RS-592: 特徴「メカ」を持たないので、スーパーフォーメーション（RS-347）を使ったターンでも、足りない合体ユニットをコマンドゾーンから補えない（出典: atwiki/page-388「特徴「メカ」を持つユニットのカード」・atwiki/page-1223 特徴「人型／炎神」・grnrngr/faq-card-8 RS-569 Q1）", () => {
+    const parts = ["RS-505", "RS-506", "RS-507", "RS-593", "RS-594"].map((id) => inst(id, "f"));
+    const board = (rushParts: ReturnType<typeof inst>[], commandParts: ReturnType<typeof inst>[]) => {
+      const s = st({
+        phase: "rush",
+        player1: {
+          hand: [inst("RS-592", "g6"), inst("RS-347", "sf")],
+          rush: rushParts,
+          command: [...releasedCat("ET", 1), ...releasedCat("OT", 1), ...commandParts],
+          power: powerCards(8),
+          deck: deckCards(3),
+        },
+      });
+      const sf = playOp(s, "player1", "RS-347:sf");
+      expect(sf.ok).toBe(true);
+      return resolveAll(sf.state);
+    };
+    // キャリゲーターがリリース状態のコマンドにあっても補えない。
+    expect(canStartRush(board(parts, [released("RS-595", "c")]), "player1", "RS-592:g6")).toBe(false);
+    // 場に6体そろっていればラッシュできる（比較用）。
+    expect(canStartRush(board([...parts, inst("RS-595", "f")], []), "player1", "RS-592:g6")).toBe(true);
+  });
 });
 
 // ===========================================================================
