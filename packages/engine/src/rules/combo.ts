@@ -225,8 +225,12 @@ export function resolveEnterBattleEffectsImpl(
 
   let battleCard = card;
   if (!resumeFrom && card.jointComboGrants) {
-    // バトルエリアに出直したユニットは、前に得た JC の能力を持たない（R-CN-06）。
-    const { jointComboGrants: _stale, ...fresh } = card;
+    // バトルエリアに出直したユニットは、前のターンに得た JC の能力・「このコンビネーションが成立している間」の効果を持たない（R-CN-06）。
+    // 同じターンに L ナンバーのカードから得た能力（期限の記載がない）は、出直しても有効で、もう一度コンビネーションすれば重複する
+    // （RS-440【武器換装】で戻して再びゴーゴードリルとコンビネーション: atwiki/page-353 Q1「はい、できます」）。
+    const kept = card.jointComboGrants.filter((g) => g.kind === "l" && g.turn === nextState.turn);
+    const { jointComboGrants: _stale, ...rest } = card;
+    const fresh: CardInstance = kept.length > 0 ? { ...rest, jointComboGrants: kept } : rest;
     battleCard = fresh;
     nextState = patchPlayer(nextState, playerId, (player) => ({
       ...player,

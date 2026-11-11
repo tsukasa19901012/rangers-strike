@@ -229,9 +229,16 @@ describe("RK-164 仮面ライダー1号（THE FIRST）", () => {
     expect(bpOf(s, "player1", "RK-164:n1")).toBe(3000);
   });
 
-  it.todo(
-    "RK-164: 公式Q&A（相互参照）— SK-002 仮面ライダーV3【ダブルタイフーン】では「RK-164 仮面ライダー1号（THE FIRST）」をホールドして RC を発動できない（括弧書きもカード名に含む）（出典: grnrngr/faq-rider-2 SK-002 Q2）— SK-002 は本範囲外のカード",
-  );
+  // faq-rider-2 SK-002 Q2「括弧書きの部分もカード名として含みます」
+  it("RK-164: 公式Q&A（相互参照）— SK-002 仮面ライダーV3【ダブルタイフーン】では「RK-164 仮面ライダー1号（THE FIRST）」をホールドして RC を発動できない（括弧書きもカード名に含む）（出典: grnrngr/faq-rider-2 SK-002 Q2）", () => {
+    const s = rcRideOff(
+      board({ rush: [inst("SK-002", "v3"), inst("SPEC-VEHICLE", "v")], command: [inst("RK-164", "f1"), inst("RK-023", "n1")] }),
+      "SK-002:v3",
+      "SPEC-VEHICLE:v",
+    );
+    expectChoiceFrom(s, "player1", "SK-002");
+    expect(choiceIds(s)).toEqual(["RK-023:n1"]);
+  });
 });
 
 // ===========================================================================

@@ -392,9 +392,25 @@ describe("RS-259 モモレンジャー", () => {
   });
 
   // faq-card-6 RS-407 Q「その「アカレンジャー」はストライクすることができません。…【ゴレンジャーハリケーン】は発動できます。」
-  it.todo(
-    "RS-259: 公式Q&A — 天空大聖者マジエルと闇のヤイバがあるとき、ゴレンジャーハリケーンは発動するが、DA が追加されたアカレンジャーはストライクできない（出典: grnrngr/faq-card-6 RS-407 Q）— RS-407・RS-339（範囲外）の組み合わせ効果の実装状況に依存し、本カードの検証として切り分けられない",
-  );
+  it("RS-259: 公式Q&A — 天空大聖者マジエルと闇のヤイバがあるとき、ゴレンジャーハリケーンは発動するが、DA が追加されたアカレンジャーはストライクできない（出典: grnrngr/faq-card-6 RS-407 Q）", () => {
+    let s = st(
+      {
+        player1: { rush: [...GORENGER.map((id) => inst(id.split(":")[0]!, id.split(":")[1]!)), inst("RS-407", "hm"), inst("RS-339", "ya")], deck: deckCards(5) },
+        player2: { deck: deckCards(5, "e"), battle: [inst("SPEC-E8", "b8")] },
+      },
+      [E8, E9],
+    );
+    for (const id of GORENGER) {
+      s = enter(s, id);
+      s = settle(pickAll(drain(s, "player1", []), []));
+      if (id !== GORENGER.at(-1)) s = passEntry(s);
+    }
+    // ゴレンジャーハリケーンは発動する（BP8000 以下が撃破される）
+    expect(zoneOf(s, "player2", "SPEC-E8:b8")).toBe("discard");
+    // DA が追加されたアカレンジャーは並び順の制限を満たさずストライクできない
+    expect(zoneOf(s, "player1", "RS-126:aka")).toBe("battle");
+    expect(canStrike(s, "RS-126:aka")).toBe(false);
+  });
 
   // faq-rider_1 RK-005 Q「「RS-259 モモレンジャー」に使用してください。これは、実際に撃破する効果を持っているのが「RS-259 モモレンジャー」だからです。」
   it.todo(

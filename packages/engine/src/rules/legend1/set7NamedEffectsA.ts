@@ -1015,7 +1015,10 @@ export function activateHoldReturnSelf(state: GameState, playerId: PlayerId, car
 
 /** 選んだ自軍コマンドをホールドし（支払いで既にホールドしていればそのまま）、これをラッシュエリアに戻す。 */
 function completeHoldReturnSelf(state: GameState, playerId: PlayerId, instanceId: string, holdIds: string[]): GameState {
-  const card = state.players[playerId].battle.find((c) => c.instanceId === instanceId);
+  const found = state.players[playerId].battle.find((c) => c.instanceId === instanceId);
+  // ラッシュエリアに戻ったので、再び出たときは改めて行動（アタック等）できる（再び出てドリルとコンビネーションし、
+  // 敵軍ユニットを撃破する: atwiki/page-353 Q1・faq-card-7 RS-440 Q）。
+  const card = found ? (({ battleActed: _acted, ...rest }) => rest)(found) : undefined;
   let next = patchPlayer(state, playerId, (p) => ({
     ...p,
     command: p.command.map((c) => (holdIds.includes(c.instanceId) && !c.commandHeld ? { ...c, commandHeld: true } : c)),

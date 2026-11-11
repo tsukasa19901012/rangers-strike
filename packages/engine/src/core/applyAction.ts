@@ -198,6 +198,7 @@ import {
 } from "../rules/combo";
 import { addRushPhaseRuleModifier, addTurnRestrictionModifier } from "./scopedModifiers";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
+import { afterCommandCardsLeft } from "../rules/commandLeaveRefill";
 import {
   ATTACK_HOLD_BONUS_EFFECT_ID,
   listAttackHoldSources,
@@ -375,6 +376,7 @@ import {
   applyMagLoadCounter,
   applyNewGymnasticsCounter,
   applyMechanicNinjaCounter,
+  finishMechanicNinjaCounter,
   isMechanicNinjaCounter,
   applySageAelCounter,
   applyShippuNinjaCounter,
@@ -1159,6 +1161,32 @@ function applyActionWithRng(
       ? { ...resumed.state, rk12GorgomPassedOp: undefined }
       : { ...next, rk12ResumeOperation: undefined, rk12GorgomPassedOp: undefined };
   }
+  // RK-036 ライアの支払いの後に割り込んだ【プロジェットカノン】が終わったら、カウンターの使用を続ける（faq-rider-1 RK-008 Q2）。
+  if (next.rk2RaiaResumeCounter && !next.pendingEffectChoice) {
+    const rc = next.rk2RaiaResumeCounter;
+    const cleared: GameState = { ...next, ...rc.suspended, rk2RaiaResumeCounter: undefined, activePlayer: rc.activePlayer };
+    const resumed = applyAction(
+      cleared,
+      { type: "play_counter", playerId: rc.playerId, instanceId: rc.instanceId, substituteInstanceId: rc.substituteInstanceId },
+      { trustLegality: true },
+    );
+    next = resumed.ok ? resumed.state : cleared;
+  }
+  // RK-008 メカニック忍者の途中に割り込んだ【プロジェットカノン】が終わったら、「その後、」の続きを実行する（faq-rider-1 RK-008 Q1）。
+  if (next.rk1MechanicNinjaResume && !next.pendingEffectChoice) {
+    const nr = next.rk1MechanicNinjaResume;
+    const pendingBattle = nr.pendingBattle;
+    const finished = finishMechanicNinjaCounter(
+      { ...next, pendingBattle, rk1MechanicNinjaResume: undefined, activePlayer: nr.activePlayer },
+      nr.defenderId,
+      pendingBattle,
+    );
+    const resolved = emitBattleDeclaredAndResolve(
+      finished.state,
+      finished.battleCancelled ? { ...pendingBattle, battleCancelled: true } : pendingBattle,
+    );
+    next = { ...resolved.state, log: [...resolved.state.log, finished.log, resolved.log], winner: checkWinner(resolved.state) };
+  }
   // 「…を捨札にしなければバトルエリアに出られない」の捨てるカードを選んだ後: そのまま move_to_battle を続ける。
   if (next.battleEntryResumeMove && !next.pendingEffectChoice) {
     const mv = next.battleEntryResumeMove;
@@ -1912,6 +1940,39 @@ function applyActionCore(
         );
       }
       if (cont.type === "play_counter") {
+        // RK-036 ライア: 捨札にしたカードがコマンドゾーンを離れたとき、RS-238【プロジェットカノン】を先に解決してから
+        // カウンターを使う（grnrngr/faq-rider-1 RK-008 Q2）。
+        if (pending.discardInsteadOfHold) {
+          const refilled = afterCommandCardsLeft(
+            { ...nextState, activePlayer: opponent(playerId) },
+            playerId,
+            paidIds.length,
+          );
+          if (refilled.pendingEffectChoice) {
+            return ok(
+              {
+                ...refilled,
+                pendingBattle: undefined,
+                pendingRush: undefined,
+                pendingLeave: undefined,
+                pendingStrike: undefined,
+                rk2RaiaResumeCounter: {
+                  playerId,
+                  instanceId: pending.sourceInstanceId,
+                  substituteInstanceId: cont.substituteInstanceId,
+                  activePlayer: nextState.activePlayer,
+                  suspended: {
+                    pendingBattle: nextState.pendingBattle,
+                    pendingRush: nextState.pendingRush,
+                    pendingLeave: nextState.pendingLeave,
+                    pendingStrike: nextState.pendingStrike,
+                  },
+                },
+              },
+              buildSimpleLogEntry(playerId, "command_payment"),
+            );
+          }
+        }
         const countered = applyAction(
           nextState,
           {
@@ -3027,6 +3088,10 @@ function applyActionCore(
             action.substituteInstanceId,
             pending,
           );
+          // RS-238【プロジェットカノン】が途中に割り込んだ: その解決後に続きを実行する（後処理の rk1MechanicNinjaResume）。
+          if (result.paused) {
+            return ok(clearCounterHoldReady(result.state, playerId), result.log);
+          }
           const nextPending: PendingBattle = result.battleCancelled
             ? { ...pending, battleCancelled: true }
             : pending;
