@@ -9,6 +9,9 @@ import { describe, expect, it } from "vitest";
 import { cardCategories } from "@rangers-strike/cards";
 import { effectiveBp } from "../index";
 import { toPhase } from "../cardSpec/RK1-001-021.helpers";
+import { rushWithMaterial, st as deusSt, zoneOf } from "../cardSpec/RS4-201-221.helpers";
+import { unitFeatures } from "../rules/addedFeatures";
+import * as rs7 from "../cardSpec/RS7-474-494.helpers";
 import type { GameAction } from "../types/actions";
 import type { GameState } from "../types/game";
 import {
@@ -142,9 +145,36 @@ describe("R-ERR-RS603 蛮機獣ボンベバンキ", () => {
   });
 
   // card_8.html RS-603: RS-203 大帝ラー・デウスで追加された特徴「車両」でボンベバンキ自身が対象になる問題への回答
-  it.todo(
-    "R-ERR-RS603: 公式Q&A — 【デウス遺伝子】で後から追加された「車両」は「本来の特徴」ではないので、ボンベバンキ自身の【超有毒液化ガス】は無効にならない（出典: grnrngr/faq-card-8 RS-603）— RS-203 の特徴追加がエンジン未実装のため状態を作れない",
-  );
+  it("R-ERR-RS603: 公式Q&A — 【デウス遺伝子】で後から追加された「車両」は「本来の特徴」ではないので、ボンベバンキ自身の【超有毒液化ガス】は無効にならない（出典: grnrngr/faq-card-8 RS-603）", () => {
+    const CAR = sUnit("CAR", { bp: 5000, sp: 1, features: ["車両"] });
+    let s = deusSt(
+      {
+        phase: "rush",
+        player1: {
+          hand: [inst("RS-203", "deus")],
+          rush: [inst("CAR", "mat"), inst("CAR", "car"), inst("RS-603", "bombe"), inst("TST-UNIT-0", "plain")],
+          power: powerCards(5),
+          command: [released("TST-OP-DA", "c1")],
+        },
+        player2: { battle: [inst("TST-UNIT-0", "enemy")] },
+      },
+      [CAR],
+    );
+    // 「車両」のユニットを捨札にしてラー・デウスをラッシュする → すべてのユニットの特徴に「車両」が追加される。
+    s = rushWithMaterial(s, "player1", "RS-203:deus", "CAR:mat");
+    expect(zoneOf(s, "player1", "CAR:mat")).toBe("discard");
+    for (const id of ["RS-603:bombe", "TST-UNIT-0:plain"]) {
+      expect(unitFeatures(s, "player1", { cardId: id.split(":")[0]!, instanceId: id })).toContain("車両");
+    }
+    s = toPhase(s, "player1", "battle");
+    s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "CAR:car" });
+    s = act(s, { type: "pass_battle_entry", playerId: "player1" });
+    s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "TST-UNIT-0:plain" });
+    // 本来の特徴に「車両」を持つユニットは引き続きアタックもストライクもできない（ボンベバンキの効果は有効なまま）。
+    expect(attacksOrStrikes(s, "CAR:car")).toBe(false);
+    // 「車両」を後から追加されただけのユニットは制限を受けない。
+    expect(attacksOrStrikes(s, "TST-UNIT-0:plain")).toBe(true);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -311,9 +341,30 @@ describe("R-ERR-RS486 ソードスラッシャー", () => {
   });
 
   // card_7.html Q:「…どの場所から選ぶことができるのでしょうか？ 手札から選びます。」
-  it.todo(
-    "R-ERR-RS486: 公式Q&A — 【分身幻斬り】で出す同名ユニットカードは手札から選ぶ（山札・捨札・コマンド・パワーからは選べない）（出典: grnrngr/faq-card-7 RS-486）— LユニットのRS-486からのコンビネーション成立をテスト状態で再現する手段がない",
-  );
+  it("R-ERR-RS486: 公式Q&A — 【分身幻斬り】で出す同名ユニットカードは手札から選ぶ（山札・捨札・コマンド・パワーからは選べない）（出典: grnrngr/faq-card-7 RS-486）", () => {
+    // ソードスラッシャー（1番目）→ 旋風神（MA・L、合体3体）の順に出してコンビネーションさせる。
+    let s = rs7.st({
+      player1: {
+        battle: [inst("RS-486", "jc")],
+        rush: [inst("RS-095", "l")],
+        hand: [inst("RS-095", "h1"), inst("TST-UNIT-0", "other")],
+        deck: [inst("RS-095", "dk"), ...rs7.deckCards(5)],
+        discard: [inst("RS-095", "dis")],
+        command: [inst("RS-095", "cmd")],
+        power: [inst("RS-095", "pw")],
+      },
+      player2: { deck: rs7.deckCards(6, "e") },
+    });
+    s = rs7.resolveAll(rs7.enter(s, "RS-095:l"), []);
+    s = rs7.settle(rs7.strike(s, "RS-095:l"));
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-486");
+    expect(rs7.choiceIds(s)).toEqual(["RS-095:h1"]);
+    s = rs7.resolveAll(s, ["RS-095:h1"]);
+    expect(rs7.zoneOf(s, "player1", "RS-095:h1")).toBe("rush");
+    for (const [id, zone] of [["RS-095:dk", "deck"], ["RS-095:dis", "discard"], ["RS-095:cmd", "command"], ["RS-095:pw", "power"]] as const) {
+      expect(rs7.zoneOf(s, "player1", id)).toBe(zone);
+    }
+  });
 });
 
 // ---------------------------------------------------------------------------
