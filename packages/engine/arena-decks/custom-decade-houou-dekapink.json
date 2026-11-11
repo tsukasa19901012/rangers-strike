@@ -1,0 +1,71 @@
+{
+  "id": "custom-decade-houou-dekapink",
+  "name": "青黄ディケイドFFR ホウオウ・デカピンク速攻（キーカード指定で組んだもの）",
+  "source": "user key cards 2026-10-31: XG3-068 / RS-209 / RS-110 + 黄のコール持ち",
+  "entries": [
+    {
+      "cardId": "RS-209",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-014",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-015",
+      "count": 2
+    },
+    {
+      "cardId": "XG5-046",
+      "count": 3
+    },
+    {
+      "cardId": "RS-678",
+      "count": 3
+    },
+    {
+      "cardId": "RS-059",
+      "count": 3
+    },
+    {
+      "cardId": "RS-060",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-074",
+      "count": 2
+    },
+    {
+      "cardId": "XG2-076",
+      "count": 2
+    },
+    {
+      "cardId": "RS-110",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-068",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-076",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-081",
+      "count": 2
+    },
+    {
+      "cardId": "RS-107",
+      "count": 2
+    },
+    {
+      "cardId": "RS-356",
+      "count": 2
+    },
+    {
+      "cardId": "RS-357",
+      "count": 1
+    }
+  ]
+}
