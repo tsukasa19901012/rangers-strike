@@ -28,9 +28,9 @@ import { transformationHindranceNegates } from "./set7NamedEffectsD";
 import { afterEnterBattle, promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 import { registerOptionalEffect } from "../optionalEffects";
+import { afterCommandCardsLeft } from "../commandLeaveRefill";
 import { rk16NamedTextNegated } from "../rk/rk16Fields";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
-import { afterCommandCardsLeft } from "../commandLeaveRefill";
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
 type ChoiceSkipper = (state: GameState, playerId: PlayerId) => ChoiceOutcome;
@@ -429,6 +429,10 @@ CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, instanceId) => {
   const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
   if (remaining.length > 0) {
     next = openEffectChoice(next, { ...pending, validInstanceIds: remaining, selectedInstanceIds: [] });
+  } else {
+    // 敵軍コマンドゾーンのカードが離れたので、敵軍の RS-238 ゴーゴーファイヤー【プロジェットカノン】が発動できる
+    // （grnrngr/faq-card-6 RS-363 Q2: 置かれたカードはまた【パンサークロー】で捨札にでき、ターンプレイヤーが処理順を選ぶ）。
+    next = afterCommandCardsLeft(next, enemyId, 1);
   }
   next = finish(next, pending.phasePlayerId);
   // 捨札にしたカードは敵軍コマンドゾーンを離れるので、敵軍の RS-238【プロジェットカノン】が誘発する

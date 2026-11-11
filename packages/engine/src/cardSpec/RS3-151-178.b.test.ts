@@ -384,9 +384,16 @@ describe("RS-166 ガインガイン", () => {
     expect(canStrike(enter(s, "RS-166:g"), "RS-166:g")).toBe(false);
   });
 
-  it.todo(
-    "RS-166: 公式Q&A（RS-364 側）— バトルエリアで DA と MA を持つガインガインがいてもヘルサターン総統【黒き太陽神への忠誠】の「自軍ユニットがすべてDAなら」は満たす（出典: grnrngr/faq-card-6 RS-364 Q）— RS-364 の効果の適用（BP8000以上の DA の ※ホールド付与）を観測する手段が RS-364 側の仕様検証になり、本カードの範囲外",
-  );
+  it("RS-166: 公式Q&A（RS-364 側）— バトルエリアで DA と MA を持つガインガインがいてもヘルサターン総統【黒き太陽神への忠誠】の「自軍ユニットがすべてDAなら」は満たす（出典: grnrngr/faq-card-6 RS-364 Q）", () => {
+    const DA1K = sUnit("SPEC-DA1K", { category: "DA", bp: 1000 });
+    const MA1K = sUnit("SPEC-MA1K", { category: "MA", bp: 1000 });
+    const s = st({ player1: { battle: [inst("RS-166", "g"), inst("SPEC-DA1K", "a")], rush: [inst("RS-364", "hs")] } }, [DA1K, MA1K]);
+    expect(unitEffectiveCategories(s, "player1", inst("RS-166", "g"), "battle")).toEqual(expect.arrayContaining(["DA", "MA"]));
+    expect(bpOf(s, "player1", "SPEC-DA1K:a")).toBe(4000);
+    // 対照: DA を持たない（MA だけの）ユニットがいれば満たさない
+    const t = st({ player1: { battle: [inst("SPEC-MA1K", "m"), inst("SPEC-DA1K", "a")], rush: [inst("RS-364", "hs")] } }, [DA1K, MA1K]);
+    expect(bpOf(t, "player1", "SPEC-DA1K:a")).toBe(1000);
+  });
 });
 
 // ===========================================================================
@@ -800,9 +807,26 @@ describe("RS-170 エージェント・アブレラ", () => {
   });
 
   // faq-card-3 RS-170 Q4「「RS-170 エージェント・アブレラ」の効果を得る為にホールドされたものなので…該当しない」
-  it.todo(
-    "RS-170: 公式Q&A — 闇の取引でホールドしたコマンドの中の仮面ライダーキバ（XG5-074）では【ファンガイアの王】は発動しない（出典: grnrngr/faq-card-3 RS-170 Q4）— ※モーフ・※コールDA を持つ XG5-074 をコマンドとしてホールドさせる支払い手順（どのコマンドを闇の取引分に充てるか）を公開 API で指定できない",
-  );
+  it("RS-170: 公式Q&A — 闇の取引でホールドしたコマンドの中の仮面ライダーキバ（XG5-074）では【ファンガイアの王】は発動しない（出典: grnrngr/faq-card-3 RS-170 Q4・atwiki/page-2245 Q3）", () => {
+    const DA3 = sUnit("SPEC-DA3-NOSP", { category: "DA", bp: 1000, powerCost: 3, sp: undefined });
+    const rushWith = (p1: Partial<GameState["players"]["player1"]>, pay: string) => {
+      const s0 = st({ phase: "rush", player1: { hand: [inst("SPEC-DA3-NOSP", "u")], power: powerCards(2), deck: deckCards(3), ...p1 } }, [DA3]);
+      const start = tryAct(s0, { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: "SPEC-DA3-NOSP:u" });
+      expect(start.ok, start.error).toBe(true);
+      const paid = tryAct(start.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: [pay] });
+      expect(paid.ok, paid.error).toBe(true);
+      return settle(paid.state);
+    };
+    // 対照: ※コールDA でラッシュのためにホールドしたキバなら、ラッシュした DA のユニットは BP+3000（不足分は別のコマンドで補う）
+    const called = rushWith({ rush: [inst("RS-170", "ab"), inst("XG5-074", "kv")], command: releasedN(2, "TST-OP-DA", "d") }, "XG5-074:kv");
+    expect(zoneOf(called, "player1", "SPEC-DA3-NOSP:u")).toBe("rush");
+    expect(bpOf(called, "player1", "SPEC-DA3-NOSP:u")).toBe(4000);
+    // 闇の取引の不足分としてホールドした（コマンドゾーンの）キバでは BP+3000 されない
+    const s = rushWith({ rush: [inst("RS-170", "ab")], command: [released("TST-OP-DA", "d0"), released("XG5-074", "kvc")] }, "TST-OP-DA:d0");
+    expect(zoneOf(s, "player1", "SPEC-DA3-NOSP:u")).toBe("rush");
+    expect(s.players.player1.command.find((c) => c.instanceId === "XG5-074:kvc")?.commandHeld).toBe(true);
+    expect(bpOf(s, "player1", "SPEC-DA3-NOSP:u")).toBe(1000);
+  });
 });
 
 void [bpOf, substitutes, sUnit];

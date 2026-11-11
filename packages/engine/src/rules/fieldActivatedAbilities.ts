@@ -29,6 +29,7 @@ import { collectPowerIds, openEffectChoice, startSelectPowerChoice } from "./pen
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import { beginAbarenohFromHand } from "./errataCardEffects";
 import { canActivateMagRepair, openMagRepair } from "./legend1/set5NamedEffectsA";
+import { settleDarkArmor } from "./legend1/set6NamedEffects348";
 import { beginAllAboard, canActivateAllAboard } from "./legend1/set6NamedEffects348";
 import { beginHoldToActivate, canActivateHoldToActivate, isHoldToActivateNc } from "./holdToActivate";
 import { activateHoldReturnSelf, canActivateHoldReturnSelf, holdReturnSelfCount } from "./legend1/set7NamedEffectsA";
@@ -717,7 +718,9 @@ export function activateFieldAbility(
     battle: (zone === "battle" ? rest : player.battle).map(unmount),
     discard: [...player.discard, discarded as CardInstance],
   };
-  const afterCost = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+  // 捨札にしたユニットに重ねていた RS-350 暗黒の鎧は、効果の続きの前にパワーゾーンにダメージとして置く
+  // （grnrngr/faq-card-6 RS-350: 暗黒の鎧に重ねたマグを【修復作業】で捨札にしたとき、ダメージとして置かれた暗黒の鎧をオモテにできる）。
+  const afterCost = settleDarkArmor(state, { ...state, ...updatePlayer(state, playerId, nextPlayer) });
   return ability.resolve(afterCost, playerId, found.card);
 }
 

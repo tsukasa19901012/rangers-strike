@@ -54,7 +54,9 @@ import {
   spOf,
   st,
   stackedOn,
+  substitutes,
   sUnit,
+  useNinja,
   zoneIds,
   zoneOf,
 } from "./RK4-064-084.helpers";
@@ -155,12 +157,38 @@ describe("RK-078 クロックアップ（RK-021 の再録）", () => {
     expect(zoneOf(s, "player1", "TST-OP:stk0")).toBe("discard");
   });
 
-  it.todo(
-    "RK-078: 公式Q&A — 無限連鎖カードは常駐の効果を無効にするだけで、クロックアップと重ねたカードは常駐置き場に留まる（出典: atwiki/page-173 Q1・grnrngr/faq-rider-1 RK-021 Q1）— RK-021 の照合（RK1-001-021.c.test.ts）と同じく、RS-072 の常駐の無効化の手順を公開 API で組み立てられないため",
-  );
-  it.todo(
-    "RK-078: 公式Q&A — 「加速」のユニットがアタックされたとき隠流忍術も使えるが、否定文優先でバトルは行われない（出典: atwiki/page-173 Q2・grnrngr/faq-rider-1 RK-021 Q2）— RK-021 の照合と同じく、強制の常駐の処理と隠流忍術の反応ウィンドウの順序を公開 API で観測できないため",
-  );
+  // atwiki/page-173 Q1「いいえ、捨札にはなりません。…そのまま常駐置き場に留まります。「RS-072 無限連鎖カード」は相手の常駐オペレーションの効果を無効にするだけで…」
+  it("RK-078: 公式Q&A — 無限連鎖カードは常駐の効果を無効にするだけで、クロックアップと重ねたカードは常駐置き場に留まる（出典: atwiki/page-173 Q1・grnrngr/faq-rider-1 RK-021 Q1）", () => {
+    let s = st(
+      { activePlayer: "player2", phase: "rush", player1: { operation: [clock(2)], battle: [inst("SPEC-ACCEL", "d")], deck: deckCards(3) }, player2: { hand: [inst("RS-072", "ic")], command: releasedCat("DA", 1), power: powerCards(3), battle: [inst("TST-UNIT-7", "atk")], deck: deckCards(5, "e") } },
+      EXTRA,
+    );
+    s = resolveAll(played(s, "RS-072:ic", "player2"));
+    expect(zoneOf(s, "player2", "RS-072:ic")).toBe("discard");
+    expect(zoneOf(s, "player1", "RK-078:cu")).toBe("operation");
+    expect(stackedOn(s, "player1", "RK-078:cu")).toEqual(["TST-OP:stk0", "TST-OP:stk1"]);
+    // このターンは効果が無効なので、「加速」のユニットがアタックされてもバトルは行われる
+    s = settle(attack(nextPhase(s), "TST-UNIT-7:atk", "SPEC-ACCEL:d", "player2"));
+    expect(zoneOf(s, "player1", "SPEC-ACCEL:d")).toBe("discard");
+    expect(stackedOn(s, "player1", "RK-078:cu")).toHaveLength(2);
+  });
+
+  // atwiki/page-173 Q2「…「RS-018 隠流忍術」を使用することはできます。…「相反するテキストは否定文を優先する」という基本ルールに基き、バトルは行われないことになります。」
+  it("RK-078: 公式Q&A — 「加速」のユニットがアタックされたとき隠流忍術も使えるが、否定文優先でバトルは行われない（出典: atwiki/page-173 Q2・grnrngr/faq-rider-1 RK-021 Q2）", () => {
+    let s = enemyTurn(
+      { operation: [clock(2)], battle: [inst("SPEC-ACCEL", "d"), inst("TST-UNIT-0", "sub")], hand: [inst("RS-018", "nin")], command: releasedCat("MA", 1), power: powerCards(4), deck: deckCards(3) },
+      { battle: [inst("TST-UNIT-7", "atk")] },
+    );
+    s = attack(s, "TST-UNIT-7:atk", "SPEC-ACCEL:d", "player2");
+    expect(substitutes(s, "RS-018:nin")).toContain("TST-UNIT-0:sub");
+    s = settle(useNinja(s, "RS-018:nin", "TST-UNIT-0:sub"));
+    expect(zoneOf(s, "player1", "RS-018:nin")).toBe("discard");
+    expect(s.pendingBattle).toBeUndefined();
+    expect(zoneOf(s, "player1", "SPEC-ACCEL:d")).toBe("battle");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:sub")).toBe("battle");
+    expect(zoneOf(s, "player2", "TST-UNIT-7:atk")).toBe("battle");
+    expect(stackedOn(s, "player1", "RK-078:cu")).toHaveLength(1);
+  });
 });
 
 // ===========================================================================

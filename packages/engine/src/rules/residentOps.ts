@@ -6,6 +6,7 @@
  */
 import { applyXg2ResidentPlaced } from "./xg2/xg2Effects";
 import { rk12ResidentsNegated } from "./rk/rk12Fields";
+import { opponentInfiniteChainBlocks } from "./turnModifiers";
 import { applyRk2ResidentPlaced } from "./rk/rk2UnitEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../types/game";
@@ -14,7 +15,6 @@ import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEff
 import { getDefinition } from "../core/catalog";
 import { takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
-import { opponentInfiniteChainBlocks } from "./turnModifiers";
 
 export type ResidentOpAttackedResult = {
   state: GameState;

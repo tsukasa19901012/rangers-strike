@@ -381,6 +381,21 @@ export function filterEffectRushCandidates(
   });
 }
 
+/** ids のカードを fromZone から自軍ラッシュエリアに移した仮の状態（追加条件の判定用）。 */
+function withCardsInRush(state: GameState, playerId: PlayerId, fromZone: EffectRushSourceZone, ids: string[]): GameState {
+  const player = state.players[playerId];
+  const zone = player[fromZone] as CardInstance[];
+  const moving = zone.filter((c) => ids.includes(c.instanceId)).map(({ commandHeld: _h, ...c }) => c as CardInstance);
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      [fromZone]: zone.filter((c) => !ids.includes(c.instanceId)),
+      rush: [...player.rush, ...moving],
+    }),
+  };
+}
+
 export type StartEffectRushInput = {
   playerId: PlayerId;
   phasePlayerId: PlayerId;
@@ -423,6 +438,21 @@ export function startEffectRush(state: GameState, input: StartEffectRushInput): 
     input.requireConditions,
     input.ignorePowerCost,
   );
+  // R-RUSH-23 — 「2枚まで選び」は先に選んでから1枚ずつ出す。先に出す候補がラッシュエリアにあれば追加条件を満たせる候補も選べる
+  // （grnrngr/faq-card-4 RS-241 Q2: ランドバルカンでボウケンレッドを出した後、それを捨札にしてボウケンレッドAT を出せる）。
+  // 出す時点で条件を満たさなければ、その候補は出さない（continuePendingEffectRush）。
+  if (input.requireConditions && input.maxCount >= 2 && candidates.length > 0) {
+    const hypothetical = withCardsInRush(state, input.playerId, input.fromZone, candidates);
+    const later = filterEffectRushCandidates(
+      hypothetical,
+      input.playerId,
+      input.fromZone,
+      input.candidates.filter((id) => !candidates.includes(id)),
+      input.requireConditions,
+      input.ignorePowerCost,
+    );
+    candidates.push(...later);
+  }
   if (candidates.length === 0 || input.maxCount <= 0) return state;
 
   const base: PendingEffectRush = {

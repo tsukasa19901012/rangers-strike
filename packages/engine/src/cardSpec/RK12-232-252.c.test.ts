@@ -203,9 +203,15 @@ describe("RK-247 仮面ライダーネガ電王", () => {
       expect(canEnter(s, "RK-247:ng")).toBe(true);
     });
   }
-  it.todo(
-    "RK-247: 公式Q&A — XG2-082 電子星獣ドルを自軍ラッシュフェイズ中に自身の効果でホールドしたターンも、ネガ電王はバトルエリアに出られる（出典: atwiki/page-1011 Q1）— XG2-082 の「ホールドしてもよい」が未実装（本範囲外のカード。RS8-560-581.c の RS-579 と同じ。RK-280・RK-281 は上で照合）",
-  );
+  it("RK-247: 公式Q&A — XG2-082 電子星獣ドルを自軍ラッシュフェイズ中に自身の効果でホールドしたターンも、ネガ電王はバトルエリアに出られる（出典: atwiki/page-1011 Q1）", () => {
+    let s = rushPhase({ rush: [inst("RK-247", "ng"), inst("XG2-082", "dol")] });
+    expect(canEnter(nextPhase(s), "RK-247:ng")).toBe(false);
+    s = act(s, { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: "XG2-082:dol" });
+    expect(cardIn(s, "player1", "XG2-082:dol")?.commandHeld).toBe(true);
+    s = nextPhase(s);
+    expect(s.phase).toBe("battle");
+    expect(canEnter(s, "RK-247:ng")).toBe(true);
+  });
 });
 
 // ===========================================================================
@@ -462,9 +468,19 @@ describe("RK-251 ゴルゴムの仕業", () => {
     expect(zoneOf(s, "player1", "RK-249:adv")).toBe("operation");
   });
 
-  it.todo(
-    "RK-251: 公式Q&A — コマンドゾーンの XG5-010 恐竜剣ゴッドホーン等の「これがコマンドゾーンにある間、…このカードの効果を発動する」はオペレーションカードの使用ではないので無効にできない（出典: atwiki/page-1377 Q3）— XG5-010・XG5-016・XG5-017 のコマンドゾーンの効果が未実装（本範囲外のカード）",
-  );
+  it("RK-251: 公式Q&A — コマンドゾーンの XG5-017 魔法剣キングカリバー等の「これがコマンドゾーンにある間、…このカードの効果を発動する」はオペレーションカードの使用ではないので無効にできない（出典: atwiki/page-1377 Q3）", () => {
+    let s = board(
+      { rush: [inst("RS-113", "fk")], command: [{ ...inst("XG5-017", "kc"), commandHeld: false }], deck: [inst("SPEC-C1", "top"), ...deckCards(3)] },
+      { hand: [inst("RK-251", "gg")], command: releasedCat("DA", 1, "eDA"), power: powerCards(5, "ep") },
+    );
+    s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-113:fk" });
+    expectChoiceFrom(s, "player1", "XG5-017");
+    s = settle(accept(s));
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-251");
+    s = resolveAll(s);
+    expect(zoneOf(s, "player1", "SPEC-C1:top")).toBe("hand");
+    expect(zoneOf(s, "player2", "RK-251:gg")).toBe("hand");
+  });
 });
 
 // ===========================================================================
