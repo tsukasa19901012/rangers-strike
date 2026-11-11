@@ -1,5 +1,6 @@
 import { collectCallLeadFieldUnits } from "./callLead";
 import { afterCommandCardsLeft } from "./commandLeaveRefill";
+import { magiTicketCounterCandidates, stageMagiTicket } from "./magiTicketStage";
 import { applyXg5AttackWin, XG5_CONFINE_WINDOW_EFFECT_ID } from "./xg5/xg5Core";
 import { xg5BattleUsesPrintedBp } from "./xg5/xg5Fields";
 import { rm2AfterBattle } from "./rm/rm2Effects";
@@ -431,6 +432,21 @@ function discardHandCounter(
 }
 
 export function hasBattleCounterReactions(
+  state: GameState,
+  defenderId: PlayerId,
+  defenderInstanceId: string,
+  attackerPlayerId?: PlayerId,
+  attackerInstanceId?: string,
+): boolean {
+  if (hasBattleCounterReactionsFromHand(state, defenderId, defenderInstanceId, attackerPlayerId, attackerInstanceId)) return true;
+  // RS-325【マジチケット】: コマンドゾーンのカウンターも手札にあるものとして窓を開くかを見る（rules/magiTicketStage.ts。faq-rider-1 RK-036 Q1）。
+  return magiTicketCounterCandidates(state, defenderId).some((c) => {
+    const staged = stageMagiTicket(state, defenderId, c.instanceId, "counter_category");
+    return !!staged && hasBattleCounterReactionsFromHand(staged, defenderId, defenderInstanceId, attackerPlayerId, attackerInstanceId);
+  });
+}
+
+function hasBattleCounterReactionsFromHand(
   state: GameState,
   defenderId: PlayerId,
   defenderInstanceId: string,

@@ -343,9 +343,25 @@ describe("RK-075 ミラーワールド（RK-016 の再録）", () => {
     expect(attackersOf(s, "SPEC-MIRROR:u")).toEqual([]);
   });
 
-  it.todo(
-    "RK-075: 公式Q&A — ギンガベリック等でコマンドのホールドを代替できればアタックできる（出典: atwiki/page-176 Q5）— ギンガベリック（RS-469）のホールド代替は holdToActivate の MA ホールドにだけ接続されており、ミラーワールドのアタック時ホールド（core/applyAction.ts・rules/mirrorWorldSelection.ts）では代替を選べない",
-  );
+  // atwiki/page-176 Q5「ただし、「RS-469 ギンガベリック」等、何らかの方法でコマンドのホールドの代替ができれば、アタックすることができます。」
+  it("RK-075: 公式Q&A — ギンガベリック等でコマンドのホールドを代替できればアタックできる（出典: atwiki/page-176 Q5）", () => {
+    // 敵軍（player2）のアタッカーが RS-469 ギンガベリック【雷の星獣】（MA の自軍コマンドのかわりに敵軍コマンドをホールドしてもよい）にライドしている。
+    // 同名を2枚重ねているのでアタックには6つのホールドが要る。player2 自身のコマンドは5つ。
+    const ginga = (riding: boolean) =>
+      enemyTurn(
+        { operation: [mirror([inst("SPEC-MIRROR", "stk"), inst("SPEC-MIRROR", "stk2")])], battle: [inst("SPEC-MIRROR", "u")], command: releasedCat("WB", 2, "own") },
+        {
+          battle: [riding ? { ...inst("TST-UNIT-7", "atk"), mountedOnInstanceId: "RS-469:gb" } : inst("TST-UNIT-7", "atk"), inst("RS-469", "gb")],
+          command: releasedCat("MA", 5, "e"),
+        },
+      );
+    expect(attackersOf(ginga(false), "SPEC-MIRROR:u")).toEqual([]);
+    expect(attackersOf(ginga(true), "SPEC-MIRROR:u")).toEqual(["TST-UNIT-7:atk"]);
+    const s = settle(attack(ginga(true), "TST-UNIT-7:atk", "SPEC-MIRROR:u", "player2"));
+    // 6つのホールド = 自分自身のコマンド5つ＋かわりにホールドした相手（player1）のコマンド1つ。
+    expect(s.players.player2.command.filter((c) => c.commandHeld)).toHaveLength(5);
+    expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(1);
+  });
 });
 
 // ===========================================================================

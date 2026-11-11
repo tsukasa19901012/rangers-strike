@@ -370,7 +370,27 @@ describe("SR-006 シュリケンジャーFM", () => {
     expect(zoneOf(s, "player1", "RS-367:z2")).toBe("hand");
   });
 
-  it.todo("SR-006: 公式Q&A — オモテになった XG5-085 グランナスカの【ワープ】を先に発動すると、そのあと【超忍法・分身魔球】は使えない（出典: atwiki/page-811 Q1「【ワープ】の効果を発動した時点で…タイミングが過ぎている」）— XG5-085 の【ワープ】がエンジンで何もしない効果（rules/xg5/xg5eEffects.ts の noop）のため、【ワープ】を先に発動したあとで【超忍法・分身魔球】が使えないことを順番として比べられない");
+  it("SR-006: 公式Q&A — オモテになった XG5-085 グランナスカの【ワープ】を先に発動すると、そのあと【超忍法・分身魔球】は使えない（出典: atwiki/page-811 Q1「【ワープ】の効果を発動した時点で…タイミングが過ぎている」「【超忍法・分身魔球】の効果を適用する場合は、【ワープ】の効果を発動する前に適用してください」）", () => {
+    const board = () => {
+      const s0 = rushPhase({ hand: [inst("RS-367", "z1"), inst("RS-367", "z2")], rush: [inst("SR-006", "fm")], deck: [inst("XG5-085", "gn"), inst("TST-OP", "n2"), ...deckCards(3)], power: powerCards(1), command: releasedCat("DA", 1) });
+      const r = rushFromHand(s0, "player1", "RS-367:z1");
+      expect(r.ok, r.error).toBe(true);
+      return settle(resolveAll(r.state, ["reveal_top"], 1));
+    };
+    const s = board();
+    expectChoiceFrom(s, "player1", "XG5-085");
+    // 【ワープ】を発動したら分身魔球は開かず、かわりにオモテにした TST-OP がそのまま対象（捨札）
+    const warped = settle(act(s, { type: "confirm_effect_choice", playerId: "player1" }));
+    expect(warped.pendingEffectChoice?.sourceCardId).not.toBe("SR-006");
+    expect(zoneOf(warped, "player1", "XG5-085:gn")).toBe("rush");
+    expect(zoneOf(warped, "player1", "TST-OP:n2")).toBe("discard");
+    // 【ワープ】を発動しなければ、分身魔球でグランナスカを手札に加え、手札のゾロー兵を対象にできる
+    const bunshin = settle(act(s, { type: "skip_effect_choice", playerId: "player1" }));
+    expectChoiceFrom(bunshin, "player1", "SR-006");
+    const t = resolveAll(bunshin, ["RS-367:z2"]);
+    expect(zoneOf(t, "player1", "XG5-085:gn")).toBe("hand");
+    expect(zoneOf(t, "player1", "RS-367:z2")).toBe("rush");
+  });
 });
 
 // ===========================================================================

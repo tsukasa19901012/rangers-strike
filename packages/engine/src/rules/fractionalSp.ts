@@ -40,6 +40,7 @@ export function resolveInstanceSpValue(
   instance: CardInstance,
 ): SpValue | undefined {
   if (instance.spOverride !== undefined) return instance.spOverride;
+  if (instance.spUntilLeave !== undefined) return instance.spUntilLeave;
   // RK-106 仮面ライダーアギトFF「※これはライド中、「SP1/3」になる。」（rules/rk/rk6Fields.ts）。
   const riding = rk6RidingSpValue(instance);
   if (riding !== undefined) return riding;

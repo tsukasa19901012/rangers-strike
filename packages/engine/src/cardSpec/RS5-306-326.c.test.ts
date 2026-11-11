@@ -675,7 +675,27 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // faq-card-5 RS-325 Q3「その手順では「RS-255 巨大化爆弾」が捨札になるタイミングがありませんので…ラッシュエリアに留まります。…かわりとして…捨札にするということはできません。」
-  it.todo("RS-325: 公式Q&A — マジチケットで巨大化爆弾を使いユニットを重ねてラッシュエリアに出したとき、コマンドを捨札にしなくても巨大化爆弾はラッシュエリアに留まり、かわりに捨札にすることもできない（出典: grnrngr/faq-card-5 RS-325 Q3）— マジチケットは自軍ラッシュフェイズ中の起動としてのみ実装され、巨大化爆弾（※カウンター・敵軍ターン中に「怪人」が撃破されたとき）のタイミングと両立しないため場を作れない");
+  it("RS-325: 公式Q&A — マジチケットで巨大化爆弾を使いユニットを重ねてラッシュエリアに出したとき、コマンドを捨札にしなくても巨大化爆弾はラッシュエリアに留まり、かわりに捨札にすることもできない（出典: grnrngr/faq-card-5 RS-325 Q3）", () => {
+    const BIG = sUnit("SPEC-BIG9", { size: "M", bp: 9000 });
+    // 敵軍（player2）のターン: player2 の BP9000 が player1 の「怪人」（RS-257 野球仮面）をアタックして撃破する
+    let s = st(
+      {
+        activePlayer: "player2",
+        player1: { rush: [inst("RS-325", "ms")], battle: [inst("RS-257", "kai")], command: [released("RS-255", "bomb"), released("TST-OP-DA", "c")], power: powerCards(4), deck: deckCards(3) },
+        player2: { battle: [inst("SPEC-BIG9", "atk")], deck: deckCards(3, "e") },
+      },
+      [BIG],
+    );
+    s = attack(s, "SPEC-BIG9:atk", "RS-257:kai", "player2");
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("discard");
+    const use = legal(s).find((a): a is Extract<GameAction, { type: "use_magi_ticket" }> => a.type === "use_magi_ticket" && a.instanceId === "RS-255:bomb" && a.counter === true);
+    expect(use).toBeDefined();
+    s = settle(act(s, use!));
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("rush");
+    expect(s.players.player1.rush.find((c) => c.instanceId === "RS-257:kai")?.stackedCards?.map((c) => c.instanceId)).toEqual(["RS-255:bomb"]);
+    expect(s.pendingEffectChoice?.effectId).not.toBe("rs325_magi_ticket_keep");
+    expect(zoneOf(s, "player1", "TST-OP-DA:c")).toBe("command");
+  });
 
   // faq-card-5 RS-325 Q5「はい、発動します。」
   it("RS-325: 公式Q&A — 相手がマジチケットでオペレーションの効果を発動すると、自軍ジェットシーカーの【ラウンドレーダー】は発動する（出典: grnrngr/faq-card-5 RS-325 Q5・faq-card-5 RS-265）", () => {

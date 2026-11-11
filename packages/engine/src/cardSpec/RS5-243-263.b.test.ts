@@ -752,9 +752,18 @@ describe("RS-255 巨大化爆弾", () => {
   });
 
   // faq-card-5 RS-325 Q「…自軍コマンドを１つ捨札にしなくてもラッシュエリアに留まります。…捨札にすることはできません。」
-  it.todo(
-    "RS-255: 公式Q&A — 天空勇者マジシャインの【マジチケット】でコマンドゾーンの巨大化爆弾を使った場合、巨大化爆弾は捨札になるタイミングがないのでラッシュエリアに留まる（出典: grnrngr/faq-card-5 RS-325 Q）— 【マジチケット】は自軍ラッシュフェイズの通常オペレーションにしか対応しておらず（rules/legend1/set5NamedEffects.ts magiTicketUsable）、コマンドゾーンのカウンター（巨大化爆弾）を敵軍ターンに発動する経路がない",
-  );
+  it("RS-255: 公式Q&A — 天空勇者マジシャインの【マジチケット】でコマンドゾーンの巨大化爆弾を使った場合、巨大化爆弾は捨札になるタイミングがないのでラッシュエリアに留まる（出典: grnrngr/faq-card-5 RS-325 Q「自軍コマンドを１つ捨札にしなくてもラッシュエリアに留まります」）", () => {
+    let s = destroyedByAttack("RS-257", { hand: [], rush: [inst("RS-325", "mg")], command: [released("RS-255", "bomb"), released(CMD.DA, "c")] });
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("discard");
+    const use = legalOfType(s, "use_magi_ticket").find((a) => a.playerId === "player1" && a.instanceId === "RS-255:bomb" && a.counter);
+    expect(use).toBeDefined();
+    s = settle(act(s, use!));
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("rush");
+    expect(s.players.player1.rush.find((c) => c.instanceId === "RS-257:kai")?.stackedCards?.map((c) => c.instanceId)).toEqual(["RS-255:bomb"]);
+    // 捨札にならないので「かわりにリリース状態のコマンドを捨札にする」選択も開かず、DA のコマンドはコマンドゾーンに残る
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-325");
+    expect(zoneOf(s, "player1", `${CMD.DA}:c`)).toBe("command");
+  });
 
   // faq-rider_2 RK-161 Q「はい、「ＳＰ１」になります。」
   it("RS-255: 公式Q&A — 巨大化爆弾を重ねたショッカーライダーがコンビネーションの途中にいても、6番目のショッカーライダーは「SP1」になる（出典: grnrngr/faq-rider_2 RK-161 Q）", () => {

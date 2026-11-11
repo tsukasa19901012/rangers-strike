@@ -15,6 +15,7 @@ import { effectiveBp, getDefinition } from "../../core/catalog";
 import { opponent, updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
 import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../pendingChoices";
+import { applyRk1DestroyerDamage } from "../rk/rk1NamedEffects";
 
 export const GORENGER_HURRICANE_EFFECT_ID = "gorenger_hurricane";
 
@@ -82,6 +83,7 @@ export function applyGorengerHurricaneOnEnter(
     }
     return { state: next, logs };
   }
+  const before = next;
   const opened = openEffectChoice(next, {
     playerId,
     effectId: GORENGER_HURRICANE_EFFECT_ID,
@@ -96,5 +98,15 @@ export function applyGorengerHurricaneOnEnter(
   });
   const confirmed = applyConfirmEffectChoice(opened, playerId);
   if ("error" in confirmed) return { state: next, logs };
-  return { state: confirmed.state, logs };
+  // 撃破したのはモモレンジャー（「撃破する」と書かれたテキストの持ち主）。RK-005 超電子ダイナモはモモレンジャーに使っていれば1点ずつ
+  // （grnrngr/faq-rider-1 RK-005 Q・faq-card-5 RS-259 Q1。rules/rk/rk1NamedEffects.ts）。
+  let out = confirmed.state;
+  for (const id of targets) {
+    const card = [...before.players[enemyId].rush, ...before.players[enemyId].battle].find((c) => c.instanceId === id);
+    if (!card || !out.players[enemyId].discard.some((c) => c.instanceId === id)) continue;
+    const d = applyRk1DestroyerDamage(out, playerId, momo.instanceId, card.cardId);
+    out = d.state;
+    logs.push(...d.logs);
+  }
+  return { state: out, logs };
 }

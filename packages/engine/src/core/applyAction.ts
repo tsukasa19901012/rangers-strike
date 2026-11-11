@@ -2102,6 +2102,16 @@ function applyActionCore(
     }
 
     case "use_magi_ticket": {
+      if (action.counter) {
+        // RS-325【マジチケット】でコマンドゾーンのカウンターを、手札にあるものとして発動する（カウンター自身をホールドする。
+        // faq-card-5 RS-325 Q3・faq-rider-1 RK-036 Q1）。手札から使うのと同じ解決（play_counter）に通す。
+        const staged = stageMagiTicket(state, playerId, action.instanceId, "counter_category");
+        if (!staged) return fail("card_not_in_command");
+        const played = applyAction(staged, { type: "play_counter", playerId, instanceId: action.instanceId }, { trustLegality: true });
+        if (!played.ok) return played;
+        const log = buildLogEntry(playerId, "named_effect", "RS-325", state.definitions, "maji_chiketto");
+        return ok(finishMagiTicketStaging(played.state, playerId, action.instanceId), log);
+      }
       // RS-325【マジチケット】（rules/legend1/set5NamedEffects.ts）: 手札から使うのと同じ解決（play_operation）に通す。
       if (state.phase !== "rush") return fail("wrong_phase");
       const staged = stageMagiTicket(state, playerId, action.instanceId);

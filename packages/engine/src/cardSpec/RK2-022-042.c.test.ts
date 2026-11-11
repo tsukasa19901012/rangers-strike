@@ -35,6 +35,7 @@ import {
   expectRarityIn,
   expectStats,
   held,
+  released,
   inst,
   legal,
   p1Battle,
@@ -143,9 +144,20 @@ describe("RK-036 仮面ライダーライア", () => {
     expect(canCounter(attacked({ rush: [inst("RK-036", "l")], command: [held("TST-OP", "h0")] }))).toBe(false);
   });
 
-  it.todo(
-    "RK-036: 公式Q&A — 天空勇者マジシャイン（RS-325）でコマンドゾーンのカウンターを発動するときは、そのカウンター自身のホールドは省けない（出典: grnrngr/faq-rider-1 RK-036 Q1・atwiki/page-181 Q1）— マジチケットは自軍ラッシュフェイズの通常オペレーションのみ対応（rules/legend1/set5NamedEffects.ts magiTicketUsable）で、コマンドゾーンのカウンターを発動する経路がない",
-  );
+  it("RK-036: 公式Q&A — 天空勇者マジシャイン（RS-325）でコマンドゾーンのカウンターを発動するときは、そのカウンター自身のホールドは省けない（出典: grnrngr/faq-rider-1 RK-036 Q1・atwiki/page-181 Q1「「（発動させたい）そのコマンドをホールドして」とありますので、それを行わなければ発動させることはできません」）", () => {
+    const magi = (s: GameState) => legal(s).find((a) => a.type === "use_magi_ticket" && a.playerId === "player1" && a.instanceId === "RK-004:g" && a.counter === true);
+    // ホールド状態のギギの腕輪は、ライアがいてもマジチケットで発動できない
+    expect(magi(attacked({ hand: [], rush: [inst("RS-325", "ms")], battle: [inst("RK-036", "l")], command: [held("RK-004", "g"), held("TST-OP", "h0")] }))).toBeUndefined();
+    // リリース状態なら、ギギの腕輪自身をホールドして発動する（ライアの捨札は使わない）
+    let s = attacked({ hand: [], rush: [inst("RS-325", "ms")], battle: [inst("RK-036", "l")], command: [released("RK-004", "g"), held("TST-OP", "h0")] });
+    const use = magi(s);
+    expect(use).toBeDefined();
+    s = resolveAll(act(s, use!));
+    expect(zoneOf(s, "player1", "TST-OP:h0")).toBe("command");
+    expect(zoneOf(s, "player1", "RK-004:g")).toBe("discard");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("battle");
+    expect(zoneOf(s, "player2", "SPEC-E2500:a")).toBe("discard");
+  });
   // faq-rider-1 RK-008 Q2「…「RK-036 仮面ライダーライア」の効果によりコマンドゾーンのカードを捨札にしたときと、「RK-008 メカニック忍者」の効果で…ラッシュエリアに出したときの２回、【プロジェットカノン】が発動できます…最後に、…アタックされたSユニットをコマンドゾーンに置いて、一連の処理を終了します。」
   it("RK-036: 公式Q&A（相互参照）— ゴーゴーファイヤー（RS-238）がある状態でライアの効果でメカニック忍者（RK-008）を使うと、ライアで捨札にしたとき・メカニック忍者で出したときの2回【プロジェットカノン】を発動できる（出典: grnrngr/faq-rider-1 RK-008 Q）", () => {
     const KAIZO = sUnit("SPEC-KAIZO", { category: "ET", bp: 3000, features: ["男", "改造人間"] });

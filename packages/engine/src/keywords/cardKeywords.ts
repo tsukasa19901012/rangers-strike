@@ -5,6 +5,7 @@ import { cardHasDslGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { rocketBoosterMatchesCard } from "../rules/rocketBooster";
 import { fieldAuraGrantsKeyword } from "../rules/fieldGrantedKeywords";
 import { xg1GrantsChase } from "../rules/xg1/xg1Fields";
+import { promoGrantsKeyword } from "../rules/promo/promoHooks";
 import { actionContextState } from "../rules/zordFeatureContext";
 
 export type CardKeyword = "wing" | "chase" | "commander" | "register" | "morph" | "resident";
@@ -50,6 +51,8 @@ export function cardHasKeyword(
   if (cardHasDslGrantKeyword(cardId, keyword)) return true;
   // XG1-015 宇宙警察（「警察」の S ユニットはチェイス。rules/xg1/xg1Fields.ts）。
   if (keyword === "chase" && xg1GrantsChase(context?.state ?? actionContextState(), context?.playerId, cardId)) return true;
+  // XP-018 ゴールド寿司「OTがあればチェイスを得る」等、場のユニットが常駐で得るチェイス（rules/promo/xp2Effects.ts）。
+  if (keyword === "chase" && promoGrantsChaseByCardId(context?.state ?? actionContextState(), context?.playerId, cardId)) return true;
   // 「これが自軍エリアにある間、特徴「X」を持つユニットは次の能力を得る⇒※ウイング」等（RS-657。rules/fieldGrantedKeywords.ts）。
   if (context && fieldAuraGrantsKeyword(context.state, context.playerId, cardId, keyword)) return true;
   const def = definitions[cardId];
@@ -61,6 +64,15 @@ export function cardHasKeyword(
   if (def.tags?.some((t) => identifiers.includes(t.toLowerCase()))) return true;
   const label = KEYWORD_NOTATION_LABEL[keyword];
   return label !== null && textHasKeywordNotation(def.text, label);
+}
+
+/** 場の cardId のユニットがプロモの常駐でチェイスを得ているか（XG1-015 と同じくカード ID で見る）。 */
+function promoGrantsChaseByCardId(state: GameState | null | undefined, playerId: PlayerId | undefined, cardId: string): boolean {
+  if (!state) return false;
+  const owners: PlayerId[] = playerId ? [playerId] : ["player1", "player2"];
+  return owners.some((pid) =>
+    [...state.players[pid].rush, ...state.players[pid].battle].some((c) => c.cardId === cardId && promoGrantsKeyword(state, pid, c.instanceId, "chase")),
+  );
 }
 
 export function playerHasChaseUnitInField(
