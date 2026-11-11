@@ -147,9 +147,15 @@ describe("RK-134 仮面ライダー2号（THE FIRST）", () => {
   });
 
 
-  it.todo(
-    "RK-134: 公式Q&A（相互参照）— SK-002 仮面ライダーV3【ダブルタイフーン】では「RK-134 仮面ライダー2号（THE FIRST）」をホールドして RC を発動できない（括弧書きもカード名に含む）（出典: grnrngr/faq-rider-2 SK-002 Q2）— SK-002 は本範囲外のカード",
-  );
+  it("RK-134: 公式Q&A（相互参照）— SK-002 仮面ライダーV3【ダブルタイフーン】では「RK-134 仮面ライダー2号（THE FIRST）」をホールドして RC を発動できない（括弧書きもカード名に含む）（出典: grnrngr/faq-rider-2 SK-002 Q2）", () => {
+    const s = rcRideOff(
+      board({ rush: [inst("SK-002", "v3"), inst("SPEC-VEHICLE", "v")], command: [inst("RK-134", "f2"), inst("RK-073", "n2")] }),
+      "SK-002:v3",
+      "SPEC-VEHICLE:v",
+    );
+    expectChoiceFrom(s, "player1", "SK-002");
+    expect(choiceIds(s)).toEqual(["RK-073:n2"]);
+  });
 });
 
 // ===========================================================================

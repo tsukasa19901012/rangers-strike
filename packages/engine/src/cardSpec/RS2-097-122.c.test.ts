@@ -439,9 +439,30 @@ describe("RS-116 マンドラ坊や", () => {
     expect(zoneOf(s, "player1", "RS-106:dr")).toBe("hand");
   });
 
-  it.todo(
-    "RS-116: 公式Q&A — タイムブルーの NC で撃破したときもマンドラ坊やの撃破の瞬間にタイムブルーが手札に戻る（出典: grnrngr/faq-card-2 RS-116 Q1）— タイムブルーの「敵軍Sユニットが4体以上多い」状況と撃破数の再計算を組み立てるには対象が多く、同じ割り込み処理を上のジュウクンドー経由のテストで検証している",
-  );
+  it("RS-116: 公式Q&A — タイムブルーの NC で撃破したときもマンドラ坊やの撃破の瞬間にタイムブルーが手札に戻る（出典: grnrngr/faq-card-2 RS-116 Q1）", () => {
+    // 自軍 S は4体（フィラー3＋4番目のタイムブルー）、敵軍 S は8体（魔法7＋マンドラ坊や）。マンドラ坊やと魔法3体を選ぶ。
+    let s = st(
+      {
+        player1: { battle: fillers(3), rush: [inst("RS-219", "b")] },
+        player2: {
+          battle: [0, 1, 2, 3, 4].map((i) => inst("SPEC-MAG", `w${i}`)),
+          rush: [inst("RS-116", "md"), inst("SPEC-MAG", "w5"), inst("SPEC-MAG", "w6")],
+          power: powerCards(3, "e"),
+          deck: deckCards(3, "e"),
+        },
+      },
+      [MAG],
+    );
+    s = enter(s, "RS-219:b");
+    if (s.pendingEffectChoice?.kind === "confirm") s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
+    for (const id of ["RS-116:md", "SPEC-MAG:w0", "SPEC-MAG:w1", "SPEC-MAG:w2"]) {
+      s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+    }
+    s = settle(s);
+    expect(zoneOf(s, "player1", "RS-219:b")).toBe("hand");
+    expect(zoneOf(s, "player2", "RS-116:md")).toBe("discard");
+    for (const id of ["SPEC-MAG:w0", "SPEC-MAG:w1", "SPEC-MAG:w2"]) expect(zoneOf(s, "player2", id)).toBe("discard");
+  });
 });
 
 // ===========================================================================
@@ -492,9 +513,37 @@ describe("RS-117 ダイボウケン", () => {
   });
 
   // faq-card-2 RS-117 Q1（魔法猫スモーキー＋キリンレンジャーの時間返し）
-  it.todo(
-    "RS-117: 公式Q&A — スモーキーで出したダイボウケンを素材にスーパーダイボウケンをラッシュした場合、ターン終了時にスーパーダイボウケンは捨札にならない（出典: grnrngr/faq-card-2 RS-117 Q1）— RS-326 魔法猫スモーキーと RS-208 キリンレンジャー「時間返し」の組み合わせを公開 API で再現できない",
-  );
+  it("RS-117: 公式Q&A — スモーキーで出したダイボウケンを素材にスーパーダイボウケンをラッシュした場合、ターン終了時にスーパーダイボウケンは捨札にならない（出典: grnrngr/faq-card-2 RS-117 Q1）", () => {
+    // 「いいえ、捨札にはなりません。」— 3番目のスモーキー【猫だまし】でダイボウケンを出し、4番目のキリンレンジャー【時間返し】で
+    // ラッシュフェイズに戻ってから、ダイボウケン＋ドリル・ショベル・ミキサー・クレーンを捨札にしてスーパーダイボウケンをラッシュする。
+    const extra = ["RS-171", "RS-172", "RS-173", "RS-174"].map((id) => inst(id, "x"));
+    let s = st({
+      player1: {
+        battle: fillers(2),
+        rush: [inst("RS-326", "sm"), inst("RS-208", "k"), ...extra],
+        hand: [inst("RS-117", "db"), inst("RS-236", "sdb")],
+        command: releasedN(2, "TST-OP-ET", "et"),
+        power: powerCards(7),
+        deck: deckCards(5),
+      },
+      player2: { deck: deckCards(5, "e") },
+    });
+    s = enter(s, "RS-326:sm");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-117:db" });
+    s = settle(s);
+    expect(zoneOf(s, "player1", "RS-117:db")).toBe("rush");
+    s = enter(passEntry(s), "RS-208:k");
+    if (s.pendingEffectChoice?.kind === "confirm") s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
+    s = settle(s);
+    expect(s.phase).toBe("rush");
+    const r = rushFromHand(s, "player1", "RS-236:sdb");
+    expect(r.ok, r.error).toBe(true);
+    s = settle(r.state);
+    expect(zoneOf(s, "player1", "RS-236:sdb")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-117:db")).toBe("discard");
+    s = endTurn(s);
+    expect(zoneOf(s, "player1", "RS-236:sdb")).toBe("rush");
+  });
 });
 
 // ===========================================================================

@@ -1445,6 +1445,20 @@ export function startAkaRedSoulChoice(
   });
 }
 
+/**
+ * RS-029【勇気の魔法】でリリースした後、同じ進入で RS-421【ソウル降臨】をまだ使っていなければ、もう一度選べるようにする
+ * （同時に誘発した2つの効果を【勇気の魔法】から解決した扱い。grnrngr/faq-card-6 RS-421 Q「勇気の魔法の効果によって…
+ * リリースしたユニットカードをホールドすることで、そのＮＣの効果を発動させることはできますか？」「はい、できます」）。
+ */
+function reofferAkaRedSoulAfterCourage(state: GameState, playerId: PlayerId, enteredInstanceId: string): GameState {
+  if (state.pendingEffectChoice || state.activePlayer !== playerId) return state;
+  const unit = state.players[playerId].battle.find((c) => c.instanceId === enteredInstanceId);
+  if (!unit || unit.cardId !== "RS-421" || unit.activatedNcEffects?.includes("souru_no_strike")) return state;
+  return (
+    startAkaRedSoulChoice(state, { playerId, effectId: "souru", sourceCardId: "RS-421", sourceInstanceId: enteredInstanceId, phasePlayerId: playerId }) ?? state
+  );
+}
+
 /** RS-616 巨大ボール化。 */
 export function startClimberBallChoice(
   state: GameState,
@@ -4961,7 +4975,11 @@ export function applyEffectChoiceSelect(
         return finishChoice(moved, pending, cardName(state.definitions, found.card.cardId));
       } else if (pending.commandAction === "release") {
         const released = applyCommandReleaseChoice(state, owner, instanceId);
-        return finishChoice(released, pending, cardName(state.definitions, found.card.cardId));
+        const out = finishChoice(released, pending, cardName(state.definitions, found.card.cardId));
+        if (pending.effectId === "courage_magic" && pending.courageEnteredInstanceId && "state" in out) {
+          return { ...out, state: reofferAkaRedSoulAfterCourage(out.state, pending.playerId, pending.courageEnteredInstanceId) };
+        }
+        return out;
       } else if (pending.commandAction === "sp_half") {
         const spHalf = applyCommandSpHalfChoice(state, owner, instanceId);
         return finishChoice(spHalf, pending, cardName(state.definitions, found.card.cardId));

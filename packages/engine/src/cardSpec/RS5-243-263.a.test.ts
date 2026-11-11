@@ -525,14 +525,30 @@ describe("RS-247 疾風流超忍法", () => {
   });
 
   // atwiki/page-424 Q4「はい、捨札にできます。」
-  it.todo(
-    "RS-247: Q&A — ジェットシーカーをラッシュ→疾風流超忍法で山札に戻されても【ラウンドレーダー】で敵軍パワーを2枚まで捨札にできる（出典: atwiki/page-424 Q4・grnrngr/faq-card-5 RS-265）— 山札に戻ったジェットシーカー（ラッシュエリアにない）の誘発を公開 API で観測する手順が確認できない（追加条件2体パワー送りのラッシュ＋カウンター使用＋誘発窓の組み立てが必要）",
-  );
+  it("RS-247: Q&A — ジェットシーカーをラッシュ→疾風流超忍法で山札に戻されても【ラウンドレーダー】で敵軍パワーを2枚まで捨札にできる（出典: atwiki/page-424 Q4・grnrngr/faq-card-5 RS-265）", () => {
+    let s = st({
+      phase: "rush",
+      pendingRush: { rusherPlayerId: "player1", rushedInstanceId: "RS-265:jet", phasePlayerId: "player1" },
+      player1: { rush: [inst("RS-265", "jet")], deck: deckCards(2, "p1d") },
+      player2: { hand: [inst("RS-247", "ctr")], command: [released(CMD.MA, "m")], power: powerCards(3, "p2pw"), deck: deckCards(2, "p2d") },
+    } as Parameters<typeof st>[0]);
+    s = payAndUse(s, "player2", "RS-247:ctr");
+    expect(s.players.player1.deck[0]?.instanceId).toBe("RS-265:jet");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-265");
+    s = pick(pick(s, "TST-P:p2pw0"), "TST-P:p2pw1");
+    expect(zoneOf(s, "player2", "TST-P:p2pw0")).toBe("discard");
+    expect(zoneOf(s, "player2", "TST-P:p2pw1")).toBe("discard");
+  });
 
   // atwiki/page-424 Q5「はい、発動します。」
-  it.todo(
-    "RS-247: Q&A — ラッシュしたゴーマ16世を山札の上に戻されても【大地動転の玉】は発動する（出典: atwiki/page-424 Q5）— 継続効果が「発動した」ことの観測点が出典にない（どの時点の何に適用されたかが特定できない）",
-  );
+  it("RS-247: Q&A — ラッシュしたゴーマ16世を山札の上に戻されても【大地動転の玉】は発動する（ラッシュした時点で BP0 以下になって撃破されたユニットは戻らない）（出典: atwiki/page-424 Q5）", () => {
+    // BP1000 のイエローフォー（ナンバーを持つ S）がカレーの＋2000を－2000にされて撃破される。
+    let s = rushU(setup("RS-210", { rush: [inst("RS-201", "y")], operation: [inst("RS-179", "cur")], command: [released(CMD.DA, "c")] }));
+    expect(zoneOf(s, "player1", "RS-201:y")).toBe("discard");
+    s = payAndUse(s, "player2", "RS-247:ctr");
+    expect(s.players.player1.deck[0]?.instanceId).toBe("RS-210:u");
+    expect(zoneOf(s, "player1", "RS-201:y")).toBe("discard");
+  });
 
   // atwiki/page-424 Q6「は い、できます。…ラッシュに誘発した処理…をすべて完了させてから…実行してください。」
   it("RS-247: Q&A — 超電子レーダーの処理（パワーを1枚手札に戻す）を終えてから使用できる（出典: atwiki/page-424 Q6）", () => {
@@ -649,9 +665,20 @@ describe("RS-247 疾風流超忍法", () => {
   });
 
   // faq-card-5 RS-247 Q3（atwiki Q14）「はい、できます。」
-  it.todo(
-    "RS-247: 公式Q&A — 第三の目で無効にされた後、2枚目の疾風流超忍法を改めて使用できる（出典: grnrngr/faq-card-5 RS-247 Q3・atwiki/page-424 Q14）— RK-011 第三の目でカウンターを無効にする公開アクション手順が確認できず再現できない",
-  );
+  it("RS-247: 公式Q&A — 第三の目で無効にされた後、2枚目の疾風流超忍法を改めて使用できる（出典: grnrngr/faq-card-5 RS-247 Q3・atwiki/page-424 Q14）", () => {
+    let s = rushU(
+      setup(
+        "SPEC-S-1000",
+        { operation: [inst("RK-011", "eye")], hand: [inst("SPEC-S-1000", "u"), inst("RS-247", "cost")] },
+        { hand: [inst("RS-247", "ctr"), inst("RS-247", "ctr2")], command: [released(CMD.MA, "m1"), released(CMD.MA, "m2")] },
+      ),
+    );
+    s = payAndUse(s, "player2", "RS-247:ctr");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-011");
+    s = pick(s, "RS-247:cost");
+    expect(zoneOf(s, "player1", "SPEC-S-1000:u")).toBe("rush");
+    expect(canUse(s, "player2", "RS-247:ctr2")).toBe(true);
+  });
 
   // faq-card-5 RS-247 Q4（atwiki Q15）「はい、できます。」
   it("RS-247: 公式Q&A — BP4000以上8000以下の S ユニットのラッシュに、宏のオルゴール時計と両方を使用できる（出典: grnrngr/faq-card-5 RS-247 Q4・atwiki/page-424 Q15）", () => {

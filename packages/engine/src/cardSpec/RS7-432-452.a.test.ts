@@ -668,12 +668,42 @@ describe("RS-437 白熱する実況", () => {
     expect(stack.map((c) => c.faceDown ?? false)).toEqual([true, true, true, true, true, false, true, true]);
   });
 
-  it.todo(
-    "RS-437: ユナイトベントの「ユニットでなくなるとき」を先に解決すれば、実況で重ねたカードもすべて捨札になる（出典: atwiki/page-764 Q3・page-1761 Q2「はい、その通りです」）— 公開 API に、同じユニットの「ユニットでなくなるとき」の効果（ユナイトベントと実況）の解決順を選ぶ手段がなく、エンジンはユナイトベントの効果自体も未実装（使用しても何も重ねずに捨札になる）のため、前提の場面を作れない",
-  );
-  it.todo(
-    "RS-437: 実況の「ユニットでなくなるとき」を先に解決すれば、ユナイトベントで重ねたカードから捨札にするカードを選べる（出典: atwiki/page-764 Q4・page-1761 Q3「はい、できます」）— 公開 API に、同じユニットの「ユニットでなくなるとき」の効果（ユナイトベントと実況）の解決順を選ぶ手段がなく、エンジンはユナイトベントの効果自体も未実装（使用しても何も重ねずに捨札になる）のため、前提の場面を作れない",
-  );
+  /** 実況のウラ向き5枚→ユナイトベント→ウラ向き2枚を重ねた獣 L ユニット（BP19000）が、敵軍ターンに BP40000 のユニットにアタックされて撃破される。 */
+  const BIG_ATK = sUnit("SPEC-BIGATK", { bp: 40000 });
+  const ventStack = (): CardInstance[] => [
+    ...commentaryCards(),
+    inst("XG2-052", "uv"),
+    { ...inst("SPEC-BEASTM", "b1"), faceDown: true },
+    { ...inst("SPEC-BEASTM", "b2"), faceDown: true },
+  ];
+  const ventDestroyed = (): GameState =>
+    attackedInEnemyTurn(
+      { battle: [{ ...inst("SPEC-BEASTL", "tg"), stackedCards: ventStack() }], operation: [inst("RS-437", "jk")] },
+      "SPEC-BEASTL:tg",
+      {},
+      "SPEC-BIGATK:atk",
+      [...SPECS, BEAST_L, BEAST_M, BIG_ATK],
+    );
+
+  it("RS-437: ユナイトベントの「ユニットでなくなるとき」を先に解決すれば、実況で重ねたカードもすべて捨札になる（出典: atwiki/page-764 Q3・page-1761 Q2「はい、その通りです」）", () => {
+    // エンジンは解決順を「実況でその場に留まるか」の選択で表す。留まらなければ（ユナイトベントを先に解決した場合と同じく）
+    // ターゲットの下に重ねていたカードは、実況で重ねたウラ向きのカードも含めてすべて捨札になる。
+    let s = ventDestroyed();
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-437");
+    s = resolveAll(skip(s));
+    expect(zoneOf(s, "player1", "SPEC-BEASTL:tg")).toBe("discard");
+    for (const c of ventStack()) expect(zoneOf(s, "player1", c.instanceId)).toBe("discard");
+  });
+
+  it("RS-437: 実況の「ユニットでなくなるとき」を先に解決すれば、ユナイトベントで重ねたカードから捨札にするカードを選べる（出典: atwiki/page-764 Q4・page-1761 Q3「はい、できます」）", () => {
+    let s = ventDestroyed();
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-437");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(expect.arrayContaining(["SPEC-BEASTM:b1", "SPEC-BEASTM:b2"]));
+    s = resolveAll(pick(s, "SPEC-BEASTM:b1"));
+    expect(zoneOf(s, "player1", "SPEC-BEASTL:tg")).toBe("battle");
+    expect(zoneOf(s, "player1", "SPEC-BEASTM:b1")).toBe("discard");
+    expect(under(s, "SPEC-BEASTL:tg")).toHaveLength(7);
+  });
 
   it("RS-437: ユナイトベントの BP 修正が参照するウラ向きのカードには実況で重ねたカードも含まれる（出典: atwiki/page-764 Q5・page-1761 Q4「はい、その通りです」）", () => {
     // ウラ向き 5（実況）＋2（ユナイトベント）＝7枚 → BP5000＋7×2000＝19000

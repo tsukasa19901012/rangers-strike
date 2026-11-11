@@ -782,7 +782,7 @@ export function resolveEnterBattleEffectsImpl(
     logs.push(...hurricane.logs);
 
     // RS-029【勇気の魔法】は任意（選択を開く）ため、進入処理の最後に置く（後続の処理を再開しなくてよい）。
-    const courage = applyCourageMagicRelease(nextState, playerId, card.cardId);
+    const courage = applyCourageMagicRelease(nextState, playerId, card.cardId, card.instanceId);
     nextState = courage.state;
     if (courage.log) logs.push(courage.log);
   }

@@ -12,6 +12,8 @@
  */
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
+import { unitFeatures } from "../rules/addedFeatures";
+import { rk1ZoneCardFeatures } from "../rules/rk/rk1Features";
 import {
   act,
   attack,
@@ -164,9 +166,13 @@ describe("RK-001 改造人間", () => {
     expect(zoneOf(s, "player1", "SPEC-MECHA:dx")).toBe("discard");
   });
 
-  it.todo(
-    "RK-001: 追加した「改造人間」は既存の特徴の後ろに並ぶ（モーフの特徴の並び順に影響する）（出典: grnrngr/faq-rider-1 RK-013 Q7 の「追加される特徴は、既存の特徴の後ろに順番に追加されていきます」の類推）— 本カードを名指しした裁定がなく、並び順を公開 API で観測する手段もないため",
-  );
+  it("RK-001: 追加した「改造人間」は既存の特徴の後ろに並ぶ（モーフの特徴の並び順に影響する）（出典: grnrngr/faq-rider-1 RK-013 Q7 の「追加される特徴は、既存の特徴の後ろに順番に追加されていきます」の類推）", () => {
+    const s = rushBoard({ operation: [inst("RK-001", "k")], rush: [inst("SPEC-FEMALE", "f")] });
+    const f = cardIn(s, "player1", "SPEC-FEMALE:f")!;
+    expect(unitFeatures(s, "player1", f)).toEqual(["女", "改造人間"]);
+    // 場以外（手札・捨札等）のユニットカードも同じく後ろに追加される。
+    expect(rk1ZoneCardFeatures(s, "player1", "SPEC-MALE")).toEqual(["男", "改造人間"]);
+  });
   it.todo(
     "RK-001: atwiki カード評価 — 「ユニットカード」に追加するので、影響下でもモーフやシュードランは問題なく使える（出典: atwiki/page-190 カード評価）— 公式回答ではなく、RK-013 Q7（特徴の追加でモーフ不可）との関係が出典で確定しないため",
   );
@@ -504,9 +510,24 @@ describe("RK-005 超電子ダイナモ", () => {
     expect(zoneOf(s, "player1", "RK-183:zo")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(4);
   });
-  it.todo(
-    "RK-005: 公式Q&A — 撃破する効果を持つユニット（デカマスター【ディーソードベガ】・グリーンサイ【サイカッター】・モモレンジャー【ゴレンジャーハリケーン】）に使えば、効果で撃破したユニット1体につき1点（出典: grnrngr/faq-rider-1 RK-005 Q3〜Q6・grnrngr/faq-rider-2 RK-061 Q）— 撃破効果の持ち主の記録が RS-259/RS-279/RS-319 側の範囲で、それらのカードは特徴「改造人間」を持たないため（RS5-243-263.c・RS5-264-284.c の todo と同じ）",
-  );
+  // faq-rider-1 RK-005 Q「はい、できます。撃破を行う起点となる「撃破する」と直接書かれているテキストの持ち主であるユニット…が、
+  // 「RK-005 超電子ダイナモ」の効果を受けていれば、撃破したユニット1体につき1点のダメージを与えられる」
+  it("RK-005: 公式Q&A — 撃破する効果を持つユニット（改造人間の常駐で「改造人間」になったデカマスター【ディーソードベガ】）に使えば、効果で撃破したユニット1体につき1点（出典: grnrngr/faq-rider-1 RK-005 Q3〜Q6・grnrngr/faq-rider-2 RK-061 Q）", () => {
+    const B500 = sUnit("SPEC-2500-E", { bp: 2500 });
+    let s = rushBoard(
+      { hand: [inst("RK-005", "dy")], operation: [inst("RK-001", "k")], rush: [inst("RS-319", "dm")], command: releasedCat("ET", 1), damage: 1 },
+      { battle: [inst("SPEC-2500-E", "a"), inst("SPEC-2500-E", "b"), inst("TST-UNIT-0", "c")], power: powerCards(6, "epw") },
+    );
+    s = { ...s, definitions: { ...s.definitions, [B500.id]: B500 } };
+    s = resolveAll(played(s, "RK-005:dy"), ["RS-319:dm"]);
+    s = nextPhase(s);
+    expect(zoneOf(s, "player1", "RS-319:dm")).toBe("rush");
+    s = resolveAll(act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-319:dm" }));
+    expect(zoneOf(s, "player2", "SPEC-2500-E:a")).toBe("discard");
+    expect(zoneOf(s, "player2", "SPEC-2500-E:b")).toBe("discard");
+    expect(zoneOf(s, "player2", "TST-UNIT-0:c")).toBe("battle");
+    expect(damageOf(s, "player2")).toBe(2);
+  });
 });
 
 // ===========================================================================

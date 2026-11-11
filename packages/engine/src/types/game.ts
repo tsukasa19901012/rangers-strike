@@ -698,6 +698,8 @@ export type Rk3ChoiceMeta = {
 };
 
 export type PendingEffectChoice = {
+  /** RS-029【勇気の魔法】: バトルエリアに出た自軍 S ユニット（RS-421【ソウル降臨】をリリースの後に選び直すため）。 */
+  courageEnteredInstanceId?: string;
   /** ライダーEXP vol.1 RK-043〜RK-063 の選択の続き（rules/rk/rk3UnitEffects.ts）。 */
   rk3Meta?: Rk3ChoiceMeta;
   /** ライダーEXP vol.2 RK-085〜RK-105 の選択の続き（rules/rk/rk5UnitEffects.ts）。 */

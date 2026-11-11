@@ -1489,7 +1489,9 @@ function hasBlockingInteraction(state: GameState): boolean {
 function applyBpZeroRuleDestruction(state: GameState): GameState {
   let next = state;
   for (let guard = 0; guard < 20; guard += 1) {
-    if (next.winner || hasBlockingInteraction(next)) return next;
+    // 「ラッシュされたとき」のカウンターの窓（pendingRush）は、ラッシュに誘発した処理をすべて終えた後の窓なので待たない
+    // （grnrngr/faq-card-1 RS-026 Q5・Q8: ラッシュしたゴーマ16世を疾風流超忍法で山札に戻されても【大地動転の玉】は発動する）。
+    if (next.winner || hasBlockingInteraction(next.pendingRush ? { ...next, pendingRush: undefined } : next)) return next;
     const turnPlayer = next.activePlayer;
     const order: PlayerId[] = [turnPlayer, opponent(turnPlayer)];
     let victim: { ownerId: PlayerId; card: CardInstance; zone: "rush" | "battle" } | undefined;

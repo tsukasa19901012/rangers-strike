@@ -61,6 +61,7 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 - カウンターなどの処理の途中でコマンドがコマンドゾーンを離れ、補充（RS-238）などの選択が開くときは、`pendingBattle` などの進行中のフレームを state に退避して外し、選択が済んだ後に `core/applyAction.ts` の後処理フックで戻して続きを処理します（例: `rk1MechanicNinjaResume`・`rk2RaiaResumeCounter`）。`pendingBattle` は合法手で `pendingEffectChoice` より優先されるため、外さないと選択より先にバトルが進みます。
 
 - 「特徴○○を持つ自軍ユニット」を数えるときは、ライドされていないビークルを含めません（ユニットではないため。faq-card-5 RS-216）。`fieldUnits` 系は場のビークルも返すので、`src/rules/turnEndingEffects.ts` の `isOwnVehicleFeatureUnit` のようにユニットとして扱える状態かを確かめます。
+- BP0 のルール撃破（`src/core/applyAction.ts` の `applyBpZeroRuleDestruction`）は、ラッシュへのカウンターの窓（`pendingRush`）が開いていても止めません（grnrngr/faq-card-1 RS-026 Q5/Q8。ラッシュしたユニットが疾風流超忍法で山札に戻されても、その前の効果で BP0 になった敵軍ユニットは撃破される）。新しい操作待ちを `hasBlockingInteraction` に足すときは、ルール処理を待たせてよいものかを確かめてください。
 ## テスト
 
 ```bash

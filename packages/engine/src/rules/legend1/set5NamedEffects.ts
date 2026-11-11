@@ -23,6 +23,7 @@ import { promoteDeferredBattleEntry } from "../battleEntry";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { commandCategoriesNow } from "../legend3/battleEffects";
 import { namedEffectActive } from "../ncGatedEffects";
+import { applyRk1DestroyerDamage } from "../rk/rk1NamedEffects";
 import { openDestroyTimedChoice } from "../destroyTriggerTiming";
 
 // ---------------------------------------------------------------------------
@@ -269,7 +270,7 @@ function applyDSwordVega(state: GameState, ctx: GrantKeywordContext): GrantKeywo
       const leave = applyUnitLeave(next, id, "discard", ctx.phasePlayerId);
       if (!("error" in leave)) next = leave.state;
     }
-    return { state: next, detail: D_SWORD_VEGA_EFFECT_ID };
+    return { state: dSwordVegaDynamo(state, next, ctx, targets), detail: D_SWORD_VEGA_EFFECT_ID };
   }
   // 複数体の撃破（離場反応での中断／再開）は select_units_bp_budget の確定処理を共用する。
   const opened = openEffectChoice(next, {
@@ -286,7 +287,27 @@ function applyDSwordVega(state: GameState, ctx: GrantKeywordContext): GrantKeywo
   });
   const confirmed = applyConfirmEffectChoice(opened, ctx.playerId);
   if ("error" in confirmed) return { state, detail: `${D_SWORD_VEGA_EFFECT_ID}:failed` };
-  return { state: confirmed.state, detail: D_SWORD_VEGA_EFFECT_ID };
+  return { state: dSwordVegaDynamo(state, confirmed.state, ctx, targets), detail: D_SWORD_VEGA_EFFECT_ID };
+}
+
+/**
+ * RK-005 超電子ダイナモの能力を得たデカマスターが【ディーソードベガ】で撃破したとき、撃破した SP が空欄ではないユニット
+ * 1体につき相手に1点（grnrngr/faq-rider-1 RK-005 Q「「撃破する」と直接書かれているテキストの持ち主であるユニット…が、
+ * 「RK-005 超電子ダイナモ」の効果を受けていれば、撃破したユニット1体につき1点のダメージを与えられる」）。
+ */
+function dSwordVegaDynamo(before: GameState, after: GameState, ctx: GrantKeywordContext, targets: string[]): GameState {
+  const src = ctx.triggerSourceInstanceId;
+  if (!src) return after;
+  const enemyId = opponent(ctx.playerId);
+  const was = [...before.players[enemyId].battle, ...before.players[enemyId].rush];
+  let out = after;
+  for (const id of targets) {
+    const card = was.find((c) => c.instanceId === id);
+    if (!card || !out.players[enemyId].discard.some((c) => c.instanceId === id)) continue;
+    const d = applyRk1DestroyerDamage(out, ctx.playerId, src, card.cardId);
+    out = d.logs.length > 0 ? { ...d.state, log: [...d.state.log, ...d.logs] } : d.state;
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------------------

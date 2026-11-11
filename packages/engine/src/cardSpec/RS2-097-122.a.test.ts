@@ -838,9 +838,34 @@ describe("RS-105 デカベースクローラー", () => {
   });
 
   // faq-card-2 RS-105 Q1（ベン・G の人身略取で相手に追加条件を満たさせる）
-  it.todo(
-    "RS-105: 公式Q&A — 相手のベン・G【人身略取】で追加条件を満たすとき、S ユニットがなくても母艦を使えるなら満たさなければならない（出典: grnrngr/faq-card-2 RS-105 Q1）— 人身略取の「相手が追加条件を満たす」処理に母艦の選択を差し込む公開 API が無く、状況を組み立てられない",
-  );
+  it("RS-105: 公式Q&A — 相手のベン・G【人身略取】で追加条件を満たすとき、S ユニットがなくても母艦を使えるなら満たさなければならない（出典: grnrngr/faq-card-2 RS-105 Q1）", () => {
+    // 「はい、その通りです。」— 敵軍（player2）のベン・G が、手札のパトシグナー（「自軍Sユニットを1体パワーゾーンに送る」）を捨札にする。
+    let s = st({
+      activePlayer: "player2",
+      phase: "battle",
+      turn: 3,
+      player2: { rush: [inst("RS-322", "ben")], hand: [inst("RS-047", "sig")] },
+      player1: { rush: [inst("RS-105", "base")], command: [released("TST-OP-OT", "ot1")] },
+    });
+    s = act(s, { type: "move_to_battle", playerId: "player2", instanceId: "RS-322:ben" });
+    for (let i = 0; i < 10; i += 1) {
+      const p = s.pendingEffectChoice;
+      if (p) {
+        const choice = p.validInstanceIds.includes("RS-047:sig") ? "RS-047:sig" : p.validInstanceIds[0];
+        if (choice === undefined) break;
+        s = act(s, { type: "resolve_effect_choice", playerId: p.playerId, instanceId: choice });
+        continue;
+      }
+      const pay = s.pendingCommandPayment;
+      if (pay) {
+        s = act(s, { type: "resolve_command_payment", playerId: pay.playerId, commandInstanceIds: pay.validInstanceIds.slice(0, pay.totalNeeded) });
+        continue;
+      }
+      break;
+    }
+    expect(zoneOf(s, "player2", "RS-047:sig")).toBe("discard");
+    expect(s.players.player1.command.find((c) => c.instanceId === "TST-OP-OT:ot1")?.commandHeld).toBe(true);
+  });
 
   it("RS-105: 母艦はラッシュエリアにあるときだけ有効（バトルエリアでは使えない）（出典: atwiki/page-304「これが自軍ラッシュエリアにあるとき」）", () => {
     const s0 = motherState({ hand: "RS-085", otCommands: 2 });

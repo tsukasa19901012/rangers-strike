@@ -344,7 +344,7 @@ describe("RK-075 ミラーワールド（RK-016 の再録）", () => {
   });
 
   it.todo(
-    "RK-075: 公式Q&A — ギンガベリック等でコマンドのホールドを代替できればアタックできる（出典: atwiki/page-176 Q5）— RK-016 の照合（RK1-001-021.c.test.ts）と同じく、RS-469 ギンガベリックの代替手順が本範囲外のため",
+    "RK-075: 公式Q&A — ギンガベリック等でコマンドのホールドを代替できればアタックできる（出典: atwiki/page-176 Q5）— ギンガベリック（RS-469）のホールド代替は holdToActivate の MA ホールドにだけ接続されており、ミラーワールドのアタック時ホールド（core/applyAction.ts・rules/mirrorWorldSelection.ts）では代替を選べない",
   );
 });
 
@@ -403,9 +403,14 @@ describe("RK-076 ミッションメモリー（RK-017 の再録）", () => {
     expect(bpOf(s, "player1", "RK-073:other")).toBe(5000);
   });
 
-  it.todo(
-    "RK-076: 公式Q&A — コマンドゾーンに置くタイミングは「予約」の解決直後で、RC の効果の発動後ではない（出典: grnrngr/faq-rider-1 RK-017 Q1（RK-076 の Q）・atwiki/page-197 Q1）— RK-017 の照合と同じく、置いたタイミングの違いを公開 API で観測できる状況が本範囲にないため",
-  );
+  it("RK-076: 公式Q&A — コマンドゾーンに置くタイミングは「予約」の解決直後で、RC の効果の発動後ではない（出典: grnrngr/faq-rider-1 RK-017 Q1（RK-076 の Q）・atwiki/page-197 Q1）", () => {
+    // 選んだ 2号はまだラッシュエリアにあり（RC は発動していない）、この時点ですでにコマンドゾーンにホールド状態で置かれている。
+    const s = memorized();
+    expect(zoneOf(s, "player1", "RK-073:n2")).toBe("rush");
+    expect(bpOf(s, "player1", "RK-073:n2")).toBe(5000);
+    expect(zoneOf(s, "player1", "RK-076:mm")).toBe("command");
+    expect(cardIn(s, "player1", "RK-076:mm")?.commandHeld).toBe(true);
+  });
 });
 
 // ===========================================================================
