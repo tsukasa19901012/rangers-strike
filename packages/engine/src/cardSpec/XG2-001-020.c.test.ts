@@ -26,6 +26,7 @@ import {
   choiceIds,
   damageCards,
   damageOf,
+  endTurn,
   enter,
   enterSeq,
   expectCatalogText,
@@ -38,6 +39,7 @@ import {
   legal,
   ncEnter,
   p1Battle,
+  passEntry,
   pick,
   pickAll,
   powerCards,
@@ -358,9 +360,25 @@ describe("XG2-019 知恵の樹モーク", () => {
     expect(canActivateResident(s, "XG2-019:mk")).toBe(false);
   });
 
-  it.todo(
-    "XG2-019: 公式Q&A — 本来の BP を3000として扱い、BP を「＋」「－」する効果を受ける（Q3）・RS-234 アバレキラーからコンビネーションさせると、ターンを終えるときに【ウイングペンタクト】で撃破される（Q4）（出典: atwiki/page-1751 Q3・Q4）— モークの起動そのものが合法手にない（gaps.md CARD-XG2-019）ので、BP 修正・ターン終了時の撃破を確かめる盤面に進めない",
-  );
+  it("XG2-019: 公式Q&A — 本来の BP を3000として扱い、BP を「＋」「－」する効果を受ける（Q3）・RS-234 アバレキラーからコンビネーションさせると、ターンを終えるときに【ウイングペンタクト】で撃破される（Q4）（出典: atwiki/page-1751 Q3・Q4）", () => {
+    let s = p1Battle(
+      {
+        operation: [resident("XG2-019", "mk")],
+        rush: [inst("RS-234", "kl"), inst("RS-466", "leo")],
+      },
+      {},
+      EXTRA,
+    );
+    s = resolveAll(pick(activateResident(s, "XG2-019:mk"), "RS-466:leo"));
+    s = passEntry(enter(s, "RS-234:kl"));
+    s = enter(s, "RS-466:leo");
+    // Q3: 本来の BP3000 に【ウイングペンタクト】の BP+3000。
+    expect(bpOf(s, "player1", "RS-466:leo")).toBe(6000);
+    // Q4: 自分がターンを終えるとき、ユニットとして扱われているギンガレオンは撃破される。
+    s = endTurn(passEntry(s));
+    expect(zoneOf(s, "player1", "RS-466:leo")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-234:kl")).not.toBe("discard");
+  });
 });
 
 // ===========================================================================
