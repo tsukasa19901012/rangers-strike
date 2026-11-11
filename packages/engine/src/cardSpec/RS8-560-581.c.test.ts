@@ -531,9 +531,40 @@ describe("RS-579 ルナジェル", () => {
       expect(zoneOf(s, "player2", "TST-UNIT-0:eb")).toBe("discard");
     },
   );
-  it.todo(
-    "RS-579: Q&A — ラッシュした電子星獣ドルをホールドしてビークルにし、リリースしてユニットに戻しても、そのターンはストライクもアタックもできない（出典: atwiki/page-1194 Q2「いいえ、それはできません。」）— XG2-082 は未実装（DSL は note_card のみ）で、自軍ラッシュフェイズ中にドルをホールドしてビークルにする／リリースしてユニットに戻す公開アクションが存在しない（ラッシュ後の合法手は end_phase のみ）ため、Q&A の手順を再現できない",
-  );
+  it("RS-579: Q&A — ラッシュした電子星獣ドルをホールドしてビークルにし、リリースしてユニットに戻しても、そのターンはストライクもアタックもできない（出典: atwiki/page-1194 Q2「いいえ、それはできません。」）", () => {
+    const dolActions = (s: GameState) =>
+      legal(s).filter((a) => a.playerId === "player1" && a.type !== "move_to_battle" && JSON.stringify(a).includes("XG2-082:dol"));
+    const run = (withLuna: boolean) => {
+      let s = st({
+        turn: 3,
+        phase: "rush",
+        player1: {
+          hand: [inst("XG2-082", "dol")],
+          rush: [inst("XG2-083", "gv"), ...(withLuna ? [inst("RS-579", "ln")] : [])],
+          command: releasedCat("OT", 1),
+          power: powerCards(5),
+          deck: deckCards(3),
+        },
+        player2: { battle: [inst("TST-UNIT-0", "eb")], deck: deckCards(3, "e") },
+      });
+      const r = rushFromHand(s, "player1", "XG2-082:dol");
+      expect(r.ok).toBe(true);
+      s = resolveAll(r.state);
+      // ホールドしてビークルにする → リリースしてユニットに戻す。
+      s = resolveAll(act(s, dolActions(s)[0]!));
+      expect(s.players.player1.rush.find((c) => c.instanceId === "XG2-082:dol")?.commandHeld).toBe(true);
+      s = resolveAll(act(s, dolActions(s)[0]!));
+      expect(s.players.player1.rush.find((c) => c.instanceId === "XG2-082:dol")?.commandHeld).toBeFalsy();
+      s = nextPhase(s);
+      expect(s.phase).toBe("battle");
+      return enter(s, "XG2-082:dol");
+    };
+    const s = run(true);
+    expect(canStrike(s, "XG2-082:dol")).toBe(false);
+    expect(attackTargets(s, "XG2-082:dol")).toEqual([]);
+    // ルナジェルがなければアタックできる（対照）。
+    expect(attackTargets(run(false), "XG2-082:dol")).toContain("TST-UNIT-0:eb");
+  });
 });
 
 // ===========================================================================
