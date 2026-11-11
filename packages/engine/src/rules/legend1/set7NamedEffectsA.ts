@@ -40,7 +40,7 @@ import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import type { ComboOutcome } from "../comboTypes";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { resolvePlayableCard, resolveRushAdditionalCondition } from "@rangers-strike/cards";
+import { fusionMaterialAliasNames, resolvePlayableCard, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -578,9 +578,14 @@ CHOICE_RESOLVERS[COSSACK_RETURN_EFFECT_ID] = (state, playerId, instanceId) => {
   }));
   const log = logFor(state, playerId, "RS-441", `${COSSACK_RETURN_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`);
   const player = returned.players[playerId];
-  const name = cardName(state.definitions, card.cardId);
+  // 「これは「マジフェニックス」としてつかえる」マジレッドを戻したなら、マジフェニックスも同じカード名として選べる
+  // （faq-card-8 RS-576 Q1「はい、可能です。」）。
+  const names = new Set([
+    cardName(state.definitions, card.cardId),
+    ...fusionMaterialAliasNames(getDefinition(state.definitions, card.cardId)?.text),
+  ]);
   const ids = player.hand
-    .filter((c) => getDefinition(returned.definitions, c.cardId)?.type === "unit" && cardName(returned.definitions, c.cardId) === name)
+    .filter((c) => getDefinition(returned.definitions, c.cardId)?.type === "unit" && names.has(cardName(returned.definitions, c.cardId)))
     .map((c) => c.instanceId);
   const canHold = player.command.some((c) => !c.commandHeld);
   if (!canHold || ids.length === 0) return { state: continueCossackQueue(returned, pending), log };

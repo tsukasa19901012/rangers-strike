@@ -162,9 +162,24 @@ describe("RS-574 セイントカイザー", () => {
     expect(zoneOf(s, "player2", "RS-114:bk")).toBe("battle");
   });
 
-  it.todo(
-    "RS-574: 公式Q&A — ゴートクラッシャーからコンビネーションしたときに参照する『合体に必要なユニットの数』は（ビークルのユニゴルオンも数えて）2体（出典: grnrngr/faq-card-8 RS-574 Q1「いいえ、2体になります。」）— RS-487【疾風豪快落とし】のコンビネーション（JC）を公開 API で起こし、選べる数を観測する手段がないため",
-  );
+  it("RS-574: 公式Q&A — ゴートクラッシャーからコンビネーションしたときに参照する『合体に必要なユニットの数』は（ビークルのユニゴルオンも数えて）2体（出典: grnrngr/faq-card-8 RS-574 Q1「いいえ、2体になります。」）", () => {
+    let s = st({
+      player1: { battle: [inst("RS-487", "jc")], rush: [inst("RS-574", "l")], deck: deckCards(6) },
+      player2: {
+        battle: [inst("TST-UNIT-0", "b1"), inst("TST-UNIT-2", "b2")],
+        rush: [inst("TST-UNIT-2", "r1"), inst("TST-UNIT-2", "r2")],
+        deck: deckCards(6, "e"),
+      },
+    });
+    s = enter(s, "RS-574:l");
+    // 先に開く【セイントホーンフィニッシュ】等は飛ばして【疾風豪快落とし】の選択まで進める。
+    for (let i = 0; i < 4 && s.pendingEffectChoice && s.pendingEffectChoice.sourceCardId !== "RS-487"; i++) {
+      s = canSkip(s) ? skip(s) : pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
+    }
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-487");
+    s = resolveAll(s, ["TST-UNIT-0:b1", "TST-UNIT-2:b2", "TST-UNIT-2:r1", "TST-UNIT-2:r2"]);
+    expect(s.players.player2.power.filter((c) => c.faceDown)).toHaveLength(2);
+  });
 });
 
 // ===========================================================================
@@ -294,9 +309,37 @@ describe("RS-576 マジフェニックス", () => {
     expect(t.players.player1.deck).toHaveLength(4);
   });
 
-  it.todo(
-    "RS-576: 公式Q&A — バトルコサック【コサックダンス】で手札に戻したマジレッドと「同じカード名」として、『マジフェニックスとしてつかえる』マジレッドに従いマジフェニックスをラッシュできる（出典: grnrngr/faq-card-8 RS-576 Q1「はい、可能です。」・faq-card-1 RS-441）— 自軍バトルフェイズ中にユニットをバトルエリアからラッシュエリアに戻す状況と【コサックダンス】の起動を公開 API で作れないため",
-  );
+  it("RS-576: 公式Q&A — バトルコサック【コサックダンス】で手札に戻したマジレッドと「同じカード名」として、『マジフェニックスとしてつかえる』マジレッドに従いマジフェニックスをラッシュできる（出典: grnrngr/faq-card-8 RS-576 Q1「はい、可能です。」・faq-card-1 RS-441）", () => {
+    // 「なんらかの効果」でマジレッドをラッシュエリアへ戻すため、バトルケニア【トロピカルダンス】（「獣」を戻す）を使う。
+    // マジレッドはこのターン RS-206【霧隠れ】で特徴「獣」を得ている（rules/addedFeatures.ts KIRIGAKURE_RULE_ID）。
+    const beast = { kind: "rule", ruleId: "kirigakure_features", scope: "turn", payload: { instanceId: "RS-057:mr", features: ["獣"] }, sourceCardId: "RS-206" };
+    let s = st({
+      player1: {
+        rush: [inst("RS-441", "ck"), inst("RS-057", "mr"), inst("TST-UNIT-0", "f"), inst("RS-444", "kn")],
+        hand: [inst("RS-576", "mp")],
+        command: releasedCat("ET", 2),
+        deck: deckCards(5),
+        modifiers: [beast] as never,
+      },
+      player2: { deck: deckCards(3, "e") },
+    });
+    for (const id of ["RS-441:ck", "RS-057:mr", "TST-UNIT-0:f"]) s = passEntry(enter(s, id));
+    s = enter(s, "RS-444:kn");
+    for (let i = 0; i < 3 && s.pendingEffectChoice?.effectId !== "rs444_tropical_dance"; i++) {
+      s = canSkip(s) ? skip(s) : pick(s, s.pendingEffectChoice!.validInstanceIds[0]!);
+    }
+    expect(s.pendingEffectChoice?.effectId).toBe("rs444_tropical_dance");
+    s = pick(s, "RS-057:mr");
+    if (s.pendingEffectChoice?.effectId === "rs444_tropical_dance") s = skip(s);
+    // 【コサックダンス】戻ったマジレッドを手札に戻す → 同じカード名として RS-576 マジフェニックスを選べる。
+    expect(s.pendingEffectChoice?.effectId).toBe("rs441_cossack_return");
+    s = pick(s, "RS-057:mr");
+    expect(s.pendingEffectChoice?.effectId).toBe("rs441_cossack_deploy");
+    expect(choiceIds(s)).toContain("RS-576:mp");
+    s = resolveAll(pick(s, "RS-576:mp"), ["__none__"]);
+    expect(zoneOf(s, "player1", "RS-576:mp")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-057:mr")).toBe("hand");
+  });
 });
 
 // ===========================================================================
