@@ -17,6 +17,7 @@
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
 import {
+  act,
   bpOf,
   canConfirm,
   canUseCard,
@@ -26,6 +27,7 @@ import {
   choiceIds,
   confirm,
   damageCards,
+  damageOf,
   deckCards,
   enter,
   expectCatalogText,
@@ -283,9 +285,38 @@ describe("RK-142 モモタロス", () => {
     expect(zoneOf(s, "player1", "RK-142:mo")).toBe("battle");
   });
 
-  it.todo(
-    "RK-142: 公式Q&A — 改造人間が常駐し超電子ダイナモを使った電王RF の【一本釣り】で出たモモタロスが自身の※で撃破されても、電王RF が撃破したことにはならず1点ダメージは与えない（出典: grnrngr/faq-rider-2 RK-142 Q2）— 超電子ダイナモの「撃破した」ユニットの記録が RK-061 側では作られておらず（cardSpec/RK1-001-021.a.test.ts RK-005 の it.todo と同じ）、ダメージが出ないことを確かめても意味のある照合にならないため",
-  );
+  // faq-rider-2 RK-142 Q2「いいえ。この場合、「RK-142 モモタロス」の撃破は「RK-142 モモタロス」自身の持つ効果によって行われたものであり、…ダメージを与えることはできません。」
+  it("RK-142: 公式Q&A — 改造人間が常駐し超電子ダイナモを使った電王RF の【一本釣り】で出たモモタロスが自身の※で撃破されても、電王RF が撃破したことにはならず1点ダメージは与えない（出典: grnrngr/faq-rider-2 RK-142 Q2）", () => {
+    const damage = (g: GameState) => damageOf(g, "player1");
+    // 敵軍（player2）のラッシュフェイズ。RK-001 改造人間が常駐し（「男」の電王RF に「改造人間」が追加される）、超電子ダイナモを電王RF に使う。
+    let s = st(
+      {
+        phase: "rush",
+        activePlayer: "player2",
+        player1: { power: [faceUp("RK-142", "mo"), ...powerCards(2)], battle: [inst("SPEC-E1", "x")], deck: deckCards(5) },
+        player2: {
+          operation: [inst("RK-001", "kz")],
+          hand: [inst("RK-005", "dy")],
+          rush: [inst("RK-061", "rf"), inst("SPEC-VEHICLE", "v")],
+          command: releasedCat("ET", 1, "e"),
+          deck: deckCards(5, "e"),
+        },
+      },
+      EXTRA,
+    );
+    s = resolveAll(useCard(s, "player2", "RK-005:dy"), ["RK-061:rf"]);
+    s = act(s, legal(s).find((a) => a.type === "end_phase")!);
+    s = rcRideOff(s, "RK-061:rf", "SPEC-VEHICLE:v", "player2");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-061");
+    s = settle(pick(s, "RK-142:mo"));
+    // モモタロスは自身の※で撃破されるが、相手（player1）にダメージは入らない。
+    expect(zoneOf(s, "player1", "RK-142:mo")).toBe("discard");
+    expect(damage(s)).toBe(0);
+    // 対照: 同じ電王RF がバトルで SP のあるユニットを撃破すれば、超電子ダイナモの1点ダメージを与える。
+    s = settle(act(s, { type: "battle", playerId: "player2", attackerInstanceId: "RK-061:rf", defenderInstanceId: "SPEC-E1:x" }));
+    expect(zoneOf(s, "player1", "SPEC-E1:x")).toBe("discard");
+    expect(damage(s)).toBe(1);
+  });
 });
 
 // ===========================================================================
@@ -450,7 +481,13 @@ describe("RK-147 デンライナーイスルギ", () => {
     expect(spOf(s, "player1", "RK-061:rf")).toBe(0);
   });
 
-  it.todo(
-    "RK-147: コミュニティQ&A — クロスで SP1/4 から SP1/3 になったユニットは能力を得ない（出典: atwiki/page-673 コメント欄「無効になります」）— クロスのユニットとイスルギを並べると相手は3番目になり、SP1/3 でもともと SP1 になるため、能力の有無を公開 API で区別できない",
-  );
+  it("RK-147: コミュニティQ&A — クロスで SP1/4 から SP1/3 になったユニットは能力を得ない（出典: atwiki/page-673 コメント欄「無効になります」）", () => {
+    // クロスは右にあるすべてのユニットに効く（R-KW-CROSS-01）。1番目: クロス1 の XG7-010、2番目: TST-UNIT-0、3番目: イスルギ、4番目に SP1/4 の S ユニット（クロスで 1/3）。
+    const cross = enter(board({ battle: [inst("XG7-010", "cr"), inst("TST-UNIT-0", "x"), inst("RK-147", "is")], rush: [inst("SPEC-PLAIN", "p")] }), "SPEC-PLAIN:p");
+    expect(spOf(cross, "player1", "SPEC-PLAIN:p")).toBe(0);
+    expect(canStrike(cross, "SPEC-PLAIN:p")).toBe(false);
+    // 対照: クロスがなければ 4番目でも能力を得て「SP1」になる。
+    const plain = enter(board({ battle: [inst("TST-UNIT-0", "y"), inst("TST-UNIT-0", "x"), inst("RK-147", "is")], rush: [inst("SPEC-PLAIN", "p")] }), "SPEC-PLAIN:p");
+    expect(spOf(plain, "player1", "SPEC-PLAIN:p")).toBe(1);
+  });
 });
