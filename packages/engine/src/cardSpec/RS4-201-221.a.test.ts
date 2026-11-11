@@ -35,6 +35,7 @@ import {
   pick,
   powerCards,
   releasedN,
+  rushFromHand,
   rushWithMaterial,
   settle,
   st,
@@ -340,9 +341,38 @@ describe("RS-203 大帝ラー・デウス", () => {
     expect(zoneOf(s, "player2", "RS-201:y")).toBe("discard");
     expect(zoneOf(s, "player2", "RS-205:r")).toBe("rush");
   });
-  it.todo(
-    "RS-203: 公式Q&A — 特徴「航空機」を捨札にしたターン、航空機を持たないユニットのラッシュでもバラクティカ【編隊出撃】を発動できる（出典: grnrngr/faq-card-4 RS-203 Q2・faq-card-5）— デウス遺伝子が未実装で、XL の RS-296 の起動型効果の手順をこの範囲で組み立てられない",
-  );
+  // faq-card-4 RS-203 Q2「はい、発動することができます。」
+  it("RS-203: 公式Q&A — 特徴「航空機」を捨札にしたターン、航空機を持たないユニットのラッシュでもバラクティカ【編隊出撃】を発動できる（出典: grnrngr/faq-card-4 RS-203 Q2・faq-card-5）", () => {
+    const AIR = sUnit("SPEC-AIR-MAT", { features: ["航空機"] });
+    const board = st(
+      {
+        phase: "rush",
+        player1: {
+          hand: [inst("RS-203", "d"), inst("TST-UNIT-0", "u1"), inst("TST-UNIT-0", "u2")],
+          rush: [inst("RS-296", "bal"), inst("SPEC-AIR-MAT", "mat")],
+          power: powerCards(5),
+          command: [...releasedN(1, "TST-OP-DA", "da"), ...releasedN(1, "TST-OP", "wb")],
+          deck: deckCards(5),
+        },
+        player2: { deck: deckCards(5, "e") },
+      },
+      [AIR],
+    );
+    // 対照: デウス遺伝子がなければ、航空機を持たない TST-UNIT-0 のラッシュでは【編隊出撃】は発動しない。
+    const ctl = rushFromHand(board, "player1", "TST-UNIT-0:u1");
+    expect(ctl.ok, ctl.error).toBe(true);
+    expect(ctl.state.pendingEffectChoice?.sourceCardId).not.toBe("RS-296");
+    // 「航空機」の S ユニットを捨札にしてラー・デウスをラッシュすると、このターン、すべてのユニットに「航空機」が追加される。
+    let s = rushWithMaterial(board, "player1", "RS-203:d", "SPEC-AIR-MAT:mat");
+    expect(zoneOf(s, "player1", "SPEC-AIR-MAT:mat")).toBe("discard");
+    const r = rushFromHand(s, "player1", "TST-UNIT-0:u1");
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-296");
+    expect(choiceIds(s)).toEqual(["TST-UNIT-0:u2"]);
+    s = pick(s, "player1", "TST-UNIT-0:u2");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:u2")).toBe("rush");
+  });
   // faq-rider-2 RK-091 Q「いいえ、できません。…ナンバーコンビネーションは発動していないため、ストライクの後にアタックすることは出来ない」
   it("RS-203: 公式Q&A — ショッカー戦闘員を捨札にしてラッシュしたターン、「戦闘員」を追加されたダイナレッドはゾル大佐の効果で「SP1」になりストライクできるが、NC が成立していなければストライクの後にアタックできない（出典: grnrngr/faq-card-4 RS-203 Q6・grnrngr/faq-rider-2 RK-091 Q）", () => {
     let s = st({

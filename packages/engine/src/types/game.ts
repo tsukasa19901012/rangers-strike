@@ -69,6 +69,11 @@ export type CardInstance = {
    * partnerInstanceId のユニットが左隣にいる間だけ有効。バトルエリアに出直すと消える。
    */
   jointComboGrants?: JointComboGrant[];
+  /**
+   * RS-440【武器換装】でラッシュエリアに戻したユニット: 次にバトルエリアに出たとき、前に得た JC の能力を持ち越す
+   * （atwiki/page-780 Q2・page-353 Q1「重複し、相手に2点ダメージ」）。出たときに消える。
+   */
+  jointComboGrantsKept?: boolean;
   /** バトルフェイズ: このターンにこのユニットがバトルまたはストライク済みなら true。 */
   battleActed?: boolean;
   /**
@@ -1369,6 +1374,11 @@ export type GameState = {
   rk13PendingKick?: { playerId: PlayerId; ids: string[] };
   /** RK-177【催眠音波】の選択を終えたら、このプレイヤーのラッシュフェイズを終える（core/applyAction.ts）。 */
   rk9RushEndAdvance?: PlayerId;
+  /**
+   * R-BP-02 のルールの撃破を待っている間に、BP を0以下にした効果の持ち主が場を離れたとき、それでも撃破するユニット
+   * （RS-026 疾風流超忍法で山札に戻されたゴーマ16世の【大地動転の玉】。grnrngr/faq-card-4 RS-210 Q1。core/applyAction.ts）。
+   */
+  bpZeroRuleDestroyIds?: string[];
   /**
    * モーフで出たユニットの「ラッシュしたとき」（または他のカードの「ラッシュされたとき」）の選択待ちのため、まだ続けていない
    * モーフの処理（残りのモーフ・「ラッシュされたとき」の誘発・カウンター窓）。選択がすべて終わった時点で続ける

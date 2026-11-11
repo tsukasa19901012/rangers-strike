@@ -32,6 +32,7 @@ import { applyDamageToPlayer } from "../damagePayment";
 import { filterEffectRushCandidates, startEffectRush } from "../effectRush";
 import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { RIDE_OFF_RC_MARK } from "../legend1/set7NamedEffectsD";
+import { enemyCommandHoldSubstitutes } from "../legend1/set7NamedEffectsB";
 import { J_POWER_CARD_ID, hasJPower, isStackedUnderUnitOperation, rk1AddedUnitFeatures, rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
 import { rk2FeaturesStripped } from "./rk2Features";
 import { recordReveal, revealedCards } from "../revealNotice";
@@ -535,10 +536,13 @@ export function rk1DefenderBlocksAttack(
   }
   // RK-016「アタックするには、さらに2つホールドしなければならない」— ホールドできるリリース状態の自分自身のコマンドが足りなければアタックできない
   // （6つ必要ならアタックを選択すること自体ができない。atwiki/page-176 Q5）。
+  // RS-469 ギンガベリック【雷の星獣】等で自軍コマンドのホールドを敵軍コマンドで代替できれば、その分も数える（atwiki/page-176 Q5
+  // 「何らかの方法でコマンドのホールドの代替ができれば、アタックすることができます」）。
   const cost = rk1AttackCommandCost(state, defenderPlayerId, defender);
   if (cost > 0) {
     const released = state.players[attackerPlayerId].command.filter((c) => !c.commandHeld).length;
-    if (released < cost) return true;
+    const substitutes = enemyCommandHoldSubstitutes(state, attackerPlayerId, "MA").length;
+    if (released + substitutes < cost) return true;
   }
   return false;
 }
@@ -549,7 +553,16 @@ export function rk1PayAttackCommandCost(state: GameState, attackerPlayerId: Play
   if (!defender) return state;
   const cost = rk1AttackCommandCost(state, defenderPlayerId, defender);
   if (cost === 0) return state;
-  return holdReleasedCommands(state, attackerPlayerId, cost) ?? state;
+  // 自分自身のコマンドを先にホールドし、足りない分は RS-469【雷の星獣】のかわりのホールド（敵軍コマンド）で払う（atwiki/page-176 Q5）。
+  const own = Math.min(cost, state.players[attackerPlayerId].command.filter((c) => !c.commandHeld).length);
+  const ownHeld = holdReleasedCommands(state, attackerPlayerId, own) ?? state;
+  const rest = cost - own;
+  if (rest <= 0) return ownHeld;
+  const subs = enemyCommandHoldSubstitutes(ownHeld, attackerPlayerId, "MA").slice(0, rest);
+  return patchPlayer(ownHeld, defenderPlayerId, (p) => ({
+    ...p,
+    command: p.command.map((c) => (subs.includes(c.instanceId) ? { ...c, commandHeld: true, mothershipHold: false } : c)),
+  }));
 }
 
 // ---------------------------------------------------------------------------

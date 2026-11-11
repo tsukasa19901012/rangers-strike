@@ -354,10 +354,88 @@ describe("RS-359 デンジ犬アイシー", () => {
     expect(zoneOf(t, "player1", "RS-359:ic")).toBe("discard");
   });
 
-  it.todo("RS-359: 公式Q&A — 山札を見た後で、ラッシュするLユニットと捨札にするカードを変更できる（ダイデンジン → バイオロボ）（出典: grnrngr/faq-card-6 RS-359 Q4）— 【最後の手段】が未実装で、ラッシュ対象の変更手順も API にない");
-  it.todo("RS-359: 公式Q&A — 手順の巻き戻しでラッシュエリアから捨札にしたユニットは戻るが、アイシーは戻らない（出典: grnrngr/faq-card-6 RS-359 Q5）— 【最後の手段】が未実装で、巻き戻し手順も API にない");
-  it.todo("RS-359: 公式Q&A — 異次元からの翼でセイクウオーをラッシュするときも【最後の手段】を使える（出典: grnrngr/faq-card-6 RS-359 Q7）— 【最後の手段】が未実装");
-  it.todo("RS-359: 公式Q&A — アイシーの効果で OT の L ユニットをラッシュしたとき、ガンマジンの効果でドローできない（出典: grnrngr/faq-card-8 RS-558 Q「いいえ、できません」）— 【最後の手段】が未実装で前提が作れない");
+  // grnrngr/faq-card-6 RS-359 Q4「はい、できます。」
+  it("RS-359: 公式Q&A — 山札を見た後で、ラッシュするLユニットと捨札にするカードを変更できる（ダイデンジン → バイオロボ）（出典: grnrngr/faq-card-6 RS-359 Q4）", () => {
+    // 山札にデンジファイターはなく、バイオジェット2号がある。手札にダイデンジンとバイオロボ、自軍ラッシュエリアにバイオジェット1号。
+    const s = rushPhase({
+      hand: [inst("RS-352", "dd"), inst("RS-127", "bio")],
+      rush: [inst("RS-359", "ic"), inst("RS-128", "j1")],
+      command: releasedCat("OT", 1),
+      power: powerCards(7),
+      deck: [inst("TST-OP", "o"), inst("RS-129", "j2d")],
+    });
+    // ダイデンジンの追加条件は満たせない（山札にデンジファイターがない）。
+    expect(canStartRush(s, "player1", "RS-352:dd")).toBe(false);
+    // かわりにバイオロボをラッシュし、【最後の手段】で捨札にするカードを山札のバイオジェット2号にできる。
+    const r = rushFromHand(s, "player1", "RS-127:bio", { materials: ["RS-128:j1", "RS-129:j2d"] });
+    expect(r.ok, r.error).toBe(true);
+    const t = resolveAll(r.state, ["RS-128:j1", "RS-129:j2d"]);
+    expect(zoneOf(t, "player1", "RS-127:bio")).toBe("rush");
+    expect(zoneOf(t, "player1", "RS-129:j2d")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-359:ic")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-352:dd")).toBe("hand");
+  });
+  // grnrngr/faq-card-6 RS-359 Q5「はい、可能です。ラッシュが不成立だった場合は、そのラッシュのために行った手続きは巻き戻しになりますので、追加条件で捨札にしたユニットはラッシュエリアに戻します。」
+  it("RS-359: 公式Q&A — 手順の巻き戻しでラッシュエリアから捨札にしたユニットは戻るが、アイシーは戻らない（出典: grnrngr/faq-card-6 RS-359 Q5）", () => {
+    // 山札にバイオジェット2号はなく、デンジファイターがある。手札にバイオロボとダイデンジン、自軍ラッシュエリアにバイオジェット1号。
+    const s = rushPhase({
+      hand: [inst("RS-127", "bio"), inst("RS-352", "dd")],
+      rush: [inst("RS-359", "ic"), inst("RS-128", "j1")],
+      command: releasedCat("OT", 1),
+      power: powerCards(7),
+      deck: [inst("TST-OP", "o"), inst("RS-353", "fd")],
+    });
+    // 山札にバイオジェット2号がないので、エンジンはバイオロボのラッシュの手続きを始めさせない（バイオジェット1号を捨札にする前に巻き戻した状態と同じ）。
+    // （補足の「山札に必要なカードがなく巻き戻してもアイシーは戻らない」状況は、手続きを始められないので作れない。）
+    expect(canStartRush(s, "player1", "RS-127:bio")).toBe(false);
+    expect(zoneOf(s, "player1", "RS-128:j1")).toBe("rush");
+    // 捨札にするユニットを山札のデンジファイターに変え、ダイデンジンをラッシュする。バイオジェット1号は捨札にしなくてよい。
+    const r = rushFromHand(s, "player1", "RS-352:dd", { materials: ["RS-353:fd"] });
+    expect(r.ok, r.error).toBe(true);
+    const t = resolveAll(r.state, ["RS-353:fd"]);
+    expect(zoneOf(t, "player1", "RS-352:dd")).toBe("rush");
+    expect(zoneOf(t, "player1", "RS-353:fd")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-128:j1")).toBe("rush");
+    expect(zoneOf(t, "player1", "RS-359:ic")).toBe("discard");
+  });
+  // grnrngr/faq-card-6 RS-359 Q7・atwiki/page-1448「はい、できます。1つの効果の解決中に新たな効果が発動した場合、新しい効果を即時解決した後、もとの効果の解決を再開してください。」
+  it("RS-359: 公式Q&A — 異次元からの翼でセイクウオーをラッシュするときも【最後の手段】を使える（出典: grnrngr/faq-card-6 RS-359 Q7）", () => {
+    // セイクウオー（OT の L・合体―トリプター＋ジェットラス＋ジャン・ボエール・※ウイング）。ジャン・ボエールは山札にしかない。
+    const s = rushPhase({
+      hand: [inst("RS-605", "op")],
+      rush: [inst("RS-359", "ic"), inst("RS-668", "tr"), inst("RS-666", "jr")],
+      command: releasedCat("OT", 1),
+      power: powerCards(4),
+      deck: [inst("RS-686", "sk"), inst("RS-667", "jb"), ...deckCards(2)],
+    });
+    const r = playOp(s, "player1", "RS-605:op");
+    expect(r.ok, r.error).toBe(true);
+    expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-605");
+    expect(choiceIds(r.state)).toContain("RS-686:sk");
+    const t = resolveAll(r.state, ["RS-686:sk", "RS-668:tr", "RS-666:jr", "RS-667:jb"]);
+    expect(zoneOf(t, "player1", "RS-686:sk")).toBe("rush");
+    expect(zoneOf(t, "player1", "RS-667:jb")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-668:tr")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-666:jr")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-359:ic")).toBe("discard");
+  });
+  // grnrngr/faq-card-8 RS-558 Q2「いいえ、できません。」（【最後の手段】で「捨札にしたことにできる」のは追加条件の実行ではない）
+  it("RS-359: 公式Q&A — アイシーの効果で OT の L ユニットをラッシュしたとき、ガンマジンの効果でドローできない（出典: grnrngr/faq-card-8 RS-558 Q「いいえ、できません」）", () => {
+    const s0 = rushPhase({
+      hand: [inst("RS-352", "dd")],
+      rush: [inst("RS-359", "ic"), inst("RS-558", "gm")],
+      command: releasedCat("OT", 1),
+      power: powerCards(7),
+      deck: [inst("TST-OP", "o"), inst("RS-353", "f"), ...deckCards(3)],
+    });
+    const r = rushFromHand(s0, "player1", "RS-352:dd", { materials: ["RS-353:f"] });
+    expect(r.ok, r.error).toBe(true);
+    expect(r.state.pendingEffectChoice?.sourceCardId).not.toBe("RS-558");
+    const t = resolveAll(r.state, ["RS-353:f"]);
+    expect(zoneOf(t, "player1", "RS-352:dd")).toBe("rush");
+    expect(zoneOf(t, "player1", "RS-359:ic")).toBe("discard");
+    expect(t.players.player1.hand).toHaveLength(0);
+  });
 });
 
 // ===========================================================================

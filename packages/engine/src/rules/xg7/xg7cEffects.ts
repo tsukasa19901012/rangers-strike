@@ -21,6 +21,7 @@ import { markBattleBlocked } from "../turnModifiers";
 import { recordReveal, revealedCards } from "../revealNotice";
 import { rk1IsSmallNow } from "../rk/rk1Features";
 import { runRk10OnRush } from "../rk/rk10UnitEffects";
+import { namedTextNegated } from "../legend1/set6NamedEffects348";
 import {
   base,
   categoriesOf,
@@ -546,8 +547,11 @@ CHOICE_RESOLVERS[GAME_START_EFFECT_ID] = (state, playerId, instanceId) => {
     next = patchPlayer(next, playerId, (p) => ({ ...p, power: p.power.filter((c) => c.instanceId !== instanceId), rush: [...p.rush, stripForZone(card)] }));
   }
   // その効果は無効（そのユニット自身の「ラッシュしたとき」だけを止め、ほかのカードのラッシュの処理は続ける）。
-  if (target && findField(next, ownerId, target)) next = runRk10OnRush(next, ownerId, target, pending.phasePlayerId, true);
-  return { state: proceed(next, pending), log: logFor(state, playerId, "XG7-059", `${GAME_START_EFFECT_ID}:nullify`) };
+  // ただし出た時点でこれはユニットなので、RK-334 電王LF 等で効果名を持つテキストが無効なら「そうしたとき」以降も無効で、
+  // その効果はそのまま実行する（atwiki/page-1369 Q1）。
+  const nullified = !(card && namedTextNegated(next, playerId, card));
+  if (target && findField(next, ownerId, target)) next = runRk10OnRush(next, ownerId, target, pending.phasePlayerId, nullified);
+  return { state: proceed(next, pending), log: logFor(state, playerId, "XG7-059", `${GAME_START_EFFECT_ID}:${nullified ? "nullify" : "negated"}`) };
 };
 CHOICE_SKIPPERS[GAME_START_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;

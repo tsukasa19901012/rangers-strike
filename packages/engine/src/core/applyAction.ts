@@ -1464,10 +1464,12 @@ function applyBpZeroRuleDestruction(state: GameState): GameState {
     let victim: { ownerId: PlayerId; card: CardInstance; zone: "rush" | "battle" } | undefined;
     for (const ownerId of order) {
       for (const zone of ["battle", "rush"] as const) {
+        const queued = next.bpZeroRuleDestroyIds ?? [];
         const card = next.players[ownerId][zone].find((c) => {
           const def = next.definitions[c.cardId];
           if (!def || def.type !== "unit" || typeof def.bp !== "number" || def.bp <= 0) return false;
-          return effectiveBp(next, ownerId, c) <= 0;
+          // BP を0以下にした効果の持ち主がその後場を離れても撃破するユニット（GameState.bpZeroRuleDestroyIds）。
+          return queued.includes(c.instanceId) || effectiveBp(next, ownerId, c) <= 0;
         });
         if (card) {
           victim = { ownerId, card, zone };
@@ -1476,7 +1478,14 @@ function applyBpZeroRuleDestruction(state: GameState): GameState {
       }
       if (victim) break;
     }
-    if (!victim) return next;
+    if (!victim) {
+      if (next.bpZeroRuleDestroyIds) next = { ...next, bpZeroRuleDestroyIds: undefined };
+      return next;
+    }
+    if (next.bpZeroRuleDestroyIds?.includes(victim.card.instanceId)) {
+      const rest = next.bpZeroRuleDestroyIds.filter((id) => id !== victim!.card.instanceId);
+      next = { ...next, bpZeroRuleDestroyIds: rest.length > 0 ? rest : undefined };
+    }
     const left = tryLeaveField(next, {
       ownerPlayerId: victim.ownerId,
       instanceId: victim.card.instanceId,

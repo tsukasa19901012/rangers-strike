@@ -222,6 +222,7 @@ const AREA_ONLY_FIELDS = [
   "battleActed",
   "activatedNcEffects",
   "jointComboGrants",
+  "jointComboGrantsKept",
   "mountedOnInstanceId",
 ] as const;
 
@@ -235,6 +236,7 @@ function stripAreaState(card: CardInstance, zone: (typeof NON_UNIT_ZONES)[number
     card.battleActed !== undefined ||
     card.activatedNcEffects !== undefined ||
     card.jointComboGrants !== undefined ||
+    card.jointComboGrantsKept !== undefined ||
     card.mountedOnInstanceId !== undefined;
   // コマンドゾーン以外ではホールド（横向き）という状態自体がない。
   const staleHold = zone !== "command" && (card.commandHeld || card.mothershipHold || card.paymentHeld);

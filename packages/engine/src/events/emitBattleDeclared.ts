@@ -19,8 +19,11 @@ export function emitBattleDeclaredAndResolve(
       cards.map((c) =>
         c.instanceId === pending.attackerInstanceId ? { ...c, battleActed: true } : c,
       );
+    // カウンター（RS-018 隠流忍術等）の反応ウィンドウから来たときは pendingBattle が開いたままなので閉じる
+    // （閉じないと同じアタックがもう一度解決され、重ねたカードをもう1枚戻してバトルしてしまう。grnrngr/faq-rider-1 RK-021 Q2）。
     next = {
       ...next,
+      pendingBattle: undefined,
       ...updatePlayer(next, pending.attackerPlayerId, {
         ...attackerOwner,
         battle: markActed(attackerOwner.battle),

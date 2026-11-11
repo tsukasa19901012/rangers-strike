@@ -14,6 +14,7 @@ import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEff
 import { getDefinition } from "../core/catalog";
 import { takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
+import { opponentInfiniteChainBlocks } from "./turnModifiers";
 
 export type ResidentOpAttackedResult = {
   state: GameState;
@@ -271,6 +272,9 @@ export function applyResidentOpsOnAllyAttacked(
   const defenderDef = getDefinition(state.definitions, defender.cardId);
   // RK-248 パラダイス・ロスト: このターン、相手の常駐オペレーションは無効（rules/rk/rk12Fields.ts）。
   if (rk12ResidentsNegated(state, ownerId)) return null;
+  // RS-072 無限連鎖カード「このターン、相手の常駐オペレーションは無効になり」— 効果だけが無効で、常駐と重ねたカードは残る
+  // （grnrngr/faq-rider-1 RK-021 Q1）。
+  if (opponentInfiniteChainBlocks(state, ownerId)) return null;
 
   for (const op of player.operation) {
     const runtime = runtimeForCard(op.cardId);

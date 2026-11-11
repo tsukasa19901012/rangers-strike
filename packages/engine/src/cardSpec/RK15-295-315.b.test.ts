@@ -333,9 +333,26 @@ describe("RK-305 仮面ライダー電王SF（2nd）", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-305");
   });
 
-  it.todo(
-    "RK-305: 公式Q&A — ダイデンジンがあるとき、《モーフ》で自軍パワーゾーンの電王RF と置き換えても【ダイデンジンブーメラン】は発動する（出典: atwiki/page-1275 Q2・grnrngr/faq-card-6 RS-352 Q2）— RS-352 の【ダイデンジンブーメラン】が未実装（cardSpec/RS6-348-368.a の RS-352 の it.todo と同じ）",
-  );
+  // atwiki/page-1275 Q2「はい、発動できます。「置き換え」であっても、それまでオモテ向きであったカードがパワーゾーンを離れているので、…発動します。」
+  it("RK-305: 公式Q&A — ダイデンジンがあるとき、《モーフ》で自軍パワーゾーンの電王RF と置き換えても【ダイデンジンブーメラン】は発動する（出典: atwiki/page-1275 Q2・grnrngr/faq-card-6 RS-352 Q2）", () => {
+    let s = enemyRushes(
+      { battle: [inst("RK-305", "d"), inst("RS-352", "dd")], power: [faceUp("RK-304", "p")] },
+      "SPEC-ENEMY0:e",
+      EXTRA,
+      { battle: [inst("TST-UNIT-2", "c2"), inst("RS-361", "c5")] },
+    );
+    expect(morphCandidates(s)).toEqual(["RK-304:p"]);
+    s = pickAs(s, "player1", "RK-304:p");
+    expect(zoneOf(s, "player1", "RK-304:p")).toBe("battle");
+    expect(zoneOf(s, "player1", "RK-305:d")).toBe("power");
+    // パワーゾーンを離れた電王RF の必要パワー3 以下のユニットを、相手（player2）が自分自身のユニットから1体選び撃破する。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-352");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(choiceIds(s)).toContain("TST-UNIT-2:c2");
+    expect(choiceIds(s)).not.toContain("RS-361:c5");
+    s = resolveAll(pickAs(s, "player2", "TST-UNIT-2:c2"));
+    expect(zoneOf(s, "player2", "TST-UNIT-2:c2")).toBe("discard");
+  });
 });
 
 // ===========================================================================

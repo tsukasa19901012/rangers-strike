@@ -299,9 +299,42 @@ describe("RS-223 タック", () => {
     expect(zoneOf(after, "player1", "SPEC-AIR-M:a2")).toBe("rush");
   });
 
-  it.todo(
-    "RS-223: 公式Q&A — ジャガーバルカン／デカベースクローラーで追加条件のかわりにホールドするコマンドは「ラッシュに必要なコマンド」ではなく、敵軍コマンドのリリースで代替できない（出典: grnrngr/faq-card-4 RS-223 Q2）— XL ユニット（母艦）の追加条件のかわりのホールドを、通常の支払いと分けて公開 API で組み立てられなかった",
-  );
+  // faq-card-4 RS-223 Q2（追加条件のかわりにホールドする自軍コマンドは「ラッシュに必要な自軍コマンド」ではないので、敵軍コマンドのリリースで代替できない）
+  it("RS-223: 公式Q&A — ジャガーバルカン／デカベースクローラーで追加条件のかわりにホールドするコマンドは「ラッシュに必要なコマンド」ではなく、敵軍コマンドのリリースで代替できない（出典: grnrngr/faq-card-4 RS-223 Q2）", () => {
+    // 自軍ラッシュエリアにタックと RS-076 ジャガーバルカン（【母艦】S ユニットを送るかわりに ET の自軍コマンドを1つホールド）。
+    // 手札の RS-074 コスモバルカン（ET の M ユニット・必要パワー4+・追加条件: 自軍 S ユニットを1体コマンドゾーンに送る）を母艦の手順でラッシュする。
+    const board = (own: ReturnType<typeof inst>[]) =>
+      st({
+        phase: "rush",
+        player1: { rush: [inst("RS-223", "tk"), inst("RS-076", "jag")], hand: [inst("RS-074", "cosmo")], power: powerCards(4), command: own, deck: deckCards(5) },
+        player2: { command: [held("TST-OP", "eh0"), held("TST-OP", "eh1")], deck: deckCards(5, "e") },
+      });
+    const mothershipRush = (s0: GameState) => {
+      let r = tryAct(s0, { type: "begin_zord_setup", playerId: "player1", zordInstanceId: "RS-074:cosmo" });
+      for (let i = 0; i < 12 && r.ok && r.state.pendingZordSetup; i += 1) {
+        const setup = r.state.pendingZordSetup;
+        r =
+          setup.step === "material"
+            ? tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1", paymentPath: "mothership" })
+            : setup.step === "destination"
+              ? tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1", destination: "command" })
+              : tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1" });
+      }
+      for (let i = 0; i < 6 && r.ok && r.state.pendingCommandPayment?.playerId === "player1"; i += 1) {
+        const p = r.state.pendingCommandPayment;
+        r = tryAct(r.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: p.validInstanceIds.slice(0, p.totalNeeded) });
+      }
+      const done = r.ok && !r.state.pendingCommandPayment && !r.state.pendingZordSetup && zoneOf(r.state, "player1", "RS-074:cosmo") === "rush";
+      return done ? r.state : null;
+    };
+    // 自軍 ET コマンドが1つあれば、ラッシュに必要なコマンドを敵軍コマンドのリリースで代え、母艦のホールドに自軍コマンドを使える。
+    const ok = mothershipRush(board([released("TST-OP-ET", "et")]));
+    expect(ok).not.toBeNull();
+    expect(ok!.players.player1.command.find((c) => c.instanceId === "TST-OP-ET:et")?.commandHeld).toBe(true);
+    expect(ok!.players.player2.command.filter((c) => !c.commandHeld)).toHaveLength(1);
+    // 自軍コマンドがなければ、母艦のかわりのホールドを敵軍コマンドのリリースで代えることはできない。
+    expect(mothershipRush(board([]))).toBeNull();
+  });
 
   // faq-card-6 RS-374「いいえ、捨札にはなりません。」
   it("RS-223: 公式Q&A — 魔女バンドーラがあるとき、緊急システム発動要請で恐竜をラッシュしても、リリースした敵軍コマンドは捨札にならない（出典: grnrngr/faq-card-6 RS-374）", () => {
@@ -414,9 +447,20 @@ describe("RS-224 トータスハンマー", () => {
     expect(spOf(s, "player1", "SPEC-MA-L:nx")).toBe(2);
   });
 
-  it.todo(
-    "RS-224: 公式Q&A（相互参照）— Jパワーで L ユニットになった CN3 で SP1 になる MA の S ユニットが、トータスハンマーから JC して3番目に並ぶと SP2 になる（出典: grnrngr/faq-rider-1 RK-013）— Jパワー（RK-013）の重ねは照合済み（RK1-001-021.b）だが、重ねたユニットを L ユニットとしてトータスハンマーからジョイントコンビネーションで出す手順を公開 API で確認できなかった",
-  );
+  // faq-rider-1 RK-013 Q「はい、SP2になります。」
+  it("RS-224: 公式Q&A（相互参照）— Jパワーで L ユニットになった CN3 で SP1 になる MA の S ユニットが、トータスハンマーから JC して3番目に並ぶと SP2 になる（出典: grnrngr/faq-rider-1 RK-013）", () => {
+    const MA_S13 = sUnit("SPEC-MA-S13", { size: "S", category: "MA", bp: 1000, sp: "1/3" as never });
+    const third = (jPower: boolean) => {
+      const unit = jPower ? { ...inst("SPEC-MA-S13", "nx"), stackedCards: [inst("RK-013", "jp")] } : inst("SPEC-MA-S13", "nx");
+      let s = st({ player1: { battle: [inst("TST-UNIT-0", "f1")], rush: [inst("RS-224", "th"), unit] } }, [...SPECS, MA_S13]);
+      s = passEntry(enter(s, "RS-224:th"));
+      return enter(s, "SPEC-MA-S13:nx");
+    };
+    // Jパワーで L ユニットになっていれば、3番目の SP1（SP1/3）に【ロックドバスター】の SP+1 で SP2。
+    expect(spOf(third(true), "player1", "SPEC-MA-S13:nx")).toBe(2);
+    // 対照: S ユニットのままなら SP+1 は得ず SP1。
+    expect(spOf(third(false), "player1", "SPEC-MA-S13:nx")).toBe(1);
+  });
 });
 
 // ===========================================================================
