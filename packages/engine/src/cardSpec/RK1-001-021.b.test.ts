@@ -16,6 +16,7 @@ import { unitFeatures } from "../rules/addedFeatures";
 import { isLargeUnit, isSmallUnit, unitSizeOf } from "../core/catalog";
 import { playerHasAllyLargeUnit } from "../keywords/battleKeywords";
 import { isJointLSizeAnchor } from "../rules/jointComboProcedure";
+import { xg3SizeNow } from "../rules/xg3/xg3Fields";
 import {
   act,
   attack,
@@ -844,9 +845,28 @@ describe("RK-013 Jパワー", () => {
     expect(s.pendingEffectChoice?.effectId).toBe("morph_replacement");
     expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["SPEC-DECADE-H:dh"]);
   });
-  it.todo(
-    "RK-013: 公式Q&A — J パワーを重ねた魔導騎士ウルザードのサイズ変更とは、ターンプレイヤーが優先順を選ぶ（出典: atwiki/page-211 Q8）— J パワーの「Lユニットになる」と XG3-029 ※の「Mユニットになる」が重なったとき、ターンプレイヤーが適用の順を選ぶ選択がエンジンにない（サイズは固定の優先で決まる）ため",
-  );
+  // atwiki/page-211 Q8「ターンプレイヤーが効果の優先順を選択して処理してください。」— J パワーの「Lユニットになる」と XG3-029 ※「自軍Mビークルがあれば、
+  // これはMユニットになり」が重なる（rules/loopPriority.ts）。M ビークルは RS-467 ギンガルコン。
+  const urzard = () => {
+    const s = played(board({ rush: [inst("XG3-029", "u"), inst("RS-467", "mv")] }), "RK-013:jp");
+    return s.pendingEffectChoice?.sourceCardId === "RK-013" ? pick(s, "XG3-029:u") : s;
+  };
+
+  it("RK-013: 公式Q&A — J パワーを重ねた魔導騎士ウルザードに自軍 M ビークルがあると、ターンプレイヤーが J パワーとウルザードの※のどちらを優先するかを選ぶ（出典: atwiki/page-211 Q8）", () => {
+    const s = urzard();
+    expect(s.pendingEffectChoice?.effectId).toBe("loop_priority");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect([...choiceIds(s)].sort()).toEqual(["RK-013:jp", "XG3-029:u"]);
+  });
+
+  it("RK-013: 公式Q&A — J パワーを優先すると L ユニット、ウルザードの※を優先すると M ユニット（出典: atwiki/page-211 Q8）", () => {
+    const large = pick(urzard(), "RK-013:jp");
+    expect(unitSizeOf(large.definitions, cardIn(large, "player1", "XG3-029:u")!)).toBe("L");
+    expect(xg3SizeNow(large, cardIn(large, "player1", "XG3-029:u")!)).toBeUndefined();
+    const medium = pick(urzard(), "XG3-029:u");
+    expect(unitSizeOf(medium.definitions, cardIn(medium, "player1", "XG3-029:u")!)).toBe("M");
+    expect(xg3SizeNow(medium, cardIn(medium, "player1", "XG3-029:u")!)).toBe("M");
+  });
   // faq-rider-1 RK-058 Q「「RK-013 Jパワー」の対象に選んだ「RK-027 仮面ライダーBLACK」は、ユニットでなくなるまで「RK-013 Jパワー」の上に重ねたまま扱いますので、…下から「Rk-058 マシンゼクトロン」「RK-013 Jパワー」「RK-027 仮面ライダーBLACK」の順で重ねる」
   it("RK-013: 公式Q&A — ライド中のユニットに使うと、J パワーに重ねるのはユニットだけで、ビークルはその下でライドしたまま（下から「ビークル」「J パワー」「ユニット」）（出典: grnrngr/faq-rider-1 RK-058 Q）", () => {
     const s = resolveAll(

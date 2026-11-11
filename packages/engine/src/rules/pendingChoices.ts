@@ -1,3 +1,4 @@
+import { recordLoopPriority } from "./loopPriority";
 import { recordReveal } from "./revealNotice";
 import { deckLookChoice, skipDeckLook } from "./deckLook";
 import { closeWithDeckOrder, deckOrderChoice, resolveDeckOrderPick } from "./deckOrder";
@@ -5627,6 +5628,10 @@ export function applyEffectChoiceSelect(
           `${pending.effectId}:${instanceId}`,
         );
         return { state: next, log };
+      }
+      if (pending.loopPriorityMeta) {
+        // ルール: R-SIM-02 — 止められないループは、ターンプレイヤーが優先する効果を選んで止める（rules/loopPriority.ts）。
+        return finishChoice(recordLoopPriority(state, pending.loopPriorityMeta.key, instanceId), pending, instanceId);
       }
       if (pending.mutualDestructionMeta) {
         // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順はターンプレイヤーが決める。

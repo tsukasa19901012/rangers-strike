@@ -60,6 +60,7 @@ import {
   set7AStrikeCounterIds,
 } from "../rules/legend1/set7NamedEffectsA";
 import { keepWaitingChoices } from "../rules/waitingChoices";
+import { openLoopPriorityIfNeeded } from "../rules/loopPriority";
 import { activateSet8BHandEffect, openKeyHolderWishDraw, settleGuardianApostleProviso } from "../rules/legend1/set8NamedEffectsB";
 import { openKibaShotIfReady, queueKibaShot } from "../rules/legend1/set6AuditFixes";
 import { icyStateForAction, isIcyPhantom, settleIcyPhantoms } from "../rules/legend1/icyLastResort";
@@ -1325,6 +1326,9 @@ function applyActionWithRng(
       next = cleared;
     }
   }
+  // ルール: R-SIM-02 — 継続効果どうしの止められないループは、ターンプレイヤーが優先する効果を選ぶ（rules/loopPriority.ts）。
+  // 選択・反応の窓が開いている間は開かない（無くなった組の結果を消すだけ）。
+  if (applyActionDepth === 0 && !next.winner) next = openLoopPriorityIfNeeded(next, turnPlayerOf(next), !hasBlockingInteraction(next));
   // RS-319 デカマスター ※: 自軍ラッシュフェイズ中、条件を満たせば即座に手札に戻る（進行中の処理がないとき）。
   if (!hasBlockingInteraction(next)) next = applyDekaMasterReturn(next);
   // RS-325【マジチケット】: 発動したカードが捨札になったら「かわりに」の選択を開く。

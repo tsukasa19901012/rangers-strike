@@ -7,7 +7,7 @@
  * - 継続効果（L ユニット化、レジストの付与、ナンバーの増加、アタックされない制限、バトルエリアへの進入の強制・禁止）。
  * 判定はできるだけカードの文言（正規化した本文）で行う。構成は rules/legend1/set7NamedEffectsD.ts と同じ。
  */
-import type { CardDefinition } from "@rangers-strike/cards";
+import { isSameCardIdentity, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isLargeUnit, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
@@ -19,6 +19,9 @@ import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { appendResumeChoice, applyConfirmEffectChoice, openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
+import { type LoopConflict, arkLargeLoopKey, arkLargeLoopWonBy, registerLoopDetector } from "../loopPriority";
+import { xg6ArkIsLarge } from "../xg6/xg6Fields";
+import { cardHasGrantKeyword } from "../../dsl/promotedKeywordBridge";
 import { deckOrderChoice } from "../deckOrder";
 import { unitFeatures } from "../addedFeatures";
 import { blockRushAreaEntry } from "./set5NamedEffects";
@@ -224,7 +227,7 @@ export function applySet8BAfterUnitLeft(
 //   同じカード名のユニットカードがあれば、「Lユニット」になる。」（atwiki/page-1164）
 // - RS-558 ガンマジン ※「自分か相手のLユニットがあれば、これはLユニットになり、BP+4000される。」（atwiki/page-1186）
 //   「自分か相手のLユニット」には、同じ種類の能力（ほかの L ユニットがあれば L ユニットになる）で L になったユニットを数えない
-//   （互いに支え合うと循環する。atwiki/page-1186 Q6 はターンプレイヤーが止める — 未実装）。
+//   （互いに支え合うと循環する）。XG6-053 仮面ライダーアークとのループは、ターンプレイヤーが優先する効果を選ぶ（atwiki/page-1186 Q6。下の registerLoopDetector）。
 
 const REGEN_GIANT_RE =
   /これが自軍エリアにある間、本来の特徴に「([^」]+)」を持つ自軍ユニットは、自軍捨札に同じカード名のユニットカードがあれば、「?Lユニット」?になる/;
@@ -259,9 +262,55 @@ export function baseLargeNow(state: Pick<GameState, "players" | "definitions">, 
 }
 
 /** これ以外に（自分か相手の）L ユニットがあるか。条件つきで L になっているユニットは数えない。 */
-export function anyOtherBaseLargeUnit(state: Pick<GameState, "players" | "definitions">, instance: CardInstance): boolean {
+export function anyOtherBaseLargeUnit(state: Pick<GameState, "players" | "definitions"> & Partial<Pick<GameState, "loopPriority">>, instance: CardInstance): boolean {
+  // 「ほかの L があれば L」のユニット（RS-558 等）は、XG6-053 仮面ライダーアークの※の L を数えない（互いに条件を崩し合うループ。
+  // atwiki/page-1186 Q6）。ターンプレイヤーがこちらを優先したら L として扱う（rules/loopPriority.ts。アークは L にならない）。
+  const becomesL = hasBecomesLIfAnyLText(state, instance.cardId);
+  if (becomesL && arkLargeLoopWonBy(state, instance.instanceId)) return true;
   return (["player1", "player2"] as const).some((pid) =>
-    fieldUnits(state, pid).some((c) => c.instanceId !== instance.instanceId && baseLargeNow(state, c)),
+    fieldUnits(state, pid).some(
+      (c) => c.instanceId !== instance.instanceId && !(becomesL && isSameCardIdentity(c.cardId, "XG6-053")) && baseLargeNow(state, c),
+    ),
+  );
+}
+
+/**
+ * XG6-053 仮面ライダーアーク「※これ以外のユニットがSユニットだけなら、これはLユニットになり」と「自分か相手のLユニットがあれば、これはLユニットになる」
+ * ユニット（RS-558 ガンマジン・RS-420 大剣人ズバーン・RS-454 ニンジャマン）が互いの条件を崩し合うループ（atwiki/page-1186 Q6「ターンプレイヤーが効果の
+ * 優先順を選択して、適当なところで処理のループを止めてください」）。アークの条件が（相手を S として）満たされ、相手がアーク以外の L に支えられていないとき。
+ * アークを優先（選ぶまでも）: アークが L・相手は S。相手を優先: 相手が L（ガンマジンは BP+4000）・アークは L にならない（docs/rules R-RES-08）。
+ */
+registerLoopDetector((state) => {
+  const out: LoopConflict[] = [];
+  for (const arkOwner of ["player1", "player2"] as const) {
+    for (const ark of fieldUnits(state, arkOwner).filter((c) => isSameCardIdentity(c.cardId, "XG6-053"))) {
+      if (!xg6ArkIsLarge(state, arkOwner, ark)) continue;
+      for (const pid of ["player1", "player2"] as const) {
+        for (const other of fieldUnits(state, pid)) {
+          if (other.instanceId === ark.instanceId || !becomesLargeIfAnyLarge(state, other.cardId)) continue;
+          if (zubaanSupportedWithoutArk(state, other)) continue;
+          out.push({ key: arkLargeLoopKey(ark.instanceId, other.instanceId), options: [ark.instanceId, other.instanceId], sourceCardId: "XG6-053", sourceInstanceId: ark.instanceId });
+        }
+      }
+    }
+  }
+  return out;
+});
+
+function becomesLargeIfAnyLarge(state: Pick<GameState, "definitions">, cardId: string): boolean {
+  return isSameCardIdentity(cardId, "RS-420") || cardHasGrantKeyword(cardId, "becomes_l_if_l_present") || hasBecomesLIfAnyLText(state, cardId);
+}
+
+/** 同じ種類の能力どうしは支え合わない（rules/legend1/set6NamedEffectsB.ts zubaanIsLarge と同じ判定。アークを除く）。 */
+function zubaanSupportedWithoutArk(state: Pick<GameState, "players" | "definitions">, instance: CardInstance): boolean {
+  return (["player1", "player2"] as const).some((pid) =>
+    fieldUnits(state, pid).some(
+      (c) =>
+        c.instanceId !== instance.instanceId &&
+        !isSameCardIdentity(c.cardId, "XG6-053") &&
+        !becomesLargeIfAnyLarge(state, c.cardId) &&
+        baseLargeNow(state, c),
+    ),
   );
 }
 

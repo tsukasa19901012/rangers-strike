@@ -64,6 +64,8 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 
 - 「特徴○○を持つ自軍ユニット」を数えるときは、ライドされていないビークルを含めません（ユニットではないため。faq-card-5 RS-216）。`fieldUnits` 系は場のビークルも返すので、`src/rules/turnEndingEffects.ts` の `isOwnVehicleFeatureUnit` のようにユニットとして扱える状態かを確かめます。
 - BP0 のルール撃破（`src/core/applyAction.ts` の `applyBpZeroRuleDestruction`）は、ラッシュへのカウンターの窓（`pendingRush`）が開いていても止めません（grnrngr/faq-card-1 RS-026 Q5/Q8。ラッシュしたユニットが疾風流超忍法で山札に戻されても、その前の効果で BP0 になった敵軍ユニットは撃破される）。新しい操作待ちを `hasBlockingInteraction` に足すときは、ルール処理を待たせてよいものかを確かめてください。
+- 同時に誘発した2つの効果（どちらも選択を開く）の処理順は、ターンプレイヤーが選びます（R-SIM-01）。順番で結果が変わるときは `src/rules/triggerOrder.ts` の `triggerOrderChoice(chooser, a, b)` で simultaneous_order の選択を作り（撃破の誘発の順と同じ `battleDestroyOrderMeta`。選んだほうを先に開き、もう一方をその続きにする）、後に回す選択の候補が先の効果で変わるなら `refreshOnOpen` を付けます。別のモジュールの「出たとき」の効果を取り出すときは、import の循環を避けて `registerEntryTriggerTaker` に登録したものを `takeEntryTrigger` で呼びます（XG4-075【生命の強奪】と RK-239 ウエイクアップ！。atwiki/page-2062 Q1）。CPU は両方の順を試して評価の良いほう（`ai/helpers.ts`）。
+- 継続効果どうしが互いの条件を崩し合う止められないループ（R-SIM-02）は、`src/rules/loopPriority.ts` の `registerLoopDetector` に「いまループになっている組」を返す関数を登録します。いちばん外側の `applyAction` の後に、まだ選んでいない組があればターンプレイヤーに `loop_priority` の選択（kind simultaneous_order、候補は効果の発動元）を開き、結果は `state.loopPriority[key]` に残ります。各効果は `loopWinner` を見て、優先されなかった側を適用しません。検出は結果を見ない状態で行われ（`withoutLoopPriority`）、組が無くなれば結果は消えます。使っているのは XG2-029【災魔ツリー】×RS-364・XG6-053×RS-558 等・RK-013×XG3-029（サイズ。M は `sizeOverride: "M"`）・XG1-078 でコピーした RS-497【変身の妨害】。誘発どうしのループ（RS-363×RS-238）は、ターンプレイヤーの選択（【パンサークロー】）にループを止める候補（バルパンサー自身）を足す形です。
 ## テスト
 
 ```bash

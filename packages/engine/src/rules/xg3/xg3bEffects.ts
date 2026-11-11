@@ -10,12 +10,14 @@ import { getDefinition, parsePowerCost, unitSizeOf, effectiveBp } from "../../co
 import { drawOne, opponent } from "../../core/helpers";
 import { tryResolveDslNcEffects } from "../../dsl/triggerResolver";
 import { patchPlayer } from "../playerPatches";
+import { loopWinner, registerLoopDetector } from "../loopPriority";
+import { urzardJPowerConflict, urzardSizeLoopKey } from "./xg3Fields";
 import { startEffectRush } from "../effectRush";
 import { unitFeatures } from "../addedFeatures";
 import { applyDamageToPlayer } from "../damagePayment";
 import { rk1IsSmallNow } from "../rk/rk1Features";
 import { base, close, ctxBase, destroyAll, fieldUnits, findField, isUnitCard, logFor, moveFieldUnit, openAfter, openNext, pendingBase, proceed, selectableEnemy, shuffleDeck, stripForZone } from "../rm/rm1Effects";
-import { CHOICE_RESOLVERS, CHOICE_SKIPPERS, ENTER_BATTLE_HOOKS, FIELD_ABILITIES, HOLD_COMPLETERS, KEYWORDS, ZONE_ACTIVATIONS } from "./xg3Registry";
+import { AFTER_ACTION_HOOKS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, ENTER_BATTLE_HOOKS, FIELD_ABILITIES, HOLD_COMPLETERS, KEYWORDS, ZONE_ACTIVATIONS } from "./xg3Registry";
 import { fieldCategories, holdCommands, holdThen, nameIs, printedCategories, printedFeatures, releasedCommandIds, skipThen } from "./xg3Common";
 
 /** 継続効果・別の入口で処理するカードのキーワード（DSL の grant_keyword から呼ばれても何もしない）。 */
@@ -241,6 +243,34 @@ ZONE_ACTIVATIONS.push({
 });
 
 // ---------------------------------------------------------------------------
+// XG3-029 ※「自軍Mビークルがあれば、これはMユニットになり、特徴「人型」が追加される。」と RK-013 Jパワー「このカードに重ねたユニットは…「Lユニット」に
+// なる」が重なったら、ターンプレイヤーがどちらを優先するかを選ぶ（atwiki/page-211 Q8。rules/loopPriority.ts）。選ぶまでは今までどおり
+// （サイズの判定は J パワーの L、※を見る判定は M）。ウルザードを優先したら M ユニット（sizeOverride "M"。行動の後に合わせる）、J パワーを優先したら L ユニット。
+registerLoopDetector((state) =>
+  (["player1", "player2"] as const).flatMap((pid) =>
+    fieldUnits(state, pid).flatMap((c) => {
+      const jPower = urzardJPowerConflict(state, c);
+      return jPower ? [{ key: urzardSizeLoopKey(c.instanceId), options: [jPower, c.instanceId], sourceCardId: "XG3-029", sourceInstanceId: c.instanceId }] : [];
+    }),
+  ),
+);
+
+AFTER_ACTION_HOOKS.push((_before, after) => {
+  let next = after;
+  for (const pid of ["player1", "player2"] as const) {
+    for (const c of fieldUnits(after, pid)) {
+      if (!isSameCardIdentity(c.cardId, "XG3-029")) continue;
+      const medium = !!urzardJPowerConflict(next, c) && loopWinner(next, urzardSizeLoopKey(c.instanceId)) === c.instanceId;
+      if (medium === (c.sizeOverride === "M")) continue;
+      next = patchPlayer(next, pid, (p) => {
+        const patch = (cards: CardInstance[]) => cards.map((x) => (x.instanceId === c.instanceId ? { ...x, sizeOverride: medium ? ("M" as const) : undefined } : x));
+        return { ...p, rush: patch(p.rush), battle: patch(p.battle) };
+      });
+    }
+  }
+  return next;
+});
+
 // XG3-029 魔導騎士ウルザード【ウルサーベル】（atwiki/page-2016）
 // 「自軍ターン中、これがバトルエリアに出たとき、自分の手札を1枚選び捨札にしてもよい。そうしたとき、このターン、これはBP+2000され、「SP1」になる。」
 // ※（M ユニット・「人型」）は rules/xg3/xg3Fields.ts。

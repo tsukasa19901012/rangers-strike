@@ -382,9 +382,22 @@ describe("RS-421 アカレッド", () => {
     expect(s.log.some((l) => l.includes("number_combo") || l.includes("RS-099"))).toBe(true);
   });
 
-  it.todo(
-    "RS-421: 勇気の魔法でリリースしたレッドのユニットカードを【ソウル降臨】でホールドして NC を発動できる（出典: grnrngr/faq-card-6 RS-421 Q4「はい、できます」）— 勇気の魔法（RS-029）と【ソウル降臨】の誘発順をプレイヤーが選ぶ手段（同時誘発の順序選択）が公開 API にないため",
-  );
+  it("RS-421: 勇気の魔法でリリースしたレッドのユニットカードを【ソウル降臨】でホールドして NC を発動できる（ターンプレイヤーが勇気の魔法から処理する）（出典: grnrngr/faq-card-6 RS-421 Q4「はい、できます」）", () => {
+    // ホールド状態のハリケンレッド（レッド・NC「SP1」）だけがレッドのコマンド。同時に誘発した【ソウル降臨】と勇気の魔法のうち、勇気の魔法を先に処理する。
+    let s = enter(
+      soulState({ operation: [inst("RS-029", "magic")], command: [held("RS-099", "hr"), released("RS-341", "gb")] }),
+      "RS-421:ak",
+    );
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect(s.pendingEffectChoice?.effectId).toBe("courage_magic");
+    s = pick(s, "RS-099:hr");
+    expect(s.players.player1.command.find((c) => c.instanceId === "RS-099:hr")?.commandHeld).toBe(false);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-421");
+    expect(choiceIds(s)).toEqual(["RS-099:hr"]);
+    s = soul(s, "RS-099:hr");
+    expect(s.players.player1.command.find((c) => c.instanceId === "RS-099:hr")?.commandHeld).toBe(true);
+    expect(spOf(s, "player1", "RS-421:ak")).toBe(1);
+  });
 
   it("RS-421: 【ソウル降臨】で発動した NC の効果は、敵軍の冥府神イフリートの【炎の眼光】で無効にできる（出典: grnrngr/faq-card-6 RS-421 Q5「はい、できます」）", () => {
     let s = st({

@@ -378,9 +378,42 @@ describe("R-TURN-05 ターンプレイヤー", () => {
     }
   });
 
-  it.todo(
-    "R-TURN-05: 止められない無限ループ（RS-363 パンサークロー×RS-238 プロジェットカノン）ではターンプレイヤーが優先する効果を選ぶ（出典: grnrngr/faq-card-6 RS-363 Q2, atwiki/page-2167）— 【パンサークロー】（rules/legend1/set6NamedEffects348.ts）と【プロジェットカノン】はそれぞれ実装済みだが、ループになったときにターンプレイヤーが優先する効果を選ぶ合法手がない",
-  );
+  // grnrngr/faq-card-6 RS-363 Q2「ターンプレイヤーが効果の優先順を選択して処理してください。…ターンプレイヤーが「RS-363 バルパンサー（2nd）」の
+  // NCで破壊した敵軍コマンドを、そのまま捨札にしたままにで処理を終えることになります。」・atwiki/page-2167。
+  // 【パンサークロー】の選択に、このユニット（パンサークローを優先してループを止める）が候補として加わる（rules/legend1/set6NamedEffects348.ts）。
+  const pantherLoop = () => {
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      definitions: allDefs(),
+      player1: { rush: [inst("RS-363", "pan"), inst("RS-362", "shark")], deck: cards("d", 5) },
+      player2: { battle: [inst("RS-354", "c3")], rush: [inst("RS-238", "fire")], deck: cards("e", 5) },
+    });
+    state = settle(act(state, { type: "move_to_battle", playerId: "player1", instanceId: "RS-363:pan" }));
+    state = act(state, { type: "move_to_battle", playerId: "player1", instanceId: "RS-362:shark" });
+    return act(state, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-354:c3" });
+  };
+
+  it("R-TURN-05: 止められない無限ループ（RS-363 パンサークロー×RS-238 プロジェットカノン）ではターンプレイヤーが優先する効果を選ぶ（出典: grnrngr/faq-card-6 RS-363 Q2, atwiki/page-2167）", () => {
+    const state = pantherLoop();
+    expect(state.pendingEffectChoice?.sourceCardId).toBe("RS-363");
+    expect(state.pendingEffectChoice?.playerId).toBe("player1");
+    expect(state.pendingEffectChoice?.validInstanceIds).toEqual(["RS-354:c3", "RS-363:pan"]);
+    expect(legal(state).some((a) => a.type === "resolve_effect_choice" && a.instanceId === "RS-363:pan")).toBe(true);
+  });
+
+  it("R-TURN-05: パンサークローを優先すると、捨札にしたカードはそのまま捨札で、プロジェットカノンは発動しない（出典: grnrngr/faq-card-6 RS-363 Q2）", () => {
+    let state = act(pantherLoop(), { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-363:pan" });
+    expect(state.pendingEffectChoice).toBeUndefined();
+    state = settle(state);
+    expect(state.players.player2.discard.map((c) => c.instanceId)).toContain("RS-354:c3");
+    expect(state.players.player2.command.map((c) => c.instanceId)).not.toContain("RS-354:c3");
+  });
+
+  it("R-TURN-05: パンサークローを使わなければ（プロジェットカノン側を優先）、カードはコマンドゾーンに残る（出典: grnrngr/faq-card-6 RS-363 Q2）", () => {
+    const state = settle(act(pantherLoop(), { type: "skip_effect_choice", playerId: "player1" }));
+    expect(state.players.player2.command.map((c) => c.instanceId)).toContain("RS-354:c3");
+  });
 });
 
 // ---------------------------------------------------------------------------
