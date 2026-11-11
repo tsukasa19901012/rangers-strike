@@ -580,6 +580,20 @@ describe("cards an effect shows", () => {
     expect(session.state.pendingEffectChoice).toBeFalsy();
   });
 
+  it("captions every card of a deck look with no target 「対象外」 (XG3-063 ドレイクMF【キャストオフ】, shared board PV34qCqV)", () => {
+    // ドレイクMF's キャストオフ looks at the deck for 「仮面ライダードレイクRF」; this deck has none, so the window shows
+    // the whole deck with only 「選ばない」. The cards were captioned 「選択対象」 and looked like they could all be picked.
+    const app = startGui(5);
+    app.startSharedMatch(parseSharePayload(JSON.parse(readFileSync(new URL("./fixtures/share-xg3-063-deck-look.json", import.meta.url), "utf8")))!);
+    const choice = app.session!.state.pendingEffectChoice!;
+    expect(choice).toMatchObject({ effectId: "deck_look", sourceCardId: "XG3-063", validInstanceIds: [] });
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog.cards.length).toBeGreaterThan(0);
+    expect(dialog.cards.every((c) => !c.actionable)).toBe(true);
+    expect(dialog.cards.every((c) => c.caption === "対象外" && c.note === "対象外")).toBe(true);
+    expect(dialog.buttons.map((b) => b.text)).toEqual(["選ばない"]);
+  });
+
   it("asks whether to activate before showing the deck top (XG7-042【ライダー大戦の世界】, engine rules/revealGate.ts)", () => {
     const app = startGui(5);
     const session = app.session!;

@@ -182,7 +182,14 @@ function choose(s: GameState, actions: GameAction[], actor: string, policy: Choi
  * 選択の後ろで待つ選択が消えないかを見る（resumeChoiceAllCards.test.ts）。そのカードの効果の最初の選択が開いたときに
  * `inject` で待つ選択を積み、その後その選択が開いたら `seen` を立てる。
  */
-export type Probe = { inject: (s: GameState) => GameState; isProbe: (c: PendingEffectChoice) => boolean; injected?: boolean; seen?: boolean };
+export type Probe = {
+  inject?: (s: GameState) => GameState;
+  isProbe?: (c: PendingEffectChoice) => boolean;
+  injected?: boolean;
+  seen?: boolean;
+  /** そのカードの効果の選択が開くたびに、その盤面を渡す（client-core の選択窓の確認。deckLookWindowAllCards.test.ts）。 */
+  see?: (s: GameState) => void;
+};
 
 /** first を適用し、保留中の選択・支払い・反応が無くなるまで合法手で進める。 */
 function drive(start: GameState, first: GameAction, card: CardInstance, policy: ChoicePolicy, branch?: Branch, probe?: Probe): DriveResult {
@@ -213,11 +220,12 @@ function drive(start: GameState, first: GameAction, card: CardInstance, policy: 
       !/^battle_entry/.test(choice.effectId ?? "");
     if (ownChoice && !prompted) promptState = s;
     if (ownChoice) prompted = true;
-    if (probe && ownChoice && !probe.injected) {
+    if (probe?.inject && ownChoice && !probe.injected) {
       s = probe.inject(s);
       probe.injected = true;
     }
-    if (probe && s.pendingEffectChoice && probe.isProbe(s.pendingEffectChoice)) probe.seen = true;
+    if (probe?.isProbe && s.pendingEffectChoice && probe.isProbe(s.pendingEffectChoice)) probe.seen = true;
+    if (ownChoice) probe?.see?.(s);
     const shownTo = ownChoice ? wholeDeckShownTo(s) : null;
     if (shownTo) wholeDeckShown.add(shownTo);
     const keys = pendingKeys(s);
