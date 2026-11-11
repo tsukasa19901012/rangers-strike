@@ -26,7 +26,7 @@ import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { actionContextState, zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
 import { rk11IsHandSubstitute } from "./rk/rk11Fields";
 import { xg1HoldSubstituteAvailable } from "./xg1/xg1Fields";
-import { xg4FusionSlotWaived, xg4HoldForHandSubstitute, xg4IsHandSubstituteMaterial } from "./xg4/xg4Fields";
+import { xg4FusionSlotWaived, xg4HandSubstituteBudget, xg4HoldForHandSubstitute, xg4IsHandSubstituteMaterial } from "./xg4/xg4Fields";
 
 /** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
 export type ZordMaterialZone = "rush" | "battle" | "hand";
@@ -350,7 +350,7 @@ export function collectRequiredFusionMaterials(
         const rest = matchFusionCombination(player, definitions, rushingInstanceId, flat, new Map(), new Set(), false, {
           slots: covered,
           material: { zone, index, card },
-        });
+        }, rushingCardId);
         if (rest) return rest;
       }
     }
@@ -395,6 +395,7 @@ function collectRequiredFusionMaterialsWith(
         useAlt,
         includeCommand,
         preassigned,
+        rushingCardId,
       );
       if (found) return found;
     }
@@ -417,6 +418,7 @@ function matchFusionCombination(
   useAlt: Set<number>,
   includeCommand: boolean,
   preassigned: { slots: Set<number>; material: FusionMaterialFound } | null,
+  rushingCardId: string,
 ): FusionMaterialFound[] | null {
   type Found = FusionMaterialFound;
   const found: Found[] = preassigned ? [preassigned.material] : [];
@@ -440,6 +442,23 @@ function matchFusionCombination(
     return null;
   };
 
+  let handBudget: number | undefined;
+  const handSubstitute = (slot: string[]): Found | null => {
+    handBudget ??= xg4HandSubstituteBudget(player, definitions, rushingCardId);
+    if (found.filter((f) => f.zone === "hand").length >= handBudget) return null;
+    for (const partnerId of slot) {
+      const index = player.hand.findIndex(
+        (c) =>
+          c.instanceId !== rushingInstanceId &&
+          !usedInstanceIds.has(c.instanceId) &&
+          getDefinition(definitions, c.cardId)?.type === "unit" &&
+          fieldCardMatchesPartner(definitions, c, partnerId, player),
+      );
+      if (index >= 0) return { zone: "hand", index, card: player.hand[index]! };
+    }
+    return null;
+  };
+
   for (const [slotIndex, slot] of slots.entries()) {
     if (preassigned?.slots.has(slotIndex)) continue;
     // 「X（または、A＋B＋…）」— X のかわりに A・B…をすべてそろえてもよい（RS-236）。
@@ -457,9 +476,12 @@ function matchFusionCombination(
       const match = matchSlot(part);
       // XG4-039 の※（自軍捨札に同名のカードがあれば、その素材は捨札にしなくてよい。rules/xg4/xg4Fields.ts）。
       if (!match && xg4FusionSlotWaived(player, rushingInstanceId, part, (c, id) => fieldCardMatchesPartner(definitions, c, id))) continue;
-      if (!match) return null;
-      usedInstanceIds.add(match.card.instanceId);
-      found.push(match);
+      // XG4-008【I.N.E.T.特別開発班チーフ】: 場にない合体ユニットを、手札の同名のユニットカードで代える（1枚ごとに ET のコマンドを1つホールド。
+      // 1回のラッシュで複数回発動できる。atwiki/page-2137 Q1・Q2。rules/xg4/xg4Fields.ts）。
+      const sub = match ?? handSubstitute(part);
+      if (!sub) return null;
+      usedInstanceIds.add(sub.card.instanceId);
+      found.push(sub);
     }
   }
 
@@ -526,6 +548,7 @@ export function applyAllZordFusionMaterials(
   const toDiscard: CardInstance[] = [];
   const toPower = fusionMaterialsGoToPower(definitions, rushingCardId);
 
+  const handSubstitutes = materials.filter((m) => m.zone === "hand").length;
   for (const material of materials) {
     const zoneCards = [...nextPlayer[material.zone]];
     const removeIndex = zoneCards.findIndex(
@@ -536,6 +559,9 @@ export function applyAllZordFusionMaterials(
     toDiscard.push(material.card);
     nextPlayer = { ...nextPlayer, [material.zone]: remaining };
   }
+
+  // XG4-008【I.N.E.T.特別開発班チーフ】で手札のカードを合体ユニットにした数だけ、ET の自軍コマンドをホールドする（rules/xg4/xg4Fields.ts）。
+  for (let i = 0; i < handSubstitutes; i++) nextPlayer = xg4HoldForHandSubstitute(nextPlayer, definitions);
 
   if (toPower) {
     // 「追加条件：自軍合体ユニットをパワーゾーンに送る」— 素材はパワーゾーンにオモテ向きで置く。
