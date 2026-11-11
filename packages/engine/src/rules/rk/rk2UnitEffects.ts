@@ -643,7 +643,7 @@ function heavyPressureTargets(state: GameState, playerId: PlayerId): string[] {
 // ---------------------------------------------------------------------------
 // RK-039 メタルゲラス
 // 「【突進】自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを１体選び、ライドオフさせる。」（atwiki/page-183）。強制。
-// ライドオフさせたユニットはその場（ビークルの次）に残る。効果によるライドオフで RC が発動するかの出典はないので発動させない。
+// ライドオフさせたユニットは、バトルエリアなら一番右に置く（atwiki/page-141 Q10/A10）。効果によるライドオフで RC が発動するかの出典はないので発動させない。
 
 export const CHARGE_EFFECT_ID = "rk039_charge";
 
@@ -672,14 +672,17 @@ CHOICE_RESOLVERS[CHARGE_EFFECT_ID] = (state, playerId, instanceId) => {
   const enemyId = opponent(playerId);
   const found = findField(state, enemyId, instanceId);
   if (!found) return { error: "invalid_target" };
-  const off = patchPlayer(state, enemyId, (p) => ({
-    ...p,
-    [found.zone]: p[found.zone].map((c) => {
+  const off = patchPlayer(state, enemyId, (p) => {
+    const cards = p[found.zone].map((c) => {
       if (c.instanceId !== instanceId) return c;
       const { mountedOnInstanceId: _m, ...rest } = c;
       return rest;
-    }),
-  }));
+    });
+    if (found.zone !== "battle") return { ...p, [found.zone]: cards };
+    // 敵軍ターン中にライドオフさせられたユニットは、バトルエリアに出すときと同じように一番右に置く（atwiki/page-141 Q10/A10）。
+    const rider = cards.find((c) => c.instanceId === instanceId)!;
+    return { ...p, battle: [...cards.filter((c) => c.instanceId !== instanceId), rider] };
+  });
   return { state: proceed(close(off, pending), pending), log: logFor(state, playerId, "RK-039", `${CHARGE_EFFECT_ID}:${found.card.cardId}`) };
 };
 

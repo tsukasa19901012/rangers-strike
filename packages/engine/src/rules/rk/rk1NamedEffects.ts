@@ -440,7 +440,8 @@ export function applyRk1BattleCounterEffect(
 // 「特徴「改造人間」を持つ自軍Sユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは次の能力を得る⇒
 //  SPが空欄ではないユニットを撃破したとき、相手に1点ダメージを与える。」（atwiki/page-193）
 // - 2枚使えば2点（Q4）。能力は選んだユニット（instance）がこのターンに持つ。
-// - 撃破は「バトルによる撃破を行ったユニット」（grnrngr/faq-rider-1 RK-005 Q3）。効果で撃破したときの扱いは未対応（cardSpec の todo）。
+// - 撃破は「バトルによる撃破を行ったユニット」（grnrngr/faq-rider-1 RK-005 Q3）。効果で撃破したときは「撃破する」と書かれた
+//   テキストの持ち主が能力を持てばよい（同 Q）。RS-319【ディーソードベガ】は rules/legend1/set5NamedEffects.ts から呼ぶ。
 
 export const DYNAMO_EFFECT_ID = "rk005_dynamo";
 const DYNAMO_RULE = "rk005_dynamo_grant";

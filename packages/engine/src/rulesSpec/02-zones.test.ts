@@ -342,9 +342,25 @@ describe("R-ZONE-06 バトルエリア", () => {
   });
 
   // 「バトルエリアの一番右に置きます」
-  it.todo(
-    "R-ZONE-06: 敵軍ターン中にライドオフさせられたユニットはバトルエリアの一番右に置く（出典: atwiki/page-141 Q10/A10）— 敵軍ターン中に強制ライドオフさせる汎用の公開アクションがなく、エンジン経由で状況を作れない",
-  );
+  it("R-ZONE-06: 敵軍ターン中にライドオフさせられたユニットはバトルエリアの一番右に置く（出典: atwiki/page-141 Q10/A10）", () => {
+    // player1 のターン（player2 にとって敵軍ターン）に、RK-039 メタルゲラス【突進】で player2 のライド中の 2号をライドオフさせる。
+    let s = st({
+      phase: "battle",
+      player1: { rush: [inst("RK-039", "mg")], command: [{ ...inst("TST-OP", "c"), commandHeld: false }], deck: deckCards(3) },
+      player2: {
+        battle: [inst("RK-058", "v"), { ...inst("RK-073", "r"), mountedOnInstanceId: "RK-058:v" }, inst("SPEC-S-WB", "x")],
+        deck: deckCards(3, "e"),
+      },
+    });
+    s = unwrap(applyAction(s, { type: "initiate_command_payment", playerId: "player1", kind: "battle_entry", sourceInstanceId: "RK-039:mg" }));
+    if (s.pendingCommandPayment) {
+      s = unwrap(applyAction(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP:c"] }));
+    }
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-039");
+    s = unwrap(applyAction(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RK-073:r" }));
+    expect(cardIn(s, "player2", "RK-073:r")?.mountedOnInstanceId).toBeUndefined();
+    expect(s.players.player2.battle.map((c) => c.instanceId)).toEqual(["RK-058:v", "SPEC-S-WB:x", "RK-073:r"]);
+  });
 
   // 「なにもしない」を選ぶこともできます
   it("R-ZONE-06: バトルエリアに出たユニットはアタックもストライクもせず何もしないことを選べる（出典: grnrngr/faq/index.html バトルエリア Q2）", () => {

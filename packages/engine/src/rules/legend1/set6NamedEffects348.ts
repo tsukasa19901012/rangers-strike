@@ -30,6 +30,7 @@ import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pending
 import { registerOptionalEffect } from "../optionalEffects";
 import { rk16NamedTextNegated } from "../rk/rk16Fields";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
+import { afterCommandCardsLeft } from "../commandLeaveRefill";
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
 type ChoiceSkipper = (state: GameState, playerId: PlayerId) => ChoiceOutcome;
@@ -429,7 +430,11 @@ CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, instanceId) => {
   if (remaining.length > 0) {
     next = openEffectChoice(next, { ...pending, validInstanceIds: remaining, selectedInstanceIds: [] });
   }
-  return { state: finish(next, pending.phasePlayerId), log: logFor(state, playerId, "RS-363", `${PANTHER_CLAW_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+  next = finish(next, pending.phasePlayerId);
+  // 捨札にしたカードは敵軍コマンドゾーンを離れるので、敵軍の RS-238【プロジェットカノン】が誘発する
+  // （grnrngr/faq-card-6 RS-363 Q2: 無限ループはターンプレイヤーが優先順を選び、捨札にしたままで終えられる）。
+  if (!next.pendingEffectChoice) next = afterCommandCardsLeft(next, enemyId, 1);
+  return { state: next, log: logFor(state, playerId, "RS-363", `${PANTHER_CLAW_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
 };
 CHOICE_SKIPPERS[PANTHER_CLAW_EFFECT_ID] = skipChoice("RS-363", PANTHER_CLAW_EFFECT_ID);
 

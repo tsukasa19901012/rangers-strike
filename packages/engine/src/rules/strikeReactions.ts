@@ -170,6 +170,7 @@ export function applyCourageMagicRelease(
   state: GameState,
   playerId: PlayerId,
   unitCardId: string,
+  enteredInstanceId?: string,
 ): { state: GameState; log?: string } {
   if (!isSmallUnit(state.definitions, unitCardId)) {
     return { state };
@@ -208,6 +209,7 @@ export function applyCourageMagicRelease(
       selectCount: 1,
       commandAction: "release",
       optional: true,
+      ...(enteredInstanceId ? { courageEnteredInstanceId: enteredInstanceId } : {}),
     }),
     log,
   };
