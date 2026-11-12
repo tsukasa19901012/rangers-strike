@@ -196,14 +196,17 @@ function applyJama(state: GameState, ctx: GrantKeywordContext): GrantKeywordResu
 
 // モーフの置き換えでバトルエリアに出たときも「バトルエリアに出た」（R-REPL-04）。DSL の enter_battle はモーフの置き換えでは発火しないので、
 // 置き換えの選択を解決したアクションのあとに発動する（コメント欄「効果はターンを問わないならモーフで出たときに使ってもいい」）。
+// ターンプレイヤーは置き換えの選択の phasePlayerId（ラッシュした側）。after.activePlayer はモーフ後に開いたカウンター窓などで
+// 守る側になっていることがあり、それを使うと解決後の close でターンが入れ替わる（2026-11-12 報告）。
 xg2Hook("afterAction", (before, after) => {
   if (before.pendingEffectChoice?.effectId !== "morph_replacement") return after;
+  const phasePlayerId = before.pendingEffectChoice.phasePlayerId;
   let next = after;
   for (const playerId of ["player1", "player2"] as const) {
     const wasInBattle = new Set(before.players[playerId].battle.map((c) => c.instanceId));
     for (const card of after.players[playerId].battle) {
       if (wasInBattle.has(card.instanceId) || !isSameCardIdentity(card.cardId, "XG2-067")) continue;
-      next = applyJama(next, { playerId, phasePlayerId: next.activePlayer, sourceCardId: "XG2-067", effectId: `${JAMA_EFFECT_ID}:morph`, triggerSourceInstanceId: card.instanceId }).state;
+      next = applyJama(next, { playerId, phasePlayerId, sourceCardId: "XG2-067", effectId: `${JAMA_EFFECT_ID}:morph`, triggerSourceInstanceId: card.instanceId }).state;
     }
   }
   return next;

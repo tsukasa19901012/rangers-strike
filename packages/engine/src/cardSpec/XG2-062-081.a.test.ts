@@ -66,6 +66,7 @@ import {
   withStacked,
   zoneOf,
 } from "./XG2-062-081.helpers";
+import { legal } from "./XG2-042-061.helpers";
 
 const C1 = sUnit("SPEC-C1", { bp: 1000, powerCost: 1 });
 const C2 = sUnit("SPEC-C2", { bp: 1000, powerCost: 2 });
@@ -422,6 +423,23 @@ describe("XG2-067 仮面ライダー電王GF", () => {
     const t = pickAs(s, "player1", "XG2-067:gf");
     expect(zoneOf(t, "player1", "XG2-067:gf")).toBe("battle");
     expectChoiceFrom(t, "player1", "XG2-067");
+  });
+
+  it("XG2-067: 【邪魔するなら撃つよ】敵軍ターン中にモーフで出て撃破したあとも、ターンは敵軍（ラッシュした側）のまま続く。モーフ後にカウンターの窓が開いていても入れ替わらない（2026-11-12 報告 ?s=myi9cqWh）", () => {
+    // 手札の RS-026（ラッシュされたときのカウンター）があると、モーフのあとに自軍のカウンター窓が開き activePlayer が自軍になる。
+    const s = morphRush(
+      { battle: [inst("XG5-073", "me"), inst("SPEC-B3000", "mine")], command: [released("XG2-067", "gf"), ...releasedCat("MA", 2)], hand: [inst("RS-026", "ctr")], power: powerCards(4) },
+      EXTRA,
+    );
+    const t = pickAs(s, "player1", "XG2-067:gf");
+    expectChoiceFrom(t, "player1", "XG2-067");
+    expect(t.pendingEffectChoice?.phasePlayerId).toBe("player2");
+    const u = settle(pickAs(settle(t), "player1", "SPEC-B3000:mine"));
+    expect(zoneOf(u, "player1", "SPEC-B3000:mine")).toBe("discard");
+    expect(u.pendingEffectChoice).toBeUndefined();
+    expect(u.activePlayer).toBe("player2");
+    expect(u.phase).toBe("rush");
+    expect(legal(u).every((a) => a.playerId === "player2")).toBe(true);
   });
 });
 
