@@ -83,6 +83,42 @@ describe("GameSession", () => {
   });
 });
 
+describe("turn banners in the log", () => {
+  it("marks the first turn and every change of turn player, with the start phase heading after the banner", () => {
+    const session = newSession(3);
+    for (let step = 0; step < 3000 && session.state.turn < 4; step++) {
+      const owner = session.turnOwner();
+      if (owner === "human") {
+        const options = session.humanOptions();
+        const pick = Math.max(0, options.findIndex((o) => !o.action.type.startsWith("cancel_")));
+        if (!session.chooseHuman(pick).ok) session.chooseHuman((pick + 1) % options.length);
+      } else if (owner === "cpu") session.cpuStep();
+      else break;
+    }
+    expect(session.state.turn).toBeGreaterThanOrEqual(4);
+    const banners = session.log.filter((l) => l.startsWith("━━ ターン"));
+    const first = session.state.firstPlayer === "player1" ? "あなた" : "CPU";
+    const second = first === "あなた" ? "CPU" : "あなた";
+    expect(banners.slice(0, 4)).toEqual([
+      `━━ ターン1：${first}のターン ━━`,
+      `━━ ターン2：${second}のターン ━━`,
+      `━━ ターン3：${first}のターン ━━`,
+      `━━ ターン4：${second}のターン ━━`,
+    ]);
+    // 「〜のターン終了」→ banner →「── スタートフェイズ ──」
+    const at = session.log.indexOf(banners[1]!);
+    expect(session.log[at - 1]).toMatch(/のターン終了$/);
+    expect(session.log[at + 1]).toBe("── スタートフェイズ ──");
+    // A loaded board rebuilds the same banners from its entries.
+    const before = session.log.filter((l) => l.startsWith("━━ ターン"));
+    const dropped = session.logDropped;
+    const length = session.log.length;
+    session.loadState(session.state);
+    expect(session.log.filter((l) => l.startsWith("━━ ターン"))).toEqual(before);
+    expect(session.logDropped).toBe(dropped + length);
+  });
+});
+
 describe("「これをホールドして次の効果を発動できる」の選択（XG2-076【キバアロー】）", () => {
   it("offers the hold once, as 「ホールドして発動する」, without a 「コマンドを支払って使う（種類:効果）」 row (no command is paid)", async () => {
     const { getCardDefinition } = await import("@rangers-strike/cards");

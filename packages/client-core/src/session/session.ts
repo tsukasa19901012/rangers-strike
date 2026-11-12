@@ -51,7 +51,13 @@ export class GameSession {
   state: GameState;
   /** Formatted (Japanese) game log, oldest first. */
   readonly log: string[] = [];
+  /** How many lines have been dropped from the front of `log` (it keeps the newest logLimit lines). */
+  logDropped = 0;
   private loggedEntries = 0;
+  /** Turns ended in the logged entries (the next turn banner's number is this + 1). */
+  private loggedTurnEnds = 0;
+  /** The start phase heading held back until the turn banner after it (syncLog). */
+  private heldStartPhase: string | null = null;
   readonly metrics: MoveMetrics = {
     moves: 0,
     lastThinkMs: 0,
@@ -216,8 +222,10 @@ export class GameSession {
     this.lastError = null;
     this.version++;
     this.cachedOptions = null;
+    this.logDropped += this.log.length;
     this.log.length = 0;
     this.loggedEntries = 0;
+    this.loggedTurnEnds = 0;
     this.turnMoves = { turn: -1, count: 0 };
     this.syncLog();
   }
@@ -239,25 +247,67 @@ export class GameSession {
   /** Adds a line of the client's own to the match log (not part of the game state, so a shared board does not carry it). */
   note(text: string): void {
     this.log.push(text);
-    const limit = this.options.logLimit ?? 200;
-    if (this.log.length > limit) this.log.splice(0, this.log.length - limit);
+    this.trimLog();
     this.version++;
   }
 
   private syncLog(): void {
     const entries = this.state.log;
     for (let i = this.loggedEntries; i < entries.length; i++) {
-      const formatted = this.engine.formatGameLog(entries[i]!, this.state.definitions);
+      const entry = entries[i]!;
+      const formatted = this.engine.formatGameLog(entry, this.state.definitions);
       const text = formatted ? humanizeLogEntry(formatted, this.state) : null;
+      // The engine logs the move to the next turn's start phase just before end_turn:
+      // that heading goes after the turn banner, so it reads as the new turn's.
+      if (entry === "phase:end->start" && entries[i + 1]?.endsWith("|end_turn")) {
+        this.heldStartPhase = text;
+        continue;
+      }
       if (text) this.log.push(text);
+      // Who plays now stands out: a banner when the game starts and whenever the turn passes.
+      if (entry === "game_created") this.log.push(turnBanner(1, this.state.firstPlayer));
+      const ended = /^(player[12])\|end_turn$/.exec(entry);
+      if (ended) {
+        this.loggedTurnEnds++;
+        this.log.push(turnBanner(this.loggedTurnEnds + 1, this.nextTurnPlayer(entries, i, ended[1] as PlayerId)));
+        if (this.heldStartPhase) this.log.push(this.heldStartPhase);
+      }
+      this.heldStartPhase = null;
     }
     this.loggedEntries = entries.length;
-    const limit = this.options.logLimit ?? 200;
-    if (this.log.length > limit) this.log.splice(0, this.log.length - limit);
+    this.trimLog();
+  }
+
+  /**
+   * Who plays the turn after the end_turn at `index`: the player of the next entry (the new turn's
+   * start phase), or the active player when it is the newest entry. Usually the other player,
+   * but RS-484【ハリーアップ！】 gives a player another turn.
+   */
+  private nextTurnPlayer(entries: readonly string[], index: number, ended: PlayerId): PlayerId {
+    if (index === entries.length - 1) return this.state.activePlayer;
+    for (let j = index + 1; j < entries.length; j++) {
+      const who = /^(player[12])\|/.exec(entries[j]!);
+      if (who) return who[1] as PlayerId;
+    }
+    return ended === "player1" ? "player2" : "player1";
+  }
+
+  /** Keeps the newest logLimit lines. */
+  private trimLog(): void {
+    const limit = this.options.logLimit ?? 1000;
+    if (this.log.length <= limit) return;
+    const drop = this.log.length - limit;
+    this.log.splice(0, drop);
+    this.logDropped += drop;
   }
 
   sampleMemory(): void {
     const sample = this.options.memory?.sample(this.state) ?? null;
     if (sample) this.metrics.memory = sample;
   }
+}
+
+/** 「━━ ターン5：CPUのターン ━━」, the line that marks a new turn player in the log. */
+export function turnBanner(turn: number, player: PlayerId): string {
+  return `━━ ターン${turn}：${PLAYER_LABELS[player] ?? player}のターン ━━`;
 }

@@ -220,6 +220,8 @@ export default function App() {
   let swipeRow = -1;
   let swiping = false;
   let swipeStart = { offset: 0, at: 0 };
+  /** A drag over the open log scrolls it: the lines it has moved so far (-1 = not scrolling the log). */
+  let logDrag = -1;
   // The automatic-move settings panel, over the title or the match. `settingsHot`: the row under the pointer (-2: close).
   const [settingsOpen, setSettingsOpen] = createSignal(false);
   const [settingsHot, setSettingsHot] = createSignal(-1);
@@ -549,6 +551,16 @@ export default function App() {
       }
     }
     if (e.kind === "move" && pressed && Math.abs(pressed.x - e.x) + Math.abs(pressed.y - e.y) > 12) pressCard = null;
+    // Up and down over the open log scrolls it, the lines following the finger (down = older lines).
+    if (e.kind === "move" && pressed && logDrag >= 0) {
+      const want = Math.round((e.y - pressed.y) / gui.geometry.lineHeight);
+      if (want !== logDrag && Math.abs(e.y - pressed.y) > 12) {
+        controller.scrollLog(want - logDrag);
+        logDrag = want;
+        dragFrom = null;
+      }
+      return true;
+    }
     // Sideways along a row that hides cards is a swipe through them, not a drag: the cards follow the finger.
     if (e.kind === "move" && pressed && swipeRow >= 0 && !drag()) {
       const dx = pressed.x - e.x;
@@ -598,6 +610,10 @@ export default function App() {
       return dispatch(hover) || true;
     }
     if (e.kind === "wheel") {
+      // Over the open log the wheel scrolls it (down = newer lines).
+      if (gui.logShown && !gui.popup && !gui.list && inside(gui.geometry.detail, p)) {
+        return controller.scrollLog((e.dy ?? 0) > 0 ? -3 : 3) || true;
+      }
       // Over the selection window's cards the wheel moves through the cards, elsewhere through the rows.
       if (gui.dialog && !gui.popup && !gui.list && swipeArea(gui, p) === "cards") return dispatch((e.dy ?? 0) > 0 ? input.pageNext : input.pagePrev);
       if (gui.popup || gui.list || gui.dialog) return dispatch((e.dy ?? 0) > 0 ? input.next : input.prev);
@@ -611,6 +627,7 @@ export default function App() {
       pressFrames = 0;
       swipeRow = scrollableRow(gui, p);
       swiping = false;
+      logDrag = gui.logShown && !gui.popup && !gui.list && inside(gui.geometry.detail, p) ? 0 : -1;
       swipeStart = { offset: swipeRow >= 0 ? gui.rows[swipeRow]!.moreLeft : 0, at: webPlatform.clock() };
       let tile = !gui.menuOpen && !gui.dialog && e.button === 0 ? [...gui.rows.flatMap((row) => row.tiles)].reverse().find((t) => inside(t.rect, p)) : undefined;
       if (tile && !tile.actionable) tile = undefined;
@@ -625,6 +642,10 @@ export default function App() {
     if (drag()) setDrag(null);
     const row = swipeRow;
     swipeRow = -1;
+    const draggedLog = logDrag;
+    logDrag = -1;
+    // A drag that scrolled the log ends there (a tap on the log still puts it away below).
+    if (down && draggedLog !== -1 && Math.abs(down.y - e.y) > 12) return true;
     if (down && swiping) {
       swiping = false;
       // A quick flick goes on to the next screenful (all but one of the cards shown) in its direction.
@@ -657,8 +678,9 @@ export default function App() {
       return true;
     }
     const covering = [gui.list?.rect, gui.popup?.rect, gui.dialog?.rect].some((r) => r && inside(r, p));
-    // A phone shows the log over the board: a tap on it puts it away.
-    if (isPortrait(gui.geometry) && gui.logShown && inside(gui.geometry.detail, p) && !covering) return dispatch(input.toggleLog);
+    // A phone shows the log over the board: a tap on it, or anywhere off it, puts it away
+    // (the ログ button toggles it below, so a tap there is left to it).
+    if (isPortrait(gui.geometry) && gui.logShown && !covering && !inside(buttons.log, p)) return dispatch(input.toggleLog);
     if (!isPortrait(gui.geometry) && gui.detailFull && inside(gui.geometry.detail, p) && !covering) {
       setFullText(true);
       return true;

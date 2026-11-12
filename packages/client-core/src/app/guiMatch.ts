@@ -220,6 +220,12 @@ export class GuiMatch {
   /** A card the shell points at outside the board rows (a discard or power zone card): shown in the detail panel. */
   inspectCardId: string | null = null;
   private showLog = false;
+  /** How many log lines the log view is scrolled back from the newest (0 = follows the newest). */
+  private logBack = 0;
+  /** The last drawn log: its wrapped line count and how many lines fit (for scrollLog's limits). */
+  private logShape = { total: 0, fit: 0 };
+  /** Wrapped log lines, kept while the log and the wrap width stay the same. */
+  private logWrapCache: { width: string; first: number; wrapped: string[][]; lines: string[] } | null = null;
   private syncedVersion = -1;
   private toastText = "";
   private toastFrames = 0;
@@ -459,6 +465,33 @@ export class GuiMatch {
    * Shows the cards of board row `row` that are `delta` cards further right (left when negative):
    * a swipe over the row, or a tap on its ‹n / n› mark. A focus in the row stays on a shown card.
    */
+  /** Scrolls the open log: positive goes back to older lines, negative toward the newest. False when it did not move. */
+  scrollLog(delta: number): boolean {
+    if (!this.showLog) return false;
+    const max = Math.max(0, this.logShape.total - this.logShape.fit);
+    const next = Math.max(0, Math.min(max, this.logBack + delta));
+    if (next === this.logBack) return false;
+    this.logBack = next;
+    return true;
+  }
+
+  /** The whole log wrapped to the detail panel's width (cached per line: the log only grows at the end and drops from the front). */
+  private wrappedLog(wrap: WrapOptions): string[] {
+    const log = this.session.log;
+    const width = `${wrap.fontPx}/${wrap.maxWidthPx}`;
+    const first = this.session.logDropped;
+    let cache = this.logWrapCache;
+    if (!cache || cache.width !== width || first < cache.first || first > cache.first + cache.wrapped.length) {
+      cache = { width, first, wrapped: [], lines: [] };
+    }
+    const drop = first - cache.first;
+    const kept = cache.wrapped.slice(drop);
+    if (drop === 0 && kept.length === log.length) return cache.lines;
+    const wrapped = [...kept, ...log.slice(kept.length).map((l) => wrapText(l, wrap))];
+    this.logWrapCache = { width, first, wrapped, lines: wrapped.flat() };
+    return this.logWrapCache.lines;
+  }
+
   scrollRow(row: number, delta: number): boolean {
     this.sync();
     const target = this.rows[row];
@@ -1100,7 +1133,10 @@ export class GuiMatch {
       case "tabNext":
       case "tabPrev":
         if (this.dialogActive()) this.dialogHidden = false;
-        else this.showLog = !this.showLog;
+        else {
+          this.showLog = !this.showLog;
+          this.logBack = 0;
+        }
         break;
       case "focusTile": {
         const row = this.rows[event.row];
@@ -1623,9 +1659,17 @@ export class GuiMatch {
     };
     let detailFull: GuiView["detailFull"];
     if (this.showLog && !dialogShown) {
-      const lines = this.session.log.slice(-g.detailLines * 2).flatMap((l) => wrapText(l, wrapDetail));
-      pushDetail("dim", ["── ログ ──"]);
-      pushDetail("body", lines.slice(-(g.detailLines - 1)));
+      const lines = this.wrappedLog(wrapDetail);
+      // One line for the heading, the rest for the log; scrolled back by logBack lines from the newest.
+      const fit = Math.max(1, Math.min(g.detailLines, Math.floor((detailBottom - lineY) / g.lineHeight)) - 1);
+      this.logBack = Math.max(0, Math.min(this.logBack, lines.length - fit));
+      this.logShape = { total: lines.length, fit };
+      const end = lines.length - this.logBack;
+      const start = Math.max(0, end - fit);
+      const marks = [start > 0 ? `▲${start}行` : "", this.logBack > 0 ? `▼${this.logBack}行` : ""].filter(Boolean).join(" ");
+      pushDetail("dim", [marks ? `── ログ ${marks} ──` : "── ログ ──"]);
+      // The turn banners (「━━ ターン5：CPUのターン ━━」) stand out from the rest.
+      for (const line of lines.slice(start, end)) pushDetail(line.startsWith("━━") ? "accent" : "body", [line]);
     } else {
       const { name, stats, text, fields } = this.detailFor(detailCard.cardId, detailCard.hidden);
       const def = detailCard.cardId && !detailCard.hidden ? this.state().definitions[detailCard.cardId] : undefined;
