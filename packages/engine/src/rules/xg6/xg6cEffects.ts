@@ -17,7 +17,7 @@ import { openDeckLook } from "../deckLook";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, effectiveBp, effectiveCommandCategories, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { countAvailablePower } from "../../core/power";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { patchPlayer } from "../playerPatches";
@@ -458,7 +458,7 @@ function finishTryPick(state: GameState, pending: PendingEffectChoice, ids: stri
   const ownerSum = pending.xg6Meta?.limit ?? 0;
   if (ownerSum !== sum) {
     const loser = ownerSum < sum ? owner : opponent(owner);
-    next = applyDamageToPlayer(next, loser, 1, { kind: "none", activePlayer: next.activePlayer });
+    next = applyDamageToPlayer(next, loser, 1, { kind: "none", activePlayer: turnPlayerOf(next) });
   }
   return { state: proceed({ ...next, activePlayer: pending.phasePlayerId }, pending), log };
 }

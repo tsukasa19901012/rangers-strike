@@ -68,7 +68,7 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { countReleasedCommands, hasCommandForCardUse } from "./restrictions";
-import { findInZone, opponent, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
+import { findInZone, opponent, removeAt, takeFromDeckTop, updatePlayer, turnPlayerOf } from "../core/helpers";
 import { drawToDiscardFromDeck } from "./pendingChoices";
 import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
 import { resolveDestroyedFactEffects } from "./leaveEffects";
@@ -598,7 +598,7 @@ export function openMiracleKikoudanChoice(
       effectId: MIRACLE_KIKOUDAN_CHOICE_EFFECT_ID,
       sourceCardId: "RS-214",
       kind: "select_commands",
-      phasePlayerId: state.activePlayer,
+      phasePlayerId: turnPlayerOf(state),
       validInstanceIds: heldIds,
       selectedInstanceIds: [],
       selectCount: Math.min(2 * copies, heldIds.length),
@@ -1225,7 +1225,7 @@ export function applyDinoGutsCounter(
   // ルール: R-START-05, R-WIN-03 — ひくべきときにひけなければ敗北（公式FAQ RS-027 Q4）。
   // RS-122【海底探査】があれば下からひくことを選べる（faq-card-2 RS-122 Q1）。
   return {
-    state: drawToDiscardFromDeck(discarded.state, ownerId, phasePlayerId ?? state.activePlayer, drawCost),
+    state: drawToDiscardFromDeck(discarded.state, ownerId, phasePlayerId ?? turnPlayerOf(state), drawCost),
     log: buildLogEntry(
       ownerId,
       "play_counter",

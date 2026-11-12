@@ -9,7 +9,7 @@
  * - 任意（「置いてもよい」）。skip でそれ以上置かない。
  */
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
-import { findInZone, removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, removeAt, updatePlayer, turnPlayerOf } from "../core/helpers";
 import { cardName } from "../core/catalog";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { buildLogEntry } from "../log/formatLog";
@@ -74,7 +74,7 @@ export function afterCommandCardsLeft(
   const source = sources[0];
   if (!source) return state;
   // ゴーゴーファイヤーが2体あれば、1枚離れるごとに2枚置ける（faq-card-4 RS-238 Q3）。
-  return openRefill(state, ownerId, count * sources.length, source.cardId, source.instanceId, state.activePlayer);
+  return openRefill(state, ownerId, count * sources.length, source.cardId, source.instanceId, turnPlayerOf(state));
 }
 
 export function isCommandLeaveRefillChoice(pending: PendingEffectChoice | undefined): boolean {

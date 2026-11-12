@@ -8,7 +8,7 @@ import { xg7GameStartResume } from "./xg7GameStartResume";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { commandCategoriesOf, cardName, effectiveBp, getDefinition } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { listDslEffectsForTrigger } from "../../dsl/effectLookup";
@@ -833,7 +833,7 @@ export function openXg7cOnSelfRushFromZone(state: GameState, rusherId: PlayerId,
   const ids = releasedOperationCommands(state, rusherId);
   if (ids.length <= 3) return holdCommands(state, rusherId, ids);
   return openAfter(state, {
-    ...selectOne({ playerId: rusherId, phasePlayerId: state.activePlayer, sourceInstanceId: rushedInstanceId }, "XG7-068", STEAM_EFFECT_ID, ids, false, { kind: "select_command" }),
+    ...selectOne({ playerId: rusherId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: rushedInstanceId }, "XG7-068", STEAM_EFFECT_ID, ids, false, { kind: "select_command" }),
     xg7Meta: { limit: 3 },
   });
 }

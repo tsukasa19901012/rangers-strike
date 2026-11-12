@@ -8,7 +8,7 @@ import {
   requiresFusionPartnerReturn,
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { removeAt, updatePlayer } from "../core/helpers";
+import { removeAt, updatePlayer, turnPlayerOf } from "../core/helpers";
 import { applySuperRadarOnRush } from "./legend3/rushEffects";
 import {
   autoHoldForBattleEntry,
@@ -143,7 +143,7 @@ export function returnFusionPartnersFromDiscard(
   };
   // faq-card-3 RS-124 Q1 — 捨札からバトルエリアに出した S ユニット1体ごとに超電子レーダーを適用する。
   for (const instanceId of placedInBattle) {
-    const radar = applySuperRadarOnRush(next, ownerId, instanceId, state.activePlayer);
+    const radar = applySuperRadarOnRush(next, ownerId, instanceId, turnPlayerOf(state));
     if (radar.state !== next) next = { ...radar.state, log: [...radar.state.log, ...radar.logs] };
   }
   return next;

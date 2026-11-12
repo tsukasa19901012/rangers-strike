@@ -5,6 +5,26 @@ export function opponent(playerId: PlayerId): PlayerId {
 }
 
 /**
+ * ターンプレイヤー。反応窓・選択の間は activePlayer が応答する側（守る側）に移っているので、開いている待ちの phasePlayerId を先に見る。
+ * 効果の選択を開くときの phasePlayerId にはこれを使う（activePlayer を使うと、選択を閉じたときにターンが入れ替わる。2026-11-12 報告）。
+ */
+export function turnPlayerOf(state: Pick<GameState, "activePlayer" | "pendingStrike" | "pendingBattle" | "pendingRush" | "pendingMorph" | "pendingLeave" | "pendingRegister" | "pendingBattleEntry" | "pendingRideOffChoice" | "pendingEffectChoice" | "pendingEffectRush">): PlayerId {
+  return (
+    state.pendingStrike?.battlePhasePlayer ??
+    state.pendingBattle?.phasePlayerId ??
+    state.pendingRush?.phasePlayerId ??
+    state.pendingMorph?.phasePlayerId ??
+    state.pendingLeave?.phasePlayerId ??
+    state.pendingRegister?.phasePlayerId ??
+    state.pendingBattleEntry?.phasePlayerId ??
+    state.pendingRideOffChoice?.phasePlayerId ??
+    state.pendingEffectChoice?.phasePlayerId ??
+    state.pendingEffectRush?.phasePlayerId ??
+    state.activePlayer
+  );
+}
+
+/**
  * ラッシュ反応窓（pendingRush）で応答するプレイヤー（ターンプレイヤーの相手。R-CTR-01）。
  * 相手の効果で出された自軍ユニット（RS-284【スワンウィング】）には持ち主が応答する。
  */

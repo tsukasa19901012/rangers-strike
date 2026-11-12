@@ -17,7 +17,7 @@
 import { fusionMaterialAliasRequiresNoOwnL, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { canPlayOperationExceptCommandHold, cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { shuffleCards } from "../../core/deckShuffle";
 import { hasNameOrAlias, sameCardName } from "../../core/cardNames";
@@ -706,7 +706,7 @@ export function openRk12CastleDoranDraw(
   if (!riderOwner || !features.includes("仮面ライダー")) return state;
   if (state.players[riderOwner].deck.length === 0) return state;
   let next = state;
-  const phasePlayerId = event.phasePlayerId ?? state.activePlayer;
+  const phasePlayerId = event.phasePlayerId ?? turnPlayerOf(state);
   for (const d of dorans) {
     next = openOrQueue(next, confirmChoice({ playerId: riderOwner, phasePlayerId, sourceInstanceId: d.instanceId }, "RK-238", CASTLE_DRAN_EFFECT_ID));
   }

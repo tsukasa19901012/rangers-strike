@@ -7,7 +7,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { GrantKeywordContext } from "../../dsl/grantKeyword";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { effectiveBp, getDefinition, isVehicle, parsePowerCost, unitBp, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { addTurnRestrictionModifier } from "../../core/scopedModifiers";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { patchPlayer } from "../playerPatches";
@@ -258,7 +258,7 @@ const INSECT_COMBO: Record<string, (state: GameState, ctx: BaseCtx) => GameState
 ENTER_BATTLE_HOOKS.push((state, playerId, card, battleBeforeEnter) => {
   const run = Object.entries(INSECT_COMBO).find(([id]) => isSameCardIdentity(card.cardId, id))?.[1];
   if (!run || !insectCombo(state, playerId, card, battleBeforeEnter)) return state;
-  return run(state, { playerId, phasePlayerId: state.activePlayer, sourceInstanceId: card.instanceId });
+  return run(state, { playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: card.instanceId });
 });
 
 // XG3-089 ブルービート【スティンガードリル】「敵軍バトルエリアから、レジストを持つSユニットを1体選び撃破してもよい。」（atwiki/page-1973）

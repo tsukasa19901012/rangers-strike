@@ -5,7 +5,7 @@
  */
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition, isSmallUnit, unitSizeOf } from "../../core/catalog";
-import { opponent, performDeckDraws } from "../../core/helpers";
+import { opponent, performDeckDraws, turnPlayerOf } from "../../core/helpers";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import type { GrantKeywordContext } from "../../dsl/grantKeyword";
 import { patchPlayer } from "../playerPatches";
@@ -202,7 +202,7 @@ function magicCarpet(before: GameState, after: GameState): GameState {
       if (!wasInBattle.has(v.instanceId)) continue;
       const rider = after.players[pid].rush.find((c) => c.mountedOnInstanceId === v.instanceId);
       if (!rider) continue;
-      next = openAfter(next, { ...base({ playerId: pid, phasePlayerId: after.activePlayer, sourceInstanceId: v.instanceId }, "XG4-027"), effectId: CARPET_EFFECT_ID, kind: "select_unit", validInstanceIds: [rider.instanceId], selectCount: 1, optional: true });
+      next = openAfter(next, { ...base({ playerId: pid, phasePlayerId: turnPlayerOf(after), sourceInstanceId: v.instanceId }, "XG4-027"), effectId: CARPET_EFFECT_ID, kind: "select_unit", validInstanceIds: [rider.instanceId], selectCount: 1, optional: true });
     }
   }
   return next;
@@ -577,13 +577,13 @@ export function xg4bOnBattleDestroy(state: GameState, winnerId: PlayerId, winner
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return state;
-  return openAfter(state, { ...base({ playerId: winnerId, phasePlayerId: state.activePlayer, sourceInstanceId: winnerInstanceId }, "XG4-032"), effectId: DAGGER_EFFECT_ID, kind: "select_power", validInstanceIds: ids, selectCount: 1, optional: true });
+  return openAfter(state, { ...base({ playerId: winnerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: winnerInstanceId }, "XG4-032"), effectId: DAGGER_EFFECT_ID, kind: "select_power", validInstanceIds: ids, selectCount: 1, optional: true });
 }
 
 /** ライドオフしたとき（rider はライドオフ後のユニット）。XG4-025「（この効果は、ライドオフしたときナンバーに関係なく発動する）」。 */
 export function applyXg4bRideOff(state: GameState, playerId: PlayerId, rider: CardInstance): GameState {
   if (!isCard(rider.cardId, "XG4-025")) return state;
-  return sonicHammer(state, { playerId, phasePlayerId: state.activePlayer, sourceInstanceId: rider.instanceId }, true);
+  return sonicHammer(state, { playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: rider.instanceId }, true);
 }
 
 /** applyAction の後処理（depth 0）。 */

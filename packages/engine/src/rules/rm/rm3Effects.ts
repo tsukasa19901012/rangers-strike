@@ -14,7 +14,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { cardNotSelectableByOpponent } from "../../keywords/effectTargetability";
 import { breakerBlocksEffectTarget, cardHasBattleKeyword, prepareWingUnitReturnedToRush } from "../../keywords/battleKeywords";
@@ -676,7 +676,7 @@ export function applyRm3AfterAction(before: GameState, after: GameState): GameSt
   while (queue.length > 0) {
     const trigger = queue.shift()!;
     const existing = next.pendingEffectChoice;
-    const phasePlayerId = existing?.phasePlayerId ?? next.activePlayer;
+    const phasePlayerId = existing?.phasePlayerId ?? turnPlayerOf(next);
     const choice = trunkChoice(next, trigger.playerId, phasePlayerId, trigger.sourceInstanceId);
     if (!choice) continue;
     next = existing ? { ...next, pendingEffectChoice: { ...choice, resumeChoice: existing }, activePlayer: choice.playerId } : openEffectChoice(next, choice);

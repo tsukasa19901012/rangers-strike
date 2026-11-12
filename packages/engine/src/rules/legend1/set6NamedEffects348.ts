@@ -10,7 +10,7 @@ import { set8DNamedTextNegated } from "./set8NamedEffectsD";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { cardName, effectiveBp, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
-import { findInZone, opponent, updatePlayer } from "../../core/helpers";
+import { findInZone, opponent, updatePlayer, turnPlayerOf } from "../../core/helpers";
 import { addNextTurnRuleModifier, addTurnRuleModifier, hasScopedRestriction, hasTurnRuleModifier } from "../../core/scopedModifiers";
 import { XG5_CONFINE_RESTRICTION } from "../xg5/xg5Core";
 import { grantSp1ToBattleUnit, hasBattleNcEffect, markBattleNcEffect } from "../namedUnitEffects";
@@ -878,7 +878,7 @@ function openSpecialExtinguisherIfReady(state: GameState): GameState {
         sourceCardId: "RS-385",
         sourceInstanceId: hover.instanceId,
         kind: "confirm",
-        phasePlayerId: next.activePlayer,
+        phasePlayerId: turnPlayerOf(next),
         validInstanceIds: [],
         selectedInstanceIds: [head.instanceId],
         optional: true,

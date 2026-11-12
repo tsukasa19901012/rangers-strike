@@ -4,7 +4,7 @@
  */
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardCategories, effectiveBp, getDefinition } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { patchPlayer, grantSp1OnPlayer } from "../playerPatches";
 import { openEffectChoice } from "../pendingChoices";
@@ -324,7 +324,7 @@ function bigMagnum(before: GameState, after: GameState): GameState {
         .filter((c) => isUnit(next, c.cardId) && effectiveBp(next, enemyId, c) <= 8000 && selectableEnemy(next, pid, "XG4-095", c))
         .map((c) => c.instanceId);
       if (ids.length === 0) continue;
-      next = openAfter(next, { ...base({ playerId: pid, phasePlayerId: after.activePlayer, sourceInstanceId: sf.instanceId }, "XG4-095"), effectId: MAGNUM_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true });
+      next = openAfter(next, { ...base({ playerId: pid, phasePlayerId: turnPlayerOf(after), sourceInstanceId: sf.instanceId }, "XG4-095"), effectId: MAGNUM_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true });
     }
   }
   return next;
@@ -429,7 +429,7 @@ export function xg4eOnBattleDestroy(state: GameState, winnerId: PlayerId, winner
 }
 
 function applyDamage(state: GameState, pid: PlayerId): GameState {
-  return applyDamageToPlayer(state, pid, 1, { kind: "none", activePlayer: state.activePlayer });
+  return applyDamageToPlayer(state, pid, 1, { kind: "none", activePlayer: turnPlayerOf(state) });
 }
 
 // ---------------------------------------------------------------------------

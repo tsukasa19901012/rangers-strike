@@ -14,13 +14,7 @@ import {
   unitBp,
   unitSizeOf,
 } from "../core/catalog";
-import {
-  findInZone,
-  opponent,
-  payPowerCost,
-  removeAt,
-  updatePlayer,
-} from "../core/helpers";
+import { findInZone, opponent, payPowerCost, removeAt, updatePlayer, turnPlayerOf } from "../core/helpers";
 import { applyDamageToPlayer } from "../rules/damagePayment";
 import { findCardInPlayer, findOwnUnit } from "../core/modifiers";
 import { findCardOwner } from "../rules/fieldLookup";
@@ -434,7 +428,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
     case "deal_damage_1": {
       const nextState = applyDamageToPlayer(ctx.state, enemyId, 1, {
         kind: "none",
-        activePlayer: ctx.playerId,
+        activePlayer: turnPlayerOf(ctx.state),
       });
       return {
         state: nextState,
@@ -446,7 +440,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
     case "deal_damage_2": {
       const nextState = applyDamageToPlayer(ctx.state, enemyId, 2, {
         kind: "none",
-        activePlayer: ctx.playerId,
+        activePlayer: turnPlayerOf(ctx.state),
       });
       return {
         state: nextState,

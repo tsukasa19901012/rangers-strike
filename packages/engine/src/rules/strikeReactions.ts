@@ -11,7 +11,7 @@ import {
   isSmallUnit,
 } from "../core/catalog";
 import { playerHasOperationGrantKeyword } from "../dsl/operationKeywords";
-import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, opponent, removeAt, updatePlayer, turnPlayerOf } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { isBloodVesselStrikeActive } from "../keywords/battleKeywords";
 import {
@@ -203,7 +203,7 @@ export function applyCourageMagicRelease(
       effectId: "courage_magic",
       sourceCardId: source?.cardId ?? "RS-029",
       sourceInstanceId: source?.instanceId,
-      phasePlayerId: state.activePlayer,
+      phasePlayerId: turnPlayerOf(state),
       kind: "select_command",
       validInstanceIds: heldIds,
       selectCount: 1,

@@ -7,7 +7,7 @@ import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { getDefinition, parsePowerCost, unitSizeOf, effectiveBp } from "../../core/catalog";
-import { drawOne, opponent } from "../../core/helpers";
+import { drawOne, opponent, turnPlayerOf } from "../../core/helpers";
 import { tryResolveDslNcEffects } from "../../dsl/triggerResolver";
 import { patchPlayer } from "../playerPatches";
 import { loopWinner, registerLoopDetector } from "../loopPriority";
@@ -565,7 +565,7 @@ ENTER_BATTLE_HOOKS.push((state, playerId, card, battleBeforeEnter) => {
   const cats = fieldCategories(state, playerId, left);
   if (!cats.some((c) => c !== "DA")) return state;
   return openAfter(state, {
-    ...base({ playerId, phasePlayerId: state.activePlayer, sourceInstanceId: card.instanceId }, DECADE_CF_CARD_ID),
+    ...base({ playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: card.instanceId }, DECADE_CF_CARD_ID),
     effectId: DECADE_EFFECT_ID,
     kind: "confirm",
     validInstanceIds: ["accept"],

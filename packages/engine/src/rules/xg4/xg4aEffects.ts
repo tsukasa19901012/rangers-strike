@@ -6,7 +6,7 @@
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardCategories, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
-import { opponent, performDeckDraws } from "../../core/helpers";
+import { opponent, performDeckDraws, turnPlayerOf } from "../../core/helpers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { patchPlayer } from "../playerPatches";
 import { startEffectRush } from "../effectRush";
@@ -713,7 +713,7 @@ export function xg4aOnBattleDestroy(
   const winner = findField(state, winnerId, winnerInstanceId);
   if (!winner) return state;
   let next = state;
-  const ctx = { playerId: winnerId, phasePlayerId: state.activePlayer, sourceInstanceId: winnerInstanceId };
+  const ctx = { playerId: winnerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: winnerInstanceId };
   // XG4-010【閃光星獣剣】: 撃破して捨札になったユニットを除外するか。
   if (isCard(winner.cardId, "XG4-010") && hasTurnRecordFor(next, winnerId, SENKO_RULE, winnerInstanceId)) {
     if (next.players[defeatedOwnerId].discard.some((c) => c.instanceId === defeatedInstanceId)) {

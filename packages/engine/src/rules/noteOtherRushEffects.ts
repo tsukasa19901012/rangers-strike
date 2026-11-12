@@ -1,6 +1,6 @@
 import type { GameState, PlayerId } from "../types/game";
 import { cardName, getDefinition, unitSizeOf } from "../core/catalog";
-import { opponent, removeAt, updatePlayer } from "../core/helpers";
+import { opponent, removeAt, updatePlayer, turnPlayerOf } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { applyDamageToPlayer } from "./damagePayment";
 import { startSelectPowerChoice, startSelectUnitChoice } from "./pendingChoices";
@@ -83,7 +83,7 @@ export function resolveNoteOtherOnRushEffects(
     if (damageCount <= 3) {
       nextState = applyDamageToPlayer(nextState, rusherPlayerId, 1, {
         kind: "none",
-        activePlayer: nextState.activePlayer,
+        activePlayer: turnPlayerOf(nextState),
       });
       logs.push(buildLogEntry(rusherPlayerId, "rush_effect", cardId, nextState.definitions, "yamimaru_self_damage"));
     }

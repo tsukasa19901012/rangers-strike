@@ -8,7 +8,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { effectiveBp, getDefinition } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { shuffleCards } from "../../core/deckShuffle";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
@@ -196,14 +196,17 @@ function applyJama(state: GameState, ctx: GrantKeywordContext): GrantKeywordResu
 
 // モーフの置き換えでバトルエリアに出たときも「バトルエリアに出た」（R-REPL-04）。DSL の enter_battle はモーフの置き換えでは発火しないので、
 // 置き換えの選択を解決したアクションのあとに発動する（コメント欄「効果はターンを問わないならモーフで出たときに使ってもいい」）。
+// ターンプレイヤーは置き換えの選択の phasePlayerId（ラッシュした側）。after.activePlayer はモーフ後に開いたカウンター窓などで
+// 守る側になっていることがあり、それを使うと解決後の close でターンが入れ替わる（2026-11-12 報告）。
 xg2Hook("afterAction", (before, after) => {
   if (before.pendingEffectChoice?.effectId !== "morph_replacement") return after;
+  const phasePlayerId = before.pendingEffectChoice.phasePlayerId;
   let next = after;
   for (const playerId of ["player1", "player2"] as const) {
     const wasInBattle = new Set(before.players[playerId].battle.map((c) => c.instanceId));
     for (const card of after.players[playerId].battle) {
       if (wasInBattle.has(card.instanceId) || !isSameCardIdentity(card.cardId, "XG2-067")) continue;
-      next = applyJama(next, { playerId, phasePlayerId: next.activePlayer, sourceCardId: "XG2-067", effectId: `${JAMA_EFFECT_ID}:morph`, triggerSourceInstanceId: card.instanceId }).state;
+      next = applyJama(next, { playerId, phasePlayerId, sourceCardId: "XG2-067", effectId: `${JAMA_EFFECT_ID}:morph`, triggerSourceInstanceId: card.instanceId }).state;
     }
   }
   return next;
@@ -322,7 +325,7 @@ xg2Hook("residentPlaced", (state, ownerId, opInstanceId, cardId) => {
   if (!isSameCardIdentity(cardId, "XG2-070")) return null;
   const ids = bookSearchIds(state, ownerId);
   if (ids.length === 0) return patchPlayer(state, ownerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
-  return openAfter(state, selectOne({ playerId: ownerId, phasePlayerId: state.activePlayer, sourceInstanceId: opInstanceId }, "XG2-070", BOOK_EFFECT_ID, ids, true));
+  return openAfter(state, selectOne({ playerId: ownerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: opInstanceId }, "XG2-070", BOOK_EFFECT_ID, ids, true));
 });
 
 registerXg2Choice(BOOK_EFFECT_ID, {
@@ -555,7 +558,7 @@ function fireMountedVehicleEnter(state: GameState, playerId: PlayerId, vehicleIn
   const vehicle = state.players[playerId].battle.find((c) => c.instanceId === vehicleInstanceId);
   const vehicleCardId = vehicle ? mountedVehicleCardId(vehicle.cardId) : undefined;
   if (!vehicle || !vehicleCardId) return state;
-  const ctx: GrantKeywordContext = { playerId, phasePlayerId: state.activePlayer, sourceCardId: vehicleCardId, effectId: `${vehicleCardId}:mounted_enter`, triggerSourceInstanceId: vehicle.instanceId };
+  const ctx: GrantKeywordContext = { playerId, phasePlayerId: turnPlayerOf(state), sourceCardId: vehicleCardId, effectId: `${vehicleCardId}:mounted_enter`, triggerSourceInstanceId: vehicle.instanceId };
   return MOUNTED_VEHICLE_ENTER[vehicleCardId]!(state, ctx).state;
 }
 

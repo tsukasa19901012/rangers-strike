@@ -6,7 +6,7 @@ import {
   getDefinition,
   parsePowerCost,
 } from "../../core/catalog";
-import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { findInZone, opponent, removeAt, updatePlayer, turnPlayerOf } from "../../core/helpers";
 import { applyDamageToPlayer } from "../damagePayment";
 import { buildLogEntry } from "../../log/formatLog";
 import {
@@ -94,7 +94,7 @@ export function resolveLegend3OnBattleWin(
       // 2回コンビネーションして2つ得ていれば重複して2点（faq-card-3 RS-171 Q1、R-CONT-01）。
       nextState = applyDamageToPlayer(nextState, opponent(attackerId), maximumPenetration, {
         kind: "none",
-        activePlayer: attackerId,
+        activePlayer: turnPlayerOf(nextState),
       });
       logs.push(
         buildLogEntry(

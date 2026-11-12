@@ -8,7 +8,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { effectiveBp, effectiveCommandCategories, getDefinition, isOperation, isPermanentOperation, parsePowerCost } from "../../core/catalog";
-import { drawOne, opponent } from "../../core/helpers";
+import { drawOne, opponent, turnPlayerOf } from "../../core/helpers";
 import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
 import { patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
@@ -143,7 +143,7 @@ BATTLE_DESTROY_HOOKS.push((state, winnerId, winnerInstanceId, defeatedOwnerId, d
   const p = state.players[defeatedOwnerId];
   const victim = [...p.discard, ...p.power, ...p.hand, ...p.deck, ...p.command, ...p.battle, ...p.rush].find((c) => c.instanceId === defeatedInstanceId);
   if (!victim || printedSpBlank(state, victim.cardId)) return state;
-  return applyDamageToPlayer(state, defeatedOwnerId, 1, { kind: "none", activePlayer: state.activePlayer });
+  return applyDamageToPlayer(state, defeatedOwnerId, 1, { kind: "none", activePlayer: turnPlayerOf(state) });
 });
 
 // ---------------------------------------------------------------------------
@@ -479,7 +479,7 @@ ENTER_BATTLE_HOOKS.push((state, playerId, card, battleBeforeEnter) => {
     .filter((c) => isUnitCard(state, c.cardId) && !unitFeatures(state, enemyId, c).some((f) => f === "男" || f === "女" || f === "人型") && selectableEnemy(state, playerId, "XG3-057", c))
     .map((c) => c.instanceId);
   if (ids.length === 0) return state;
-  return openAfter(state, { ...base({ playerId, phasePlayerId: state.activePlayer, sourceInstanceId: left.instanceId }, "XG3-057"), effectId: ONGEKIKO_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true });
+  return openAfter(state, { ...base({ playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: left.instanceId }, "XG3-057"), effectId: ONGEKIKO_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true });
 });
 CHOICE_SKIPPERS[ONGEKIKO_EFFECT_ID] = skipThen();
 CHOICE_RESOLVERS[ONGEKIKO_EFFECT_ID] = (state, playerId, instanceId) => {

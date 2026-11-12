@@ -40,7 +40,9 @@ export function stepPrefer(s: GameState, playerId: PlayerId, types: string[]): G
  * （スタートフェイズのバトルエリアの戻し・ドロー・チャージ・ラッシュは何もしないで進める）。
  */
 export function toEnemyBattle(s: GameState): GameState {
-  let next = endTurn(s);
+  // RC の選択のあとは、そのユニットのバトル進入（アタックするか）が続く（中断した進入は選択の解決後に再開する）。見送ってからターンを終える。
+  const pass = s.pendingBattleEntry ? legal(s).find((a) => a.type === "pass_battle_entry" && a.playerId === s.activePlayer) : undefined;
+  let next = endTurn(pass ? act(s, pass) : s);
   for (let i = 0; i < 10 && !(next.activePlayer === "player2" && next.phase === "battle"); i += 1) {
     const n = stepPrefer(next, "player2", ["return_all_battle_to_rush", "draw", "end_phase"]);
     if (!n) break;
