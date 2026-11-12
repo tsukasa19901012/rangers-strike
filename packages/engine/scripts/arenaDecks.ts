@@ -27,13 +27,15 @@ export function arenaDeckIds(prefix = ""): string[] {
  * --decks の値をデッキ id の一覧にする。カンマ区切りで、id のほかにまとめて指定する名前も使える:
  * starters（スターター 46 個）、arena（arena-decks のうち下の 3 グループ以外）、wiki（atwiki 由来）、blog（ブログ等由来、下の 3 グループ以外）、
  * livedoor（livedoor「letsrenst」由来の 373 個）、blog2（2026-10-28 に足したブログ 3 つと OCTGN のサンプルデッキ、90 個）、
- * rstournament（レンスト地域対抗戦 2018〜19 年のデッキ 56 個。計測用のテスト用デッキ）。
- * この 3 グループは arena・blog には入れず、名指ししたときだけ使う。
+ * rstournament（レンスト地域対抗戦 2018〜19 年のデッキ 56 個。計測用のテスト用デッキ）、
+ * shared（アプリの「共有する」で短い URL にされたデッキ。scripts/import-shared-decks.ts で取り込む）。
+ * この 4 グループは arena・blog には入れず、名指ししたときだけ使う。
  */
 const GROUP_PREFIXES = {
   livedoor: ["blog-livedoor-"],
   blog2: ["blog-gyorie-", "blog-bluesplash-urara-", "blog-hokkaidohobbies-", "octgn-rsxg-"],
   rstournament: ["rstournament-"],
+  shared: ["shared-"],
 } as const;
 const NAMED_ONLY = Object.values(GROUP_PREFIXES).flat();
 const inGroup = (id: string, prefixes: readonly string[]) => prefixes.some((p) => id.startsWith(p));
@@ -47,6 +49,7 @@ export function resolveDeckList(spec: string): string[] {
     livedoor: () => arenaDeckIds().filter((id) => inGroup(id, GROUP_PREFIXES.livedoor)),
     blog2: () => arenaDeckIds().filter((id) => inGroup(id, GROUP_PREFIXES.blog2)),
     rstournament: () => arenaDeckIds().filter((id) => inGroup(id, GROUP_PREFIXES.rstournament)),
+    shared: () => arenaDeckIds().filter((id) => inGroup(id, GROUP_PREFIXES.shared)),
   };
   return spec.split(",").flatMap((s) => (groups[s] ? [...groups[s]!()] : [s]));
 }

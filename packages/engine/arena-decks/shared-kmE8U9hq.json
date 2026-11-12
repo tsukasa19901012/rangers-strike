@@ -1,0 +1,87 @@
+{
+  "id": "shared-kmE8U9hq",
+  "name": "青黄コンプリ",
+  "source": "共有デッキ /?d=kmE8U9hq",
+  "entries": [
+    {
+      "cardId": "RK-013",
+      "count": 2
+    },
+    {
+      "cardId": "RK-058",
+      "count": 3
+    },
+    {
+      "cardId": "RK-087",
+      "count": 1
+    },
+    {
+      "cardId": "RK-135",
+      "count": 3
+    },
+    {
+      "cardId": "RK-150",
+      "count": 1
+    },
+    {
+      "cardId": "RK-237",
+      "count": 2
+    },
+    {
+      "cardId": "RK-261",
+      "count": 2
+    },
+    {
+      "cardId": "RK-313",
+      "count": 3
+    },
+    {
+      "cardId": "SX-006",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-064",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-071",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-076",
+      "count": 3
+    },
+    {
+      "cardId": "XG1-077",
+      "count": 3
+    },
+    {
+      "cardId": "XG2-042",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-046",
+      "count": 3
+    },
+    {
+      "cardId": "XG3-048",
+      "count": 1
+    },
+    {
+      "cardId": "XG4-049",
+      "count": 3
+    },
+    {
+      "cardId": "XG4-051",
+      "count": 3
+    },
+    {
+      "cardId": "XG5-052",
+      "count": 3
+    },
+    {
+      "cardId": "XG7-042",
+      "count": 2
+    }
+  ]
+}

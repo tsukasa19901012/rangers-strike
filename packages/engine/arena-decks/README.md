@@ -14,13 +14,17 @@
 | `night-fever` | ナイトフィーバー | 2008 春 フェスティバル ガンスリンガー（上位の半数以上が使用） |
 | `blue-yellow-rush` | 青黄速攻 | 2008 夏 ツアーフェスティバル チャンピオン大会 優勝 |
 
-## 共有されたデッキ（1 個）
+## 共有されたデッキ（`shared-<id>.json`、グループ `shared`）
 
-デッキ作りの「共有する」で短い URL にされたデッキ（`apps/web-pocket/scripts/list-shared-decks.mjs --arena` で書き出せます）。
+アプリのデッキ作りで「共有する」から短い URL にされたデッキ（/?d=<id>）。実際に遊ぶ人が組んだデッキなので、CPU の学習と計測に使います。
+`--decks shared` と名指ししたときだけ使い、`arena` には入りません。取り込み方（読み取り専用の鍵が要ります）:
 
-| id | デッキ |
-|---|---|
-| `shared-BP7aNXyT` | 青単 加速カブトデッキ（/?d=BP7aNXyT） |
+```sh
+node apps/web-pocket/scripts/list-shared-decks.mjs --env <鍵の .env> --out packages/engine/.cache/shared-decks.json
+cd packages/engine && npx tsx scripts/import-shared-decks.ts .cache/shared-decks.json
+```
+
+デッキの決まり（40 枚以上・同名 3 枚まで）を満たさないものと、スターター・ほかのデッキと中身が同じものは取り込みません。
 
 ## atwiki のデッキサンプルから組んだデッキ（40 個）
 
