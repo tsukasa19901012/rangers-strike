@@ -9,6 +9,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import { enterBattleByEffect } from "../testing/battleEntry";
 import { allCardsCatalog, validateDeckEntries } from "@rangers-strike/cards";
 import {
@@ -672,6 +673,25 @@ describe("RS-325 天空勇者マジシャイン", () => {
     const r = rushFromHand(s, "player1", "SPEC-MA9:u");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(settle(r.state), "player1", "SPEC-MA9:u")).toBe("rush");
+  });
+
+  it("RS-325: マジチケットでコマンドゾーンのカウンターを使う窓から、どの選び方でも先に進む（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const BIG = sUnit("SPEC-BIG9", { size: "M", bp: 9000 });
+    const start = () =>
+      attack(
+        st(
+          {
+            activePlayer: "player2",
+            player1: { rush: [inst("RS-325", "ms")], battle: [inst("RS-257", "kai")], command: [released("RS-255", "bomb"), released("TST-OP-DA", "c")], power: powerCards(4), deck: deckCards(3) },
+            player2: { battle: [inst("SPEC-BIG9", "atk")], deck: deckCards(3, "e") },
+          },
+          [BIG],
+        ),
+        "SPEC-BIG9:atk",
+        "RS-257:kai",
+        "player2",
+      );
+    expect(freezeProblems(start)).toEqual([]);
   });
 
   // faq-card-5 RS-325 Q3「その手順では「RS-255 巨大化爆弾」が捨札になるタイミングがありませんので…ラッシュエリアに留まります。…かわりとして…捨札にするということはできません。」

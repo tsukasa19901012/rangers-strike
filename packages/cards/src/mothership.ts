@@ -69,11 +69,16 @@ export function mothershipHoldsRequiredForRush(
   return Math.max(0, mothershipHoldCountForRush(rushingCardId) - slotsFilledByMaterial);
 }
 
-/** ジャガー母艦は捨札経路の追加コストと併用不可（Q5）。 */
+/**
+ * 素材を一部送り、残りを【母艦】ホールドで代えられるか。
+ * ジャガー母艦は捨札経路の追加コストと併用不可（Q5）。「パワーゾーンに送る」追加条件（RS-105 デカベースクローラー等）は
+ * 1体ごとの置き換えなので併用できる（ユーザー判断 2026-11-12）。
+ */
 export function jaguarMothershipAllowedWithMaterial(
   rushingCardId: string,
   materialDestination?: "command" | "discard",
 ): boolean {
+  if (getZordCondition(rushingCardId) === "send_s_unit_to_power") return true;
   if (getZordCondition(rushingCardId) !== "send_s_unit_to_command_or_discard") return false;
   return materialDestination !== "discard";
 }

@@ -10,6 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import {
   act,
   attack,
@@ -504,6 +505,12 @@ describe("RS-566 天雷旋風神", () => {
     for (let i = 0; i < 6 && s.pendingEffectChoice && s.pendingEffectChoice.effectId !== "rs566_ultima_storm_order"; i++) s = settle(drain(s, s.pendingEffectChoice.playerId));
     return s;
   };
+
+  it("RS-566: 【アルティマストーム】の戻す順はどちらを選んでも最後まで戻し終わる（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const start = () => stormOrder({});
+    expect(watchedOpened(start, ["rs566_ultima_storm_order"])).toBe(true);
+    expect(freezeProblems(start, { watch: ["rs566_ultima_storm_order"], maxOpen: 1 })).toEqual([]);
+  });
 
   // 「はい、その通りです。」
   it("RS-566: Q&A — 山札に戻す順番はターンプレイヤーが決める（出典: atwiki/page-1229 Q1「はい、その通りです。」）", () => {

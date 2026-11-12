@@ -10,6 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import { enterBattleByEffect } from "../testing/battleEntry";
 import {
   bpOf,
@@ -387,6 +388,11 @@ describe("RS-558 ガンマジン", () => {
       return r.state;
     };
     const card = (s: GameState, id: string) => [...s.players.player1.rush, ...s.players.player1.battle].find((c) => c.instanceId === id)!;
+
+    it("RS-558: ループの優先を選んだあと同じ選択が開き直さない（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+      expect(watchedOpened(arkRushed, ["loop_priority"])).toBe(true);
+      expect(freezeProblems(arkRushed, { watch: ["loop_priority"], maxOpen: 1 })).toEqual([]);
+    });
 
     it("RS-558: atwiki Q&A — ガンマジン1体だけのときにアークをラッシュすると、ターンプレイヤーがどちらの効果を優先するかを選ぶ（出典: atwiki/page-1186 Q6）", () => {
       const s = arkRushed();

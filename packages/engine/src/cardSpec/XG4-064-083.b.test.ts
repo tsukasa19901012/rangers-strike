@@ -7,6 +7,7 @@
  * 公開エンジン API（createTestState / applyAction / getLegalActions）だけを使う。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import type { GameState } from "../types/game";
 import {
   attack,
@@ -286,6 +287,22 @@ describe("XG4-075 アポロガイスト（XG4）", () => {
   it("XG4-075:【生命の強奪】— リリース状態でバトルエリアに出たときは発動しない（出典: atwiki/page-2062「ホールド状態のこのユニットが」）", () => {
     const s = settle(enterNow(battle({ rush: [inst("XG4-075", "ap")] }, { battle: [inst("SPEC-E-S", "a")] }), "XG4-075:ap"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG4-075");
+  });
+
+  it("XG4-075: ウエイクアップ！と【生命の強奪】の処理順の選択から、どちらを選んでも先に進む（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const both = () =>
+      settle(
+        enterNow(
+          battle(
+            { operation: [inst("RK-239", "wu")], rush: [{ ...inst("XG4-075", "ap"), commandHeld: true }], battle: [inst("SPEC-E-S", "own")] },
+            { battle: [inst("SPEC-E-S", "a")], deck: deckCards(3, "e") },
+          ),
+          "XG4-075:ap",
+        ),
+      );
+    expect(watchedOpened(both, ["simultaneous_order"])).toBe(true);
+    // 対戦を続けると後のターンで別の同時誘発（撃破の順など）も開くので、上限は対戦全体で数える。
+    expect(freezeProblems(both, { watch: ["simultaneous_order"], maxOpen: 4 })).toEqual([]);
   });
 
   // atwiki/page-2062 Q1「はい、【生命の強奪】の効果を使用することができます。また、リリース状態のユニットをリリースすることはできないので、相手は自分自身のユニットを1体選び撃破することを必ず選ばなければなりません。」

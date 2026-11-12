@@ -10,6 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RK-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { unitFeatures } from "../rules/addedFeatures";
@@ -606,6 +607,19 @@ describe("RK-012 宏のオルゴール時計", () => {
   });
 
   // atwiki/page-198 Q1「はい、できます。」
+  it("RK-012: 【神出鬼没の疾風】の置き換えのあとのラッシュへの反応の窓から、バトルの続きに戻れる（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const swapped = () =>
+      pick(
+        enemyAttack(
+          { battle: [inst("TST-UNIT-0", "d")], rush: [inst("RK-099", "ap")], hand: [inst("RK-012", "mb")], command: [released("XG7-055", "cy")], power: powerCards(4) },
+          "TST-UNIT-0:d",
+          "SPEC-ATK-S:atk",
+        ),
+        "XG7-055:cy",
+      );
+    expect(freezeProblems(swapped)).toEqual([]);
+  });
+
   it("RK-012: 公式Q&A — アポロガイストがいるとき【神出鬼没の疾風】でラッシュしたサイクロン・ドーパント（BP4000）のリード ET の効果で使える（出典: atwiki/page-198 Q1）", () => {
     let s = enemyAttack(
       { battle: [inst("TST-UNIT-0", "d")], rush: [inst("RK-099", "ap")], hand: [inst("RK-012", "mb")], command: [released("XG7-055", "cy")], power: powerCards(4) },
@@ -885,6 +899,11 @@ describe("RK-013 Jパワー", () => {
     const s = played(board({ rush: [inst("XG3-029", "u"), inst("RS-467", "mv")] }), "RK-013:jp");
     return s.pendingEffectChoice?.sourceCardId === "RK-013" ? pick(s, "XG3-029:u") : s;
   };
+
+  it("RK-013: ループの優先を選んだあと同じ選択が開き直さない（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    expect(watchedOpened(urzard, ["loop_priority"])).toBe(true);
+    expect(freezeProblems(urzard, { watch: ["loop_priority"], maxOpen: 1 })).toEqual([]);
+  });
 
   it("RK-013: 公式Q&A — J パワーを重ねた魔導騎士ウルザードに自軍 M ビークルがあると、ターンプレイヤーが J パワーとウルザードの※のどちらを優先するかを選ぶ（出典: atwiki/page-211 Q8）", () => {
     const s = urzard();

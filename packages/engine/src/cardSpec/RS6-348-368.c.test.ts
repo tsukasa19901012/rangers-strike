@@ -223,20 +223,20 @@ describe("RS-363 バルパンサー（2nd）", () => {
     });
     s = passEntry(resolveAll(enter(s, "RS-363:pan")));
     s = pick(enter(s, "RS-362:shark"), "RS-354:c3");
-    for (let i = 0; i < 3; i += 1) {
-      // 自軍（ターンプレイヤー）の【パンサークロー】で捨札にする。
-      expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-363");
-      s = pick(s, "RS-354:c3");
-      expect(zoneOf(s, "player2", "RS-354:c3")).toBe("discard");
-      // 敵軍の【プロジェットカノン】で捨札からホールド状態で戻す（ループ）。
-      expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-238");
-      expect(s.pendingEffectChoice?.playerId).toBe("player2");
-      s = pick(s, "RS-354:c3");
-      expect(zoneOf(s, "player2", "RS-354:c3")).toBe("command");
-    }
-    // 最後は自軍の【パンサークロー】で捨札にして、相手が戻さなければ捨札のまま終わる。
+    // 自軍（ターンプレイヤー）の【パンサークロー】で捨札にする。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-363");
     s = pick(s, "RS-354:c3");
-    if (s.pendingEffectChoice?.sourceCardId === "RS-238") s = skip(s);
+    expect(zoneOf(s, "player2", "RS-354:c3")).toBe("discard");
+    // 敵軍の【プロジェットカノン】で捨札からホールド状態で戻す（ループ）。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-238");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    s = pick(s, "RS-354:c3");
+    expect(zoneOf(s, "player2", "RS-354:c3")).toBe("command");
+    // 一度ループを回したので、次の【パンサークロー】ではカードを選び直せず、優先（バルパンサー）か見送りだけ
+    // （選び続けると同じ局面に戻り続け、CPU が止まらなかった。2026-11-12）。優先すると捨札のまま終わる。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-363");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["RS-363:pan"]);
+    s = pick(s, "RS-363:pan");
     s = resolveAll(s);
     expect(zoneOf(s, "player2", "RS-354:c3")).toBe("discard");
     expect(s.pendingEffectChoice).toBeUndefined();

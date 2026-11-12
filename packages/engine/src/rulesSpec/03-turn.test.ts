@@ -4,6 +4,7 @@
  * 現エンジンが満たさないものは it.fails（既知の不具合）として残す。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import { applyAction, createGame, getLegalActions } from "../index";
 import { withSyncedEffectStack } from "../rules/effectStack";
 import type { GameState } from "../types/game";
@@ -393,6 +394,25 @@ describe("R-TURN-05 ターンプレイヤー", () => {
     state = act(state, { type: "move_to_battle", playerId: "player1", instanceId: "RS-362:shark" });
     return act(state, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-354:c3" });
   };
+
+  it("R-TURN-05: 同じカードで一度ループを回したら、次の【パンサークロー】ではカードを選べず、優先（バルパンサー）か見送りだけになる（同じ局面に戻り続けない。grnrngr/faq-card-6 RS-363 Q2）", () => {
+    let state = act(pantherLoop(), { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-354:c3" });
+    // 相手（player2）の【プロジェットカノン】で同じカードをコマンドゾーンに置き直す。
+    for (let i = 0; i < 4 && state.pendingEffectChoice?.playerId === "player2"; i++) {
+      const id = state.pendingEffectChoice.validInstanceIds.includes("RS-354:c3") ? "RS-354:c3" : state.pendingEffectChoice.validInstanceIds[0]!;
+      state = act(state, { type: "resolve_effect_choice", playerId: "player2", instanceId: id });
+    }
+    expect(state.players.player2.command.map((c) => c.instanceId)).toContain("RS-354:c3");
+    expect(state.pendingEffectChoice?.sourceCardId).toBe("RS-363");
+    expect(state.pendingEffectChoice?.validInstanceIds).toEqual(["RS-363:pan"]);
+    state = settle(act(state, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-363:pan" }));
+    expect(state.players.player2.discard.map((c) => c.instanceId)).toContain("RS-354:c3");
+  });
+
+  it("R-TURN-05: パンサークローとプロジェットカノンのループは、どの選び方でも止まる（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const claw = pantherLoop().pendingEffectChoice!.effectId;
+    expect(freezeProblems(pantherLoop, { watch: [claw], maxOpen: 3 })).toEqual([]);
+  });
 
   it("R-TURN-05: 止められない無限ループ（RS-363 パンサークロー×RS-238 プロジェットカノン）ではターンプレイヤーが優先する効果を選ぶ（出典: grnrngr/faq-card-6 RS-363 Q2, atwiki/page-2167）", () => {
     const state = pantherLoop();

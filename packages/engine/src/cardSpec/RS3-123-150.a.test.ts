@@ -873,9 +873,42 @@ describe("RS-129 バイオジェット2号", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:s3")).toBe("power");
   });
 
-  it.todo(
-    "RS-129: ※ダメージ以外のパワーが1枚しかなければそれを捨札にする（出典: atwiki/page-361「1枚しかなければそれを捨札にする」）— 追加条件で S ユニット3体をオモテ向きでパワーゾーンに送るため、通常のラッシュでは「1枚しかない」状況を作れない（ベン・G 経由は Q2 により実行しない）",
-  );
+  // RS-105 デカベースクローラー【母艦】で S ユニット2体分を OT コマンドのホールドで代え、1体だけをパワーゾーンに送る
+  // （1体ごとの置き換えなので混ぜて払える。ユーザー判断 2026-11-12）。ダメージ以外のパワーはその1枚だけになる。
+  it("RS-129: ※ダメージ以外のパワーが1枚しかなければそれを捨札にする（デカベースクローラーで S ユニット1体＋OT コマンド2つで追加条件を満たす）（出典: atwiki/page-361「1枚しかなければそれを捨札にする」・atwiki/page-304 RS-105）", () => {
+    const s0 = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-129", "j2")],
+        rush: [inst("RS-105", "base"), inst("TST-UNIT-0", "s1")],
+        command: [released("TST-OP-OT", "o1"), released("TST-OP-OT", "o2"), released("TST-OP-OT", "o3")],
+        power: damageCards(4),
+      },
+    });
+    let r = tryAct(s0, { type: "begin_zord_setup", playerId: "player1", zordInstanceId: "RS-129:j2" });
+    expect(r.ok, r.error).toBe(true);
+    r = tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1", materialInstanceId: "TST-UNIT-0:s1" });
+    expect(r.ok, r.error).toBe(true);
+    r = tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1", paymentPath: "mothership" });
+    expect(r.ok, r.error).toBe(true);
+    if (r.state.pendingZordSetup) r = tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1" });
+    expect(r.ok, r.error).toBe(true);
+    r = tryAct(r.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP-OT:o1"] });
+    expect(r.ok, r.error).toBe(true);
+    r = tryAct(r.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP-OT:o2", "TST-OP-OT:o3"] });
+    expect(r.ok, r.error).toBe(true);
+    let s = r.state;
+    expect(zoneOf(s, "player1", "RS-129:j2")).toBe("rush");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:s1")).toBe("power");
+    // 2枚選べないので、その1枚を捨札にする（選択が開くならそれを選ぶ）。
+    if (s.pendingEffectChoice?.sourceCardId === "RS-129") {
+      expect(s.pendingEffectChoice.validInstanceIds).toEqual(["TST-UNIT-0:s1"]);
+      s = pick(s, "TST-UNIT-0:s1");
+    }
+    s = settle(s);
+    expect(zoneOf(s, "player1", "TST-UNIT-0:s1")).toBe("discard");
+    expect(s.players.player1.power).toHaveLength(4);
+  });
 
   // 【ステルス】
   it("RS-129: 【ステルス】相手のオペレーション（RS-028 の「敵軍ユニットを1体選んで」）の対象に選べない（出典: atwiki/page-361）", () => {

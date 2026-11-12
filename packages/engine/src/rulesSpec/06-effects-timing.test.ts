@@ -3,6 +3,7 @@
  * 期待値はルールブックと引用元 web（公式FAQ・atwiki）に従う（現エンジンの挙動ではない）。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import { allCardsCatalog } from "@rangers-strike/cards";
 import { effectiveBp, morphOrderChooserPlayerId } from "../index";
 import { rushWithCategoryHold } from "../testing/rushPayment";
@@ -554,6 +555,21 @@ describe("R-TIME-04 入れ子の割り込み", () => {
   });
 
   // atwiki/page-1974「…3回目でG4をリリースしたとき、割り込んでG4の効果を発動できますか？…」「↑割り込んでG4の効果を発動できます」
+  it("R-TIME-04: 【アルティメットストライク】の途中で G4 が割り込んでも、どの選び方でも最後まで解決する（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const C3 = gSUnit("SPEC-C3", { bp: 1000, powerCost: 3 });
+    const C9 = gSUnit("SPEC-C9", { bp: 1000, powerCost: 9 });
+    const start = () =>
+      gEnter(
+        gP1Battle(
+          { rush: [inst("XG7-028", "ga")], battle: [{ ...inst("RK-195", "g4"), commandHeld: true }, inst("TST-UNIT-0", "s")], command: gHeldN(2, "TST-OP-MA", "hc") },
+          { battle: [inst("SPEC-C3", "e3"), inst("SPEC-C9", "e9")] },
+          [C3, C9],
+        ),
+        "XG7-028:ga",
+      );
+    expect(freezeProblems(start)).toEqual([]);
+  });
+
   it("R-TIME-04: ゴセイアルティメットの5回リリース処理の途中で仮面ライダーG4がリリースされたら、割り込んでG4の効果を発動できる（出典: atwiki/page-1974 Q&A）", () => {
     const C3 = gSUnit("SPEC-C3", { bp: 1000, powerCost: 3 });
     const C9 = gSUnit("SPEC-C9", { bp: 1000, powerCost: 9 });

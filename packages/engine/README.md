@@ -75,6 +75,7 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 - プロモの「○○があれば△△を得る」の付与（XP-018 のタクシス・チェイス・コール）は `promoGrantsKeyword` で引き、キーワードの判定（`cardHasKeyword`・`taxisSpFloor` 等）からも見ます。
 - ゲーム開始時の効果の前に XG7-059 の選択を開くときは、`openXg7BeforeOnRush` に `resume` を渡し、`src/rules/xg7/xg7GameStartResume.ts` に再開の処理を登録します（XG5-010 ゴッドホーン）。
 - 山札の一番上を公開する効果に割り込む効果は、XG5-085【ワープ】（`openXg5WarpOnDeckReveal`）を先に確認し、使わなかったときだけ SR-006【超忍法・分身魔球】（`promoInterceptDeckReveal`）を確認します。
+- 新しい選択や再開処理（ループの優先・処理順・解決途中の割り込み等）を足したら、その盤面で `src/testing/noFreeze.ts` の `freezeProblems` を回すテストを足します。CPU Lv1/3/5 と「いつも最初の手」「いつも最後の手」で進め、合法手がなくなる・同じ局面に4回以上戻る・見張る選択が開き直し続けるのを見つけます（`watchedOpened` で盤面がその選択を実際に通ることも確かめる）。これで RS-363【パンサークロー】×RS-238【プロジェットカノン】で CPU が同じカードを選び続ける無限ループが見つかりました（同じカードで一度ループを回したら、次はバルパンサー（優先）か見送りだけを出す）。
 ## テスト
 
 ```bash

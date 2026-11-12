@@ -15,6 +15,7 @@
  *  - RK-040「ホールドしなければ出られない」を相手にホールドさせて出す — rulesSpec/07-perm-tag-other.test.ts R-KW-WRECKER-01
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems } from "../testing/noFreeze";
 import type { GameState, PlayerId } from "../types/game";
 import {
   act,
@@ -158,6 +159,33 @@ describe("RK-036 仮面ライダーライア", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-E2500:a")).toBe("discard");
   });
+  it("RK-036: ライアとメカニック忍者の途中で【プロジェットカノン】が割り込む盤面は、どの選び方でも最後まで解決する（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const KAIZO = sUnit("SPEC-KAIZO", { category: "ET", bp: 3000, features: ["男", "改造人間"] });
+    const start = () =>
+      attack(
+        st(
+          {
+            activePlayer: "player2",
+            player1: {
+              battle: [inst("TST-UNIT-0", "d"), inst("RK-036", "ra")],
+              rush: [inst("RS-238", "gf")],
+              hand: [inst("RK-008", "nin")],
+              command: [released("SPEC-KAIZO", "k"), released("TST-OP-ET", "pay")],
+              discard: [inst("TST-OP", "x1"), inst("TST-OP", "x2")],
+              power: powerCards(4),
+              deck: deckCards(5),
+            },
+            player2: { battle: [inst("SPEC-E2500", "a")], deck: deckCards(5, "e") },
+          },
+          [...EXTRA, KAIZO],
+        ),
+        "SPEC-E2500:a",
+        "TST-UNIT-0:d",
+        "player2",
+      );
+    expect(freezeProblems(start)).toEqual([]);
+  });
+
   // faq-rider-1 RK-008 Q2「…「RK-036 仮面ライダーライア」の効果によりコマンドゾーンのカードを捨札にしたときと、「RK-008 メカニック忍者」の効果で…ラッシュエリアに出したときの２回、【プロジェットカノン】が発動できます…最後に、…アタックされたSユニットをコマンドゾーンに置いて、一連の処理を終了します。」
   it("RK-036: 公式Q&A（相互参照）— ゴーゴーファイヤー（RS-238）がある状態でライアの効果でメカニック忍者（RK-008）を使うと、ライアで捨札にしたとき・メカニック忍者で出したときの2回【プロジェットカノン】を発動できる（出典: grnrngr/faq-rider-1 RK-008 Q）", () => {
     const KAIZO = sUnit("SPEC-KAIZO", { category: "ET", bp: 3000, features: ["男", "改造人間"] });

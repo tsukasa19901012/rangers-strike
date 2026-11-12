@@ -15,6 +15,7 @@
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
 import { unitSizeOf } from "../core/catalog";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import {
   accept,
   attack,
@@ -213,6 +214,11 @@ describe("XG2-029 幽魔王サラマンデス", () => {
     expect(s.pendingEffectChoice?.effectId).not.toBe("loop_priority");
     expect(unitSizeOf(s.definitions, cardIn(s, "player1", "XG2-029:y")!)).toBe("S");
     expect(bpOf(s, "player1", "XG2-029:y")).toBe(9500);
+  });
+
+  it("XG2-029: ループの優先を選んだあとは同じ選択が開き直さず、ゲームが止まらない（CPU・人の両方の選び方。フリーズ・ループの回帰）", () => {
+    expect(watchedOpened(saturnLoop, ["loop_priority"])).toBe(true);
+    expect(freezeProblems(saturnLoop, { watch: ["loop_priority"], maxOpen: 1 })).toEqual([]);
   });
 
   it("XG2-029: 公式Q&A — サラマンデスを優先すると「BP がそのままの S ユニット」（総統の BP+3000 を受けず、SP1 も得ない）（出典: atwiki/page-1798 Q2・カード評価）", () => {

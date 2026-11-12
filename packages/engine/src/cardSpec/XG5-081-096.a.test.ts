@@ -10,6 +10,7 @@
  * レアリティは atwiki の「スーパーレア／レア／ノーマルレア／ノーマル」を SR／R／NR／N として照合する。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import type { GameState } from "../types/game";
 import {
   attack,
@@ -229,6 +230,12 @@ describe("XG5-085 超時空戦闘母艦グランナスカ", () => {
     if (t.pendingEffectChoice?.sourceCardId === "RS-367" && t.pendingEffectChoice.validInstanceIds.includes("reveal_top")) t = pick(t, "reveal_top");
     return settle(t);
   };
+
+  it("XG5-085:【ワープ】の確認は1枚につき1回だけ開き、どちらを選んでも先に進む（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const start = () => warpBoard("RS-367");
+    expect(watchedOpened(start, ["xg5_085_warp"])).toBe(true);
+    expect(freezeProblems(start, { watch: ["xg5_085_warp"], maxOpen: 1 })).toEqual([]);
+  });
 
   it("XG5-085:【ワープ】— 自軍山札でオモテになったとき、効果の対象にする前に自軍ラッシュエリアに出し、山札の次の1枚をかわりに対象にできる（出典: atwiki/page-2220「これを効果の対象にする前に自軍ラッシュエリアに出してもよい。そうしたとき、自軍山札の上から1枚をオモテにして、かわりに効果の対象にする」・RS-367「オモテにしたカードが「ゾロー兵」なら自軍ラッシュエリアに出し、それ以外なら捨札にする」）", () => {
     const s = warpBoard("RS-367");

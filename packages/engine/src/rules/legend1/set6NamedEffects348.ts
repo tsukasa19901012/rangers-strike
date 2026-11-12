@@ -401,6 +401,10 @@ export function openPantherClawIfReady(state: GameState, phasePlayerId: PlayerId
   // 【プロジェットカノン】は発動しない）を足す。カードを選べば今までどおり（相手が置き直すかを選ぶ）、見送れば【プロジェットカノン】側を優先したのと同じ。
   const loopOption =
     source && ids.length === 1 && commandLeaveRefillWouldOpen(next, opponent(playerId), phasePlayerId) ? [source.instanceId] : [];
+  // 同じカードで一度ループを回した（捨札にして、相手が置き直した）なら、もう一度カードを選ぶ候補は出さない。
+  // 選ぶたびに相手が置き直すと同じ局面に戻り続け、CPU が選び続けて対戦が止まった（2026-11-12 のフリーズ回帰テスト）。
+  // 残るのは【パンサークロー】優先（このユニット）か【プロジェットカノン】優先（見送る）で、Q&A の2通りの終わり方と同じ。
+  const looped = loopOption.length > 0 && hasTurnRuleModifier(state.players[playerId], pantherClawLoopedRule(ids[0]!));
   return openEffectChoice(next, {
     playerId,
     effectId: PANTHER_CLAW_EFFECT_ID,
@@ -409,10 +413,15 @@ export function openPantherClawIfReady(state: GameState, phasePlayerId: PlayerId
     kind: "select_command",
     commandAction: "discard",
     phasePlayerId,
-    validInstanceIds: [...ids, ...loopOption],
+    validInstanceIds: looped ? loopOption : [...ids, ...loopOption],
     selectCount: 1,
     optional: true,
   });
+}
+
+/** 【パンサークロー】のループで、このターンすでに一度捨札にした（相手に置き直された）カードの印。 */
+function pantherClawLoopedRule(instanceId: string): string {
+  return `${PANTHER_CLAW_RULE}_looped:${instanceId}`;
 }
 
 CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, picked) => {
@@ -420,9 +429,11 @@ CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, picked) => {
   if (!pending.validInstanceIds.includes(picked)) return { error: "invalid_target" };
   // 【パンサークロー】を優先（ループを止める）: 候補のカードを捨札にし、【プロジェットカノン】は発動しない（grnrngr/faq-card-6 RS-363 Q2）。
   const loopStop = picked === pending.sourceInstanceId;
-  const instanceId = loopStop ? pending.validInstanceIds.find((id) => id !== pending.sourceInstanceId) ?? picked : picked;
   const enemyId = opponent(playerId);
   const enemy = state.players[enemyId];
+  const loopedCard = () =>
+    enemy.command.find((c) => c.commandHeld && hasTurnRuleModifier(state.players[playerId], pantherClawLoopedRule(c.instanceId)))?.instanceId;
+  const instanceId = loopStop ? (pending.validInstanceIds.find((id) => id !== pending.sourceInstanceId) ?? loopedCard() ?? picked) : picked;
   const card = enemy.command.find((c) => c.instanceId === instanceId);
   if (!card) return { error: "invalid_target" };
   const { commandHeld: _h, paymentHeld: _p, ...clean } = card as CardInstance & { paymentHeld?: boolean };
@@ -434,6 +445,9 @@ CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, picked) => {
       discard: [...enemy.discard, clean],
     }),
   };
+  if (!loopStop && pending.sourceInstanceId && pending.validInstanceIds.includes(pending.sourceInstanceId)) {
+    next = { ...next, ...updatePlayer(next, playerId, addTurnRuleModifier(next.players[playerId], pantherClawLoopedRule(instanceId), { sourceCardId: "RS-363" })) };
+  }
   next = clearPending(next, pending.phasePlayerId);
   if (loopStop) {
     next = finish(next, pending.phasePlayerId);

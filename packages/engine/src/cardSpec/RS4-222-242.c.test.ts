@@ -499,13 +499,11 @@ describe("RS-238 ゴーゴーファイヤー", () => {
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     s = pick(s, "RS-354:c3");
     expect(zoneOf(s, "player2", "RS-354:c3")).toBe("command");
-    // 置かれたユニットカードはまた【パンサークロー】で捨札にできる
+    // 置かれたユニットカードにまた【パンサークロー】が開く。一度ループを回したので、ターンプレイヤーは優先（バルパンサー）か
+    // 見送りを選ぶ（同じカードを選び続けると同じ局面に戻り続けるため。2026-11-12）。優先すると捨札にしたままで処理を終える。
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-363");
-    s = pick(s, "RS-354:c3");
-    expect(zoneOf(s, "player2", "RS-354:c3")).toBe("discard");
-    // 置き直さなければ、捨札にしたままで処理を終える
-    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-238");
-    s = settle(skip(s));
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["RS-363:pan"]);
+    s = settle(pick(s, "RS-363:pan"));
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(zoneOf(s, "player2", "RS-354:c3")).toBe("discard");
   });
