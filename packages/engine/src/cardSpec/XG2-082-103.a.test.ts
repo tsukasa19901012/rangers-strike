@@ -325,6 +325,17 @@ describe("XG2-087 ゴールドプラチナム", () => {
     expect(zoneOf(endTurn(p1Battle({ rush: [inst("XG2-087", "gp")] })), "player1", "XG2-087:gp")).toBe("rush");
   });
 
+  it("XG2-087: ターンを終えるときに捨札になったことがログに残る（無言で消えると、後のナンバーコンボの並び順が誤って見える。2026-11-12 報告 ?s=KonXgkyH）", () => {
+    const before = p1Battle({ battle: [inst("XG2-087", "gp")] });
+    const after = endTurn(before);
+    const added = after.log.slice(before.log.length);
+    expect(added.some((l) => l.includes("XG2-087") && l.includes("ターン終了時に捨札"))).toBe(true);
+    // 効果のログは end_turn より前に並ぶ
+    const discardAt = added.findIndex((l) => l.includes("ターン終了時に捨札"));
+    const endAt = added.findIndex((l) => l.includes("|end_turn"));
+    expect(endAt).toBeGreaterThan(discardAt);
+  });
+
   /** 自軍山札: XG2-096 ヤンマ（WB／ET・必要パワー3）、XG2-086 ハイパーショウ（OT／ET）、TST-UNIT-0（WB のみ）。パワー4。 */
   const rushed = () =>
     rushFromHand(

@@ -213,6 +213,34 @@ describe("GUI match (commercial-style controls)", () => {
     expect(steps).toBeGreaterThanOrEqual(3);
   });
 
+  it("scrolls the open log back to older lines and back to the newest", () => {
+    const app = startGui(5);
+    // Play until the log no longer fits the panel.
+    for (let i = 0; i < 4000 && app.currentScreen === "match" && app.session!.log.length < 80; i++) {
+      if (!humanTurn(app)) app.tick();
+      else playOneStep(app, i);
+    }
+    expect(app.session!.log.length).toBeGreaterThanOrEqual(80);
+    while (app.view().gui!.dialog) app.dispatch(input.toggleLog); // peek past a pending window
+    if (!app.view().gui!.logShown) app.dispatch(input.toggleLog);
+    const gui = () => app.view().gui!;
+    expect(gui().logShown).toBe(true);
+    const newest = gui().detailLines.map((l) => l.text);
+    expect(newest[0]).toMatch(/^── ログ ▲\d+行 ──$/);
+    expect(app.scrollLog(-1)).toBe(false); // already at the newest
+    expect(app.scrollLog(5)).toBe(true);
+    const older = gui().detailLines.map((l) => l.text);
+    expect(older[0]).toMatch(/▼5行/);
+    // The lines move down by 5: the old top lines now sit 5 lines lower.
+    expect(older.slice(6)).toEqual(newest.slice(1, newest.length - 5));
+    // Far back stops at the first line; reopening the log starts at the newest again.
+    app.scrollLog(100000);
+    expect(gui().detailLines[0]!.text).not.toMatch(/▲/);
+    app.dispatch(input.toggleLog);
+    app.dispatch(input.toggleLog);
+    expect(gui().detailLines.map((l) => l.text)).toEqual(newest);
+  });
+
   it("opens a selection window for pending decisions and resolves it", () => {
     let seen = 0;
     for (const seed of [3, 11, 21]) {

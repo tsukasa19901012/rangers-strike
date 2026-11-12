@@ -710,9 +710,12 @@ function settleChargeAdvance(state: GameState): GameState {
  */
 function finalizeTurnEnd(state: GameState): GameState {
   const prevPlayer = state.turnEndProgress?.endingPlayerId ?? state.activePlayer;
-  const afterEffects = state.turnEndProgress
-    ? resolveTurnEndingEffectsImpl(state, prevPlayer).state
-    : emitTurnEndingAndResolve(state, prevPlayer).state;
+  const ended = state.turnEndProgress
+    ? resolveTurnEndingEffectsImpl(state, prevPlayer)
+    : emitTurnEndingAndResolve(state, prevPlayer);
+  // 「ターンを終えるとき」の効果のログ（XG2-087 の捨札など）を残す。落とすとユニットが黙って消えて見える。
+  const afterEffects: GameState =
+    ended.logs.length > 0 ? { ...ended.state, log: [...ended.state.log, ...ended.logs] } : ended.state;
   if (afterEffects.winner || hasEndPhaseBlockingPending(afterEffects)) {
     return withWinner(afterEffects);
   }

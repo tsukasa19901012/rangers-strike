@@ -204,6 +204,13 @@ export class AppController {
     return true;
   }
 
+  /** Match: scrolls the open log; positive goes back to older lines (GuiMatch.scrollLog). */
+  scrollLog(delta: number): boolean {
+    if (!this.gui || this.screen !== "match" || !this.gui.scrollLog(delta)) return false;
+    this.touch();
+    return true;
+  }
+
   /** Match: a card dragged onto a card or a zone (GuiMatch.dropCard). */
   dropCard(fromId: string, to: { instanceId?: string; zone?: string }): void {
     if (!this.gui || this.screen !== "match") return;
