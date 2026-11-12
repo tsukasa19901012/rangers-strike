@@ -14,6 +14,8 @@
  */
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
+import { unitSizeOf } from "../core/catalog";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import {
   accept,
   attack,
@@ -172,7 +174,60 @@ describe("XG2-029 幽魔王サラマンデス", () => {
     expect(spOf(three, "player1", "XG2-029:y")).toBe(1);
   });
 
-  it.todo("XG2-029: 公式Q&A Q1（【災魔ツリー】以外の効果で BP8000 以上になっても L ユニットになり SP1 を得る）・Q2（RS-364 ヘルサターン総統とのループはターンプレイヤーが優先する効果を選ぶ）— 【災魔ツリー】の L ユニット化・SP1 がエンジンになく（上の it.fails）、効果の優先順を選ぶ合法手もないため、盤面を進められない（出典: atwiki/page-1798 Q1・Q2）");
+  // atwiki/page-1798 Q1「はい、できます。」— ほかの効果による BP 上昇（インスタンスの bpModifier で表す）で BP8000 以上にする。
+  it("XG2-029: 公式Q&A — 【災魔ツリー】以外の効果で BP8000 以上になっても「SP1」を得る（出典: atwiki/page-1798 Q1）", () => {
+    const boosted = p1Battle({ battle: [{ ...inst("XG2-029", "y"), bpModifier: 1500 }] });
+    expect(bpOf(boosted, "player1", "XG2-029:y")).toBe(8000);
+    expect(spOf(boosted, "player1", "XG2-029:y")).toBe(1);
+    expect(canStrike(boosted, "XG2-029:y")).toBe(true);
+    const short = p1Battle({ battle: [{ ...inst("XG2-029", "y"), bpModifier: 1000 }] });
+    expect(spOf(short, "player1", "XG2-029:y")).toBe(0);
+  });
+
+  // atwiki/page-1798 Q1「はい、できます。」— 【災魔ツリー】以外の効果（bpModifier）で BP8000 以上になっても L ユニットになる（行動の後にサイズを合わせる）。
+  it("XG2-029: 公式Q&A — 【災魔ツリー】以外の効果で BP8000 以上になっても L ユニットになり「SP1」を得る（出典: atwiki/page-1798 Q1）", () => {
+    const s = settle(attack(p1Battle({ battle: [{ ...inst("XG2-029", "y"), bpModifier: 1500 }], deck: [inst("TST-OP", "top")] }, { battle: [inst("TST-UNIT-0", "e")] }), "XG2-029:y", "TST-UNIT-0:e"));
+    const tree = cardIn(s, "player1", "XG2-029:y")!;
+    expect(unitSizeOf(s.definitions, tree)).toBe("L");
+    expect(spOf(s, "player1", "XG2-029:y")).toBe(1);
+  });
+
+  it("XG2-029: 【災魔ツリー】BP8000 未満なら S ユニットのまま（出典: atwiki/page-1798「BP8000以上のとき、Lユニットになり」）", () => {
+    const s = settle(attack(p1Battle({ battle: [{ ...inst("XG2-029", "y"), bpModifier: 1000 }], deck: [inst("TST-OP", "top")] }, { battle: [inst("TST-UNIT-0", "e")] }), "XG2-029:y", "TST-UNIT-0:e"));
+    expect(unitSizeOf(s.definitions, cardIn(s, "player1", "XG2-029:y")!)).toBe("S");
+  });
+
+  // atwiki/page-1798 Q2「ターンプレイヤーが効果の優先順を選択して処理してください。なお、必ずどちらかの効果が優先されるようにしてください。
+  // 「BP＋3000され、SP1を得ているLユニット」などのように効果を適用することはできません。」
+  // 同ページのカード評価「ヘルサターンの効果を優先して「BP+3000されたSユニット」かサラマンデスの効果を優先して「BPがそのままのSユニット」のどちらかとして扱う」。
+  const saturnLoop = () => nextPhase(rushBoard({ rush: [inst("RS-364", "hs"), inst("XG2-029", "y")] }));
+
+  it("XG2-029: 公式Q&A — RS-364 ヘルサターン総統の BP+3000 で L ユニットになると総統の対象から外れるループは、ターンプレイヤーがどちらの効果を優先するかを選ぶ（出典: atwiki/page-1798 Q2）", () => {
+    const s = saturnLoop();
+    expect(s.pendingEffectChoice?.effectId).toBe("loop_priority");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect([...choiceIds(s)].sort()).toEqual(["RS-364:hs", "XG2-029:y"]);
+  });
+
+  it("XG2-029: 公式Q&A — 総統を優先すると「BP+3000 された S ユニット」（L ユニットにはならない）（出典: atwiki/page-1798 Q2・カード評価）", () => {
+    const s = pick(saturnLoop(), "RS-364:hs");
+    expect(s.pendingEffectChoice?.effectId).not.toBe("loop_priority");
+    expect(unitSizeOf(s.definitions, cardIn(s, "player1", "XG2-029:y")!)).toBe("S");
+    expect(bpOf(s, "player1", "XG2-029:y")).toBe(9500);
+  });
+
+  it("XG2-029: ループの優先を選んだあとは同じ選択が開き直さず、ゲームが止まらない（CPU・人の両方の選び方。フリーズ・ループの回帰）", () => {
+    expect(watchedOpened(saturnLoop, ["loop_priority"])).toBe(true);
+    expect(freezeProblems(saturnLoop, { watch: ["loop_priority"], maxOpen: 1 })).toEqual([]);
+  });
+
+  it("XG2-029: 公式Q&A — サラマンデスを優先すると「BP がそのままの S ユニット」（総統の BP+3000 を受けず、SP1 も得ない）（出典: atwiki/page-1798 Q2・カード評価）", () => {
+    const s = pick(saturnLoop(), "XG2-029:y");
+    expect(s.pendingEffectChoice?.effectId).not.toBe("loop_priority");
+    expect(unitSizeOf(s.definitions, cardIn(s, "player1", "XG2-029:y")!)).toBe("S");
+    expect(bpOf(s, "player1", "XG2-029:y")).toBe(6500);
+    expect(spOf(s, "player1", "XG2-029:y")).toBe(0);
+  });
 
   it("XG2-029: 【災魔ツリー】撃破されてユニットでなくなるとき、下のウラ向きのカードから1枚選び（ウラ向きのまま）手札に加え、残りを捨札にする（出典: atwiki/page-1798「この下に重ねたウラ向きのカードから、ウラ向きのまま1枚選び手札に加えて、残りを捨札にする」）", () => {
     const s = resolveAll(attackedInEnemyTurn({ battle: [withStacked(inst("XG2-029", "y"), [faceDown("XG2-036", "s1"), faceDown("RS-674", "s2")])] }, "XG2-029:y"), ["RS-674:s2"]);

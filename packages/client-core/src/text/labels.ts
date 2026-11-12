@@ -75,6 +75,8 @@ export const ACTION_LABELS: Record<string, string> = {
 
 const FIELD_LABELS: Record<string, string> = {
   zone: "ゾーン",
+  // use_magi_ticket の counter: コマンドゾーンのカウンターをマジチケットで使う（RS-325）。
+  counter: "カウンターとして",
   kind: "種類",
   destination: "行き先",
   position: "位置",
@@ -169,6 +171,8 @@ const EFFECT_VALUE_LABELS: Record<string, Record<string, string>> = {
   xg1_076_decadriver: { mode_1: "「仮面ライダーディケイド」をラッシュ", mode_2: "ディケイドライバーのカードをパワーゾーンへ" },
   xg7054_ooo_driver: { mode1_rush: "オーズドライバーのカードをラッシュ", mode2_cost: "次のカードの必要パワーを3減らす" },
   sx010_movie_war_mode: { deck_bottom: "山札の下に戻す" },
+  // RS-566【アルティマストーム】: 山札に戻す順（atwiki/page-1229 Q1）。
+  rs566_ultima_storm_order: { commands_first: "コマンドから先に山札に戻す", units_first: "ユニットから先に山札に戻す" },
 };
 
 /** Label for an option token (not a card instance) of the pending effect choice. */
@@ -177,6 +181,9 @@ function optionLabel(state: GameState, id: string): string | undefined {
   const own = choice ? EFFECT_VALUE_LABELS[choice.effectId]?.[id] : undefined;
   if (own) return own;
   if (VALUE_LABELS[id]) return VALUE_LABELS[id];
+  // loop_priority: XG1-078 でコピーした RS-497【変身の妨害】の制限（コピー元が場を離れたあと）。
+  const copied = /^xg1078_rs497:(.+)$/.exec(id);
+  if (copied) return `「${instanceName(state, copied[1] ?? "")}」がコピーした【変身の妨害】の制限`;
   const draws = /^draw:(\d+)$/.exec(id);
   if (draws) return `${draws[1]}枚ドロー`;
   // A lone confirmation named after the effect itself (e.g. "rs384_water_discharge").
@@ -329,6 +336,20 @@ export function isDuplicateSelfHoldPayment(state: GameState, action: GameAction,
   return id === state.pendingEffectChoice!.sourceInstanceId && legal.some((a) => a.type === "resolve_effect_choice" && a.instanceId === id);
 }
 
+/**
+ * RS-363【パンサークロー】×敵軍 RS-238【プロジェットカノン】のループ（faq-card-6 RS-363 Q2）: エンジンは
+ * 「パンサークローを優先して止める」を効果の元のユニット（バルパンサー）を選ぶ手で出す。カードではなくボタンとして見せる。
+ */
+export function isPantherClawLoopStop(state: GameState, action: GameAction): boolean {
+  const pending = state.pendingEffectChoice;
+  return (
+    pending?.effectId === "rs363_panther_claw" &&
+    action.type === "resolve_effect_choice" &&
+    !!pending.sourceInstanceId &&
+    action.instanceId === pending.sourceInstanceId
+  );
+}
+
 /** Human-readable one-line label for an engine action. */
 export function describeAction(
   state: GameState,
@@ -345,6 +366,15 @@ export function describeAction(
     if (action.type === "resolve_effect_choice") return "ホールドして発動する";
     if (action.type === "skip_effect_choice") return "発動しない";
   }
+  // XG5-085【ワープ】: 確定 = ラッシュエリアに出して次の1枚を対象にする、選ばない = そのまま対象にする。
+  if (state.pendingEffectChoice?.effectId === "xg5_085_warp") {
+    if (action.type === "confirm_effect_choice") return "ワープする（ラッシュエリアに出して、山札の次の1枚をかわりに対象にする）";
+    if (action.type === "skip_effect_choice") return "ワープしない（このカードを効果の対象にする）";
+  }
+  if (isPantherClawLoopStop(state, action)) return "パンサークローを優先してループを止める（捨札にして、プロジェットカノンは発動しない）";
+  const pending = state.pendingEffectChoice;
+  if (pending?.effectId === "rs363_panther_claw" && action.type === "skip_effect_choice" && pending.sourceInstanceId && pending.validInstanceIds.includes(pending.sourceInstanceId))
+    return "捨札にしない（プロジェットカノンを優先）";
   const base = ACTION_LABELS[action.type] ?? action.type;
   const record = action as unknown as Record<string, unknown>;
   if (action.type === "battle") {

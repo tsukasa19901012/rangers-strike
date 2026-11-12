@@ -10,6 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import { enterBattleByEffect } from "../testing/battleEntry";
 import {
   bpOf,
@@ -38,6 +39,8 @@ import {
   zoneOf,
 } from "./RS8-538-559.helpers";
 import type { CardInstance, GameState } from "../types/game";
+import { unitSizeOf } from "../core/catalog";
+import { isSmallUnitNow } from "../rules/legend1/set6NamedEffectsB";
 
 const CN = (n: number, size: "S" | "M" = "S") => sUnit(`SPEC-CN${n}${size}`, { comboNumber: n, size, bp: 1000 });
 const BP8000 = sUnit("SPEC-8000", { bp: 8000 });
@@ -371,9 +374,50 @@ describe("RS-558 ガンマジン", () => {
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-558");
   });
 
-  it.todo(
-    "RS-558: atwiki Q&A — ガンマジンと仮面ライダーアークの L ユニット化が循環する場合は、ターンプレイヤーが優先順を選んでループを止める（出典: atwiki/page-1186 Q6・R-RES-08）— 仮面ライダーアークの「これ以外が S ユニットだけなら L」との循環で、ターンプレイヤーがループを止める選択が公開 API にない（ガンマジンは条件つきで L になったユニットを数えない）",
-  );
+  // atwiki/page-1186 Q6「ターンプレイヤーが効果の優先順を選択して、適当なところで処理のループを止めてください。」
+  // 優先しなかった側の効果は適用しない（docs/rules/06-effects-timing.md R-RES-08。rules/loopPriority.ts）。
+  describe("RS-558 + XG6-053 仮面ライダーアーク（L ユニット化の循環）", () => {
+    const arkRushed = (): GameState => {
+      const s0 = st({
+        phase: "rush",
+        player1: { hand: [inst("XG6-053", "ark")], rush: [inst("RS-558", "gm")], command: [...releasedCat("MA", 1), ...releasedCat("DA", 1)], power: powerCards(5), deck: deckCards(5) },
+        player2: { deck: deckCards(3, "e") },
+      });
+      const r = rushFromHand(s0, "player1", "XG6-053:ark");
+      expect(r.ok).toBe(true);
+      return r.state;
+    };
+    const card = (s: GameState, id: string) => [...s.players.player1.rush, ...s.players.player1.battle].find((c) => c.instanceId === id)!;
+
+    it("RS-558: ループの優先を選んだあと同じ選択が開き直さない（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+      expect(watchedOpened(arkRushed, ["loop_priority"])).toBe(true);
+      expect(freezeProblems(arkRushed, { watch: ["loop_priority"], maxOpen: 1 })).toEqual([]);
+    });
+
+    it("RS-558: atwiki Q&A — ガンマジン1体だけのときにアークをラッシュすると、ターンプレイヤーがどちらの効果を優先するかを選ぶ（出典: atwiki/page-1186 Q6）", () => {
+      const s = arkRushed();
+      expect(s.pendingEffectChoice?.effectId).toBe("loop_priority");
+      expect(s.pendingEffectChoice?.playerId).toBe("player1");
+      expect([...choiceIds(s)].sort()).toEqual(["RS-558:gm", "XG6-053:ark"]);
+    });
+
+    it("RS-558: atwiki Q&A — アークを優先すると、アークは L ユニット（BP+2000）でガンマジンは S ユニットのまま（BP2000）（出典: atwiki/page-1186 Q6・R-RES-08）", () => {
+      const s = pick(arkRushed(), "XG6-053:ark");
+      expect(unitSizeOf(s.definitions, card(s, "XG6-053:ark"))).toBe("L");
+      expect(bpOf(s, "player1", "XG6-053:ark")).toBe(9000);
+      expect(bpOf(s, "player1", "RS-558:gm")).toBe(2000);
+      expect(isSmallUnitNow(s, "player1", card(s, "RS-558:gm"))).toBe(true);
+    });
+
+    it("RS-558: atwiki Q&A — ガンマジンを優先すると、ガンマジンは L ユニット（BP+4000）でアークは L ユニットにならない（出典: atwiki/page-1186 Q6・R-RES-08）", () => {
+      const s = pick(arkRushed(), "RS-558:gm");
+      expect(s.pendingEffectChoice?.effectId).not.toBe("loop_priority");
+      expect(unitSizeOf(s.definitions, card(s, "XG6-053:ark"))).toBe("S");
+      expect(bpOf(s, "player1", "XG6-053:ark")).toBe(7000);
+      expect(bpOf(s, "player1", "RS-558:gm")).toBe(6000);
+      expect(isSmallUnitNow(s, "player1", card(s, "RS-558:gm"))).toBe(false);
+    });
+  });
 });
 
 // ===========================================================================

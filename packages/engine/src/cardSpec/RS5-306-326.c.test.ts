@@ -9,10 +9,12 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import { enterBattleByEffect } from "../testing/battleEntry";
 import { allCardsCatalog, validateDeckEntries } from "@rangers-strike/cards";
 import {
   act,
+  advanceToBattle,
   attack,
   attackTargets,
   bpOf,
@@ -21,6 +23,7 @@ import {
   canStartRush,
   canStrike,
   choiceIds,
+  confirm,
   deckCards,
   endTurn,
   enter,
@@ -614,14 +617,105 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // atwiki/page-485 Q1「いいえ、そのようにはなりません。…実際には手札から使用していないので、…該当しません。」
-  it.todo(
-    "RS-325: 公式Q&A — マジチケットで発動したオーズドライバーの「次に手札から使用するカード」の軽減は、続けてマジチケットで発動するカードには適用されない（出典: atwiki/page-485 Q1）— XG7-054 はマジチケットで発動できるが、効果が未実装（DSL は note_card のみで、使うと何も選ばずに解決する）。「次の効果から1つ選び発動する」の◎を選ぶ公開アクションも「次に手札から使用するカード」の必要パワー軽減も無いため、軽減が効かないことを意味のある形で検証できない",
-  );
+  /** マジチケットでコマンドゾーンの XG7-054 オーズドライバーを使い、◎2（次に手札から使用するカードの必要パワー−3）を選ぶ。 */
+  function ticketOoo(s0: GameState, instanceId: string): GameState {
+    let s = useVia(s0, "player1", instanceId);
+    expect(choiceIds(s)).toContain("mode2_cost");
+    s = pick(s, "mode2_cost");
+    // 捨札になるときの「かわりに」は使わない
+    if (s.pendingEffectChoice?.effectId === "rs325_magi_ticket_keep") s = skip(s);
+    return settle(s);
+  }
 
-  it.todo("RS-325: 公式Q&A — マジチケットでオーズドライバーを2回発動すると、次に手札から使用するカードの必要パワーは6少なくなる（出典: atwiki/page-485 Q2）— XG7-054 の効果が未実装（DSL は note_card のみ）で、2つ目の◎（必要パワー3少なくなる）を選ぶ公開アクションが存在しないため");
+  it("RS-325: 公式Q&A — マジチケットで発動したオーズドライバーの「次に手札から使用するカード」の軽減は、続けてマジチケットで発動するカードには適用されない（出典: atwiki/page-485 Q1）", () => {
+    let s = st({
+      phase: "rush",
+      player1: {
+        rush: [inst("RS-325", "ms")],
+        hand: [inst("RS-245", "hb")],
+        command: [released("XG7-054", "od"), released("RS-245", "cb"), released("TST-OP-WB", "wb")],
+        power: powerCards(3),
+        deck: deckCards(3),
+      },
+      player2: { rush: [inst("TST-UNIT-0", "e")], deck: deckCards(3, "e") },
+    });
+    // 必要パワー5のガオメインバスターは、パワー3ではマジチケットでも手札からも使えない
+    expect(actionUsing(s, "player1", "RS-245:cb")).toBeUndefined();
+    expect(actionUsing(s, "player1", "RS-245:hb")).toBeUndefined();
+    s = ticketOoo(s, "XG7-054:od");
+    // マジチケットで発動するカードは「手札から使用する」カードではないので軽減されない
+    expect(actionUsing(s, "player1", "RS-245:cb")).toBeUndefined();
+    // 手札から使うカードは3少なくなる（記録はマジチケットで消えない）
+    expect(actionUsing(s, "player1", "RS-245:hb")).toBeDefined();
+  });
+
+  // atwiki/page-485 Q2「はい、そのとおりです。」
+  it("RS-325: 公式Q&A — マジチケットでオーズドライバーを2回発動すると、次に手札から使用するカードの必要パワーは6少なくなる（出典: atwiki/page-485 Q2）", () => {
+    const MA9 = sUnit("SPEC-MA9", { category: "MA", bp: 5000, powerCost: 9 });
+    const board = () =>
+      st(
+        {
+          phase: "rush",
+          player1: {
+            rush: [inst("RS-325", "ms")],
+            hand: [inst("SPEC-MA9", "u")],
+            command: [released("XG7-054", "od1"), released("XG7-054", "od2"), released("TST-OP-MA", "ma")],
+            power: powerCards(3),
+            deck: deckCards(3),
+          },
+          player2: { deck: deckCards(3, "e") },
+        },
+        [MA9],
+      );
+    // 1回（−3）では必要パワー6 > パワー3
+    expect(canStartRush(ticketOoo(board(), "XG7-054:od1"), "player1", "SPEC-MA9:u")).toBe(false);
+    const s = ticketOoo(ticketOoo(board(), "XG7-054:od1"), "XG7-054:od2");
+    const r = rushFromHand(s, "player1", "SPEC-MA9:u");
+    expect(r.ok, r.error).toBe(true);
+    expect(zoneOf(settle(r.state), "player1", "SPEC-MA9:u")).toBe("rush");
+  });
+
+  it("RS-325: マジチケットでコマンドゾーンのカウンターを使う窓から、どの選び方でも先に進む（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const BIG = sUnit("SPEC-BIG9", { size: "M", bp: 9000 });
+    const start = () =>
+      attack(
+        st(
+          {
+            activePlayer: "player2",
+            player1: { rush: [inst("RS-325", "ms")], battle: [inst("RS-257", "kai")], command: [released("RS-255", "bomb"), released("TST-OP-DA", "c")], power: powerCards(4), deck: deckCards(3) },
+            player2: { battle: [inst("SPEC-BIG9", "atk")], deck: deckCards(3, "e") },
+          },
+          [BIG],
+        ),
+        "SPEC-BIG9:atk",
+        "RS-257:kai",
+        "player2",
+      );
+    expect(freezeProblems(start)).toEqual([]);
+  });
 
   // faq-card-5 RS-325 Q3「その手順では「RS-255 巨大化爆弾」が捨札になるタイミングがありませんので…ラッシュエリアに留まります。…かわりとして…捨札にするということはできません。」
-  it.todo("RS-325: 公式Q&A — マジチケットで巨大化爆弾を使いユニットを重ねてラッシュエリアに出したとき、コマンドを捨札にしなくても巨大化爆弾はラッシュエリアに留まり、かわりに捨札にすることもできない（出典: grnrngr/faq-card-5 RS-325 Q3）— 巨大化爆弾は※カウンター（敵軍ターン中のみ・ユーザー決定）で「怪人」の撃破に応じる手順を要し、マジチケット未実装のため場を作れない");
+  it("RS-325: 公式Q&A — マジチケットで巨大化爆弾を使いユニットを重ねてラッシュエリアに出したとき、コマンドを捨札にしなくても巨大化爆弾はラッシュエリアに留まり、かわりに捨札にすることもできない（出典: grnrngr/faq-card-5 RS-325 Q3）", () => {
+    const BIG = sUnit("SPEC-BIG9", { size: "M", bp: 9000 });
+    // 敵軍（player2）のターン: player2 の BP9000 が player1 の「怪人」（RS-257 野球仮面）をアタックして撃破する
+    let s = st(
+      {
+        activePlayer: "player2",
+        player1: { rush: [inst("RS-325", "ms")], battle: [inst("RS-257", "kai")], command: [released("RS-255", "bomb"), released("TST-OP-DA", "c")], power: powerCards(4), deck: deckCards(3) },
+        player2: { battle: [inst("SPEC-BIG9", "atk")], deck: deckCards(3, "e") },
+      },
+      [BIG],
+    );
+    s = attack(s, "SPEC-BIG9:atk", "RS-257:kai", "player2");
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("discard");
+    const use = legal(s).find((a): a is Extract<GameAction, { type: "use_magi_ticket" }> => a.type === "use_magi_ticket" && a.instanceId === "RS-255:bomb" && a.counter === true);
+    expect(use).toBeDefined();
+    s = settle(act(s, use!));
+    expect(zoneOf(s, "player1", "RS-257:kai")).toBe("rush");
+    expect(s.players.player1.rush.find((c) => c.instanceId === "RS-257:kai")?.stackedCards?.map((c) => c.instanceId)).toEqual(["RS-255:bomb"]);
+    expect(s.pendingEffectChoice?.effectId).not.toBe("rs325_magi_ticket_keep");
+    expect(zoneOf(s, "player1", "TST-OP-DA:c")).toBe("command");
+  });
 
   // faq-card-5 RS-325 Q5「はい、発動します。」
   it("RS-325: 公式Q&A — 相手がマジチケットでオペレーションの効果を発動すると、自軍ジェットシーカーの【ラウンドレーダー】は発動する（出典: grnrngr/faq-card-5 RS-325 Q5・faq-card-5 RS-265）", () => {
@@ -632,8 +726,44 @@ describe("RS-325 天空勇者マジシャイン", () => {
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
   });
 
-  it.todo("RS-325: 公式Q&A — マジチケットで使ったオーラパワーに相手がゴルゴムの仕業を使い無効にされて捨札になるときも、リリース状態のコマンドをかわりに捨札にしてコマンドゾーンに留められる（出典: grnrngr/faq-card-1 RS-011・atwiki/page-485 Q7）— ゴルゴムの仕業は※カウンター（敵軍ターン中のみ）で、マジチケット未実装のため使用宣言の場を作れない");
-  it.todo("RS-325: 公式Q&A — マジチケットで超・電王トリロジーを発動すると、使用のためにホールドしたコマンドが存在しないとして効果の解決に失敗し、捨札になる（出典: atwiki/page-485 Q8）— SX-008 のカテゴリ別効果の解決をこのカード範囲で検証する手段が無く、マジチケットも未実装のため");
+  // atwiki/page-485 Q7「はい、できます。」
+  it("RS-325: 公式Q&A — マジチケットで使ったオーラパワーに相手がゴルゴムの仕業を使い無効にされて捨札になるときも、リリース状態のコマンドをかわりに捨札にしてコマンドゾーンに留められる（出典: grnrngr/faq-card-1 RS-011・atwiki/page-485 Q7）", () => {
+    let s = shine();
+    s = { ...s, players: { ...s.players, player2: { ...s.players.player2, hand: [inst("RK-251", "gg")], command: [released("TST-OP-DA", "gd")], power: powerCards(3, "ep") } } };
+    s = useVia(s, "player1", "RS-011:aura");
+    if (s.pendingEffectChoice?.playerId === "player1" && s.pendingEffectChoice.validInstanceIds.includes("TST-UNIT-0:target")) s = pick(s, "TST-UNIT-0:target");
+    // 相手（敵軍ターン中）がゴルゴムの仕業で無効にする
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-251");
+    const p = s.pendingEffectChoice!;
+    s = p.kind === "confirm" ? act(s, { type: "confirm_effect_choice", playerId: "player2" }) : act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: p.validInstanceIds[0]! });
+    for (let i = 0; i < 4 && s.pendingCommandPayment?.playerId === "player2"; i += 1) {
+      s = act(s, { type: "resolve_command_payment", playerId: "player2", commandInstanceIds: s.pendingCommandPayment.validInstanceIds.slice(0, s.pendingCommandPayment.totalNeeded) });
+    }
+    expect(zoneOf(s, "player2", "RK-251:gg")).toBe("discard");
+    expect(bpOf(s, "player1", "TST-UNIT-0:target")).toBe(1000);
+    // 無効にされて捨札になるときも、リリース状態のコマンドをかわりに捨札にできる
+    expect(s.pendingEffectChoice?.effectId).toBe("rs325_magi_ticket_keep");
+    s = pick(s, "TST-OP-MA:spare");
+    expect(zoneOf(s, "player1", "RS-011:aura")).toBe("command");
+    expect(zoneOf(s, "player1", "TST-OP-MA:spare")).toBe("discard");
+  });
+  // atwiki/page-485 Q8「使用するためにホールドしたコマンドが存在しないとして…効果の解決に失敗します。その後、…捨札になります。」
+  it("RS-325: 公式Q&A — マジチケットで超・電王トリロジーを発動すると、使用のためにホールドしたコマンドが存在しないとして効果の解決に失敗し、捨札になる（出典: atwiki/page-485 Q8）", () => {
+    let s = st({
+      phase: "rush",
+      player1: { rush: [inst("RS-325", "ms"), inst("TST-UNIT-0", "own")], command: [released("SX-008", "tri")], power: powerCards(5), deck: deckCards(5) },
+      player2: { rush: [inst("TST-UNIT-0", "e")], deck: deckCards(3, "e") },
+    });
+    const hand = s.players.player1.hand.length;
+    s = useVia(s, "player1", "SX-008:tri");
+    // WB・OT・MA のどの効果も発動しない（選択も開かない）
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("SX-008");
+    s = settle(s);
+    expect(s.players.player1.hand).toHaveLength(hand);
+    expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("rush");
+    expect(zoneOf(s, "player1", "SX-008:tri")).toBe("discard");
+  });
 });
 
 // ===========================================================================
@@ -710,8 +840,73 @@ describe("RS-326 魔法猫スモーキー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:eb")).toBe("battle");
   });
 
-  it.todo("RS-326: 公式Q&A — 猫だましで出したダイボウケンを、天時星・時間返しでやり直したラッシュフェイズでスーパーダイボウケンの合体に使ったなら、スーパーダイボウケンはターン終了時に捨札にならない（出典: grnrngr/faq-card-2/4 RS-326）— 【猫だまし】で L ユニットを出せない（CARD-RS-326）うえ、RS-208 のやり直しと RS-236 の合体ラッシュを重ねた手順が前提になるため");
-  it.todo("RS-326: 公式Q&A — 猫だましで出したタイムロボβが【チェンジフォーメーション】でタイムロボαと置き換わったなら、αは捨札にならない（出典: grnrngr/faq-card-6 RS-394）— 同上（L ユニットを出せず、RS-394/395 の置き換えと RK-026 の手順が前提になるため）");
+  // faq-card-4 RS-326 Q「いいえ、捨札にはなりません。…捨札にする対象の「RS-117 ダイボウケン」はすでに捨札になっているため」
+  it("RS-326: 公式Q&A — 猫だましで出したダイボウケンを、天時星・時間返しでやり直したラッシュフェイズでスーパーダイボウケンの合体に使ったなら、スーパーダイボウケンはターン終了時に捨札にならない（出典: grnrngr/faq-card-2/4 RS-326）", () => {
+    let s = st({
+      player1: {
+        battle: fillers(2),
+        rush: [inst("RS-326", "sm"), inst("RS-208", "k"), ...["RS-171", "RS-172", "RS-173", "RS-174"].map((id) => inst(id, "m"))],
+        hand: [inst("RS-117", "db"), inst("RS-236", "sdb")],
+        command: [released("TST-OP-ET", "et")],
+        power: powerCards(7),
+        deck: deckCards(5),
+      },
+      player2: { power: powerCards(3, "ep"), deck: deckCards(5, "e") },
+    });
+    s = enter(s, "RS-326:sm");
+    s = passEntry(settle(pick(s, "RS-117:db")));
+    expect(zoneOf(s, "player1", "RS-117:db")).toBe("rush");
+    s = enter(s, "RS-208:k");
+    if (s.pendingEffectChoice?.kind === "confirm") s = confirm(s);
+    expect(s.phase).toBe("rush");
+    const r = rushFromHand(s, "player1", "RS-236:sdb");
+    expect(r.ok).toBe(true);
+    s = r.state;
+    expect(zoneOf(s, "player1", "RS-117:db")).toBe("discard");
+    s = passEntry(enter(advanceToBattle(s, "player1"), "RS-236:sdb"));
+    s = endTurn(s);
+    expect(zoneOf(s, "player1", "RS-236:sdb")).toBe("battle");
+  });
+  // faq-card-6 RS-394 Q1「はい、捨札にならずに済むことになります。」
+  it("RS-326: 公式Q&A — 猫だましで出したタイムロボβが【チェンジフォーメーション】でタイムロボαと置き換わったなら、αは捨札にならない（出典: grnrngr/faq-card-6 RS-394）", () => {
+    const KAMEN = sUnit("SPEC-KAMEN-RIDER", { features: ["仮面ライダー"] });
+    let s = st(
+      {
+        phase: "rush",
+        player1: {
+          battle: fillers(2),
+          hand: [inst("RS-203", "deus"), inst("RS-395", "beta")],
+          rush: [inst("SPEC-KAMEN-RIDER", "kr"), inst("RS-326", "sm"), inst("RK-026", "gan")],
+          power: [...powerCards(5), inst("RS-394", "alpha")],
+          command: [released("TST-OP-DA", "da"), released("TST-OP-DA", "da2")],
+          deck: deckCards(5),
+        },
+        player2: { power: powerCards(3, "ep"), deck: deckCards(5, "e") },
+      },
+      [KAMEN],
+    );
+    // ラー・デウスを特徴「仮面ライダー」のユニットを捨札にしてラッシュ → すべてのユニットが「仮面ライダー」を得る
+    const r = rushVia(s, "player1", "RS-203:deus", (a) => (a.zordMaterialInstanceIds as string[] | undefined)?.includes("SPEC-KAMEN-RIDER:kr") === true);
+    expect(r.ok, r.error).toBe(true);
+    s = advanceToBattle(r.state, "player1");
+    expect(zoneOf(s, "player1", "SPEC-KAMEN-RIDER:kr")).toBe("discard");
+    // スモーキー（3番目）の猫だましで β を出し、β をバトルエリアに出す
+    s = enter(s, "RS-326:sm");
+    s = passEntry(settle(pick(s, "RS-395:beta")));
+    s = passEntry(settle(enter(s, "RS-395:beta")));
+    // がんがんじいで β をラッシュエリアに戻すとき、パワーゾーンの α と置き換える
+    s = enter(s, "RK-026:gan");
+    s = pick(s, "RS-395:beta");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-395");
+    s = settle(pick(s, "RS-394:alpha"));
+    expect(zoneOf(s, "player1", "RS-394:alpha")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-395:beta")).toBe("power");
+    // Q2: 置き換えて出た α は「戻したユニット」として扱わず、再びバトルエリアに出られる
+    s = passEntry(s);
+    expect(canEnter(s, "RS-394:alpha")).toBe(true);
+    s = endTurn(s);
+    expect(zoneOf(s, "player1", "RS-394:alpha")).toBe("rush");
+  });
 });
 
 void [bpOf, actionUsing];

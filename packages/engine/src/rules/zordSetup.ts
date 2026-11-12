@@ -650,7 +650,11 @@ function partialMothershipStep(
   const player = state.players[setup.playerId];
   const kind = canUseMothershipForZordRush(state.definitions, player, setup.zordCardId);
   // ルール: 母艦は「コマンドゾーンに送るかわりに」なので、素材を捨札にする経路とは併用できない（RS-076 Q5）。
-  if (!kind || chosen.length === 0 || setup.materialDestination !== "command") {
+  // 「パワーゾーンに送る」追加条件（RS-105 デカベースクローラー等）は行き先の選択がなく、1体ごとの置き換え
+  // （「Sユニットを1体パワーゾーンに送るかわりに、コマンドを1つホールドする」）なので、一部を送り残りをホールドで代えられる
+  // （ユーザー判断 2026-11-12。RS-129 の「ダメージ以外のパワーが1枚しかなければ」はこれで起きる）。
+  const powerSend = getZordCondition(setup.zordCardId) === "send_s_unit_to_power" && kind?.substitutesCondition === "send_s_unit_to_power";
+  if (!kind || chosen.length === 0 || (setup.materialDestination !== "command" && !powerSend)) {
     return { kind: "error", error: "invalid_mothership" };
   }
   if (player.command.length + chosen.length > COMMAND_ZONE_MAX) {

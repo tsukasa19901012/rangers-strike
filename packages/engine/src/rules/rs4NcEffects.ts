@@ -1,3 +1,6 @@
+import { applyXg2BattlePhaseEnd } from "./xg2/xg2Core";
+import { resetRushPhaseFlags } from "./turnModifiers";
+import { applySet7ABattlePhaseEnd } from "./legend1/set7NamedEffectsA";
 import { openDeckLook } from "./deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 /**
@@ -318,13 +321,18 @@ registerOptionalEffect(TIME_RETURN_EFFECT_ID, {
       next = { ...next, ...updatePlayer(next, playerId, { ...player, battle: mark(player.battle), rush: mark(player.rush) }) };
     }
     // もう一度自軍ラッシュフェイズからやり直す（ホールド・ダメージ等の結果はそのまま。Q6/Q8）。
-    return {
+    // 新しいラッシュフェイズなので「ラッシュフェイズごとに1度」の記録は消す（RS-013 シーロンの光を再び発動できる。faq-card-4 RS-208 Q3）。
+    const restarted: GameState = {
       ...next,
+      ...updatePlayer(next, playerId, resetRushPhaseFlags(next.players[playerId])),
       phase: "rush",
       activePlayer: playerId,
       pendingBattleEntry: undefined,
       deferredBattleEntry: undefined,
     };
+    // やり直すときもバトルフェイズを終えてから移るので、「バトルフェイズを終えるとき」の効果は発動する（faq-card-4 RS-208 Q2）。
+    // RS-432 隠流マキビシ（rules/legend1/set7NamedEffectsA.ts）・XG2-024・XG2-028 等（rules/xg2/xg2Core.ts）。
+    return applyXg2BattlePhaseEnd(applySet7ABattlePhaseEnd(restarted, playerId), playerId);
   },
   cpuAccepts: () => false,
 });

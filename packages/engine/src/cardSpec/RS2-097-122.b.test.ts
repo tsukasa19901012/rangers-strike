@@ -185,9 +185,28 @@ describe("RS-106 デカレッド", () => {
     expect(canJuu(s, "RS-106:dr")).toBe(false);
   });
 
-  it.todo(
-    "RS-106: 公式Q&A — タイムピンクからのコンビネーションでは、コロン下で敵軍コマンドを2枚リリースして発動する（出典: grnrngr/faq-card-2 RS-106 Q2）— タイムピンク（RS-222）のコンビネーション経路を本ファイルの範囲で組み立てられない",
-  );
+  it("RS-106: 公式Q&A — タイムピンクからのコンビネーションでは、コロン下で敵軍コマンドを2枚リリースして発動する（出典: grnrngr/faq-card-2 RS-106 Q2）", () => {
+    // コロンでタイムピンク自身も CN4→5 になるので5番目に出し、次にデカレッド（CN1→2）を6番目に出す（ナンバーと並び順は一致しない）。
+    const pinkThenRed = (heldCount: number) => {
+      let s = st({
+        player1: { battle: fillers(4), rush: [inst("RS-222", "tp"), inst("RS-106", "dr")], deck: deckCards(5) },
+        player2: {
+          rush: [inst("RS-140", "colon")],
+          battle: [inst("TST-UNIT-0", "eb")],
+          command: Array.from({ length: heldCount }, (_, i) => held("TST-OP", `h${i}`)),
+          deck: deckCards(5, "e"),
+        },
+      });
+      s = passEntry(enter(s, "RS-222:tp"));
+      return enter(s, "RS-106:dr");
+    };
+    let s = pinkThenRed(2);
+    expect(canJuu(s, "RS-106:dr")).toBe(true);
+    s = act(s, legal(s).find((a) => a.type === "use_juu_kun_do" && a.attackerInstanceId === "RS-106:dr")!);
+    expect(s.players.player2.command.filter((c) => !c.commandHeld)).toHaveLength(2);
+    // 敵軍コマンドが1枚しかリリースできなければ発動できない
+    expect(canJuu(pinkThenRed(1), "RS-106:dr")).toBe(false);
+  });
 
   // faq-card-2 RS-106 Q3「「RS-135 ジェットファルコン」にアタックすることはできないので…発動できない」
   it("RS-106: 公式Q&A — 敵軍バトルエリアがジェットファルコンだけなら発動できない（出典: grnrngr/faq-card-2 RS-106 Q3）", () => {

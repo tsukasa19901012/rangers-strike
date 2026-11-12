@@ -13,6 +13,7 @@
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
 import {
+  act,
   attack,
   attackUntilRegister,
   bpOf,
@@ -362,6 +363,53 @@ describe("XG5-074 仮面ライダーキバ", () => {
     expect(spOf(s, "player1", "SPEC-DA-NOSP:u")).toBe(1);
   });
 
-  it.todo("XG5-074: 公式Q&A — RS-010 プリズムパワー・RS-519 インフェルシアの花嫁・RS-170 エージェント・アブレラの効果のためにホールドしたときは【ファンガイアの王】にならない（出典: atwiki/page-2245 Q1〜Q3「いいえ、そのようにはなりません」）— 常駐・他のカードの効果でホールドする盤面が本範囲の公開 API の手順で組めず、テストできない");
+  it("XG5-074: 公式Q&A — RS-170 エージェント・アブレラの効果（パワー不足分のホールド）のためにこれをホールドしてDAのユニットをラッシュしても【ファンガイアの王】にならない（出典: atwiki/page-2245 Q3「いいえ、そのようにはなりません」）", () => {
+    const DA4 = sUnit("SPEC-DA-S4", { category: "DA", bp: 1000, powerCost: 4, sp: undefined });
+    const board = (withAbrella: boolean) =>
+      st({ phase: "rush", player1: { hand: [inst("SPEC-DA-S4", "u")], rush: withAbrella ? [inst("RS-170", "ab")] : [], command: [...releasedCat("DA", 1), ...releasedCat("WB", 1, "w"), inst("XG5-074", "kv")], power: powerCards(2), deck: deckCards(5) }, player2: { deck: deckCards(5, "e") } }, [...EXTRA, DA4]);
+    const start = { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: "SPEC-DA-S4:u" };
+    // 対照: アブレラがなければパワーが足りずラッシュできない
+    expect(legal(board(false)).some((a) => a.type === "initiate_command_payment")).toBe(false);
+    const s = act(board(true), start as never);
+    expect(zoneOf(s, "player1", "SPEC-DA-S4:u")).toBe("rush");
+    expect(cardIn(s, "player1", "XG5-074:kv")?.commandHeld).toBe(true);
+    expect(bpOf(s, "player1", "SPEC-DA-S4:u")).toBe(1000);
+  });
+
+  it("XG5-074: 公式Q&A — RS-010 プリズムパワーの効果のためにコマンドゾーンのこれを2枚ホールドして DA のユニットをラッシュしても【ファンガイアの王】にならない（出典: atwiki/page-2245 Q1「いいえ、そのようにはなりません」）", () => {
+    // コマンドゾーンの DA はホールド状態で、リリース状態はキバ（MA）2枚だけ。プリズムパワーで2つホールドして DA の1つのかわりにする。
+    const s0 = rushBoard({ hand: [inst("SPEC-DA-NOSP", "u")], operation: [inst("RS-010", "pp")], command: [{ ...inst("TST-OP-DA", "d"), commandHeld: true }, inst("XG5-074", "k1"), inst("XG5-074", "k2")], power: powerCards(3) }, {}, EXTRA);
+    const pay = legal(s0).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "SPEC-DA-NOSP:u" && a.prismSubstitute === true);
+    expect(pay).toBeDefined();
+    let s = act(s0, pay!);
+    if (s.pendingCommandPayment) s = act(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["XG5-074:k1", "XG5-074:k2"] } as never);
+    const rush = legal(s).find((a) => a.type === "rush" && a.instanceId === "SPEC-DA-NOSP:u");
+    if (rush) s = act(s, rush);
+    s = resolveAll(s);
+    expect(zoneOf(s, "player1", "SPEC-DA-NOSP:u")).toBe("rush");
+    expect(cardIn(s, "player1", "XG5-074:k1")?.commandHeld).toBe(true);
+    expect(cardIn(s, "player1", "XG5-074:k2")?.commandHeld).toBe(true);
+    expect(bpOf(s, "player1", "SPEC-DA-NOSP:u")).toBe(1000);
+  });
+
+  it("XG5-074: 公式Q&A — RS-519 インフェルシアの花嫁の太字部分を RK-239 ウエイクアップ！と読み替えてこれをホールドし、山札から出した「戦闘員」の DA のユニットは【ファンガイアの王】の対象にならない（出典: atwiki/page-2245 Q2「いいえ、そのようにはなりません」）", () => {
+    const GRUNT = sUnit("SPEC-GRUNT-DA", { category: "DA", bp: 1000, sp: undefined, features: ["戦闘員"] });
+    let s = st(
+      {
+        phase: "rush",
+        turn: 3,
+        player1: { operation: [inst("RS-519", "hb"), inst("RK-239", "wu")], rush: [inst("XG5-074", "kiba")], deck: [inst("SPEC-GRUNT-DA", "g0"), inst("TST-OP", "x0"), inst("SPEC-GRUNT-DA", "g1")] },
+        player2: { deck: deckCards(3, "e") },
+      },
+      [...EXTRA, GRUNT],
+    );
+    s = act(s, legal(s).find((a) => a.type === "activate_resident_operation" && a.operationInstanceId === "RS-519:hb")!);
+    s = pick(s, "RK-239:wu");
+    s = resolveAll(pick(s, "XG5-074:kiba"), ["SPEC-GRUNT-DA:g0", "SPEC-GRUNT-DA:g1"]);
+    expect(cardIn(s, "player1", "XG5-074:kiba")?.commandHeld).toBe(true);
+    const grunts = s.players.player1.rush.filter((c) => c.cardId === "SPEC-GRUNT-DA");
+    expect(grunts).toHaveLength(2);
+    for (const g of grunts) expect(bpOf(s, "player1", g.instanceId)).toBe(1000);
+  });
 });
 

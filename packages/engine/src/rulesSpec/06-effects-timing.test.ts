@@ -3,6 +3,7 @@
  * 期待値はルールブックと引用元 web（公式FAQ・atwiki）に従う（現エンジンの挙動ではない）。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import { allCardsCatalog } from "@rangers-strike/cards";
 import { effectiveBp, morphOrderChooserPlayerId } from "../index";
 import { rushWithCategoryHold } from "../testing/rushPayment";
@@ -35,6 +36,27 @@ import { heldWbCommand } from "../testing/fixtures";
 import { addTurnRuleModifier } from "../core/scopedModifiers";
 import { PINK_BARRIER_RULE_ID } from "../rules/powerFlipEffects";
 import { wasRushedThisTurn } from "../rules/turnModifiers";
+import {
+  cardIn as gCardIn,
+  enter as gEnter,
+  heldN as gHeldN,
+  p1Battle as gP1Battle,
+  pick as gPick,
+  sUnit as gSUnit,
+  zoneOf as gZoneOf,
+} from "../cardSpec/RK1-001-021.helpers";
+import {
+  act as xAct,
+  enter as xEnter,
+  nextPhase as xNextPhase,
+  powerCards as xPowerCards,
+  releasedCat as xReleasedCat,
+  resolveAll as xResolveAll,
+  rushBoard as xRushBoard,
+  rushFromHand as xRushFromHand,
+  sUnit as xSUnit,
+  zoneOf as xZoneOf,
+} from "../cardSpec/XG3-022-041.helpers";
 
 /** 撃破の誘発で開いた選択（タイミングだけを持つ最小の選択）。 */
 function destroyChoice(
@@ -532,9 +554,56 @@ describe("R-TIME-04 入れ子の割り込み", () => {
     expect(inZone(s, "player1", "hand", "RS-106:dr")).toBe(true);
   });
 
-  it.todo(
-    "R-TIME-04: ゴセイアルティメットの5回リリース処理の途中で仮面ライダーG4がリリースされたら、割り込んでG4の効果を発動できる（出典: atwiki/page-1974 Q&A）— ゴセイアルティメット（XG7-028）はカタログにあるが【アルティメットストライク】（1〜5回のリリース）がエンジン未接続（DSL がプレースホルダの grant_keyword のみ）で、途中割り込みを組み立てられない",
-  );
+  // atwiki/page-1974「…3回目でG4をリリースしたとき、割り込んでG4の効果を発動できますか？…」「↑割り込んでG4の効果を発動できます」
+  it("R-TIME-04: 【アルティメットストライク】の途中で G4 が割り込んでも、どの選び方でも最後まで解決する（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const C3 = gSUnit("SPEC-C3", { bp: 1000, powerCost: 3 });
+    const C9 = gSUnit("SPEC-C9", { bp: 1000, powerCost: 9 });
+    const start = () =>
+      gEnter(
+        gP1Battle(
+          { rush: [inst("XG7-028", "ga")], battle: [{ ...inst("RK-195", "g4"), commandHeld: true }, inst("TST-UNIT-0", "s")], command: gHeldN(2, "TST-OP-MA", "hc") },
+          { battle: [inst("SPEC-C3", "e3"), inst("SPEC-C9", "e9")] },
+          [C3, C9],
+        ),
+        "XG7-028:ga",
+      );
+    expect(freezeProblems(start)).toEqual([]);
+  });
+
+  it("R-TIME-04: ゴセイアルティメットの5回リリース処理の途中で仮面ライダーG4がリリースされたら、割り込んでG4の効果を発動できる（出典: atwiki/page-1974 Q&A）", () => {
+    const C3 = gSUnit("SPEC-C3", { bp: 1000, powerCost: 3 });
+    const C9 = gSUnit("SPEC-C9", { bp: 1000, powerCost: 9 });
+    let s = gEnter(
+      gP1Battle(
+        {
+          rush: [inst("XG7-028", "ga")],
+          battle: [{ ...inst("RK-195", "g4"), commandHeld: true }, inst("TST-UNIT-0", "s")],
+          command: gHeldN(2, "TST-OP-MA", "hc"),
+        },
+        { battle: [inst("SPEC-C3", "e3"), inst("SPEC-C9", "e9")] },
+        [C3, C9],
+      ),
+      "XG7-028:ga",
+    );
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG7-028");
+    // 【アルティメットストライク】でコマンド → G4 → コマンドの順に3回リリースする（ホールド状態のものを全部選ぶと確定する）。
+    for (const id of ["TST-OP-MA:hc0", "RK-195:g4", "TST-OP-MA:hc1"]) s = gPick(s, id);
+    // 2回目（G4）のリリースで【再起動と暴走】が割り込む: 3回目のコマンドはまだホールド状態。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-195");
+    expect(gCardIn(s, "player1", "RK-195:g4")?.commandHeld ?? false).toBe(false);
+    expect(gCardIn(s, "player1", "TST-OP-MA:hc0")?.commandHeld ?? false).toBe(false);
+    expect(gCardIn(s, "player1", "TST-OP-MA:hc1")?.commandHeld).toBe(true);
+    s = gPick(s, "TST-UNIT-0:s");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-195");
+    s = gPick(s, "SPEC-C9:e9");
+    expect(gZoneOf(s, "player2", "SPEC-C9:e9")).toBe("discard");
+    // G4 の効果を解決した後、元の効果の解決を再開する: 3回目をリリースし、3回以下の必要パワーの敵軍ユニットを選ぶ。
+    expect(gCardIn(s, "player1", "TST-OP-MA:hc1")?.commandHeld ?? false).toBe(false);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG7-028");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["SPEC-C3:e3"]);
+    s = gPick(s, "SPEC-C3:e3");
+    expect(gZoneOf(s, "player2", "SPEC-C3:e3")).toBe("power");
+  });
 });
 
 describe("R-TIME-05 1タイミングに複数発動可", () => {
@@ -960,9 +1029,34 @@ describe("R-RES-07 期限付き効果は発動元に依存しない", () => {
     ).toBe(false);
   });
 
-  it.todo(
-    "R-RES-07: バキケロナグルスが隠流忍術で撃破されても、ジョイントコンビネーションしたLユニットの追加アタック能力は有効のまま（出典: grnrngr/faq-card-1 RS-018 Q5）— ジョイントコンビネーション成立と追加アタック能力（RS-167）を公開APIで構築・観測する手段がない",
-  );
+  // 「一度発動すれば「RS-167 爆竜バキケロナグルス」が撃破されても有効のままになります」(faq-card-1 RS-018 Q5)
+  it("R-RES-07: バキケロナグルスが隠流忍術で撃破されても、ジョイントコンビネーションしたLユニットの追加アタック能力は有効のまま（出典: grnrngr/faq-card-1 RS-018 Q5）", () => {
+    let s = st({
+      phase: "battle",
+      player1: { rush: [inst("RS-167", "b"), inst("TST-UNIT-7", "L")], command: [cmd("TST-OP", "c")], deck: deck(3) },
+      player2: {
+        battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")],
+        hand: [inst("RS-018", "n")],
+        command: [cmd("TST-OP-MA", "ma0"), cmd("TST-OP-MA", "ma1")],
+        power: powers(5, "e"),
+        deck: deck(3, "e"),
+      },
+    });
+    s = run(s, { type: "initiate_command_payment", playerId: "player1", kind: "battle_entry", sourceInstanceId: "RS-167:b" });
+    if (s.pendingCommandPayment) s = run(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP:c"] });
+    s = run(s, { type: "pass_battle_entry", playerId: "player1" });
+    s = run(s, { type: "move_to_battle", playerId: "player1", instanceId: "TST-UNIT-7:L" });
+    s = settle(s);
+    s = run(s, { type: "battle", playerId: "player1", attackerInstanceId: "TST-UNIT-7:L", defenderInstanceId: "TST-UNIT-0:e1" });
+    // 隠流忍術: バキケロナグルスをかわりにバトルさせて撃破させる
+    s = use(s, "player2", "RS-018:n", { substituteInstanceId: "RS-167:b" });
+    s = settle(s);
+    expect(inZone(s, "player1", "discard", "RS-167:b")).toBe(true);
+    // L ユニットはバキケロに勝った（隠流忍術のバトル）ので、得た能力で追加でアタックできる
+    expect(
+      legal(s).some((a) => a.type === "battle" && a.attackerInstanceId === "TST-UNIT-7:L" && a.defenderInstanceId === "TST-UNIT-0:e1"),
+    ).toBe(true);
+  });
 });
 
 describe("R-RES-08 無限ループ", () => {
@@ -1211,9 +1305,45 @@ describe("R-TGT-03 複数撃破は先に全員選ぶ", () => {
     expect(inZone(s, "player2", "discard", "TST-UNIT-0:e2")).toBe(true);
   });
 
-  it.todo(
-    "R-TGT-03: ゴレンジャーハリケーンで2体の爆竜トリケラトプスが対象になったとき、2体目の超シールド進化で1体目が留まれば、1体目は選び直されない（出典: grnrngr/faq-card-1 RS-052 Q1）— モモレンジャーからの5体順コンビネーション（ゴレンジャーハリケーン）を公開APIで成立させる手段が未確認",
-  );
+  // 「はい、場にとどまります。…撃破の処理は対象になったユニットの中からターンプレイヤーが１体づつ順に選び行います」(faq-card-1 RS-052 Q1)
+  it("R-TGT-03: ゴレンジャーハリケーンで2体の爆竜トリケラトプスが対象になったとき、2体目の超シールド進化で1体目が留まれば、1体目は選び直されない（出典: grnrngr/faq-card-1 RS-052 Q1）", () => {
+    const order = ["RS-259:momo", "RS-189:ki", "RS-190:mido", "RS-258:ao", "RS-126:aka"];
+    let s = st({
+      phase: "battle",
+      player1: { rush: order.map((id) => inst(id.split(":")[0]!, id.split(":")[1]!)), deck: deck(5) },
+      player2: { battle: [inst("RS-052", "t1"), inst("RS-052", "t2")], deck: deck(5, "e") },
+    });
+    for (const id of order) {
+      s = run(s, { type: "move_to_battle", playerId: "player1", instanceId: id });
+      for (let i = 0; i < 12; i += 1) {
+        const acts = legal(s);
+        // 相手: 1体目（t1）が撃破されるとき、2体目（t2）の【超シールド進化】でかわりに捨札にする
+        const shield = acts.find((a) => a.type === "use_super_shield" && a.playerId === "player2");
+        if (shield && inZone(s, "player2", "battle", "RS-052:t2")) {
+          s = run(s, shield);
+          if (s.pendingEffectChoice?.playerId === "player2" && s.pendingEffectChoice.validInstanceIds.includes("RS-052:t2")) {
+            s = run(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "RS-052:t2" });
+          }
+          continue;
+        }
+        if (s.pendingEffectChoice?.playerId === "player1") {
+          const next = acts.find((a) => a.type === "confirm_effect_choice") ?? acts.find((a) => a.type === "resolve_effect_choice");
+          if (!next) break;
+          s = run(s, next);
+          continue;
+        }
+        const pass = acts.find((a) => a.type.startsWith("pass_") && a.type !== "pass_battle_entry");
+        if (!pass) break;
+        s = run(s, pass);
+      }
+      if (id !== order.at(-1)) {
+        const pass = legal(s).find((a) => a.type === "pass_battle_entry" && a.playerId === "player1");
+        if (pass) s = run(s, pass);
+      }
+    }
+    expect(inZone(s, "player2", "discard", "RS-052:t2")).toBe(true);
+    expect(inZone(s, "player2", "battle", "RS-052:t1")).toBe(true);
+  });
 });
 
 describe("R-TGT-04 自分のユニットも選べる", () => {
@@ -1519,9 +1649,31 @@ describe("R-REPL-01 「かわりに捨札にする」側は撃破扱いではな
     expect(inZone(s, "player2", "power", "RS-052:tri")).toBe(false);
   });
 
-  it.todo(
-    "R-REPL-01: ジャイアントローラー指定ユニットとバトルしたユニットのかわりに爆竜トリケラトプスが捨札になっても、ダメージにはならない（出典: grnrngr/faq-card-1 RS-052 Q3）— RS-182 ジャイアントローラーがエンジンで使用できない",
-  );
+  // 「「RS-052 爆竜トリケラトプス」は撃破されたわけではないので、ダメージにはなりません」(faq-card-1 RS-052 Q3)
+  it("R-REPL-01: ジャイアントローラー指定ユニットとバトルしたユニットのかわりに爆竜トリケラトプスが捨札になっても、ダメージにはならない（出典: grnrngr/faq-card-1 RS-052 Q3）", () => {
+    let s = st({
+      phase: "rush",
+      turn: 3,
+      player1: {
+        hand: [inst("RS-182", "gr")],
+        command: [cmd("TST-OP-MA", "m1"), cmd("TST-OP-MA", "m2")],
+        power: powers(6),
+        battle: [{ ...inst("TST-UNIT-0", "atk"), bpModifier: 12000 }],
+        deck: deck(3),
+      },
+      player2: { battle: [inst("RS-037", "wbm"), inst("RS-052", "tri")], power: powers(3, "e"), deck: deck(3, "e") },
+    });
+    s = use(s, "player1", "RS-182:gr", { targetInstanceId: "TST-UNIT-0:atk" });
+    s = settle(s);
+    s = { ...s, phase: "battle" };
+    s = run(s, { type: "battle", playerId: "player1", attackerInstanceId: "TST-UNIT-0:atk", defenderInstanceId: "RS-037:wbm" });
+    s = run(s, { type: "use_super_shield", playerId: "player2" });
+    s = settle(s);
+    expect(inZone(s, "player2", "battle", "RS-037:wbm")).toBe(true);
+    expect(inZone(s, "player2", "discard", "RS-052:tri")).toBe(true);
+    expect(inZone(s, "player2", "power", "RS-052:tri")).toBe(false);
+    expect(s.players.player2.damage).toBe(0);
+  });
 });
 
 describe("R-REPL-02 「捨札にするかわりに別の場所へ」", () => {
@@ -1540,9 +1692,29 @@ describe("R-REPL-02 「捨札にするかわりに別の場所へ」", () => {
     expect(s.players.player2.damage).toBe(0);
   });
 
-  it.todo(
-    "R-REPL-02: ジャイアントローラーの「撃破されて捨札になったとき」は、レスキューファイターで捨札を経由しない場合は適用されない（出典: grnrngr/faq-card-2 RS-089 Q2）— RS-182 ジャイアントローラーがエンジンで使用できない",
-  );
+  // 「撃破されたユニットはダメージにはならず、持ち主のパワーゾーンにオモテ向きに置かれます」(faq-card-2 RS-089 Q2)
+  it("R-REPL-02: ジャイアントローラーの「撃破されて捨札になったとき」は、レスキューファイターで捨札を経由しない場合は適用されない（出典: grnrngr/faq-card-2 RS-089 Q2）", () => {
+    let s = st({
+      phase: "rush",
+      turn: 3,
+      player1: {
+        hand: [inst("RS-182", "gr")],
+        command: [cmd("TST-OP-MA", "m1"), cmd("TST-OP-MA", "m2")],
+        power: powers(6),
+        battle: [{ ...inst("TST-UNIT-0", "atk"), bpModifier: 12000 }],
+        deck: deck(3),
+      },
+      player2: { battle: [inst("RS-037", "wbm")], rush: [inst("RS-089", "rf")], power: powers(3, "e"), deck: deck(3, "e") },
+    });
+    s = use(s, "player1", "RS-182:gr", { targetInstanceId: "TST-UNIT-0:atk" });
+    s = settle(s);
+    s = { ...s, phase: "battle" };
+    s = run(s, { type: "battle", playerId: "player1", attackerInstanceId: "TST-UNIT-0:atk", defenderInstanceId: "RS-037:wbm" });
+    s = settle(s);
+    expect(inZone(s, "player2", "power", "RS-037:wbm")).toBe(true);
+    expect(card(s, "player2", "power", "RS-037:wbm")?.faceDown).toBeFalsy();
+    expect(s.players.player2.damage).toBe(0);
+  });
   it.todo(
     "R-REPL-02: ゴルゴムの仕業で無効化されて捨札になるオーラパワーも、マジシャインの「かわりに」でコマンドゾーンに留められる（出典: grnrngr/faq-card-1 RS-011）— RS-325 マジチケットがエンジン未接続（RK-251 ゴルゴムの仕業は接続済み。cardSpec/RK12-232-252.c）",
   );
@@ -1605,9 +1777,29 @@ describe("R-REPL-03 「AするかわりにBする」の一般則", () => {
     expect(legal(s).some((a) => a.type === "use_juu_kun_do")).toBe(false);
   });
 
-  it.todo(
-    "R-REPL-03: ルナジェルでアタックできない侍ユニットも、恐竜折神で得た「アタックするかわりに」の撃破を使える（出典: atwiki/page-1974 Q&A）— XG3-034 恐竜折神・RS-579 ルナジェルの組合せがエンジン未接続",
-  );
+  // 「ルナジェルの効果でアタックできない侍ユニットでも…撃破できます」(atwiki/page-1974 Q&A・page-1907 Q2)
+  it("R-REPL-03: ルナジェルでアタックできない侍ユニットも、恐竜折神で得た「アタックするかわりに」の撃破を使える（出典: atwiki/page-1974 Q&A）", () => {
+    const extra = [
+      xSUnit("SPEC-SAM", { category: "MA", bp: 3000, sp: undefined, features: ["侍"] }),
+      xSUnit("SPEC-E1000", { bp: 1000 }),
+    ];
+    let s = xRushBoard(
+      { hand: [inst("SPEC-SAM", "s")], rush: [inst("XG3-034", "k"), inst("RS-579", "lj")], power: xPowerCards(2), command: xReleasedCat("MA", 1) },
+      { battle: [inst("SPEC-E1000", "a")] },
+      extra,
+    );
+    const r = xRushFromHand(s, "player1", "SPEC-SAM:s");
+    expect(r.ok, r.error).toBe(true);
+    s = xNextPhase(r.state);
+    s = xEnter(s, "XG3-034:k");
+    s = xAct(s, { type: "pass_battle_entry", playerId: "player1" });
+    s = xEnter(s, "SPEC-SAM:s");
+    // ルナジェルの制限でアタックはできない
+    expect(legal(s).some((a) => a.type === "battle" && a.attackerInstanceId === "SPEC-SAM:s")).toBe(false);
+    s = xAct(s, { type: "use_juu_kun_do", playerId: "player1", attackerInstanceId: "SPEC-SAM:s" });
+    s = xResolveAll(s, ["SPEC-E1000:a"]);
+    expect(xZoneOf(s, "player2", "SPEC-E1000:a")).toBe("discard");
+  });
   it.todo("R-REPL-03: [未確定] 公式コラム vol44 の原文全体（抜粋は atwiki/page-318 で確認済み）");
 });
 

@@ -23,7 +23,7 @@ import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability
 import { cardHasRegisterKeyword } from "../../keywords/registerReaction";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../pendingChoices";
-import { patchPlayer } from "../playerPatches";
+import { moveRiddenOffToRight, patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { RIDE_OFF_RC_MARK } from "../legend1/set7NamedEffectsD";
@@ -398,7 +398,8 @@ CHOICE_RESOLVERS[SCATTER_SHOT_EFFECT_ID] = (state, playerId, instanceId) => {
       const { mountedOnInstanceId: _m, ...rest } = c;
       return rest as CardInstance;
     });
-  const next = patchPlayer(close(state, pending), enemyId, (p) => ({ ...p, battle: unmount(p.battle), rush: unmount(p.rush) }));
+  // 敵軍ターン中にバトルエリアでライドオフさせたユニットは一番右に置き直す（atwiki/page-141 Q10/A10）。
+  const next = moveRiddenOffToRight(patchPlayer(close(state, pending), enemyId, (p) => ({ ...p, battle: unmount(p.battle), rush: unmount(p.rush) })), enemyId, [instanceId]);
   const card = fieldCards(state, enemyId).find((c) => c.instanceId === instanceId);
   return { state: proceed(next, pending), log: logFor(state, playerId, "RK-113", `${SCATTER_SHOT_EFFECT_ID}:${cardName(state.definitions, card?.cardId ?? "")}`) };
 };

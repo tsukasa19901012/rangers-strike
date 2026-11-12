@@ -250,9 +250,20 @@ describe("XG5-003 ゴーグルブルー", () => {
     expect(choiceIds(s)).toEqual(["SPEC-C2:e2"]);
   });
 
-  it.todo(
-    "XG5-003: 公式Q&A — 必要パワー0のユニットは【ブルージェットダッシュ】で「−1」にならない（0より少なくならない）（出典: atwiki/page-2185 Q1）— 必要パワーの数字が0か−1かで結果が変わる効果（「○以下」以外の参照）が本範囲になく、公開 API で違いを観測できない",
-  );
+  it("XG5-003: 公式Q&A — 必要パワー0のユニットは【ブルージェットダッシュ】で「−1」にならない（0より少なくならない）（出典: atwiki/page-2185 Q1）", () => {
+    // 「同じ必要パワーの数字」を見る XG5-033 シンケンレッド（志葉 薫）【封印のモヂカラ】で、手札の必要パワー0のカードを見せる。
+    const C1 = sUnit("SPEC-C1", { bp: 1000, powerCost: 1 });
+    const enemy = { rush: [inst("SPEC-C0", "e0"), inst("SPEC-C1", "e1"), inst("SPEC-C2", "e2")] };
+    let s = st(
+      { player1: { battle: fill(2), rush: [inst("XG5-003", "bl"), inst("XG5-033", "sk")], hand: [inst("SPEC-C0", "h0")], deck: deckCards(5) }, player2: { deck: deckCards(5, "e"), ...enemy } },
+      [...EXTRA, C1],
+    );
+    s = enterKeep(s, ["XG5-003:bl", "XG5-033:sk"]);
+    expectChoiceFrom(s, "player1", "XG5-033");
+    s = pick(s, "SPEC-C0:h0");
+    // 必要パワー0のまま（−1にならない）の C0 と、1少なくなって0になった C1 が選べる。
+    expect(choiceIds(s)).toEqual(["SPEC-C0:e0", "SPEC-C1:e1"]);
+  });
 });
 
 // ===========================================================================

@@ -7,6 +7,7 @@
  *   それぞれの処理の場所（operationCounters・restrictions・addedFeatures・fieldAuras・leaveEffects 等）から呼ぶ。
  * 構成は rules/legend1/set9NamedEffectsD.ts と同じ。
  */
+import { unitFeatures } from "../addedFeatures";
 import type { Category } from "@rangers-strike/cards";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type {
@@ -32,6 +33,7 @@ import { applyDamageToPlayer } from "../damagePayment";
 import { filterEffectRushCandidates, startEffectRush } from "../effectRush";
 import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { RIDE_OFF_RC_MARK } from "../legend1/set7NamedEffectsD";
+import { enemyCommandHoldSubstitutes } from "../legend1/set7NamedEffectsB";
 import { J_POWER_CARD_ID, hasJPower, isStackedUnderUnitOperation, rk1AddedUnitFeatures, rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
 import { rk2FeaturesStripped } from "./rk2Features";
 import { recordReveal, revealedCards } from "../revealNotice";
@@ -440,7 +442,10 @@ export function applyRk1BattleCounterEffect(
 // 「特徴「改造人間」を持つ自軍Sユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは次の能力を得る⇒
 //  SPが空欄ではないユニットを撃破したとき、相手に1点ダメージを与える。」（atwiki/page-193）
 // - 2枚使えば2点（Q4）。能力は選んだユニット（instance）がこのターンに持つ。
-// - 撃破は「バトルによる撃破を行ったユニット」（grnrngr/faq-rider-1 RK-005 Q3）。効果で撃破したときの扱いは未対応（cardSpec の todo）。
+// - 撃破は「バトルによる撃破を行ったユニット」（grnrngr/faq-rider-1 RK-005 Q3）。効果で撃破したときは「撃破する」と書かれた
+//   テキストの持ち主が能力を持てばよい（同 Q）。効果の撃破からは、撃破したユニット（テキストの持ち主）を渡して applyRk1DestroyerDamage を呼ぶ:
+//   RS-319【ディーソードベガ】は rules/legend1/set5NamedEffects.ts、RS-279【サイカッター】は rules/rs/rsCatchallRuntime.ts、
+//   RS-259【ゴレンジャーハリケーン】は rules/legend3/gorengerHurricane.ts。
 
 export const DYNAMO_EFFECT_ID = "rk005_dynamo";
 const DYNAMO_RULE = "rk005_dynamo_grant";
@@ -448,7 +453,8 @@ const DYNAMO_RULE = "rk005_dynamo_grant";
 function applyDynamo(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const pid = ctx.playerId;
   const ids = fieldUnits(state, pid)
-    .filter((c) => isUnitCard(state, c.cardId) && rk1IsSmallNow(state, c) && unitFeaturesOf(state, pid, c).includes("改造人間"))
+    // 特徴は効果で追加されたもの（RS-203【デウス遺伝子】等。rules/addedFeatures.ts）も見る（faq-rider-1 RK-005 Q のグリーンサイ・モモレンジャー）。
+    .filter((c) => isUnitCard(state, c.cardId) && rk1IsSmallNow(state, c) && (unitFeaturesOf(state, pid, c).includes("改造人間") || unitFeatures(state, pid, c).includes("改造人間")))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: `${DYNAMO_EFFECT_ID}:no_targets` };
   return {
@@ -535,10 +541,13 @@ export function rk1DefenderBlocksAttack(
   }
   // RK-016「アタックするには、さらに2つホールドしなければならない」— ホールドできるリリース状態の自分自身のコマンドが足りなければアタックできない
   // （6つ必要ならアタックを選択すること自体ができない。atwiki/page-176 Q5）。
+  // RS-469 ギンガベリック【雷の星獣】等で自軍コマンドのホールドを敵軍コマンドで代替できれば、その分も数える（atwiki/page-176 Q5
+  // 「何らかの方法でコマンドのホールドの代替ができれば、アタックすることができます」）。
   const cost = rk1AttackCommandCost(state, defenderPlayerId, defender);
   if (cost > 0) {
     const released = state.players[attackerPlayerId].command.filter((c) => !c.commandHeld).length;
-    if (released < cost) return true;
+    const substitutes = enemyCommandHoldSubstitutes(state, attackerPlayerId, "MA").length;
+    if (released + substitutes < cost) return true;
   }
   return false;
 }
@@ -549,7 +558,16 @@ export function rk1PayAttackCommandCost(state: GameState, attackerPlayerId: Play
   if (!defender) return state;
   const cost = rk1AttackCommandCost(state, defenderPlayerId, defender);
   if (cost === 0) return state;
-  return holdReleasedCommands(state, attackerPlayerId, cost) ?? state;
+  // 自分自身のコマンドを先にホールドし、足りない分は RS-469【雷の星獣】のかわりのホールド（敵軍コマンド）で払う（atwiki/page-176 Q5）。
+  const own = Math.min(cost, state.players[attackerPlayerId].command.filter((c) => !c.commandHeld).length);
+  const ownHeld = holdReleasedCommands(state, attackerPlayerId, own) ?? state;
+  const rest = cost - own;
+  if (rest <= 0) return ownHeld;
+  const subs = enemyCommandHoldSubstitutes(ownHeld, attackerPlayerId, "MA").slice(0, rest);
+  return patchPlayer(ownHeld, defenderPlayerId, (p) => ({
+    ...p,
+    command: p.command.map((c) => (subs.includes(c.instanceId) ? { ...c, commandHeld: true, mothershipHold: false } : c)),
+  }));
 }
 
 // ---------------------------------------------------------------------------

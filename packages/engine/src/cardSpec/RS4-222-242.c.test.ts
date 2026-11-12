@@ -28,7 +28,9 @@ import {
   held,
   inst,
   legal,
+  passEntry,
   pick,
+  playOp,
   powerCards,
   raw,
   released,
@@ -128,9 +130,39 @@ describe("RS-236 スーパーダイボウケン", () => {
     expect(canStrike(s, "TST-UNIT-7:L")).toBe(false);
   });
 
-  it.todo(
-    "RS-236: 公式Q&A — 魔法猫スモーキーで出したダイボウケンを、キリンレンジャーの時間返しの後に合体ユニットとして捨札にしてラッシュしたスーパーダイボウケンは、ターンを終えるとき捨札にならない（出典: grnrngr/faq-card-4 RS-236 Q1・faq-card-2/5）— スモーキー（RS-326）の効果→キリンレンジャー（RS-208）の時間返しでラッシュフェイズに戻る流れを公開 API で組み立てられなかった",
-  );
+  // faq-card-4 RS-236 Q1「いいえ、捨札にはなりません。…捨札にする対象の「RS-117 ダイボウケン」はすでに捨札になっているため、「RS-236 スーパーダイボウケン」はその場に残ります。」
+  it("RS-236: 公式Q&A — 魔法猫スモーキーで出したダイボウケンを、キリンレンジャーの時間返しの後に合体ユニットとして捨札にしてラッシュしたスーパーダイボウケンは、ターンを終えるとき捨札にならない（出典: grnrngr/faq-card-4 RS-236 Q1・faq-card-2/5）", () => {
+    let s = st({
+      player1: {
+        battle: fillers(2),
+        rush: [inst("RS-326", "sm"), inst("RS-208", "k"), ...FOUR.map((id) => inst(id, "m"))],
+        hand: [inst("RS-117", "db"), inst("RS-236", "sdb")],
+        command: [released("TST-OP-ET", "et")],
+        power: powerCards(7),
+        deck: deckCards(5),
+      },
+      player2: { battle: [inst("TST-UNIT-0", "eb")], deck: deckCards(5, "e") },
+    });
+    // スモーキー（3番目）の【究極奥義・猫だまし】でダイボウケンをラッシュエリアに出す
+    s = enter(s, "RS-326:sm");
+    s = pick(s, "RS-117:db");
+    expect(zoneOf(s, "player1", "RS-117:db")).toBe("rush");
+    s = passEntry(settle(s));
+    // キリンレンジャー（4番目）の【天時星・時間返し】でラッシュフェイズからやり直す
+    s = enter(s, "RS-208:k");
+    if (s.pendingEffectChoice?.kind === "confirm") s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
+    s = settle(s);
+    expect(s.phase).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-326:sm")).toBe("hand");
+    // ダイボウケンと合体ユニットを捨札にしてスーパーダイボウケンをラッシュする
+    const r = rushFromHand(s, "player1", "RS-236:sdb");
+    expect(r.ok, r.error).toBe(true);
+    s = settle(r.state);
+    expect(zoneOf(s, "player1", "RS-236:sdb")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-117:db")).toBe("discard");
+    s = endTurn(s);
+    expect(zoneOf(s, "player1", "RS-236:sdb")).toBe("rush");
+  });
 });
 
 // ===========================================================================
@@ -360,17 +392,121 @@ describe("RS-238 ゴーゴーファイヤー", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:d0")).toBe("discard");
   });
 
-  it.todo(
-    "RS-238: 公式Q&A — 天雷旋風神【アルティマストーム】でコマンドから先に山札に戻すなら【プロジェットカノン】を使える（ユニットから先ならダイノガッツを使える）（出典: grnrngr/faq-card-4 RS-238 Q1）— 天雷旋風神（RS-566）の戻す順番を公開 API で選べない",
-  );
+  it("RS-238: 公式Q&A — 天雷旋風神【アルティマストーム】でコマンドから先に山札に戻すなら【プロジェットカノン】を使える（ユニットから先ならダイノガッツを使える）（出典: grnrngr/faq-card-4 RS-238 Q1・atwiki/page-403 Q1）", () => {
+    // 自軍（player1）が合体で天雷旋風神をラッシュする。敵軍（player2）のラッシュエリアにゴーゴーファイヤー、バトルエリアにユニット、手札にダイノガッツ。
+    const storm = () => {
+      const s = st({
+        phase: "rush",
+        player1: {
+          hand: [inst("RS-566", "tr")],
+          rush: ["RS-567", "RS-095", "RS-309", "RS-481"].map((id) => inst(id, "m")),
+          command: [released("TST-OP-MA", "c0"), released("TST-OP-MA", "c1")],
+          power: powerCards(8),
+          deck: deckCards(3),
+        },
+        player2: {
+          rush: [inst("RS-238", "gf")],
+          battle: [inst("TST-UNIT-2", "eb")],
+          hand: [inst("RS-027", "dg")],
+          command: [released("TST-OP", "ec0")],
+          discard: [inst("TST-UNIT-0", "d0")],
+          deck: deckCards(10, "e"),
+        },
+      });
+      const r = rushFromHand(s, "player1", "RS-566:tr");
+      expect(r.ok).toBe(true);
+      let t = settle(r.state);
+      for (let i = 0; i < 6 && t.pendingEffectChoice && t.pendingEffectChoice.effectId !== "rs566_ultima_storm_order"; i++) t = settle(drain(t, t.pendingEffectChoice.playerId));
+      expect(t.pendingEffectChoice?.effectId).toBe("rs566_ultima_storm_order");
+      return t;
+    };
 
-  it.todo(
-    "RS-238: 公式Q&A（相互参照）— メカニック忍者でコマンドゾーンのカードがラッシュエリアに出たときも【プロジェットカノン】を発動でき、その後アタックされたユニットをコマンドゾーンに置ける（ライア併用時は2回）（出典: grnrngr/faq-rider-1 RK-008・RK-036）— メカニック忍者（RK-008）・ライア（RK-036）は照合済み（RK1-001-021.b・RK2-022-042.c）だが、メカニック忍者の処理の途中に【プロジェットカノン】を割り込ませる順番（R-TIME の誘発の順）を公開 API で組めていない",
-  );
+    // コマンドから先: コマンドが離れたときに【プロジェットカノン】で捨札のカードをコマンドゾーンに置ける。
+    let c = pick(storm(), "commands_first");
+    expect(c.pendingEffectChoice?.effectId).toBe("command_leave_refill_from_discard");
+    c = settle(pick(c, "TST-UNIT-0:d0"));
+    for (let i = 0; i < 6 && c.pendingEffectChoice; i++) c = settle(drain(c, c.pendingEffectChoice.playerId));
+    expect(zoneOf(c, "player2", "TST-UNIT-0:d0")).toBe("command");
+    expect(zoneOf(c, "player2", "RS-238:gf")).toBe("deck");
 
-  it.todo(
-    "RS-238: 公式Q&A（相互参照）— バルパンサー（2nd）の NC 中にゴーゴーファイヤーで置いたユニットカードを捨札にでき、繰り返しはターンプレイヤーが処理順を選ぶ（出典: grnrngr/faq-card-6 RS-363）— バルパンサー（2nd）側の挙動は RS-363 の担当範囲",
-  );
+    // ユニットから先: ゴーゴーファイヤーのコマンドはまだ離れておらず、場を離れるユニットにダイノガッツを使える。
+    let u = pick(storm(), "units_first");
+    for (let i = 0; i < 4 && u.pendingLeave && u.pendingLeave.instanceId !== "TST-UNIT-2:eb"; i++) u = act(u, legal(u).find((a) => a.type === "pass_leave_reaction")!);
+    expect(u.pendingLeave?.instanceId).toBe("TST-UNIT-2:eb");
+    const use = legal(u).find((a) => a.playerId === "player2" && JSON.stringify(a).includes("RS-027:dg"));
+    expect(use).toBeDefined();
+    u = settle(act(u, use!));
+    for (let i = 0; i < 6 && u.pendingEffectChoice; i++) u = settle(drain(u, u.pendingEffectChoice.playerId));
+    expect(zoneOf(u, "player2", "TST-UNIT-2:eb")).toBe("battle");
+    expect(u.players.player2.command.map((x) => x.instanceId)).not.toContain("TST-OP:ec0");
+  });
+
+  // faq-rider-1 RK-008 Q1「はい、できます。」・Q2「…【プロジェットカノン】が発動できますので、捨札からカードを1枚選んでコマンドゾーンに置きます。…最後に、…アタックされたSユニットをコマンドゾーンに置いて、一連の処理を終了します。」
+  it("RS-238: 公式Q&A（相互参照）— メカニック忍者でコマンドゾーンのカードがラッシュエリアに出たときも【プロジェットカノン】を発動でき、その後アタックされたユニットをコマンドゾーンに置ける（出典: grnrngr/faq-rider-1 RK-008・RK-036）", () => {
+    const KAIZO = sUnit("SPEC-KAIZO", { category: "ET", bp: 3000, features: ["男", "改造人間"] });
+    let s = attack(
+      st(
+        {
+          activePlayer: "player2",
+          player1: {
+            battle: [inst("TST-UNIT-0", "d")],
+            rush: [inst("RS-238", "gf")],
+            hand: [inst("RK-008", "nin")],
+            command: [released("SPEC-KAIZO", "k"), released("TST-OP-ET", "et")],
+            discard: [inst("TST-OP", "x")],
+            power: powerCards(4),
+            deck: deckCards(5),
+          },
+          player2: { battle: [inst("TST-UNIT-7", "atk")], deck: deckCards(5, "e") },
+        },
+        [KAIZO],
+      ),
+      "TST-UNIT-7:atk",
+      "TST-UNIT-0:d",
+      "player2",
+    );
+    // メカニック忍者を使い（ET のコマンドをホールド）、出す改造人間に SPEC-KAIZO を選ぶ。
+    const pay = (legal(s) as unknown as Record<string, unknown>[]).find(
+      (a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-008:nin" && a.substituteInstanceId === "SPEC-KAIZO:k",
+    );
+    expect(pay).toBeDefined();
+    s = act(s, pay as never);
+    // メカニック忍者の途中（改造人間を出した直後）に【プロジェットカノン】が開き、アタックされたユニットはまだバトルエリアにある。
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect(s.pendingEffectChoice?.validInstanceIds).toContain("TST-OP:x");
+    expect(zoneOf(s, "player1", "SPEC-KAIZO:k")).toBe("rush");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("battle");
+    s = settle(pick(s, "TST-OP:x"));
+    expect(zoneOf(s, "player1", "TST-OP:x")).toBe("command");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("command");
+    expect(s.pendingBattle).toBeUndefined();
+  });
+
+  // faq-card-6 RS-363 Q2「ターンプレイヤーが効果の優先順を選択して処理してください。…ターンプレイヤーが「RS-363 バルパンサー（２nd）」のＮＣで破壊した敵軍コマンドを、そのまま捨札にしたままで処理を終えることになります。」
+  it("RS-238: 公式Q&A（相互参照）— バルパンサー（2nd）の NC 中にゴーゴーファイヤーで置いたユニットカードを捨札にでき、繰り返しはターンプレイヤーが処理順を選ぶ（出典: grnrngr/faq-card-6 RS-363）", () => {
+    // 敵軍（player1）のバルパンサー（1番目、NC）→ バルシャーク（2番目、NC）で、ゴーゴーファイヤーを持つ player2 のユニットを player2 のコマンドゾーンにホールド状態で置く
+    let s = st({
+      player1: { rush: [inst("RS-363", "pan"), inst("RS-362", "shark")], deck: deckCards(5) },
+      player2: { battle: [inst("RS-354", "c3")], rush: [inst("RS-238", "f")], discard: [inst("TST-UNIT-0", "d0")], deck: deckCards(5, "e") },
+    });
+    s = passEntry(settle(enter(s, "RS-363:pan")));
+    s = pick(enter(s, "RS-362:shark"), "RS-354:c3");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-363");
+    s = pick(s, "RS-354:c3");
+    expect(zoneOf(s, "player2", "RS-354:c3")).toBe("discard");
+    // コマンドゾーンを離れたので【プロジェットカノン】で捨札から置き直せる
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-238");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    s = pick(s, "RS-354:c3");
+    expect(zoneOf(s, "player2", "RS-354:c3")).toBe("command");
+    // 置かれたユニットカードにまた【パンサークロー】が開く。一度ループを回したので、ターンプレイヤーは優先（バルパンサー）か
+    // 見送りを選ぶ（同じカードを選び続けると同じ局面に戻り続けるため。2026-11-12）。優先すると捨札にしたままで処理を終える。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-363");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["RS-363:pan"]);
+    s = settle(pick(s, "RS-363:pan"));
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(zoneOf(s, "player2", "RS-354:c3")).toBe("discard");
+  });
 });
 
 // ===========================================================================
@@ -554,9 +690,23 @@ describe("RS-241 ボウケンレッドAT", () => {
     expect(s.players.player1.power).toHaveLength(1);
   });
 
-  it.todo(
-    "RS-241: 公式Q&A — 自軍コマンドゾーンのボウケンレッドとボウケンレッドAT をランドバルカンで出すとき、ボウケンレッドを出した後それを捨札にして AT を出せる（出典: grnrngr/faq-card-4 RS-241 Q2）— ランドバルカン（RS-005）で出すユニットの追加条件（ゾードダウン）を1体ずつ満たす手順を公開 API で確認できなかった（RS-005 の担当範囲）",
-  );
+  // faq-card-4 RS-241 Q2「はい、できます。」
+  it("RS-241: 公式Q&A — 自軍コマンドゾーンのボウケンレッドとボウケンレッドAT をランドバルカンで出すとき、ボウケンレッドを出した後それを捨札にして AT を出せる（出典: grnrngr/faq-card-4 RS-241 Q2）", () => {
+    let s = st({
+      phase: "rush",
+      player1: { hand: [inst("RS-005", "lv")], command: [released("TST-OP-ET", "et"), released("RS-062", "bk"), released("RS-241", "at")], power: powerCards(3), deck: deckCards(5) },
+      player2: { deck: deckCards(5, "e") },
+    });
+    const r = playOp(s, "player1", "RS-005:lv");
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    // 先に2枚まで選ぶ（AT もボウケンレッドを先に出せば追加条件を満たせるので選べる）
+    expect(choiceIds(s)).toEqual(["RS-062:bk", "RS-241:at"]);
+    s = pick(s, "RS-062:bk");
+    s = settle(pick(s, "RS-241:at"));
+    expect(zoneOf(s, "player1", "RS-062:bk")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-241:at")).toBe("rush");
+  });
 
   // faq-rider-1 RK-003「はい、戻します。」
   it("RS-241: 公式Q&A（相互参照）— カイゾーグ（RK-003）で撃破されて捨札になった AT を山札の下に戻しても、捨札のボウケンレッドはラッシュエリアに出す（出典: grnrngr/faq-rider-1 RK-003「はい、戻します。」。以前の it.todo は RK-003 の照合待ちだった）", () => {
@@ -695,7 +845,27 @@ describe("RS-242 創造王リュウオーン", () => {
     expect(zones).toEqual(["battle", "discard"]);
   });
 
-  it.todo(
-    "RS-242: 公式Q&A — 大帝ラー・デウス【デウス遺伝子】で「戦闘員」が追加されても、手札のカードはユニットではないので【ジャリュウ一族の侵攻】でラッシュできない（出典: grnrngr/faq-card-4 RS-242 Q3）— 【ジャリュウ一族の侵攻】自体が未実装（上の it.fails）のため、否定側だけを確認しても意味がない",
-  );
+  // faq-card-4 RS-242 Q3（= RS-203 Q5）「手札のカードはまだラッシュされていない…ので「ユニット」とはみなされません」
+  it("RS-242: 公式Q&A — 大帝ラー・デウス【デウス遺伝子】で「戦闘員」が追加されても、手札のカードはユニットではないので【ジャリュウ一族の侵攻】でラッシュできない（出典: grnrngr/faq-card-4 RS-242 Q3）", () => {
+    const base = (hand: CardInstance[]) =>
+      st(
+        {
+          phase: "rush",
+          player1: { hand: [inst("RS-203", "d"), ...hand], rush: [inst("RS-242", "ryu"), inst("SPEC-SENTOUIN", "mat")], power: powerCards(6), command: [released("TST-OP-DA", "da")] },
+        },
+        SPECS,
+      );
+    const deus = (hand: CardInstance[]) => {
+      const r = rushVia(base(hand), "player1", "RS-203:d", (a) => a.zordMaterialInstanceId === "SPEC-SENTOUIN:mat" || (a.zordMaterialInstanceIds as string[] | undefined)?.includes("SPEC-SENTOUIN:mat") === true);
+      expect(r.ok, r.error).toBe(true);
+      const s = settle(r.state);
+      expect(zoneOf(s, "player1", "SPEC-SENTOUIN:mat")).toBe("discard");
+      expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
+      return s;
+    };
+    // 対照: 本来「戦闘員」を持つ手札のカードは、コマンドがすべてホールドされていてもラッシュできる
+    expect(canStartRush(deus([inst("SPEC-SENTOUIN", "h")]), "player1", "SPEC-SENTOUIN:h")).toBe(true);
+    // 「戦闘員」を持たない手札のカードは、【デウス遺伝子】の影響を受けないのでラッシュできない
+    expect(canStartRush(deus([inst("SPEC-DA-S", "h")]), "player1", "SPEC-DA-S:h")).toBe(false);
+  });
 });

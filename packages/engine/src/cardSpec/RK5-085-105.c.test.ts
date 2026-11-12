@@ -139,9 +139,44 @@ describe("RK-099 アポロガイスト", () => {
     expect(spOf(s, "player1", "RK-099:ap")).toBe(0);
   });
 
-  it.todo(
-    "RK-099: 公式Q&A — アポロガイストがいるとき【神出鬼没の疾風】でラッシュしたサイクロン・ドーパントのリード ET で宏のオルゴール時計を発動できる（出典: atwiki/page-698 Q1）— XG7-055 サイクロン・ドーパントは本範囲外のカードで、その効果の照合がまだのため",
-  );
+  // atwiki/page-698 Q1「はい、できます。」
+  it("RK-099: 公式Q&A — アポロガイストがいるとき【神出鬼没の疾風】でラッシュしたサイクロン・ドーパントのリード ET で宏のオルゴール時計を発動できる（出典: atwiki/page-698 Q1）", () => {
+    /** 敵軍の BP3000 のユニットが自軍 S ユニットにアタックし、コマンドゾーンのサイクロン・ドーパントと置き換える。 */
+    const swapped = (rush: CardInstance[]) => {
+      const s = attack(
+        enemyTurn(
+          { battle: [inst("SPEC-NON", "d")], rush, hand: [inst("RK-012", "mb")], command: [released("XG7-055", "cy")], power: powerCards(4) },
+          { battle: [inst("SPEC-ATK3000", "a")] },
+        ),
+        "SPEC-ATK3000:a",
+        "SPEC-NON:d",
+        "player2",
+      );
+      expect(s.pendingEffectChoice?.sourceCardId).toBe("XG7-055");
+      return pick(s, "XG7-055:cy");
+    };
+    const canMusicBox = (s: GameState) =>
+      legal(s).some(
+        (a) =>
+          a.playerId === "player1" &&
+          ((a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-012:mb") || (a.type === "play_counter" && a.instanceId === "RK-012:mb")),
+      );
+    // アポロガイストがいれば、置き換えで出たサイクロン・ドーパント（怪人）は BP4000 で、宏のオルゴール時計を使える。
+    let s = swapped([inst("RK-099", "ap")]);
+    expect(bpOf(s, "player1", "XG7-055:cy")).toBe(4000);
+    expect(canMusicBox(s)).toBe(true);
+    const pay = legal(s).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-012:mb");
+    s = act(s, pay!);
+    const play = legal(s).find((a) => a.type === "play_counter" && a.instanceId === "RK-012:mb");
+    if (play) s = act(s, play);
+    expect(zoneOf(s, "player1", "RK-012:mb")).toBe("discard");
+    // 支払いはリード ET（バトルエリアのサイクロン・ドーパントをホールド）。
+    expect(cardIn(s, "player1", "XG7-055:cy")?.commandHeld).toBe(true);
+    // アポロガイストがいなければ BP3000 なので使えない（バトルはそのまま行われる）。
+    const without = swapped([]);
+    expect(bpOf(without, "player1", "XG7-055:cy")).toBe(3000);
+    expect(canMusicBox(without)).toBe(false);
+  });
   // atwiki/page-698 Q2 = atwiki/page-1399 Q4「いいえ、なりません。バトルで撃破されたユニットはすでに「撃破」されており、その状態からさらに効果などで重複して撃破されることはありません。」
   it("RK-099: 公式Q&A — クウガRM の RC で撃破されたアポロガイストは、すでにバトルで撃破されているので【ライジングマイティキック】の効果での撃破の対象にならない（レジストで留まれば場に残り、BP がそれ以下の他の S ユニットだけが撃破される）（出典: atwiki/page-698 Q2・atwiki/page-1399 Q4）", () => {
     let s = rcRideOff(board({ rush: [inst("RK-271", "rm"), inst("SPEC-VEHICLE", "v")] }, { battle: [inst("RK-099", "ap"), inst("SPEC-E2", "e2")] }), "RK-271:rm", "SPEC-VEHICLE:v");
@@ -367,9 +402,15 @@ describe("RK-104 仮面ライダークウガTF", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("RK-104", "tf")] }, "RK-104:tf"))).toBe(true);
   });
 
-  it.todo(
-    "RK-104: 公式Q&A — グレートタイタン【タイタンノバ】の「カード名に「タイタン」を含む自軍コマンド」に、ルビに「タイタン」を含むこのカードを選べる（出典: atwiki/page-687 Q1）— XG6-010 グレートタイタンは本範囲外のカードで、その効果の照合がまだのため",
-  );
+  // atwiki/page-687 Q1「はい、できます。」
+  it("RK-104: 公式Q&A — グレートタイタン【タイタンノバ】の「カード名に「タイタン」を含む自軍コマンド」に、ルビに「タイタン」を含むこのカードを選べる（出典: atwiki/page-687 Q1）", () => {
+    let s = enter(board({ rush: [inst("XG6-010", "gt")], command: [{ ...inst("RK-104", "tf"), commandHeld: false }, ...releasedCat("WB", 1)] }), "XG6-010:gt");
+    expectChoiceFrom(s, "player1", "XG6-010");
+    expect(choiceIds(s)).toEqual(["RK-104:tf"]);
+    s = resolveAll(pick(s, "RK-104:tf"));
+    expect(zoneOf(s, "player1", "RK-104:tf")).toBe("discard");
+    expect(s.players.player2.damage).toBe(1);
+  });
 });
 
 // ===========================================================================

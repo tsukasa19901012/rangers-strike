@@ -31,7 +31,7 @@ import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice, requestDrawFromDeck } from "../pendingChoices";
 import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
-import { patchPlayer } from "../playerPatches";
+import { moveRiddenOffToRight, patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import { applyDamageToPlayer } from "../damagePayment";
@@ -515,6 +515,16 @@ CHOICE_RESOLVERS[G4_HOLD_EFFECT_ID] = (state, playerId, instanceId) => {
 CHOICE_SKIPPERS[G4_HOLD_EFFECT_ID] = simpleSkip();
 
 /**
+ * このカードがリリース状態になったことで【再起動と暴走】の選択が開くか（場の RK-195 で、ホールドできる他の自軍 S ユニットがある）。
+ * 複数のカードを順にリリースする効果（XG7-028【アルティメットストライク】）が、1回ごとのリリースの間に割り込ませるために見る（R-TIME-04）。
+ */
+export function rk195RebootOpensOnRelease(state: GameState, playerId: PlayerId, instanceId: string): boolean {
+  const g4 = fieldCards(state, playerId).find((c) => c.instanceId === instanceId);
+  if (!g4 || g4.commandHeld || !isSameCardIdentity(g4.cardId, "RK-195")) return false;
+  return g4Candidates(state, playerId, instanceId).length > 0;
+}
+
+/**
  * applyAction の後処理: RK-195 がホールド状態からリリース状態になったら【再起動と暴走】の選択を開く（操作待ちがあれば後で開く）。
  */
 export function applyRk10AfterAction(before: GameState, after: GameState, turnPlayer: PlayerId): GameState {
@@ -694,7 +704,7 @@ CHOICE_CONFIRMERS[OMEGA_DRAW_EFFECT_ID] = drawConfirmer("RK-199");
 // ---------------------------------------------------------------------------
 // RK-200 マガゼール【群れの襲撃】
 // 「自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを、特徴「レイヨウ型」を持つ自軍ユニットの数まで選んでもよい。そうしたとき、
-//  選んだユニットをライドオフさせる。」（atwiki/page-923）。ライドオフさせたユニットはその場に残る（RK-039 と同じ）。
+//  選んだユニットをライドオフさせる。」（atwiki/page-923）。ライドオフさせたユニットはその場に残る（敵軍ターン中のバトルエリアでは一番右。RK-039 と同じ）。
 
 export const MAGA_EFFECT_ID = "rk200_herd_raid";
 
@@ -720,7 +730,12 @@ function finishHerdRaid(state: GameState, pending: PendingEffectChoice, ids: str
     const { mountedOnInstanceId: _m, ...rest } = c;
     return rest;
   };
-  const next = patchPlayer(close(state, pending), enemyId, (p) => ({ ...p, battle: p.battle.map(unmount), rush: p.rush.map(unmount) }));
+  // 敵軍ターン中にバトルエリアでライドオフさせたユニットは一番右に置き直す（atwiki/page-141 Q10/A10）。
+  const next = moveRiddenOffToRight(
+    patchPlayer(close(state, pending), enemyId, (p) => ({ ...p, battle: p.battle.map(unmount), rush: p.rush.map(unmount) })),
+    enemyId,
+    ids,
+  );
   return { state: proceed(next, pending), log: logFor(state, pending.playerId, "RK-200", `${MAGA_EFFECT_ID}:${ids.length}`) };
 }
 CHOICE_RESOLVERS[MAGA_EFFECT_ID] = pickUpTo(finishHerdRaid);

@@ -10,6 +10,7 @@
  * レアリティは atwiki の「スーパーレア／レア／ノーマルレア／ノーマル」を SR／R／NR／N として照合する。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import type { GameState } from "../types/game";
 import {
   attack,
@@ -19,6 +20,7 @@ import {
   canSkip,
   cardIn,
   choiceIds,
+  confirm,
   deckCards,
   enemyAttacks,
   enemyRushes,
@@ -42,6 +44,7 @@ import {
   rushFromHand,
   rushVia,
   settle,
+  skip,
   st,
   strike,
   sUnit,
@@ -218,8 +221,51 @@ describe("XG5-085 超時空戦闘母艦グランナスカ", () => {
     expect(attackTargets(s, "XG5-085:gn")).toEqual(["SPEC-M:m"]);
   });
 
-  it.todo("XG5-085:【ワープ】— 自軍山札でオモテになったとき、効果の対象にする前に自軍ラッシュエリアに出し、山札の次の1枚をかわりに対象にできる（出典: atwiki/page-2220「これを効果の対象にする前に自軍ラッシュエリアに出してもよい」）— 本範囲で山札をオモテにする効果（XG5-058 等）がエンジンで動かず、オモテになる場面を組めない");
-  it.todo("XG5-085: 公式Q&A —【ワープ】を発動したあとでは SR-006 シュリケンジャーFM【超忍法・分身魔球】は使えない（出典: atwiki/page-2220 Q1「いいえ、それはできません」）— 同上の理由でテストできない");
+  /** RS-367 ゾロー兵【軍隊アリの遺伝子】で自軍山札の上（XG5-085）をオモテにする。 */
+  const warpBoard = (next: string, rush: ReturnType<typeof inst>[] = []) => {
+    const s0 = rushBoard({ hand: [inst("RS-367", "z1"), inst("RS-367", "z2")], rush, deck: [inst("XG5-085", "gn"), inst(next, "n2"), ...deckCards(3)], power: powerCards(1), command: releasedCat("DA", 1) });
+    const r = rushFromHand(s0, "player1", "RS-367:z1");
+    expect(r.ok, r.error).toBe(true);
+    let t = r.state;
+    if (t.pendingEffectChoice?.sourceCardId === "RS-367" && t.pendingEffectChoice.validInstanceIds.includes("reveal_top")) t = pick(t, "reveal_top");
+    return settle(t);
+  };
+
+  it("XG5-085:【ワープ】の確認は1枚につき1回だけ開き、どちらを選んでも先に進む（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const start = () => warpBoard("RS-367");
+    expect(watchedOpened(start, ["xg5_085_warp"])).toBe(true);
+    expect(freezeProblems(start, { watch: ["xg5_085_warp"], maxOpen: 1 })).toEqual([]);
+  });
+
+  it("XG5-085:【ワープ】— 自軍山札でオモテになったとき、効果の対象にする前に自軍ラッシュエリアに出し、山札の次の1枚をかわりに対象にできる（出典: atwiki/page-2220「これを効果の対象にする前に自軍ラッシュエリアに出してもよい。そうしたとき、自軍山札の上から1枚をオモテにして、かわりに効果の対象にする」・RS-367「オモテにしたカードが「ゾロー兵」なら自軍ラッシュエリアに出し、それ以外なら捨札にする」）", () => {
+    const s = warpBoard("RS-367");
+    expectChoiceFrom(s, "player1", "XG5-085");
+    expect(canSkip(s)).toBe(true);
+    const t = settle(confirm(s));
+    expect(zoneOf(t, "player1", "XG5-085:gn")).toBe("rush");
+    expect(zoneOf(t, "player1", "RS-367:n2")).toBe("rush");
+    // かわりの1枚がゾロー兵でなければ、それが捨札になる
+    const u = settle(confirm(warpBoard("TST-OP")));
+    expect(zoneOf(u, "player1", "XG5-085:gn")).toBe("rush");
+    expect(zoneOf(u, "player1", "TST-OP:n2")).toBe("discard");
+  });
+
+  it("XG5-085:【ワープ】— 出さなければグランナスカ自身が元の効果の対象になる（RS-367 では捨札）（出典: atwiki/page-2220「出してもよい」）", () => {
+    const s = settle(skip(warpBoard("RS-367")));
+    expect(zoneOf(s, "player1", "XG5-085:gn")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-367:n2")).toBe("deck");
+  });
+
+  it("XG5-085: 公式Q&A —【ワープ】を発動したあとでは SR-006 シュリケンジャーFM【超忍法・分身魔球】は使えない（出典: atwiki/page-2220 Q1「いいえ、それはできません」）", () => {
+    const s = warpBoard("TST-OP", [inst("SR-006", "fm")]);
+    expectChoiceFrom(s, "player1", "XG5-085");
+    const t = settle(confirm(s));
+    expect(t.pendingEffectChoice?.sourceCardId).not.toBe("SR-006");
+    expect(zoneOf(t, "player1", "XG5-085:gn")).toBe("rush");
+    expect(zoneOf(t, "player1", "TST-OP:n2")).toBe("discard");
+    // 【ワープ】の前なら分身魔球を使える（Q1「【ワープ】の効果を発動する前に適用してください」）
+    expectChoiceFrom(settle(skip(s)), "player1", "SR-006");
+  });
 });
 
 // ===========================================================================

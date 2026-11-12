@@ -5,6 +5,7 @@ import { xg7RiderCross } from "../rules/xg7/xg7Fields";
 import type { Category } from "@rangers-strike/cards";
 import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
 import { set9ATaxisCategory } from "../rules/legend1/set9NamedEffectsA";
+import { promoGrantsKeyword } from "../rules/promo/promoHooks";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { sameCanonicalCardName, textHasKeywordNotation } from "@rangers-strike/cards";
@@ -124,7 +125,9 @@ export function taxisSpFloor(
     parseTaxisCategory(left.cardId) ??
     srBigBatonTaxisCategory(state, playerId, left.cardId) ??
     // RS-610 秘伝ディスク: 特徴「侍」を持つユニットはタクスMA を得る（rules/legend1/set9NamedEffectsA.ts）。
-    set9ATaxisCategory(state, playerId, left);
+    set9ATaxisCategory(state, playerId, left) ??
+    // XP-018 ゴールド寿司「MAがあればタクスMAを得る」（rules/promo/xp2Effects.ts）。
+    (promoGrantsKeyword(state, playerId, left.instanceId, "taxis_MA") ? "MA" : null);
   if (!taxisCategory) return 0;
 
   const holderPosition = index;

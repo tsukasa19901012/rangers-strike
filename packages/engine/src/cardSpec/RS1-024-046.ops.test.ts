@@ -344,13 +344,47 @@ describe("RS-026 疾風流超忍法", () => {
     expect(canUse(state, "player2", ctr.instanceId)).toBe(true);
   });
 
-  it.todo(
-    "RS-026: ジェットシーカーをラッシュ→疾風流超忍法を使われても【ラウンドレーダー】で敵軍パワーを2枚まで捨札にできる（出典: grnrngr/faq-card-1 RS-026 Q4）— 山札に戻ったジェットシーカーの効果が「使用したとき」に誘発する扱いをエンジンの公開APIで観測する手段がない（ラウンドレーダーの誘発キュー未確認）",
-  );
+  it("RS-026: ジェットシーカーをラッシュ→疾風流超忍法を使われても【ラウンドレーダー】で敵軍パワーを2枚まで捨札にできる（出典: grnrngr/faq-card-1 RS-026 Q4）", () => {
+    // 「はい、捨札にできます。」
+    const jet = inst("RS-265", "jet");
+    const ctr = inst("RS-026", "ctr");
+    const state = mk({
+      pendingRush: { rusherPlayerId: "player1", rushedInstanceId: jet.instanceId, phasePlayerId: "player1" },
+      player1: { rush: [jet], deck: deck(2, "p1d") },
+      player2: { hand: [ctr], command: [released(CMD.MA, "m")], power: powers(3, "p2pw"), deck: deck(2, "p2d") },
+    });
+    let next = payAndUse(state, "player2", ctr.instanceId);
+    expect(next.players.player1.deck[0]?.instanceId).toBe(jet.instanceId);
+    expect(next.pendingEffectChoice?.sourceCardId).toBe("RS-265");
+    expect(choiceOptions(next, "player1")).toEqual(expect.arrayContaining(["TST-P:p2pw0", "TST-P:p2pw1"]));
+    next = choose(next, "player1", "TST-P:p2pw0");
+    next = choose(next, "player1", "TST-P:p2pw1");
+    expect(zoneOf(next, "player2", "TST-P:p2pw0")).toBe("discard");
+    expect(zoneOf(next, "player2", "TST-P:p2pw1")).toBe("discard");
+  });
 
-  it.todo(
-    "RS-026: ラッシュしたゴーマ16世を山札の上に戻されても【大地動転の玉】は発動する（出典: grnrngr/faq-card-1 RS-026 Q5）— 継続効果が「発動した」ことの観測方法が出典にない（どの時点の何に適用されるか不明）",
-  );
+  it("RS-026: ラッシュしたゴーマ16世を山札の上に戻されても【大地動転の玉】は発動する（ラッシュした時点で BP0 以下になって撃破されたユニットは戻らない）（出典: grnrngr/faq-card-1 RS-026 Q5）", () => {
+    // 「はい、発動します。」— BP1000 のイエローフォー（ナンバーを持つ S）がカレーの＋2000を－2000にされて撃破される。
+    const gorma = inst("RS-210", "g");
+    const ctr = inst("RS-026", "ctr");
+    const state = mk({
+      player1: {
+        hand: [gorma],
+        rush: [inst("RS-201", "y")],
+        operation: [inst("RS-179", "cur")],
+        command: [released(CMD.DA, "c")],
+        power: powers(4, "p1pw"),
+        deck: deck(3, "p1d"),
+      },
+      player2: { hand: [ctr], command: [released(CMD.MA, "m")], power: powers(3, "p2pw"), deck: deck(3, "p2d") },
+    });
+    let next = rush(state, "player1", gorma.instanceId);
+    expect(zoneOf(next, "player1", "RS-201:y")).toBe("discard");
+    expect(canUse(next, "player2", ctr.instanceId)).toBe(true);
+    next = payAndUse(next, "player2", ctr.instanceId);
+    expect(next.players.player1.deck[0]?.instanceId).toBe(gorma.instanceId);
+    expect(zoneOf(next, "player1", "RS-201:y")).toBe("discard");
+  });
 
   it("RS-026: 超電子レーダーの処理（パワーを手札に戻す）を終えてから使用できる（出典: grnrngr/faq-card-1 RS-026 Q6）", () => {
     // 「ラッシュに誘発した処理…をすべて完了させてから…実行」
@@ -470,9 +504,22 @@ describe("RS-026 疾風流超忍法", () => {
     expect(canUse(next, "player2", ctr.instanceId)).toBe(false);
   });
 
-  it.todo(
-    "RS-026: 第三の眼で無効にされた後、2枚目の疾風流超忍法を改めて使用できる（出典: atwiki/page-424 Q14）— RK-011 の無効化を誘発させる公開アクション手順が確認できず再現できない",
-  );
+  it("RS-026: 第三の眼で無効にされた後、2枚目の疾風流超忍法を改めて使用できる（出典: atwiki/page-424 Q14）", () => {
+    // 「はい、できます。」— player1 の第三の眼（RK-011）で 1枚目を無効にする（必要パワー3以上の手札を捨てる）。
+    const { unit, ctr, state } = setup(
+      "SPEC-S-1000",
+      { operation: [inst("RK-011", "eye")], hand: [inst("SPEC-S-1000", "u"), inst("RS-026", "cost")] },
+      { hand: [inst("RS-026", "ctr"), inst("RS-247", "ctr2")], command: [released(CMD.MA, "m1"), released(CMD.MA, "m2")] },
+    );
+    let next = rush(state, "player1", unit.instanceId);
+    next = payAndUse(next, "player2", ctr.instanceId);
+    expect(next.pendingEffectChoice?.sourceCardId).toBe("RK-011");
+    next = choose(next, "player1", "RS-026:cost");
+    expect(zoneOf(next, "player1", unit.instanceId)).toBe("rush");
+    expect(canUse(next, "player2", "RS-247:ctr2")).toBe(true);
+    next = act(next, { type: "play_counter", playerId: "player2", instanceId: "RS-247:ctr2" });
+    expect(next.players.player1.deck[0]?.instanceId).toBe(unit.instanceId);
+  });
 
   it("RS-026: 宏のオルゴール時計（RK-012）を使われたターン、ラッシュした相手はバトルフェイズを飛ばす（出典: atwiki/page-424 Q15、RK-012 本文）", () => {
     const music = inst("RK-012", "music");
@@ -591,13 +638,72 @@ describe("RS-027 ダイノガッツ", () => {
     expect(canUse(state, "player2", ctr.instanceId)).toBe(false);
   });
 
-  it.todo(
-    "RS-027: 天雷旋風神【アルティマストーム】でユニットから先に山札へ戻すとき、相手はダイノガッツを使用できる（出典: grnrngr/faq-card-1 RS-027 Q1 / atwiki/page-234 Q1）— 戻す順番をターンプレイヤーが選ぶ公開アクションがなく再現できない",
-  );
+  it("RS-027: 天雷旋風神【アルティマストーム】でユニットから先に山札へ戻すとき、相手はダイノガッツを使用できる（出典: grnrngr/faq-card-1 RS-027 Q1 / atwiki/page-234 Q1）", () => {
+    // 自軍（player1）がトライコンドル＋旋風神＋轟雷神＋天空神を捨札にして天雷旋風神をラッシュする。
+    const target = inst("SPEC-S-5000", "t");
+    const ctr = inst("RS-027", "ctr");
+    let state = mk({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-566", "tr")],
+        rush: ["RS-567", "RS-095", "RS-309", "RS-481"].map((id) => inst(id, "m")),
+        command: [released(CMD.MA, "m0"), released(CMD.MA, "m1")],
+        power: powers(8),
+        deck: deck(3, "p1d"),
+      },
+      player2: { battle: [target], hand: [ctr], command: [released(CMD.WB, "w")], deck: deck(10, "p2d") },
+    });
+    state = act(state, { type: "begin_zord_setup", playerId: "player1", zordInstanceId: "RS-566:tr" });
+    for (let i = 0; i < 12 && state.pendingZordSetup; i += 1) {
+      const setup = state.pendingZordSetup;
+      state = act(
+        state,
+        setup.step === "destination"
+          ? { type: "resolve_zord_setup", playerId: "player1", destination: "discard" }
+          : setup.step === "material"
+            ? { type: "resolve_zord_setup", playerId: "player1", materialInstanceId: setup.validInstanceIds[0]! }
+            : { type: "resolve_zord_setup", playerId: "player1" },
+      );
+    }
+    for (let i = 0; i < 4 && state.pendingCommandPayment; i += 1) {
+      const p = state.pendingCommandPayment;
+      state = act(state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: p.validInstanceIds.slice(0, p.totalNeeded) });
+    }
+    for (let i = 0; i < 4 && state.pendingEffectChoice?.effectId !== "rs566_ultima_storm_order"; i += 1) {
+      const pass = legal(state).find((a) => a.type === "pass_rush_reaction");
+      if (!pass) break;
+      state = act(state, pass);
+    }
+    expect(state.pendingEffectChoice?.effectId).toBe("rs566_ultima_storm_order");
+    // ターンプレイヤーがユニットから先に戻すことを選ぶ。
+    state = choose(state, "player1", "units_first");
+    expect(state.pendingLeave?.instanceId).toBe(target.instanceId);
+    expect(canUse(state, "player2", ctr.instanceId)).toBe(true);
+    state = payAndUse(state, "player2", ctr.instanceId);
+    expect(zoneOf(state, "player2", target.instanceId)).toBe("battle");
+    // ダイノガッツは捨札になり、ユニットは場に留まった。コマンドはその後で山札に戻った。
+    expect(zoneOf(state, "player2", ctr.instanceId)).toBe("discard");
+    expect(state.players.player2.command).toHaveLength(0);
+    expect(zoneOf(state, "player2", "TST-OP:w")).toBe("deck");
+  });
 
-  it.todo(
-    "RS-027: 巨大化爆弾に重ねたユニットに使い、爆弾とユニットを場に留まらせられる（出典: grnrngr/faq-card-1 RS-027 Q2）— 巨大化爆弾は敵軍ターン中の自軍「怪人」撃破で発動するため、ダイノガッツ（同じく敵軍ターン中）と同じ盤面を公開APIで作る手順が確認できない",
-  );
+  it("RS-027: 巨大化爆弾に重ねたユニットに使い、爆弾とユニットを場に留まらせられる（出典: grnrngr/faq-card-1 RS-027 Q2）", () => {
+    // 「はい、できます。」— 敵軍ターン、巨大化爆弾を重ねた自軍ユニット（BP1000+3000）を敵軍の圧縮冷凍でパワーゾーンに送られるとき。
+    const op = inst("RS-024", "freeze");
+    const target = { ...inst("SPEC-S-P2", "t"), stackedCards: [inst("RS-255", "bomb")] };
+    const ctr = inst("RS-027", "ctr");
+    let state = mk({
+      definitions: { "SPEC-S-P2": P2 },
+      player1: { hand: [op], power: powers(6), command: [released(CMD.OT, "c")] },
+      player2: { rush: [target], hand: [ctr], command: [released(CMD.WB, "w")], deck: deck(5, "p2d") },
+    });
+    state = payAndUse(state, "player1", op.instanceId, { targetInstanceId: target.instanceId });
+    expect(canUse(state, "player2", ctr.instanceId)).toBe(true);
+    state = payAndUse(state, "player2", ctr.instanceId);
+    expect(zoneOf(state, "player2", target.instanceId)).toBe("rush");
+    expect(findCard(state, "player2", target.instanceId)?.stackedCards?.map((c) => c.instanceId)).toEqual(["RS-255:bomb"]);
+    expect(zoneOf(state, "player2", "RS-255:bomb")).toBeNull();
+  });
 
   it("RS-027: 追加条件で必要パワー0としてラッシュしたアバレッドAMでも、捨札にするのは必要パワー7の7枚（出典: grnrngr/faq-card-1 RS-027 Q3）", () => {
     // 「「RS-027 ダイノガッツ」で山札から捨札にするのは７枚になります」
@@ -830,9 +936,25 @@ describe("RS-029 勇気の魔法", () => {
     expect(opts).not.toContain("TST-OP-ET:theirs");
   });
 
-  it.todo(
-    "RS-029: 勇気の魔法でリリースしたレッドのユニットカードを、アカレッド【ソウル降臨】でホールドしてNCを発動できる（出典: grnrngr/faq-card-6 RS-421 Q）— RS-421 側のQ&A。RS-421 の効果実装に依存するため本ファイルでは扱わない",
-  );
+  it("RS-029: 勇気の魔法でリリースしたレッドのユニットカードを、アカレッド【ソウル降臨】でホールドしてNCを発動できる（出典: grnrngr/faq-card-6 RS-421 Q）", () => {
+    // 「はい、できます。」— ホールド状態のハリケンレッド（RS-099・レッド・NC「SP1」）を勇気の魔法でリリースしてから【ソウル降臨】でホールドする。
+    let state = setup({ rush: [inst("RS-421", "ak")], command: [held("RS-099", "hr")], deck: deck(3) }, { battle: [inst("SPEC-S-1000", "e1")], deck: deck(3, "e") });
+    state = enterBattle(state, "player1", "RS-421:ak");
+    expect(state.pendingEffectChoice?.sourceCardId).toBe("RS-029");
+    state = choose(state, "player1", "RS-099:hr");
+    expect(state.pendingEffectChoice?.sourceCardId).toBe("RS-421");
+    expect(state.pendingEffectChoice?.validInstanceIds).toEqual(["RS-099:hr"]);
+    // 【ソウル降臨】のホールドは支払い（effect_hold）として選ぶ（RS6-411-431.b の soul と同じ）。
+    const pay = legal(state).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RS-421:ak");
+    if (pay) {
+      state = act(state, pay);
+      state = act(state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["RS-099:hr"] });
+    } else {
+      state = choose(state, "player1", "RS-099:hr");
+    }
+    expect(findCard(state, "player1", "RS-099:hr")?.commandHeld).toBe(true);
+    expect(findCard(state, "player1", "RS-421:ak")?.activatedNcEffects).toContain("souru_no_strike");
+  });
 });
 
 // ===========================================================================

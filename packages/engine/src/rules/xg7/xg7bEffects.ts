@@ -16,7 +16,8 @@ import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { cardHasRegisterKeyword } from "../../keywords/registerReaction";
 import { crossValueForCard } from "../../keywords/battleKeywords";
 import { openEffectChoice } from "../pendingChoices";
-import { sendFieldCardsToCommandOrDiscard } from "../fieldLeaveQueue";
+import { fieldMoveIntent, sendFieldCardsToCommandOrDiscard } from "../fieldLeaveQueue";
+import { tryLeaveField } from "../operationCounters";
 import { patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { startEffectRush } from "../effectRush";
@@ -24,6 +25,7 @@ import { applyDamageToPlayer } from "../damagePayment";
 import { recordReveal, revealedCards } from "../revealNotice";
 import { returnToDeckInOrder } from "../deckOrder";
 import { rk1IsSmallNow } from "../rk/rk1Features";
+import { rk195RebootOpensOnRelease } from "../rk/rk10UnitEffects";
 import {
   base,
   categoriesOf,
@@ -323,21 +325,40 @@ function applyUltimateStrike(state: GameState, ctx: GrantKeywordContext): GrantK
 registerMultiPick(
   ULTIMATE_EFFECT_ID,
   (state, pending, selected) => heldOwn(state, pending.playerId, selected),
-  (state, pending, selected) => {
-    const playerId = pending.playerId;
-    let next = close(state, pending);
-    for (const id of selected) next = setHeld(next, playerId, id, false);
-    const enemyId = opponent(playerId);
-    const ids = fieldUnits(next, enemyId)
-      .filter((c) => {
-        const n = costNumberOf(next, c.cardId);
-        return Number.isFinite(n) && n <= selected.length && selectableEnemy(next, playerId, "XG7-028", c);
-      })
-      .map((c) => c.instanceId);
-    if (ids.length === 0) return proceed(next, pending);
-    return openNext(next, pending, selectOne(pendingBase(pending), "XG7-028", ULTIMATE_TARGET_EFFECT_ID, ids, false));
-  },
+  (state, pending, selected) => releaseUltimate(close(state, pending), pending, selected, 0),
 );
+
+/**
+ * 選んだカードを1つずつリリースする。リリースで発動する効果（仮面ライダーG4【再起動と暴走】。rules/rk/rk10UnitEffects.ts。選択の解決なので弾ごとのフックの絞り込みとは関係しない）が開くときは、そこで止めて
+ * 続き（xg7UltimateResume）を預け、割り込んだ効果を解決してから残りのリリースと敵軍ユニットの選択に戻る
+ * （R-TIME-04・atwiki/page-1974「割り込んでG4の効果を発動できます」。core/applyAction.ts の後処理 resumeXg7UltimateStrike）。
+ */
+function releaseUltimate(state: GameState, pending: PendingEffectChoice, selected: string[], from: number): GameState {
+  const playerId = pending.playerId;
+  let next = state;
+  for (let i = from; i < selected.length; i++) {
+    next = setHeld(next, playerId, selected[i]!, false);
+    if (rk195RebootOpensOnRelease(next, playerId, selected[i]!)) {
+      return { ...next, xg7UltimateResume: { pending, selected, next: i + 1 } };
+    }
+  }
+  const enemyId = opponent(playerId);
+  const ids = fieldUnits(next, enemyId)
+    .filter((c) => {
+      const n = costNumberOf(next, c.cardId);
+      return Number.isFinite(n) && n <= selected.length && selectableEnemy(next, playerId, "XG7-028", c);
+    })
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return proceed(next, pending);
+  return openNext(next, pending, selectOne(pendingBase(pending), "XG7-028", ULTIMATE_TARGET_EFFECT_ID, ids, false));
+}
+
+/** 割り込んだ効果の解決後に、【アルティメットストライク】の残りのリリースを続ける（core/applyAction.ts の後処理）。 */
+export function resumeXg7UltimateStrike(state: GameState): GameState {
+  const r = state.xg7UltimateResume;
+  if (!r) return state;
+  return releaseUltimate({ ...state, xg7UltimateResume: undefined }, r.pending, r.selected, r.next);
+}
 
 CHOICE_RESOLVERS[ULTIMATE_TARGET_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
@@ -806,7 +827,11 @@ function applyGoldenHope(state: GameState, ctx: GrantKeywordContext): GrantKeywo
     .map((c) => c.instanceId);
   next = destroyAll(next, ctxBase(ctx), "XG7-041", "xg7041_golden_hope_destroy", ids);
   if (next.players[ctx.playerId].discard.length > next.players[enemyId].discard.length && findField(next, ctx.playerId, self.instanceId)) {
-    next = setSpOverride(next, ctx.playerId, self.instanceId, 2);
+    // 期限の指定がないので、ターンを終えても「SP2」のまま（ユニットである間。atwiki/page-2130 Q1）。
+    next = patchPlayer(next, ctx.playerId, (p) => {
+      const set = (cards: CardInstance[]) => cards.map((c) => (c.instanceId === self.instanceId ? { ...c, spUntilLeave: 2 as const } : c));
+      return { ...p, battle: set(p.battle), rush: set(p.rush) };
+    });
   }
   return { state: next, detail: `xg7041:golden_hope:${ids.length}` };
 }
@@ -829,6 +854,13 @@ export function openXg7bTurnEndEntry(state: GameState, endingPlayerId: PlayerId,
   const [kind, instanceId] = entry.split(/:(.*)/s) as [string, string];
   if (!findField(state, endingPlayerId, instanceId)) return state;
   if (kind === "exile") {
+    // ライド中なら離場の処理を通し、チェイス（XP-018 ゴールド寿司で得たもの等）で留まる機会を出す（atwiki/page-2130 Q1・R-KW-CHASE-01）。
+    // 除外は xg7Exile（捨札にするかわりに除外）で表す。留まったユニットは「SP2」等、解決済みの効果を持ったまま（同 Q1）。
+    const intent = findField(state, endingPlayerId, instanceId)?.mountedOnInstanceId ? fieldMoveIntent(state, endingPlayerId, instanceId, endingPlayerId, "discard") : undefined;
+    if (intent) {
+      const left = tryLeaveField(state, { ...intent, xg7Exile: true }).state;
+      return { ...left, log: [...left.log, logFor(state, endingPlayerId, "XG7-041", "xg7041:exile")] };
+    }
     const next = exileFieldCard(state, endingPlayerId, instanceId);
     return { ...next, log: [...next.log, logFor(state, endingPlayerId, "XG7-041", "xg7041:exile")] };
   }

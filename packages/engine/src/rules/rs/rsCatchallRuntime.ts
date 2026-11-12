@@ -1,4 +1,5 @@
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
+import { applyRk1DestroyerDamage } from "../rk/rk1NamedEffects";
 import { openHolography, openMagnetFist } from "../rs4NcEffects";
 import { registerPinkBarrier } from "../powerFlipEffects";
 import { buildCatchallStructuredPrimitives } from "../../dsl/catchallTextPrimitives";
@@ -151,8 +152,10 @@ const handleDestroyRemaining: PatternHandler = (state, ctx, body) => {
   const bpMatch = body.match(/BP(\d+)以下/);
   const maxBp = bpMatch ? Number(bpMatch[1]) : 4000;
   const ruleId = `rs_destroy_on_enemy_rush_bp_le_${maxBp}::${ctx.sourceCardId}`;
+  // 撃破したのは「撃破する」と書かれたテキストの持ち主（RK-005 超電子ダイナモの1点。faq-rider-1 RK-005 Q のグリーンサイ）。
+  const sourceInstanceId = ctx.triggerSourceInstanceId;
   return {
-    state: registerTurnKeyword(state, ctx.playerId, ruleId, ctx.sourceCardId, { maxBp }),
+    state: registerTurnKeyword(state, ctx.playerId, ruleId, ctx.sourceCardId, { maxBp, ...(sourceInstanceId ? { sourceInstanceId } : {}) }),
     detail: ctx.effectId,
   };
 };
@@ -585,6 +588,13 @@ export function tryRsCatchallOnEnemyRush(
       if (destroyed) {
         next = destroyed;
         logs.push(`rs_destroy_on_enemy_rush:${rushed.cardId}`);
+        // RS-279【サイカッター】で撃破して捨札になったら、撃破したグリーンサイの RK-005 超電子ダイナモ（rules/rk/rk1NamedEffects.ts）。
+        const sourceInstanceId = (mod.payload as { sourceInstanceId?: string })?.sourceInstanceId;
+        if (sourceInstanceId && next.players[rusherPlayerId].discard.some((c) => c.instanceId === rushedInstanceId)) {
+          const dynamo = applyRk1DestroyerDamage(next, playerId, sourceInstanceId, rushed.cardId);
+          next = dynamo.state;
+          logs.push(...dynamo.logs);
+        }
       }
     }
   }

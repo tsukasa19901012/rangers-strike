@@ -134,9 +134,31 @@ describe("RM-015 インプットカードガン", () => {
     expect(choiceIds(used(released("SPEC-CMD3P", "cmd")))).toEqual(["SPEC-C3:r3", "SPEC-C3P:r3p"]);
   });
 
-  it.todo(
-    "RM-015: 公式Q&A — 「XG3-049 ストレンジベント」で相手に選ばれて発動したときは、「使用するためにホールドしたコマンド」がないので処理は中断される（出典: atwiki/page-1913 Q3）— XG3-049 の照合（XG3 シリーズ）が未着手で、相手のオペレーションを発動する手順をまだ確かめていない",
-  );
+  // atwiki/page-1913 Q3「…ご質問の状況では、これ以上の処理は不可能であるとし、処理は中断されます。」
+  it("RM-015: 公式Q&A — 「XG3-049 ストレンジベント」で相手に選ばれて発動したときは、「使用するためにホールドしたコマンド」がないので処理は中断される（出典: atwiki/page-1913 Q3）", () => {
+    // ストレンジベントは必要パワー2 の WB コマンド（SPEC-CMD2）をホールドして使う。敵軍には必要パワー2 の S ユニットがいる。
+    let s = played(
+      board(
+        { hand: [inst("XG3-049", "sv")], discard: [inst("RM-015", "op"), inst("TST-UNIT-0", "d2")], rush: [inst("TST-UNIT-0", "mr")], command: [released("SPEC-CMD2", "cmd")], power: powerCards(4) },
+        { rush: ENEMY_RUSH, battle: [inst("SPEC-C2B", "b2")] },
+      ),
+      "XG3-049:sv",
+    );
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    s = pick(s, "RM-015:op");
+    // 選ばれたインプットカードガンの効果を発動する。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG3-049");
+    expect(s.pendingEffectChoice?.kind).toBe("confirm");
+    expect(cardIn(s, "player1", "SPEC-CMD2:cmd")?.commandHeld).toBe(true);
+    s = accept(s);
+    expect(s.log.some((l) => l.includes("xg3049_strange_vent_op:RM-015:op"))).toBe(true);
+    // 「使用するためにホールドしたコマンド」はない（ストレンジベントのためにホールドしたコマンドは参照しない）ので、撃破するユニットは選ばれず、処理は中断される。
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-015");
+    s = resolveAll(s);
+    for (const c of ENEMY_RUSH) expect(zoneOf(s, "player2", c.instanceId)).toBe("rush");
+    expect(zoneOf(s, "player2", "SPEC-C2B:b2")).toBe("battle");
+    expect(zoneOf(s, "player1", "RM-015:op")).toBe("discard");
+  });
 });
 
 // ===========================================================================

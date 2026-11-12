@@ -72,6 +72,16 @@ function withCrossAdjustedSp(def: CardDefinition, battle: CardInstance[] | undef
   return { ...def, sp: `1/${crossReducedNumber(Number(m[1]), reduction)}` as CardDefinition["sp"] };
 }
 
+/**
+ * 効果で変わったサイズ（RK-013 Jパワー・RS-255 巨大化爆弾を重ねたユニットは L。core/catalog.ts unitSizeOf）で照合する。
+ * J パワーで L ユニットになった MA の S ユニットは、トータスハンマー（RS-224）からコンビネーションする「同カテゴリのLユニット」
+ * に当たる（grnrngr/faq-rider-1 RK-013 Q1）。
+ */
+function withInstanceSize(definitions: GameState["definitions"], def: CardDefinition, card: CardInstance): CardDefinition {
+  const size = unitSizeOf(definitions, card);
+  return size && size !== def.size ? ({ ...def, size } as CardDefinition) : def;
+}
+
 function isJointLPartnerMatch(
   definitions: GameState["definitions"],
   anchor: CardInstance,
@@ -82,7 +92,11 @@ function isJointLPartnerMatch(
   const anchorDef = definitionWithCategories(definitions, anchor, categoriesOf);
   const partnerDef = definitionWithCategories(definitions, partner, categoriesOf);
   if (!anchorDef || !partnerDef) return false;
-  return matchesJointLPartnerById(anchor.cardId, anchorDef, withCrossAdjustedSp(partnerDef, battle, partner));
+  return matchesJointLPartnerById(
+    anchor.cardId,
+    anchorDef,
+    withCrossAdjustedSp(withInstanceSize(definitions, partnerDef, partner), battle, partner),
+  );
 }
 
 function isJointRPartnerMatch(
@@ -94,7 +108,7 @@ function isJointRPartnerMatch(
   const rDef = definitionWithCategories(definitions, rUnit, categoriesOf);
   const partnerDef = definitionWithCategories(definitions, leftPartner, categoriesOf);
   if (!rDef || !partnerDef) return false;
-  return matchesJointRPartnerById(rUnit.cardId, rDef, partnerDef);
+  return matchesJointRPartnerById(rUnit.cardId, rDef, withInstanceSize(definitions, partnerDef, leftPartner));
 }
 
 /** @deprecated カテゴリ一致は jointPartnerCategoriesMatch を使用。 */

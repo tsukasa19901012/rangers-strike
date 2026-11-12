@@ -40,13 +40,16 @@ export function isSelectableByOpponentEffect(
   targetInstanceId: string,
   sourceCardId?: string,
   sourceOwnerIdArg?: PlayerId,
+  opts: { sourceNotUnit?: boolean } = {},
 ): boolean {
   const found = findCardInField(state, targetInstanceId);
   if (!found) return false;
   const sourceOwnerId = sourceOwnerIdArg ?? inferEffectSourceOwnerId(state, selectorPlayerId, sourceCardId);
 
   // ブレイカーは「敵軍」（ブレイカーの持ち主から見て）の効果だけを防ぐ。選ぶのが持ち主でも防ぐ。
+  // 手札から見せたカードの効果はユニットの効果ではないので防げない（atwiki/page-2355 Q5）。
   if (
+    !opts.sourceNotUnit &&
     found.playerId !== sourceOwnerId &&
     breakerBlocksEffectTarget(state.definitions, found.card.cardId, sourceCardId)
   ) {

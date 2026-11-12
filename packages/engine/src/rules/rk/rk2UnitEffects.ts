@@ -29,8 +29,10 @@ import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { openEffectChoice } from "../pendingChoices";
 import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
-import { grantSp1OnPlayer, patchPlayer } from "../playerPatches";
+import { grantSp1OnPlayer, moveRiddenOffToRight, patchPlayer } from "../playerPatches";
 import { markBattleBlocked } from "../turnModifiers";
+import { trySet6BBattleToRush } from "../legend1/set6NamedEffectsB";
+import { afterUnitsReturnedToRush } from "../legend1/set7NamedEffectsA";
 import { unitFeatures } from "../addedFeatures";
 import { rk1IsSmallNow } from "./rk1Features";
 import { tryLeaveField } from "../operationCounters";
@@ -487,7 +489,20 @@ CHOICE_RESOLVERS[SEIGI_EFFECT_ID] = (state, playerId, instanceId) => {
     const cards = p.battle.filter((c) => moving.has(c.instanceId));
     return markBattleBlocked({ ...p, battle: p.battle.filter((c) => !moving.has(c.instanceId)), rush: [...p.rush, ...cards] }, instanceId);
   });
-  return { state: proceed(close(moved, pending), pending), log: logFor(state, playerId, "RK-026", `${SEIGI_EFFECT_ID}:${unit.cardId}`) };
+  const log = logFor(state, playerId, "RK-026", `${SEIGI_EFFECT_ID}:${unit.cardId}`);
+  const closed = close(moved, pending);
+  // RS-394/RS-395【チェンジフォーメーション】は「これがバトルエリアからラッシュエリアに戻るとき」なので、この効果で戻すときも置き換えられる。
+  // 置き換えて出たユニットは「戻したユニット」「猫だましで出したユニット」として扱わない（grnrngr/faq-card-6 RS-394 Q1/Q2）。
+  if (!closed.pendingEffectChoice) {
+    const cf = trySet6BBattleToRush(closed, playerId, unit, pending.phasePlayerId);
+    if (cf.pendingEffectChoice) {
+      const choice = pending.resumeChoice ? appendResume(cf.pendingEffectChoice, pending.resumeChoice) : cf.pendingEffectChoice;
+      return { state: { ...cf, pendingEffectChoice: choice }, log };
+    }
+  }
+  // RS-441【コサックダンス】の「自軍ユニットがバトルエリアからラッシュエリアに戻るたび」も誘発する（grnrngr/faq-card-1 RS-057 Q2）。
+  const withReturnTriggers = closed.pendingEffectChoice ? closed : afterUnitsReturnedToRush(closed, playerId, [instanceId], pending.phasePlayerId);
+  return { state: proceed(withReturnTriggers, pending), log };
 };
 CHOICE_SKIPPERS[SEIGI_EFFECT_ID] = simpleSkip();
 
@@ -643,7 +658,8 @@ function heavyPressureTargets(state: GameState, playerId: PlayerId): string[] {
 // ---------------------------------------------------------------------------
 // RK-039 メタルゲラス
 // 「【突進】自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを１体選び、ライドオフさせる。」（atwiki/page-183）。強制。
-// ライドオフさせたユニットはその場（ビークルの次）に残る。効果によるライドオフで RC が発動するかの出典はないので発動させない。
+// ライドオフさせたユニットはその場に残るが、敵軍ターン中なのでバトルエリアの一番右に置き直す（atwiki/page-141 Q10/A10）。
+// 効果によるライドオフで RC が発動するかの出典はないので発動させない。
 
 export const CHARGE_EFFECT_ID = "rk039_charge";
 
@@ -672,14 +688,17 @@ CHOICE_RESOLVERS[CHARGE_EFFECT_ID] = (state, playerId, instanceId) => {
   const enemyId = opponent(playerId);
   const found = findField(state, enemyId, instanceId);
   if (!found) return { error: "invalid_target" };
-  const off = patchPlayer(state, enemyId, (p) => ({
-    ...p,
-    [found.zone]: p[found.zone].map((c) => {
+  const off = patchPlayer(state, enemyId, (p) => {
+    const cards = p[found.zone].map((c) => {
       if (c.instanceId !== instanceId) return c;
       const { mountedOnInstanceId: _m, ...rest } = c;
       return rest;
-    }),
-  }));
+    });
+    if (found.zone !== "battle") return { ...p, [found.zone]: cards };
+    // 敵軍ターン中にライドオフさせられたユニットは、バトルエリアに出すときと同じように一番右に置く（atwiki/page-141 Q10/A10）。
+    const rider = cards.find((c) => c.instanceId === instanceId)!;
+    return { ...p, battle: [...cards.filter((c) => c.instanceId !== instanceId), rider] };
+  });
   return { state: proceed(close(off, pending), pending), log: logFor(state, playerId, "RK-039", `${CHARGE_EFFECT_ID}:${found.card.cardId}`) };
 };
 

@@ -15,6 +15,7 @@ import {
   skipXg7Attacked,
   skipXg7Strike,
 } from "../rules/xg7/xg7Effects";
+import { OOO_COST_FLAG } from "../rules/xg7/xg7cEffects";
 import { payMirrorWorldSelection } from "../rules/mirrorWorldSelection";
 import { memoizeInSearch, sharePerCardCacheInSearch } from "./searchCache";
 import { isInstancePlacedAnywhere } from "./helpers";
@@ -24,11 +25,13 @@ import { applyRk7AfterAction, openRk7LocustReplace } from "../rules/rk/rk7UnitEf
 import { openRk11UndeadReplace } from "../rules/rk/rk11UnitEffects";
 import { rk11IsHandSubstitute } from "../rules/rk/rk11Fields";
 import { rk12PlacesHeldOnRush } from "../rules/rk/rk12Fields";
-import { openRk12GorgomWindow, trackRk12UnitHolds } from "../rules/rk/rk12UnitEffects";
+import { tryFormationDeployOnRush } from "../rules/formationDeploy";
+import { GORGOM_EFFECT_ID, openRk12GorgomWindow, trackRk12UnitHolds } from "../rules/rk/rk12UnitEffects";
 import { xg1dTrackHandDiscards } from "../rules/xg1/xg1dEffects";
 import { isXg1eAttackedChoice, openXg1eAttacked, resolveXg1eAttacked, skipXg1eAttacked, xg1eAfterAction } from "../rules/xg1/xg1eEffects";
 import { applyRk13AfterAction } from "../rules/rk/rk13UnitEffects";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
+import { resumeXg7UltimateStrike } from "../rules/xg7/xg7bEffects";
 import { applyRk10AfterAction, rk10CraneDeclined, rk10CraneIntercept, runRk10OnRush } from "../rules/rk/rk10UnitEffects";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
 import {
@@ -50,7 +53,7 @@ import { resumeAbductionAfterChase } from "../rules/abduction";
 import { applyKyouryuumaru, canUseKyouryuumaru, filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import { currentShuffleEpoch } from "./deckShuffle";
 import { hasActiveEngineRng, runWithStateRng } from "./rng";
-import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
+import { applySwordTornadoAfterShuffle, continueUltimaStorm } from "../rules/legend1/set8NamedEffectsC";
 import {
   applySet7AStrikeCounter,
   applySet7AStrikeDamageTriggers,
@@ -58,6 +61,7 @@ import {
   set7AStrikeCounterIds,
 } from "../rules/legend1/set7NamedEffectsA";
 import { keepWaitingChoices } from "../rules/waitingChoices";
+import { openLoopPriorityIfNeeded } from "../rules/loopPriority";
 import { activateSet8BHandEffect, openKeyHolderWishDraw, settleGuardianApostleProviso } from "../rules/legend1/set8NamedEffectsB";
 import { openKibaShotIfReady, queueKibaShot } from "../rules/legend1/set6AuditFixes";
 import { icyStateForAction, isIcyPhantom, settleIcyPhantoms } from "../rules/legend1/icyLastResort";
@@ -198,6 +202,7 @@ import {
 } from "../rules/combo";
 import { addRushPhaseRuleModifier, addTurnRestrictionModifier } from "./scopedModifiers";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
+import { afterCommandCardsLeft } from "../rules/commandLeaveRefill";
 import {
   ATTACK_HOLD_BONUS_EFFECT_ID,
   listAttackHoldSources,
@@ -227,6 +232,7 @@ import {
 } from "../events/emitUnitRushed";
 import { continuePendingEffectRush } from "../rules/effectRush";
 import { applySuperRadarOnRush } from "../rules/legend3/rushEffects";
+import { openRushCounterWindow } from "../rules/rushEffects";
 import { tryRsCatchallOnEnemyRush } from "../rules/rs/rsCatchallRuntime";
 import { MOBIL_MISSILE_EFFECT_ID, openMobilMissileChoice, selectMobilMissileCommand } from "../rules/mobilMissile";
 import { RUSH_PHASE_RULE_IDS } from "../types/scopedModifiers";
@@ -375,6 +381,7 @@ import {
   applyMagLoadCounter,
   applyNewGymnasticsCounter,
   applyMechanicNinjaCounter,
+  finishMechanicNinjaCounter,
   isMechanicNinjaCounter,
   applySageAelCounter,
   applyShippuNinjaCounter,
@@ -1079,6 +1086,23 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
 /** applyAction の入れ子の深さ（外側の呼び出しだけで行う後処理のため）。 */
 let applyActionDepth = 0;
 
+/**
+ * RS-325【マジチケット】で、仮に手札に移したコマンドゾーンのオペレーションを play_operation で使う。
+ * 実際には手札から使用していないので、XG7-054 ◎2「次に自分が手札から使用するカード」の軽減は受けず、記録も消えない
+ * （atwiki/page-485 Q1・Q2）。解決の間だけ記録を外し、後で戻す。
+ */
+function playMagiTicketOperation(
+  staged: GameState,
+  op: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string },
+): ReturnType<typeof applyAction> {
+  const flags = staged.xg7?.flags ?? [];
+  const kept = flags.filter((f) => f.key === OOO_COST_FLAG && f.playerId === op.playerId);
+  const input: GameState = kept.length === 0 ? staged : { ...staged, xg7: { ...staged.xg7, flags: flags.filter((f) => !kept.includes(f)) } };
+  const played = applyAction(input, { type: "play_operation", ...op }, { trustLegality: true });
+  if (!played.ok || kept.length === 0) return played;
+  return { ...played, state: { ...played.state, xg7: { ...played.state.xg7, flags: [...kept, ...(played.state.xg7?.flags ?? [])] } } };
+}
+
 export function applyAction(
   state: GameState,
   action: GameAction,
@@ -1154,10 +1178,55 @@ function applyActionWithRng(
   // RK-251 ゴルゴムの仕業を使わなかった: オペレーションの使用（効果の実行）を続ける（rules/rk/rk12UnitEffects.ts）。
   if (next.rk12ResumeOperation && !next.pendingEffectChoice) {
     const op = next.rk12ResumeOperation;
-    const resumed = applyAction({ ...next, rk12ResumeOperation: undefined }, { type: "play_operation", ...op }, { trustLegality: true });
+    const viaTicket = next.magiTicketPending?.staged === true && next.magiTicketPending.instanceId === op.instanceId;
+    const cleared: GameState = { ...next, rk12ResumeOperation: undefined };
+    const resumed = viaTicket ? playMagiTicketOperation(cleared, op) : applyAction(cleared, { type: "play_operation", ...op }, { trustLegality: true });
     next = resumed.ok
       ? { ...resumed.state, rk12GorgomPassedOp: undefined }
       : { ...next, rk12ResumeOperation: undefined, rk12GorgomPassedOp: undefined };
+  }
+  // RK-036 ライアの支払いの後に割り込んだ【プロジェットカノン】が終わったら、カウンターの使用を続ける（faq-rider-1 RK-008 Q2）。
+  if (next.rk2RaiaResumeCounter && !next.pendingEffectChoice) {
+    const rc = next.rk2RaiaResumeCounter;
+    const cleared: GameState = { ...next, ...rc.suspended, rk2RaiaResumeCounter: undefined, activePlayer: rc.activePlayer };
+    const resumed = applyAction(
+      cleared,
+      { type: "play_counter", playerId: rc.playerId, instanceId: rc.instanceId, substituteInstanceId: rc.substituteInstanceId },
+      { trustLegality: true },
+    );
+    next = resumed.ok ? resumed.state : cleared;
+  }
+  // RK-008 メカニック忍者の途中に割り込んだ【プロジェットカノン】が終わったら、「その後、」の続きを実行する（faq-rider-1 RK-008 Q1）。
+  if (next.rk1MechanicNinjaResume && !next.pendingEffectChoice) {
+    const nr = next.rk1MechanicNinjaResume;
+    const pendingBattle = nr.pendingBattle;
+    const finished = finishMechanicNinjaCounter(
+      { ...next, pendingBattle, rk1MechanicNinjaResume: undefined, activePlayer: nr.activePlayer },
+      nr.defenderId,
+      pendingBattle,
+    );
+    const resolved = emitBattleDeclaredAndResolve(
+      finished.state,
+      finished.battleCancelled ? { ...pendingBattle, battleCancelled: true } : pendingBattle,
+    );
+    next = { ...resolved.state, log: [...resolved.state.log, finished.log, resolved.log], winner: checkWinner(resolved.state) };
+  }
+  // XG7-055【神出鬼没の疾風】で出たユニットへの「ラッシュされたとき」の窓が閉じたら、置き換えたユニットでバトルを続ける（atwiki/page-198 Q1）。
+  if (next.xg7CycloneResumeAttack && !next.pendingRush && !next.pendingEffectChoice && !next.pendingCommandPayment) {
+    const cr = next.xg7CycloneResumeAttack;
+    const cleared: GameState = { ...next, xg7CycloneResumeAttack: undefined, activePlayer: cr.battle.phasePlayerId };
+    const resumed = continueAttackAfterDeclaration(cleared, cr.battle, cr.wingAttackFromRush);
+    next = resumed.ok ? resumed.state : cleared;
+  }
+  // RS-296【編隊出撃】: 同じタイミングの「ラッシュしたとき」の選択が済んだら、手札の同じカード名のユニットカードを選ぶ（faq-card-6 RS-353 Q2）。
+  if (next.formationDeployResume && !hasBlockingInteraction(next) && !next.winner) {
+    const f = next.formationDeployResume;
+    next = tryFormationDeployOnRush({ ...next, formationDeployResume: undefined }, f.playerId, f.instanceId, f.phasePlayerId).state;
+  }
+  // RS-325【マジチケット】で使ったオペレーションへのゴルゴムの仕業の選択が済んだら、使用の途中の状態を片付ける。
+  if (next.magiTicketPending?.staged && next.pendingEffectChoice?.effectId !== GORGOM_EFFECT_ID && !next.rk12ResumeOperation) {
+    const ticket = next.magiTicketPending;
+    next = finishMagiTicketStaging({ ...next, magiTicketPending: undefined }, ticket.playerId, ticket.instanceId);
   }
   // 「…を捨札にしなければバトルエリアに出られない」の捨てるカードを選んだ後: そのまま move_to_battle を続ける。
   if (next.battleEntryResumeMove && !next.pendingEffectChoice) {
@@ -1186,6 +1255,8 @@ function applyActionWithRng(
   if (next.pendingFieldAbilityAfterLeave) next = continueFieldAbilityAfterLeave(next);
   // ルール: R-KW-CHASE-01 — チェイス等の応答を待っていた、効果でコマンドゾーン等へ移す残りのカード（rules/fieldLeaveQueue.ts）。
   next = drainQueuedFieldLeaves(next);
+  // RS-566【アルティマストーム】: 間に開いた【プロジェットカノン】・ダイノガッツ等が済んだら、残りを山札に戻す（rules/legend1/set8NamedEffectsC.ts）。
+  if (next.ultimaStorm) next = continueUltimaStorm(next);
   next = continueDeferredPowerFlip(next);
   next = continueDeferredAttack(next);
   next = continueDeferredStrike(next);
@@ -1224,6 +1295,12 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRk9AfterAction(state, next, turnPlayerOf(state));
   // RK-195【再起動と暴走】（rules/rk/rk10UnitEffects.ts）。
   if (applyActionDepth === 0) next = applyRk10AfterAction(state, next, turnPlayerOf(state));
+  // XG7-028【アルティメットストライク】のリリースの途中に割り込んだ【再起動と暴走】が済んだら、残りのリリースを続ける
+  // （R-TIME-04・atwiki/page-1974。続きでまた RK-195 をリリースしたら、その選択を開いてまた止まる）。
+  for (let guard = 0; guard < 8 && applyActionDepth === 0 && next.xg7UltimateResume && !next.pendingEffectChoice && !next.rk10DeferredChoices && !hasBlockingInteraction(next); guard++) {
+    const beforeResume = next;
+    next = applyRk10AfterAction(beforeResume, resumeXg7UltimateStrike(beforeResume), turnPlayerOf(state));
+  }
   // RK-260【体内マグマ】の「ユニットでなくなるとき」・RK-271【ライジングマイティキック】の撃破（rules/rk/rk13UnitEffects.ts）。
   if (applyActionDepth === 0) next = applyRk13AfterAction(state, next);
   // RM-017 オメデトロフィー（自軍ユニットがバトルエリアに出たとき。rules/rm/rm1Effects.ts）。
@@ -1266,6 +1343,9 @@ function applyActionWithRng(
       next = cleared;
     }
   }
+  // ルール: R-SIM-02 — 継続効果どうしの止められないループは、ターンプレイヤーが優先する効果を選ぶ（rules/loopPriority.ts）。
+  // 選択・反応の窓が開いている間は開かない（無くなった組の結果を消すだけ）。
+  if (applyActionDepth === 0 && !next.winner) next = openLoopPriorityIfNeeded(next, turnPlayerOf(next), !hasBlockingInteraction(next));
   // RS-319 デカマスター ※: 自軍ラッシュフェイズ中、条件を満たせば即座に手札に戻る（進行中の処理がないとき）。
   if (!hasBlockingInteraction(next)) next = applyDekaMasterReturn(next);
   // RS-325【マジチケット】: 発動したカードが捨札になったら「かわりに」の選択を開く。
@@ -1430,16 +1510,20 @@ function hasBlockingInteraction(state: GameState): boolean {
 function applyBpZeroRuleDestruction(state: GameState): GameState {
   let next = state;
   for (let guard = 0; guard < 20; guard += 1) {
-    if (next.winner || hasBlockingInteraction(next)) return next;
+    // 「ラッシュされたとき」のカウンターの窓（pendingRush）は、ラッシュに誘発した処理をすべて終えた後の窓なので待たない
+    // （grnrngr/faq-card-1 RS-026 Q5・Q8: ラッシュしたゴーマ16世を疾風流超忍法で山札に戻されても【大地動転の玉】は発動する）。
+    if (next.winner || hasBlockingInteraction(next.pendingRush ? { ...next, pendingRush: undefined } : next)) return next;
     const turnPlayer = next.activePlayer;
     const order: PlayerId[] = [turnPlayer, opponent(turnPlayer)];
     let victim: { ownerId: PlayerId; card: CardInstance; zone: "rush" | "battle" } | undefined;
     for (const ownerId of order) {
       for (const zone of ["battle", "rush"] as const) {
+        const queued = next.bpZeroRuleDestroyIds ?? [];
         const card = next.players[ownerId][zone].find((c) => {
           const def = next.definitions[c.cardId];
           if (!def || def.type !== "unit" || typeof def.bp !== "number" || def.bp <= 0) return false;
-          return effectiveBp(next, ownerId, c) <= 0;
+          // BP を0以下にした効果の持ち主がその後場を離れても撃破するユニット（GameState.bpZeroRuleDestroyIds）。
+          return queued.includes(c.instanceId) || effectiveBp(next, ownerId, c) <= 0;
         });
         if (card) {
           victim = { ownerId, card, zone };
@@ -1448,7 +1532,14 @@ function applyBpZeroRuleDestruction(state: GameState): GameState {
       }
       if (victim) break;
     }
-    if (!victim) return next;
+    if (!victim) {
+      if (next.bpZeroRuleDestroyIds) next = { ...next, bpZeroRuleDestroyIds: undefined };
+      return next;
+    }
+    if (next.bpZeroRuleDestroyIds?.includes(victim.card.instanceId)) {
+      const rest = next.bpZeroRuleDestroyIds.filter((id) => id !== victim!.card.instanceId);
+      next = { ...next, bpZeroRuleDestroyIds: rest.length > 0 ? rest : undefined };
+    }
     const left = tryLeaveField(next, {
       ownerPlayerId: victim.ownerId,
       instanceId: victim.card.instanceId,
@@ -1912,6 +2003,39 @@ function applyActionCore(
         );
       }
       if (cont.type === "play_counter") {
+        // RK-036 ライア: 捨札にしたカードがコマンドゾーンを離れたとき、RS-238【プロジェットカノン】を先に解決してから
+        // カウンターを使う（grnrngr/faq-rider-1 RK-008 Q2）。
+        if (pending.discardInsteadOfHold) {
+          const refilled = afterCommandCardsLeft(
+            { ...nextState, activePlayer: opponent(playerId) },
+            playerId,
+            paidIds.length,
+          );
+          if (refilled.pendingEffectChoice) {
+            return ok(
+              {
+                ...refilled,
+                pendingBattle: undefined,
+                pendingRush: undefined,
+                pendingLeave: undefined,
+                pendingStrike: undefined,
+                rk2RaiaResumeCounter: {
+                  playerId,
+                  instanceId: pending.sourceInstanceId,
+                  substituteInstanceId: cont.substituteInstanceId,
+                  activePlayer: nextState.activePlayer,
+                  suspended: {
+                    pendingBattle: nextState.pendingBattle,
+                    pendingRush: nextState.pendingRush,
+                    pendingLeave: nextState.pendingLeave,
+                    pendingStrike: nextState.pendingStrike,
+                  },
+                },
+              },
+              buildSimpleLogEntry(playerId, "command_payment"),
+            );
+          }
+        }
         const countered = applyAction(
           nextState,
           {
@@ -1978,26 +2102,34 @@ function applyActionCore(
     }
 
     case "use_magi_ticket": {
+      if (action.counter) {
+        // RS-325【マジチケット】でコマンドゾーンのカウンターを、手札にあるものとして発動する（カウンター自身をホールドする。
+        // faq-card-5 RS-325 Q3・faq-rider-1 RK-036 Q1）。手札から使うのと同じ解決（play_counter）に通す。
+        const staged = stageMagiTicket(state, playerId, action.instanceId, "counter_category");
+        if (!staged) return fail("card_not_in_command");
+        const played = applyAction(staged, { type: "play_counter", playerId, instanceId: action.instanceId }, { trustLegality: true });
+        if (!played.ok) return played;
+        const log = buildLogEntry(playerId, "named_effect", "RS-325", state.definitions, "maji_chiketto");
+        return ok(finishMagiTicketStaging(played.state, playerId, action.instanceId), log);
+      }
       // RS-325【マジチケット】（rules/legend1/set5NamedEffects.ts）: 手札から使うのと同じ解決（play_operation）に通す。
       if (state.phase !== "rush") return fail("wrong_phase");
       const staged = stageMagiTicket(state, playerId, action.instanceId);
       if (!staged) return fail("card_not_in_command");
-      const played = applyAction(
-        staged,
-        {
-          type: "play_operation",
-          playerId,
-          instanceId: action.instanceId,
-          targetInstanceId: action.targetInstanceId,
-          extraInstanceId: action.extraInstanceId,
-        },
-        { trustLegality: true },
-      );
+      const played = playMagiTicketOperation(staged, {
+        playerId,
+        instanceId: action.instanceId,
+        targetInstanceId: action.targetInstanceId,
+        extraInstanceId: action.extraInstanceId,
+      });
       if (!played.ok) return played;
-      return ok(
-        finishMagiTicketStaging(played.state, playerId, action.instanceId),
-        buildLogEntry(playerId, "named_effect", "RS-325", state.definitions, "maji_chiketto"),
-      );
+      const log = buildLogEntry(playerId, "named_effect", "RS-325", state.definitions, "maji_chiketto");
+      // 相手が RK-251 ゴルゴムの仕業を使うかを選ぶ間は、使用の途中（カードは仮に手札）のまま待つ。選んだ後に後処理で片付ける
+      // （無効にされて捨札になるときも「かわりに」を選べる。atwiki/page-485 Q7）。
+      if (played.state.pendingEffectChoice?.effectId === GORGOM_EFFECT_ID) {
+        return ok({ ...played.state, magiTicketPending: { playerId, instanceId: action.instanceId, staged: true } }, log);
+      }
+      return ok(finishMagiTicketStaging(played.state, playerId, action.instanceId), log);
     }
 
     case "play_operation": {
@@ -3027,6 +3159,10 @@ function applyActionCore(
             action.substituteInstanceId,
             pending,
           );
+          // RS-238【プロジェットカノン】が途中に割り込んだ: その解決後に続きを実行する（後処理の rk1MechanicNinjaResume）。
+          if (result.paused) {
+            return ok(clearCounterHoldReady(result.state, playerId), result.log);
+          }
           const nextPending: PendingBattle = result.battleCancelled
             ? { ...pending, battleCancelled: true }
             : pending;
@@ -3421,6 +3557,17 @@ function applyActionCore(
       if (isXg7AttackedChoice(pending)) {
         const picked = resolveXg7Attacked(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
+        // 置き換えで出たサイクロン・ドーパントはラッシュされたユニット: 「ラッシュされたとき」のカウンター（RK-012 等）の窓を
+        // 開き、窓を閉じてからバトルを続ける（後処理の xg7CycloneResumeAttack。atwiki/page-198 Q1・page-698 Q1「はい、できます」）。
+        if (picked.battle.defenderInstanceId === action.instanceId && findInZone(picked.state.players[playerId], "battle", action.instanceId)) {
+          const opened = openRushCounterWindow(picked.state, playerId, action.instanceId, picked.battle.phasePlayerId);
+          if (opened.pendingRush) {
+            return ok(
+              { ...opened, xg7CycloneResumeAttack: { battle: picked.battle, wingAttackFromRush: picked.wingAttackFromRush } },
+              buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId),
+            );
+          }
+        }
         return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
       if (isXg7StrikeChoice(pending)) {

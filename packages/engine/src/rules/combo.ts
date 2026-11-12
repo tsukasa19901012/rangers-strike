@@ -224,7 +224,15 @@ export function resolveEnterBattleEffectsImpl(
     state.players[playerId].battle.filter((c) => c.instanceId !== card.instanceId);
 
   let battleCard = card;
-  if (!resumeFrom && card.jointComboGrants) {
+  if (!resumeFrom && card.jointComboGrantsKept) {
+    // RS-440【武器換装】で戻したユニットは前に得た JC の能力を持ち越す（atwiki/page-780 Q2）。
+    const { jointComboGrantsKept: _kept, ...kept } = card;
+    battleCard = kept;
+    nextState = patchPlayer(nextState, playerId, (player) => ({
+      ...player,
+      battle: player.battle.map((c) => (c.instanceId === card.instanceId ? kept : c)),
+    }));
+  } else if (!resumeFrom && card.jointComboGrants) {
     // バトルエリアに出直したユニットは、前に得た JC の能力を持たない（R-CN-06）。
     const { jointComboGrants: _stale, ...fresh } = card;
     battleCard = fresh;
@@ -774,7 +782,7 @@ export function resolveEnterBattleEffectsImpl(
     logs.push(...hurricane.logs);
 
     // RS-029【勇気の魔法】は任意（選択を開く）ため、進入処理の最後に置く（後続の処理を再開しなくてよい）。
-    const courage = applyCourageMagicRelease(nextState, playerId, card.cardId);
+    const courage = applyCourageMagicRelease(nextState, playerId, card.cardId, card.instanceId);
     nextState = courage.state;
     if (courage.log) logs.push(courage.log);
   }
@@ -947,7 +955,7 @@ export function strikeDamageFor(
 
   const def = getDefinition(definitions, instance.cardId);
   const modifier = instance.spModifier ?? 0;
-  const printed = instance.spOverride ?? def?.sp;
+  const printed = instance.spOverride ?? instance.spUntilLeave ?? def?.sp;
   if (printed === "special") return modifier;
   if (typeof printed === "number") return printed + modifier;
   if (typeof printed === "string" && printed.includes("/")) return modifier;

@@ -205,7 +205,17 @@ describe("XG5-078 ファイナルフォームライド", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:u")).toBe("power");
   });
 
-  it.todo("XG5-078: 公式Q&A —「追加条件は満たさなくてもよい」とあっても、あえて追加条件を満たすことはできない（出典: atwiki/page-2179 Q1「いいえ、それはできません」）— 置き換え自体がエンジンになく、追加条件を満たす手順が出てこないことを Q1 によるものとして確かめられない");
+  it("XG5-078: 公式Q&A —「追加条件は満たさなくてもよい」とあっても、あえて追加条件を満たすことはできない（出典: atwiki/page-2179 Q1「いいえ、それはできません」）", () => {
+    // 再生アポロガイストの追加条件「ホールド状態の自軍「アポロガイスト」1体を捨札にする」を満たせる盤面でも、捨札にする手順は出ない。
+    const apollo = { ...inst("RK-099", "ap"), commandHeld: true };
+    let s = beltUsed("XG5-078", "OT", 6, { rush: [inst("TST-UNIT-0", "u"), apollo], power: [faceUp("XG5-049", "ra"), ...powerCards(5)] }, {}, EXTRA);
+    s = pick(s, "TST-UNIT-0:u");
+    s = pick(s, "XG5-049:ra");
+    expect(s.pendingEffectChoice?.validInstanceIds ?? []).not.toContain("RK-099:ap");
+    s = resolveAll(s);
+    expect(zoneOf(s, "player1", "XG5-049:ra")).toBe("rush");
+    expect(zoneOf(s, "player1", "RK-099:ap")).toBe("rush");
+  });
 });
 
 // ===========================================================================

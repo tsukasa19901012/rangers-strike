@@ -12,6 +12,7 @@
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
 import {
+  act,
   attack,
   attackUntilRegister,
   bpOf,
@@ -197,7 +198,28 @@ describe("XG5-050 仮面ライダー装甲響鬼", () => {
     expectChoiceFrom(s, "player1", "XG5-050");
   });
 
-  it.todo("XG5-050: 公式Q&A — 同じターンにラッシュフェイズを2回終えれば（RS-028 キリンレンジャー【天時星・時間返し】）合計 BP+6000（出典: atwiki/page-2254 Q1「はい、そのとおりです」）— ラッシュフェイズに戻す効果を本範囲の盤面で組めず、テストできない");
+  // atwiki/page-2254 Q1「はい、そのとおりです」（質問文の「RS-028」は RS-208 キリンレンジャーの誤記）
+  it("XG5-050: 公式Q&A — 同じターンにラッシュフェイズを2回終えれば（RS-028 キリンレンジャー【天時星・時間返し】）合計 BP+6000（出典: atwiki/page-2254 Q1「はい、そのとおりです」）", () => {
+    let s = st(
+      {
+        phase: "rush",
+        player1: { battle: [inst("TST-UNIT-0", "f1"), inst("TST-UNIT-0", "f2"), inst("TST-UNIT-2", "m3000")], rush: [inst("XG5-050", "hb"), inst("RS-208", "k")], deck: deckCards(5) },
+        player2: { rush: [inst("SPEC-SP1-E", "e")], deck: deckCards(5, "e") },
+      },
+      EXTRA,
+    );
+    s = settle(endPhase(s));
+    expect(s.phase).toBe("battle");
+    expect(bpOf(s, "player1", "XG5-050:hb")).toBe(7000);
+    // 4番目にキリンレンジャー（CN4【天時星・時間返し】）を出し、ラッシュフェイズからやり直す。
+    s = enter(s, "RS-208:k");
+    expectChoiceFrom(s, "player1", "RS-208");
+    s = settle(act(s, { type: "confirm_effect_choice", playerId: "player1" }));
+    expect(s.phase).toBe("rush");
+    s = settle(endPhase(s));
+    expect(s.phase).toBe("battle");
+    expect(bpOf(s, "player1", "XG5-050:hb")).toBe(10000);
+  });
 });
 
 // ===========================================================================

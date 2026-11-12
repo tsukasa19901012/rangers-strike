@@ -28,6 +28,7 @@ import { transformationHindranceNegates } from "./set7NamedEffectsD";
 import { afterEnterBattle, promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 import { registerOptionalEffect } from "../optionalEffects";
+import { afterCommandCardsLeft, commandLeaveRefillWouldOpen } from "../commandLeaveRefill";
 import { rk16NamedTextNegated } from "../rk/rk16Fields";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
@@ -394,6 +395,16 @@ export function openPantherClawIfReady(state: GameState, phasePlayerId: PlayerId
   const next = { ...state, pantherClawQueue: rest.length > 0 ? rest : undefined };
   if (ids.length === 0) return openPantherClawIfReady(next, phasePlayerId);
   const source = fieldUnits(state, playerId).find((c) => c.cardId === "RS-363");
+  // 敵軍の RS-238【プロジェットカノン】が、捨札にしたカードを（ホールド状態で）置き直せるなら、また【パンサークロー】が発動する止められない
+  // ループになる。ターンプレイヤーが効果の優先順を選ぶ（grnrngr/faq-card-6 RS-363 Q2「ターンプレイヤーが「RS-363 バルパンサー（2nd）」のNCで
+  // 破壊した敵軍コマンドを、そのまま捨札にしたままにで処理を終える」。R-SIM-02）。候補にこのユニット（【パンサークロー】を優先: 捨札にして
+  // 【プロジェットカノン】は発動しない）を足す。カードを選べば今までどおり（相手が置き直すかを選ぶ）、見送れば【プロジェットカノン】側を優先したのと同じ。
+  const loopOption =
+    source && ids.length === 1 && commandLeaveRefillWouldOpen(next, opponent(playerId), phasePlayerId) ? [source.instanceId] : [];
+  // 同じカードで一度ループを回した（捨札にして、相手が置き直した）なら、もう一度カードを選ぶ候補は出さない。
+  // 選ぶたびに相手が置き直すと同じ局面に戻り続け、CPU が選び続けて対戦が止まった（2026-11-12 のフリーズ回帰テスト）。
+  // 残るのは【パンサークロー】優先（このユニット）か【プロジェットカノン】優先（見送る）で、Q&A の2通りの終わり方と同じ。
+  const looped = loopOption.length > 0 && hasTurnRuleModifier(state.players[playerId], pantherClawLoopedRule(ids[0]!));
   return openEffectChoice(next, {
     playerId,
     effectId: PANTHER_CLAW_EFFECT_ID,
@@ -402,17 +413,27 @@ export function openPantherClawIfReady(state: GameState, phasePlayerId: PlayerId
     kind: "select_command",
     commandAction: "discard",
     phasePlayerId,
-    validInstanceIds: ids,
+    validInstanceIds: looped ? loopOption : [...ids, ...loopOption],
     selectCount: 1,
     optional: true,
   });
 }
 
-CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, instanceId) => {
+/** 【パンサークロー】のループで、このターンすでに一度捨札にした（相手に置き直された）カードの印。 */
+function pantherClawLoopedRule(instanceId: string): string {
+  return `${PANTHER_CLAW_RULE}_looped:${instanceId}`;
+}
+
+CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, picked) => {
   const pending = state.pendingEffectChoice!;
-  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  if (!pending.validInstanceIds.includes(picked)) return { error: "invalid_target" };
+  // 【パンサークロー】を優先（ループを止める）: 候補のカードを捨札にし、【プロジェットカノン】は発動しない（grnrngr/faq-card-6 RS-363 Q2）。
+  const loopStop = picked === pending.sourceInstanceId;
   const enemyId = opponent(playerId);
   const enemy = state.players[enemyId];
+  const loopedCard = () =>
+    enemy.command.find((c) => c.commandHeld && hasTurnRuleModifier(state.players[playerId], pantherClawLoopedRule(c.instanceId)))?.instanceId;
+  const instanceId = loopStop ? (pending.validInstanceIds.find((id) => id !== pending.sourceInstanceId) ?? loopedCard() ?? picked) : picked;
   const card = enemy.command.find((c) => c.instanceId === instanceId);
   if (!card) return { error: "invalid_target" };
   const { commandHeld: _h, paymentHeld: _p, ...clean } = card as CardInstance & { paymentHeld?: boolean };
@@ -424,12 +445,27 @@ CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, instanceId) => {
       discard: [...enemy.discard, clean],
     }),
   };
+  if (!loopStop && pending.sourceInstanceId && pending.validInstanceIds.includes(pending.sourceInstanceId)) {
+    next = { ...next, ...updatePlayer(next, playerId, addTurnRuleModifier(next.players[playerId], pantherClawLoopedRule(instanceId), { sourceCardId: "RS-363" })) };
+  }
   next = clearPending(next, pending.phasePlayerId);
-  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
+  if (loopStop) {
+    next = finish(next, pending.phasePlayerId);
+    return { state: next, log: logFor(state, playerId, "RS-363", `${PANTHER_CLAW_EFFECT_ID}:loop_priority:${cardName(state.definitions, card.cardId)}`) };
+  }
+  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId && id !== pending.sourceInstanceId);
   if (remaining.length > 0) {
     next = openEffectChoice(next, { ...pending, validInstanceIds: remaining, selectedInstanceIds: [] });
+  } else {
+    // 敵軍コマンドゾーンのカードが離れたので、敵軍の RS-238 ゴーゴーファイヤー【プロジェットカノン】が発動できる
+    // （grnrngr/faq-card-6 RS-363 Q2: 置かれたカードはまた【パンサークロー】で捨札にでき、ターンプレイヤーが処理順を選ぶ）。
+    next = afterCommandCardsLeft(next, enemyId, 1);
   }
-  return { state: finish(next, pending.phasePlayerId), log: logFor(state, playerId, "RS-363", `${PANTHER_CLAW_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+  next = finish(next, pending.phasePlayerId);
+  // 捨札にしたカードは敵軍コマンドゾーンを離れるので、敵軍の RS-238【プロジェットカノン】が誘発する
+  // （grnrngr/faq-card-6 RS-363 Q2: 無限ループはターンプレイヤーが優先順を選び、捨札にしたままで終えられる）。
+  if (!next.pendingEffectChoice) next = afterCommandCardsLeft(next, enemyId, 1);
+  return { state: next, log: logFor(state, playerId, "RS-363", `${PANTHER_CLAW_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
 };
 CHOICE_SKIPPERS[PANTHER_CLAW_EFFECT_ID] = skipChoice("RS-363", PANTHER_CLAW_EFFECT_ID);
 
@@ -541,6 +577,13 @@ export function settleDarkArmor(before: GameState, after: GameState): GameState 
       }
     }
   }
+  return next;
+}
+
+/** 場を離れた（離れる）ユニットに重ねていた鎧を、いま持ち主のパワーゾーンにダメージにして置く（同時に処理する効果のため）。 */
+export function placeDarkArmorAsDamage(state: GameState, ownerId: PlayerId, unit: Pick<CardInstance, "stackedCards">): GameState {
+  let next = state;
+  for (const armor of (unit.stackedCards ?? []).filter((c) => c.cardId === DARK_ARMOR_CARD_ID)) next = moveArmorToDamage(next, ownerId, armor.instanceId);
   return next;
 }
 

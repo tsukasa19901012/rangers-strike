@@ -23,6 +23,7 @@ import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
+import { namesWithAliases } from "../../core/cardNames";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
@@ -40,7 +41,7 @@ import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import type { ComboOutcome } from "../comboTypes";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { resolvePlayableCard, resolveRushAdditionalCondition } from "@rangers-strike/cards";
+import { fusionMaterialAliasNames, resolvePlayableCard, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -578,9 +579,13 @@ CHOICE_RESOLVERS[COSSACK_RETURN_EFFECT_ID] = (state, playerId, instanceId) => {
   }));
   const log = logFor(state, playerId, "RS-441", `${COSSACK_RETURN_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`);
   const player = returned.players[playerId];
-  const name = cardName(state.definitions, card.cardId);
+  // 「同じカード名」は「※これは「X」としてつかえる」の別名も含む（戻したマジレッドで RS-576 マジフェニックスを出せる。grnrngr/faq-card-1 RS-057 Q2）。
+  const returnedNames = namesWithAliases(getDefinition(state.definitions, card.cardId));
   const ids = player.hand
-    .filter((c) => getDefinition(returned.definitions, c.cardId)?.type === "unit" && cardName(returned.definitions, c.cardId) === name)
+    .filter((c) => {
+      const def = getDefinition(returned.definitions, c.cardId);
+      return def?.type === "unit" && namesWithAliases(def).some((n) => returnedNames.includes(n));
+    })
     .map((c) => c.instanceId);
   const canHold = player.command.some((c) => !c.commandHeld);
   if (!canHold || ids.length === 0) return { state: continueCossackQueue(returned, pending), log };
@@ -1013,9 +1018,18 @@ export function activateHoldReturnSelf(state: GameState, playerId: PlayerId, car
   return completeHoldReturnSelf(state, playerId, card.instanceId, released.slice(0, n));
 }
 
+/** バトルエリアからラッシュエリアへ戻したカード（rules/bounce.ts と同じくエリアでの状態を消す。JC の能力は持ち越す）。 */
+function returnedToRush(card: CardInstance): CardInstance {
+  const { battleActed: _a, activatedNcEffects: _n, registerHeld: _r, mountedOnInstanceId: _m, ...rest } = card;
+  return rest.jointComboGrants?.length ? { ...rest, jointComboGrantsKept: true } : rest;
+}
+
 /** 選んだ自軍コマンドをホールドし（支払いで既にホールドしていればそのまま）、これをラッシュエリアに戻す。 */
 function completeHoldReturnSelf(state: GameState, playerId: PlayerId, instanceId: string, holdIds: string[]): GameState {
-  const card = state.players[playerId].battle.find((c) => c.instanceId === instanceId);
+  const found = state.players[playerId].battle.find((c) => c.instanceId === instanceId);
+  // 戻して再びコンビネーションしたとき、前に得た JC の能力と重複する（atwiki/page-780 Q2「はい、できます」）。
+  // ラッシュエリアに戻ったので、出直したユニットとしてアタックできる（Q2 は戻して出し直した後に撃破している）。
+  const card = found ? returnedToRush(found) : undefined;
   let next = patchPlayer(state, playerId, (p) => ({
     ...p,
     command: p.command.map((c) => (holdIds.includes(c.instanceId) && !c.commandHeld ? { ...c, commandHeld: true } : c)),

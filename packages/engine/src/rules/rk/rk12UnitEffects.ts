@@ -34,6 +34,7 @@ import { IMAGIN_DESTROY_ON_ENTER_SUPPRESSED } from "../destroyOnEnterBattle";
 import { registerTagResident, tagEntryChoice } from "../legend1/set8NamedEffectsA";
 import { rk1IsSmallNow, isStackedUnderUnitOperation } from "./rk1Features";
 import { recordReveal, revealedCards } from "../revealNotice";
+import { WAKE_UP_ENTRY_TAKER, registerEntryTriggerTaker } from "../triggerOrder";
 import {
   RK12_CLIMAX_POLICE_RULE,
   RK12_PARADISE_LOST_RULE,
@@ -812,6 +813,24 @@ function openWakeUp(state: GameState, playerId: PlayerId, enteredId: string): Ga
   }
   return next;
 }
+
+/**
+ * この進入で開く RK-239 ウエイクアップ！の選択（出たときの記録を使い切る。開かずに返す）。同時に誘発した XG4-075【生命の強奪】との
+ * 処理順をターンプレイヤーが選ぶときに使う（atwiki/page-763 Q2・page-2062 Q1。rules/triggerOrder.ts）。
+ */
+export function takeWakeUpChoice(state: GameState, playerId: PlayerId, enteredId: string): { state: GameState; choice?: PendingEffectChoice } {
+  const held = consumeHeldEntry(state, playerId, enteredId);
+  if (!held.found) return { state };
+  let choice: PendingEffectChoice | undefined;
+  for (const op of held.state.players[playerId].operation.filter((c) => isSameCardIdentity(c.cardId, "RK-239"))) {
+    const entry = tagEntryChoice(held.state, playerId, op, { hostCardId: op.cardId, hostOpId: op.instanceId, rk239EnteredId: enteredId });
+    if (!entry) continue;
+    const next = { ...entry, optional: true };
+    choice = choice ? appendResume(choice, next) : next;
+  }
+  return choice ? { state: held.state, choice } : { state };
+}
+registerEntryTriggerTaker(WAKE_UP_ENTRY_TAKER, takeWakeUpChoice);
 
 // RK-242 クライマックス刑事
 // 「自軍ラッシュフェイズごとに1度だけ、『オモテ向きの自軍パワーを1枚選び、自軍山札の上に戻す』を実行してもよい。そうしたとき、このターン、特徴「イマジン」

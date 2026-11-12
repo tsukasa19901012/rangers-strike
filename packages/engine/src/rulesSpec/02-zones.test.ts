@@ -342,9 +342,25 @@ describe("R-ZONE-06 バトルエリア", () => {
   });
 
   // 「バトルエリアの一番右に置きます」
-  it.todo(
-    "R-ZONE-06: 敵軍ターン中にライドオフさせられたユニットはバトルエリアの一番右に置く（出典: atwiki/page-141 Q10/A10）— 敵軍ターン中に強制ライドオフさせる汎用の公開アクションがなく、エンジン経由で状況を作れない",
-  );
+  it("R-ZONE-06: 敵軍ターン中にライドオフさせられたユニットはバトルエリアの一番右に置く（出典: atwiki/page-141 Q10/A10）", () => {
+    // player1 のターン（player2 にとって敵軍ターン）に、RK-039 メタルゲラス【突進】で player2 のライド中の 2号をライドオフさせる。
+    let s = st({
+      phase: "battle",
+      player1: { rush: [inst("RK-039", "mg")], command: [{ ...inst("TST-OP", "c"), commandHeld: false }], deck: deckCards(3) },
+      player2: {
+        battle: [inst("RK-058", "v"), { ...inst("RK-073", "r"), mountedOnInstanceId: "RK-058:v" }, inst("SPEC-S-WB", "x")],
+        deck: deckCards(3, "e"),
+      },
+    });
+    s = unwrap(applyAction(s, { type: "initiate_command_payment", playerId: "player1", kind: "battle_entry", sourceInstanceId: "RK-039:mg" }));
+    if (s.pendingCommandPayment) {
+      s = unwrap(applyAction(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP:c"] }));
+    }
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-039");
+    s = unwrap(applyAction(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RK-073:r" }));
+    expect(cardIn(s, "player2", "RK-073:r")?.mountedOnInstanceId).toBeUndefined();
+    expect(s.players.player2.battle.map((c) => c.instanceId)).toEqual(["RK-058:v", "SPEC-S-WB:x", "RK-073:r"]);
+  });
 
   // 「なにもしない」を選ぶこともできます
   it("R-ZONE-06: バトルエリアに出たユニットはアタックもストライクもせず何もしないことを選べる（出典: grnrngr/faq/index.html バトルエリア Q2）", () => {
@@ -361,9 +377,21 @@ describe("R-ZONE-06 バトルエリア", () => {
   });
 
   // 「任意の順番で戻すことができます」
-  it.todo(
-    "R-ZONE-06: スタートフェイズにバトルエリアの複数ユニットは任意の順番でラッシュエリアに戻せる（出典: grnrngr/faq/index.html バトルエリア Q1）— ラッシュエリアに並び順の概念がなく、戻す順番を選ぶ公開アクションもない（一括移動のみ）",
-  );
+  it("R-ZONE-06: スタートフェイズにバトルエリアの複数ユニットは任意の順番でラッシュエリアに戻せる（出典: grnrngr/faq/index.html バトルエリア Q1）", () => {
+    let s = st({
+      phase: "start",
+      player1: { battle: [inst("SPEC-S-WB", "x"), inst("SPEC-S-WB", "y")], deck: deckCards(3) },
+      player2: { deck: deckCards(3, "e") },
+    });
+    // 1体ずつ選んで戻す手が、どちらのユニットにもある（並び順の右から戻してもよい）。
+    const picks = legal(s).filter((a) => a.type === "return_all_battle_to_rush" && "instanceId" in a && a.instanceId);
+    expect(picks.map((a) => (a as { instanceId: string }).instanceId).sort()).toEqual(["SPEC-S-WB:x", "SPEC-S-WB:y"]);
+    s = unwrap(applyAction(s, { type: "return_all_battle_to_rush", playerId: "player1", instanceId: "SPEC-S-WB:y" }));
+    expect(zoneOf(s, "player1", "SPEC-S-WB:y")).toBe("rush");
+    expect(zoneOf(s, "player1", "SPEC-S-WB:x")).toBe("battle");
+    s = unwrap(applyAction(s, { type: "return_all_battle_to_rush", playerId: "player1" }));
+    expect(s.players.player1.rush.map((c) => c.instanceId)).toEqual(["SPEC-S-WB:y", "SPEC-S-WB:x"]);
+  });
 });
 
 describe("R-ZONE-07 パワーゾーン", () => {

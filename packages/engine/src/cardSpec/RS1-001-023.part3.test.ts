@@ -126,6 +126,7 @@ describe("RS-018 隠流忍術", () => {
     p2Rush?: ReturnType<typeof inst>[];
     p2Hand?: ReturnType<typeof inst>[];
     p2Command?: ReturnType<typeof inst>[];
+    p1Command?: ReturnType<typeof inst>[];
     ids?: string[];
   };
 
@@ -134,7 +135,7 @@ describe("RS-018 隠流忍術", () => {
       phase: "battle",
       activePlayer: "player1",
       extraDefs: { [RES.id]: RES },
-      player1: { battle: o.p1Battle ?? [], rush: o.p1Rush ?? [] },
+      player1: { battle: o.p1Battle ?? [], rush: o.p1Rush ?? [], command: o.p1Command ?? [] },
       player2: {
         battle: o.p2Battle ?? [],
         rush: o.p2Rush ?? [],
@@ -294,17 +295,61 @@ describe("RS-018 隠流忍術", () => {
     expect(s.players.player1.damage).toBe(0);
   });
 
-  it.todo(
-    "RS-018: atwiki Q&A（公式）— バキケロナグルスが隠流忍術で撃破されても、ジョイントコンビネーションしたLユニットの効果は有効のまま（出典: atwiki/page-242 Q5、grnrngr/faq-card-1 RS-018）— ジョイントコンビネーション成立と RS-167 の追加アタック能力を公開APIで組み立て・観測する手段がない（rulesSpec 06 R-RES-07 と同じ理由）",
-  );
+  // atwiki/page-242 Q5「いいえ、無効になりません。「RS-167 爆竜バキケロナグルス」の効果は、一度発動すれば…撃破されても有効のままになります。」
+  it("RS-018: atwiki Q&A（公式）— バキケロナグルスが隠流忍術で撃破されても、ジョイントコンビネーションしたLユニットの効果（バトルに勝てば追加でアタックできる）は有効のまま（出典: atwiki/page-242 Q5、grnrngr/faq-card-1 RS-018）", () => {
+    let s = ninjaState({
+      ids: ["RS-167"],
+      p1Battle: [inst("RS-167", "bk")],
+      p1Rush: [inst("TST-UNIT-7", "L")],
+      p2Battle: [inst("CS-S1", "def"), inst("CS-S1", "e2")],
+    });
+    s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "TST-UNIT-7:L" });
+    s = attack(s, "TST-UNIT-7:L", "CS-S1:def");
+    expect(substitutes(s)).toContain("RS-167:bk");
+    s = settle(useNinja(s, "RS-167:bk"));
+    expect(zoneOf(s, "player1", "RS-167:bk")).toBe("discard");
+    expect(zoneOf(s, "player2", "CS-S1:def")).toBe("battle");
+    expect(hasLegal(s, (a) => a.type === "battle" && a.attackerInstanceId === "TST-UNIT-7:L" && a.defenderInstanceId === "CS-S1:e2")).toBe(true);
+  });
 
-  it.todo(
-    "RS-018: atwiki Q&A（公式）— ジョイントコンビネーションしたユニット（ガオエレファント等）やそのLユニットも選べる（出典: atwiki/page-242 Q6、grnrngr/faq-card-1 RS-018）— ジョイントコンビネーション成立状態を公開APIで組み立てられないため未検証（JC でない通常の場のユニットが選べることは別テストで確認）",
-  );
+  // atwiki/page-242 Q6「はい、できます。ジョイントコンビネーションしていても、それぞれのユニットの扱い方が特別なものになるわけではありません。」
+  it("RS-018: atwiki Q&A（公式）— L ユニットからジョイントコンビネーションしたガオエレファントのアタックに対して、その JC の L ユニットを選べる（出典: atwiki/page-242 Q6、grnrngr/faq-card-1 RS-018）", () => {
+    let s = ninjaState({
+      ids: ["RS-158"],
+      p1Battle: [inst("TST-UNIT-7", "L")],
+      p1Rush: [inst("RS-158", "el")],
+      p1Command: [released("TST-OP", "c1")],
+      p2Battle: [inst("CS-S1", "def")],
+    });
+    s = actLegal(s, (a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RS-158:el");
+    // L ユニットからジョイントコンビネーションした（【エレファントシールド】を発動する）。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-158");
+    s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
+    expect(s.players.player1.battle.map((c) => c.instanceId)).toEqual(["TST-UNIT-7:L", "RS-158:el"]);
+    s = act(s, { type: "battle", playerId: "player1", attackerInstanceId: "RS-158:el", defenderInstanceId: "CS-S1:def" });
+    expect(substitutes(s)).toContain("TST-UNIT-7:L");
+  });
 
-  it.todo(
-    "RS-018: atwiki Q&A（公式）— アタックしてきたLユニットとジョイントコンビネーションしているユニットを指定できる（出典: atwiki/page-242 Q7、grnrngr/faq-card-1 RS-018）— 同上（JC 成立状態を構築できない）",
-  );
+  // atwiki/page-242 Q7「はい、できます。ジョイントコンビネーションしていても、それぞれのユニットの扱い方が特別なものになるわけではありません。」
+  it("RS-018: atwiki Q&A（公式）— アタックしてきたLユニットとジョイントコンビネーションしているユニット（ガオエレファント）を指定できる（出典: atwiki/page-242 Q7、grnrngr/faq-card-1 RS-018）", () => {
+    let s = ninjaState({
+      ids: ["RS-158"],
+      p1Battle: [inst("TST-UNIT-7", "L")],
+      p1Rush: [inst("RS-158", "el")],
+      p1Command: [released("TST-OP", "c1")],
+      p2Battle: [inst("CS-S1", "def")],
+    });
+    s = actLegal(s, (a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RS-158:el");
+    // L ユニットからジョイントコンビネーションした（【エレファントシールド】を発動する）。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-158");
+    s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
+    expect(s.players.player1.battle.map((c) => c.instanceId)).toEqual(["TST-UNIT-7:L", "RS-158:el"]);
+    s = actLegal(s, (a) => a.type === "pass_battle_entry");
+    s = attack(s, "TST-UNIT-7:L", "CS-S1:def");
+    expect(substitutes(s)).toContain("RS-158:el");
+    s = settle(useNinja(s, "RS-158:el"));
+    expect(zoneOf(s, "player1", "RS-158:el")).toBe("discard");
+  });
 
   it("RS-018: atwiki Q&A（公式）— 「航空機」を持たないアタッカーとジェットファルコンをバトルさせられる（出典: atwiki/page-242 Q8、grnrngr/faq-card-1 RS-018）", () => {
     // 「「バトルの対象を変更する」と解釈してください」
@@ -356,9 +401,32 @@ describe("RS-018 隠流忍術", () => {
     expect(zoneOf(s, "player1", red.instanceId)).toBe("battle");
   });
 
-  it.todo(
-    "RS-018: atwiki Q&A（公式）— 守護獣プテラノドンとレスキューファイターの相撃ちでは、ターンプレイヤーが処理順を選べる（出典: atwiki/page-242 Q12、grnrngr/faq-card-1 RS-018）— 一般ルール側の既知の不一致として rulesSpec 05 R-BTL-02／06 R-PRI-02 が it.fails で扱っている（同時撃破の処理順選択が未実装）。隠流忍術固有の不具合ではないためここでは重複させない",
-  );
+  // atwiki/page-242 Q12「…ターンプレイヤーが、捨札にするかパワーゾーンに送るかを選択できます。…先に「RS-039 守護獣プテラノドン」を捨札にすることにした場合は、「RS-089 レスキューファイター」の効果で、パワーゾーンに送ります。逆に、先に「RS-089 レスキューファイター」を捨札にした場合は、「RS-039 守護獣プテラノドン」も捨札になります。」
+  it("RS-018: atwiki Q&A（公式）— 守護獣プテラノドンとレスキューファイターの相撃ちでは、ターンプレイヤーが処理順を選べる（プテラノドンが先ならパワーゾーン、レスキューファイターが先なら捨札）（出典: atwiki/page-242 Q12、grnrngr/faq-card-1 RS-018）", () => {
+    const run = (first: string) => {
+      let s = ninjaState({ ids: ["RS-039"], p1Battle: [inst("RS-039", "ptera")], p1Rush: [inst("RS-089", "rescue")], p2Battle: [inst("CS-S1", "def")] });
+      s = attack(s, "RS-039:ptera", "CS-S1:def");
+      s = useNinja(s, "RS-089:rescue");
+      let chose = false;
+      for (let i = 0; i < 10; i += 1) {
+        const choice = legal(s).find((a) => a.playerId === "player1" && a.type !== "battle" && !a.type.startsWith("pass_") && JSON.stringify(a).includes(first));
+        if (choice && !chose) {
+          s = act(s, choice);
+          chose = true;
+          continue;
+        }
+        const pass = legal(s).find((a) => a.type.startsWith("pass_") && a.type !== "pass_register");
+        if (!pass) break;
+        s = act(s, pass);
+      }
+      expect(chose).toBe(true);
+      return s;
+    };
+    expect(zoneOf(run("RS-039:ptera"), "player1", "RS-039:ptera")).toBe("power");
+    const rescueFirst = run("RS-089:rescue");
+    expect(zoneOf(rescueFirst, "player1", "RS-039:ptera")).toBe("discard");
+    expect(zoneOf(rescueFirst, "player1", "RS-089:rescue")).toBe("discard");
+  });
 });
 
 /** RS-019 超力: アタック時に開くホールド数の選択で n を選ぶ。 */

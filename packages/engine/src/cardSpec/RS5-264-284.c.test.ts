@@ -30,6 +30,7 @@ import {
   powerCards,
   released,
   releasedN,
+  settle,
   skip,
   spOf,
   st,
@@ -135,9 +136,28 @@ describe("RS-278 ブラックバイソン", () => {
   });
 
   // faq-card-6 RS-418 Q「はい、できます。」
-  it.todo(
-    "RS-278: 公式Q&A — グリーンサイからナンバーに関係なく発動させた NC の効果も、冥府神イフリート（RS-418）【炎の眼光】で無効にできる（出典: grnrngr/faq-card-6 RS-418）— 敵軍ターン中にこのユニットを出す側の視点（イフリートの持ち主の常駐置き場の扱い）を公開 API で再現する手順が確立していないため",
-  );
+  it("RS-278: 公式Q&A — グリーンサイからナンバーに関係なく発動させた NC の効果も、冥府神イフリート（RS-418）【炎の眼光】で無効にできる（出典: grnrngr/faq-card-6 RS-418）", () => {
+    let s = st(
+      {
+        turn: 3,
+        player1: { rush: [inst("RS-279", "s"), inst("RS-278", "x")], deck: deckCards(5) },
+        player2: { battle: [inst("RS-418", "if"), inst("SPEC-MINUS", "t")], operation: [inst("RS-256", "op")], deck: deckCards(5, "e") },
+      },
+      SPECS,
+    );
+    s = enter(s, "RS-279:s");
+    // グリーンサイ自身の NC には【炎の眼光】を使わない
+    if (s.pendingEffectChoice?.sourceCardId === "RS-418") s = skip(s);
+    s = passEntry(settle(s));
+    s = enter(s, "RS-278:x");
+    // 2番目（ナンバー5と一致しない）でも NC が発動し、相手は【炎の眼光】で無効にするかを選べる
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-418");
+    s = settle(pick(s, "RS-256:op"));
+    expect(zoneOf(s, "player2", "RS-256:op")).toBe("discard");
+    expect(spOf(s, "player1", "RS-278:x")).toBe(0);
+    expect(zoneOf(s, "player2", "SPEC-MINUS:t")).toBe("battle");
+  });
 });
 
 // ===========================================================================
@@ -237,9 +257,36 @@ describe("RS-279 グリーンサイ", () => {
   });
 
   // rider_1 RK-005 Q「「RS-279 グリーンサイ」に使用してください。…実際に撃破する効果を持っているのが「RS-279 グリーンサイ」だから」
-  it.todo(
-    "RS-279: 公式Q&A — スワンウィングで出させたユニットをサイカッターで撃破したとき、超電子ダイナモ（RK-005）はグリーンサイに使っていれば相手に1点ダメージ（出典: grnrngr/faq-rider_1 RK-005）— グリーンサイは特徴「改造人間」を持たず RK-005 の対象にできないため、この Q&A の前提を再現できない",
-  );
+  it("RS-279: 公式Q&A — スワンウィングで出させたユニットをサイカッターで撃破したとき、超電子ダイナモ（RK-005）はグリーンサイに使っていれば相手に1点ダメージ（出典: grnrngr/faq-rider_1 RK-005「「RS-279 グリーンサイ」に使用してください。これは、実際に撃破する効果を持っているのが「RS-279 グリーンサイ」だからです」）", () => {
+    // RK-001 改造人間（※常駐。「男」「女」に「改造人間」を追加）があるので、グリーンサイ（男）にもホワイトスワン（女）にもダイナモを使える。
+    const run = (dynamoOn: string) => {
+      let s = st(
+        {
+          turn: 3,
+          phase: "rush",
+          player1: { rush: [inst("RS-279", "s"), inst("TST-UNIT-0", "m"), inst("RS-284", "w")], operation: [inst("RK-001", "kz")], hand: [inst("RK-005", "dy")], command: [released("TST-OP-ET", "c")], power: powerCards(1), deck: deckCards(5) },
+          player2: { command: [held("TST-UNIT-0", "u1")], deck: deckCards(5, "e") },
+        },
+        SPECS,
+      );
+      const r = playOp(s, "player1", "RK-005:dy");
+      expect(r.ok, r.error).toBe(true);
+      s = resolveChoices(r.state, [dynamoOn]);
+      s = nextPhase(s);
+      s = passEntry(enter(s, "RS-279:s"));
+      s = passEntry(enter(s, "TST-UNIT-0:m"));
+      s = enter(s, "RS-284:w");
+      s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "swan_wing_deploy_enemy_command_s" });
+      return settle(s);
+    };
+    const onSai = run("RS-279:s");
+    expect(zoneOf(onSai, "player2", "TST-UNIT-0:u1")).toBe("discard");
+    expect(onSai.players.player2.damage).toBe(1);
+    // スワンウィングで出させたホワイトスワンに使っても、撃破したのはグリーンサイなのでダメージはない
+    const onSwan = run("RS-284:w");
+    expect(zoneOf(onSwan, "player2", "TST-UNIT-0:u1")).toBe("discard");
+    expect(onSwan.players.player2.damage).toBe(0);
+  });
 });
 
 // ===========================================================================
@@ -278,9 +325,20 @@ describe("RS-280 レッドホーク", () => {
   wrongNumberTests("RS-280", 5, "atwiki/page-468");
 
   // faq-card-4 RS-208 Q「はい、発動します。現在のフェイズから別のフェイズに移るときには、もれなくフェイズを終えてから移っていると考えてください。」
-  it.todo(
-    "RS-280: 公式Q&A — キリンレンジャー【天時星・時間返し】でラッシュフェイズからやり直すときも『バトルフェイズを終えるとき』の効果は発動する（出典: grnrngr/faq-card-4 RS-208）— 時間返しのやり直し中のバトルフェイズ終了時点を公開状態から区別して観測できないため",
-  );
+  it("RS-280: 公式Q&A — キリンレンジャー【天時星・時間返し】でラッシュフェイズからやり直すときも『バトルフェイズを終えるとき』の効果は発動する（出典: grnrngr/faq-card-4 RS-208）", () => {
+    // 『バトルフェイズを終えるとき』の効果として XG2-028【マイナスエネルギー吸収】（捨札の「-」コストカードを重ねる）で観測する。
+    const MINUS = sUnit("SPEC-MINUS", { powerCost: "3-", bp: 3000 });
+    let s = st(
+      { turn: 3, player1: { battle: fillers(3), rush: [inst("RS-208", "k"), inst("XG2-028", "sd")], discard: [inst("SPEC-MINUS", "mn")], deck: deckCards(5) }, player2: { deck: deckCards(5, "e") } },
+      [MINUS],
+    );
+    s = enter(s, "RS-208:k");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-208");
+    s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
+    expect(s.phase).toBe("rush");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG2-028");
+    expect(choiceIds(s)).toEqual(["SPEC-MINUS:mn"]);
+  });
   // faq-rider_2 RK-079 Q「…「カードに表記された本来のナンバー」を参照しますので、ナンバーがRCになっていたとしても適用されることになります。」
   it("RS-280: 公式Q&A — 仮面ライダーの称号（RK-079）でナンバーが RC になっていても、本来のナンバーと並び順が違えば手札に戻る（出典: grnrngr/faq-rider_2 RK-079）", () => {
     let s = st({ phase: "rush", player1: { hand: [inst("RK-079", "tt")], rush: [inst("RS-280", "x")], command: [released("TST-OP-ET", "c")], power: powerCards(5), deck: deckCards(5) }, player2: { deck: deckCards(5, "e") } });
@@ -295,9 +353,16 @@ describe("RS-280 レッドホーク", () => {
     expect(zoneOf(s, "player1", "RK-079:tt")).toBe("discard");
   });
   // faq-card-6 RS-393 Q「はい、その通りです。」
-  it.todo(
-    "RS-280: 公式Q&A — コマンドアタッカー（RS-393）にライドしたレッドホークが1番目に並んだときは手札に戻り、ビークルはバトルエリアに残る（出典: grnrngr/faq-card-6 RS-393）— ビークルへのライド手順をこの範囲のテストで構築していないため",
-  );
+  it("RS-280: 公式Q&A — コマンドアタッカー（RS-393）にライドしたレッドホークが1番目に並んだときは手札に戻り、ビークルはバトルエリアに残る（出典: grnrngr/faq-card-6 RS-393）", () => {
+    let s = st({ turn: 3, player1: { rush: [inst("RS-393", "v"), inst("RS-280", "hawk")], deck: deckCards(5) }, player2: { deck: deckCards(5, "e") } });
+    s = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "RS-280:hawk", vehicleInstanceId: "RS-393:v" });
+    s = act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: false });
+    expect(zoneOf(s, "player1", "RS-280:hawk")).toBe("battle");
+    expect(zoneOf(s, "player1", "RS-393:v")).toBe("battle");
+    s = endTurn(passEntry(s));
+    expect(zoneOf(s, "player1", "RS-280:hawk")).toBe("hand");
+    expect(zoneOf(s, "player1", "RS-393:v")).toBe("battle");
+  });
 });
 
 // ===========================================================================
@@ -401,9 +466,15 @@ describe("RS-282 イエローオウル", () => {
   });
 
   // faq-rider_1 RK-044 Q「いいえ、発動しません。…それは撃破されたことにはなりませんので」
-  it.todo(
-    "RS-282: 公式Q&A — 岩石落としで捨札になったライオトルーパーは「撃破されて捨札になった」ことにならない（出典: grnrngr/faq-rider_1 RK-044）— 【岩石落とし】自体が未実装で捨札に送る処理を起こせないため",
-  );
+  it("RS-282: 公式Q&A — 岩石落としで捨札になったライオトルーパーは「撃破されて捨札になった」ことにならない（出典: grnrngr/faq-rider_1 RK-044）", () => {
+    // 敵軍コマンドゾーンが5枚で置けないので、ライオトルーパー（BP500）は捨札になる。捨札のライオトルーパーはこれを含めて10枚。
+    const lio = Array.from({ length: 9 }, (_, i) => inst("RK-044", `d${i}`));
+    let s = ncEnter("RS-282", 4, {}, { battle: [inst("RK-044", "lt")], discard: lio, command: heldN(5, "TST-OP", "c") });
+    s = settle(s);
+    expect(zoneOf(s, "player2", "RK-044:lt")).toBe("discard");
+    expect(s.players.player2.discard.filter((c) => c.cardId === "RK-044")).toHaveLength(10);
+    expect(s.players.player2.hand.filter((c) => c.cardId === "RK-044")).toHaveLength(0);
+  });
 });
 
 // ===========================================================================

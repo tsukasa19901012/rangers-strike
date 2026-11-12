@@ -308,5 +308,23 @@ describe("R-KW-RC-01 ライディングコンビネーション", () => {
   it.todo("R-KW-RC-01: 「NC の効果」を対象にした効果と「RC の効果」を対象にした効果は別物（出典: atwiki/page-228 Q2。NC/RC 効果を名指しする効果の起動経路がない）");
 
   // 「効果によるライドオフでは発動しない」
-  it.todo("R-KW-RC-01: 効果によるライドオフでは RC は発動しない（出典: atwiki/page-594 本文。効果でライドオフさせるカードの起動経路がない）");
+  it("R-KW-RC-01: 効果によるライドオフでは RC は発動しない（RK-039 メタルゲラス【突進】で XG2-043 をライドオフさせる）（出典: atwiki/page-594 本文）", () => {
+    // 敵軍（player2）のバトルフェイズに、player2 が RK-039 をバトルエリアに出して player1 のライド中の W をライドオフさせる。
+    let s = state([V, W, realDef("RK-039")], {
+      phase: "battle",
+      activePlayer: "player2",
+      player1: { battle: [v, { ...w, mountedOnInstanceId: v.instanceId }] },
+      player2: { rush: [inst("RK-039", "mg")], command: [inst("TST-OP", "c")] },
+    });
+    s = act(s, { type: "initiate_command_payment", playerId: "player2", kind: "battle_entry", sourceInstanceId: "RK-039:mg" });
+    if (s.pendingCommandPayment) {
+      s = act(s, { type: "resolve_command_payment", playerId: "player2", commandInstanceIds: s.pendingCommandPayment.validInstanceIds.slice(0, s.pendingCommandPayment.totalNeeded) });
+    }
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-039");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: w.instanceId });
+    expect(card(s, "player1", w.instanceId)?.mountedOnInstanceId).toBeUndefined();
+    expect(s.log.some((l) => l.includes("riding_combo"))).toBe(false);
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe(W.id);
+    expect(s.pendingRideOffChoice).toBeUndefined();
+  });
 });

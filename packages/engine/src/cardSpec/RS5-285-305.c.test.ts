@@ -127,9 +127,26 @@ describe("RS-299 VRVマスター", () => {
   });
 
   // faq-rider-1 RK-022 Q「はい、発動します。ユニットカードが、ラッシュエリアやバトルエリアに置かれて「ユニット」になったとき、すべて「ラッシュ」として扱います。」
-  it.todo(
-    "RS-299: 公式Q&A — ライダーパスで DEN-O のユニットと置き換えたときも【乗ってみないか？】は発動する（出典: grnrngr/faq-rider-1 RK-022 Q）— ライダーパス（RK-022）の置き換えは実装済み（RS5-audit-crossref）だが、RS-299【乗ってみないか？】本体が未実装",
-  );
+  it("RS-299: 公式Q&A — ライダーパスで DEN-O のユニットと置き換えたときも【乗ってみないか？】は発動する（出典: grnrngr/faq-rider-1 RK-022 Q）", () => {
+    // 「はい、発動します。ユニットカードが、ラッシュエリアやバトルエリアに置かれて「ユニット」になったとき、すべて「ラッシュ」として扱います。」
+    let s = st(
+      {
+        phase: "rush",
+        player1: {
+          rush: [inst("RS-299", "v"), inst("RK-062", "af")],
+          operation: [{ ...inst("RK-022", "pass"), stackedCards: [inst("RK-061", "sf")] }],
+          power: powerCards(6),
+          deck: [inst("SPEC-MECHA-M", "top"), inst("TST-OP", "x")],
+        },
+      },
+      SPECS,
+    );
+    s = raw(s, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "RK-022:pass" });
+    s = pick(pick(s, "RK-062:af"), "RK-061:sf");
+    s = settle(s);
+    expect(zoneOf(s, "player1", "RK-061:sf")).toBe("rush");
+    expect(zoneOf(s, "player1", "SPEC-MECHA-M:top")).toBe("hand");
+  });
 });
 
 // ===========================================================================

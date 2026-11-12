@@ -37,6 +37,8 @@ export type JointComboGrant = {
   sourceCardId: string;
   /** コンビネーションの相手（kind "l" は L ナンバーのカード、kind "r" は左隣の L ユニット）。 */
   partnerInstanceId: string;
+  /** 得たターン（GameState.turn）。期限のない「次の能力を得る」はそのターンの間有効（R-CN-06）。 */
+  turn?: number;
 };
 
 export type CardInstance = {
@@ -56,6 +58,11 @@ export type CardInstance = {
   spModifier?: number;
   /** ターン中の SP 上書き（例: オペで「SP1/4」になる）。 */
   spOverride?: import("@rangers-strike/cards").SpValue;
+  /**
+   * 期限の指定のない効果で「SPn」になった値（XG7-041【黄金の希望】）。ユニットである間有効で、ターンを終えても消えず、
+   * 場を離れると消える（atwiki/page-2130 Q1）。spOverride（このターンの上書き）があればそちらを優先する。
+   */
+  spUntilLeave?: import("@rangers-strike/cards").SpValue;
   /** バトル進入時に発動したNC効果ID（ターン終了時にクリア）。 */
   activatedNcEffects?: string[];
   /** RS-222【戦闘指揮】で成立させた NC の効果を発動するときにリリースする敵軍コマンドの数（【ジュウクンドー】）。 */
@@ -67,6 +74,11 @@ export type CardInstance = {
    * partnerInstanceId のユニットが左隣にいる間だけ有効。バトルエリアに出直すと消える。
    */
   jointComboGrants?: JointComboGrant[];
+  /**
+   * RS-440【武器換装】でラッシュエリアに戻したユニット: 次にバトルエリアに出たとき、前に得た JC の能力を持ち越す
+   * （atwiki/page-780 Q2・page-353 Q1「重複し、相手に2点ダメージ」）。出たときに消える。
+   */
+  jointComboGrantsKept?: boolean;
   /** バトルフェイズ: このターンにこのユニットがバトルまたはストライク済みなら true。 */
   battleActed?: boolean;
   /**
@@ -98,9 +110,11 @@ export type CardInstance = {
   bpSetValue?: number;
   /**
    * このターン「Sユニットになる」（RK-154【頭が高い！】で選んだ M ユニット）。ターン終了時にクリア。
-   * "L" は XG6-053 仮面ライダーアーク の※「これはLユニットになり」（条件を満たす間。rules/xg6/xg6cEffects.ts が行動の後に合わせる）。
+   * "L" は XG6-053 仮面ライダーアーク の※「これはLユニットになり」（条件を満たす間。rules/xg6/xg6cEffects.ts が行動の後に合わせる）・
+   * XG2-029【災魔ツリー】（BP8000以上。rules/xg2/xg2bEffects.ts）。"M" は RK-013 Jパワーを重ねた XG3-029 で、ターンプレイヤーが
+   * ※「Mユニットになり」を優先したとき（rules/xg3/xg3Fields.ts。atwiki/page-211 Q8）。
    */
-  sizeOverride?: "S" | "L";
+  sizeOverride?: "S" | "M" | "L";
   /** XG1-048【エレキ光線】で選ばれたターン番号（そのターンを終えるとき隣のユニットが撃破される）。 */
   electroBeamTurn?: number;
   /** XG7-001〜XG7-068 のこのターンだけの付与（クロス・ライドオフ不可。rules/xg7/xg7Types.ts）。 */
@@ -691,6 +705,8 @@ export type Rk3ChoiceMeta = {
 };
 
 export type PendingEffectChoice = {
+  /** RS-029【勇気の魔法】: バトルエリアに出た自軍 S ユニット（RS-421【ソウル降臨】をリリースの後に選び直すため）。 */
+  courageEnteredInstanceId?: string;
   /** ライダーEXP vol.1 RK-043〜RK-063 の選択の続き（rules/rk/rk3UnitEffects.ts）。 */
   rk3Meta?: Rk3ChoiceMeta;
   /** ライダーEXP vol.2 RK-085〜RK-105 の選択の続き（rules/rk/rk5UnitEffects.ts）。 */
@@ -896,6 +912,8 @@ export type PendingEffectChoice = {
   discardAsDamageInstanceIds?: string[];
   optional?: boolean;
   maxBp?: number;
+  /** 発生源がユニットではない（手札から見せたカードの効果。XG6-003【爆竜マルチコンバイン】）。ブレイカーは防げない（atwiki/page-2355 Q5）。 */
+  sourceNotUnit?: boolean;
   /** RS-178 sagas_sniper: デッキサーチ用の破壊ユニットパワーコスト上限。 */
   maxPowerCost?: number;
   /** 印刷BPの合計上限（例: RS-106 ジュウクンドー）。 */
@@ -1009,6 +1027,11 @@ export type PendingEffectChoice = {
    * 「ラッシュしたとき」に同時に発動した、ラッシュしたユニット自身の効果と RS-124 超電子レーダーの処理順
    * （simultaneous_order。validInstanceIds は "super_radar" とラッシュしたユニット）。faq-card-2 RS-092 Q1。
    */
+  /**
+   * 止められないループで優先する効果の選択（effectId `loop_priority`。R-SIM-02。rules/loopPriority.ts）。
+   * validInstanceIds は優先できる効果の発動元。選んだ結果は GameState.loopPriority[key] に残る。
+   */
+  loopPriorityMeta?: { key: string };
   rushTriggerOrderMeta?: {
     ownerPlayerId: PlayerId;
     instanceId: string;
@@ -1307,6 +1330,11 @@ export type GameState = {
   /** 同時解決中の反応窓グループ ID（RULE-02）。 */
   activeSimultaneousGroupId?: string;
   /**
+   * 止められないループ（R-SIM-02）でターンプレイヤーが優先した効果の発動元（組の ID → インスタンス ID。rules/loopPriority.ts）。
+   * 組が無くなったら消える。
+   */
+  loopPriority?: Record<string, string>;
+  /**
    * ルール: R-CTR-03 — カウンターを発動できないプレイヤー（パンサークロー等）。
    * アタック宣言からそのアタックの処理が終わる（次の宣言のタイミング）まで有効。
    */
@@ -1340,6 +1368,21 @@ export type GameState = {
   rk12OpPaid?: { instanceId: string; commandIds: string[] };
   /** RK-251 ゴルゴムの仕業を使わなかった: このオペレーションの使用を続ける（core/applyAction.ts の後処理）。 */
   rk12ResumeOperation?: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string };
+  /** RK-008 メカニック忍者の解決の途中で割り込んだ選択（RS-238【プロジェットカノン】）の後で続ける「その後、」（core/applyAction.ts の後処理）。 */
+  rk1MechanicNinjaResume?: { defenderId: PlayerId; activePlayer: PlayerId; pendingBattle: PendingBattle };
+  /** XG7-028【アルティメットストライク】の1回ごとのリリースの間に RK-195【再起動と暴走】が割り込んだ: 残りのリリースの続き（core/applyAction.ts の後処理）。 */
+  xg7UltimateResume?: { pending: PendingEffectChoice; selected: string[]; next: number };
+  /** XG7-055【神出鬼没の疾風】で置き換えたユニットへの「ラッシュされたとき」の窓の後で続けるバトル（core/applyAction.ts の後処理）。 */
+  xg7CycloneResumeAttack?: { battle: PendingBattle; wingAttackFromRush: boolean };
+  /** RK-036 ライアの支払いで割り込んだ選択（RS-238【プロジェットカノン】）の後で続けるカウンターの使用（core/applyAction.ts の後処理）。 */
+  rk2RaiaResumeCounter?: {
+    playerId: PlayerId;
+    instanceId: string;
+    substituteInstanceId?: string;
+    activePlayer: PlayerId;
+    /** 選択の間は止めておく反応ウィンドウ（再開時に戻す）。 */
+    suspended: Pick<GameState, "pendingBattle" | "pendingRush" | "pendingLeave" | "pendingStrike">;
+  };
   /** RK-251 の選択を済ませたオペレーション（同じ使用で2度は尋ねない）。 */
   rk12GorgomPassedOp?: string;
   /** 「…を捨札にしなければバトルエリアに出られない」の捨てるカードを選んだ後で続ける move_to_battle（core/applyAction.ts の後処理）。 */
@@ -1356,6 +1399,11 @@ export type GameState = {
   rk13PendingKick?: { playerId: PlayerId; ids: string[] };
   /** RK-177【催眠音波】の選択を終えたら、このプレイヤーのラッシュフェイズを終える（core/applyAction.ts）。 */
   rk9RushEndAdvance?: PlayerId;
+  /**
+   * R-BP-02 のルールの撃破を待っている間に、BP を0以下にした効果の持ち主が場を離れたとき、それでも撃破するユニット
+   * （RS-026 疾風流超忍法で山札に戻されたゴーマ16世の【大地動転の玉】。grnrngr/faq-card-4 RS-210 Q1。core/applyAction.ts）。
+   */
+  bpZeroRuleDestroyIds?: string[];
   /**
    * モーフで出たユニットの「ラッシュしたとき」（または他のカードの「ラッシュされたとき」）の選択待ちのため、まだ続けていない
    * モーフの処理（残りのモーフ・「ラッシュされたとき」の誘発・カウンター窓）。選択がすべて終わった時点で続ける
@@ -1489,7 +1537,9 @@ export type GameState = {
   /** 「選んだ1枚ごとにラッシュエリアに出す」効果の進行（R-RUSH-21, R-RUSH-23）。 */
   pendingEffectRush?: PendingEffectRush;
   /** RS-325【マジチケット】で発動したオペレーション（捨札になるときの「かわりに」の選択待ち。rules/legend1/set5NamedEffects.ts）。 */
-  magiTicketPending?: { playerId: PlayerId; instanceId: string };
+  magiTicketPending?: { playerId: PlayerId; instanceId: string; staged?: boolean };
+  /** RS-296【編隊出撃】: 同じタイミングの別の「ラッシュしたとき」の選択が済んでから処理する（rules/onRushUnitEffects.ts・core/applyAction.ts）。 */
+  formationDeployResume?: { playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId };
   /** RS-418【炎の眼光】: 進入中のユニットの NC の効果を無効にするかの決定（進入処理の NC の段階で使い、消す）。 */
   ncNegationDecision?: { instanceId: string; negate: boolean };
   /** RS-477 ガオウルフ【威圧する咆哮】: NC の効果を発動する前の発動確認を済ませた進入中ユニット（進入処理の NC の段階で使い、消す）。 */
@@ -1518,6 +1568,20 @@ export type GameState = {
    * R-KW-CHASE-01）。応答の解決後に core/applyAction.ts の後処理で順に続ける。
    */
   queuedFieldLeaves?: PendingLeave[];
+  /**
+   * RS-566【絶対究極奥義アルティマストーム】の途中（rules/legend1/set8NamedEffectsC.ts）。ターンプレイヤーが決めた順に、
+   * コマンドとユニットを1回ずつ山札に戻す。間に開いた【プロジェットカノン】・ダイノガッツ等の解決後、core/applyAction.ts の後処理で続ける
+   * （atwiki/page-1229 Q1・Q2）。
+   */
+  ultimaStorm?: {
+    playerId: PlayerId;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+    /** まだ戻していないもの（先頭から順に戻す）。 */
+    steps: Array<"commands" | "units">;
+    /** 戻し終えたら開く、割り込まれていた選択。 */
+    resumeChoice?: PendingEffectChoice;
+  };
   /** RM-026 グランドバース【収容】の、チェイス等の選択を待っている「その後、選んだビークルをパワーゾーンに送る」（rules/rm/rm2Effects.ts applyRm2AfterAction）。 */
   rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
   /** クロスギャザー ザ・ギガンティックタイタン XG6 のターン中の記録（rules/xg6/）。 */

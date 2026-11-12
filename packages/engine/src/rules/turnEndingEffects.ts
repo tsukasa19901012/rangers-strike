@@ -2,6 +2,7 @@ import { collectXg1TurnEndQueue, openXg1TurnEndEntry } from "./xg1/xg1cEffects";
 import { collectXg6TurnEndQueue, openXg6TurnEndEntry } from "./xg6/xg6Hooks";
 import { clearRk8SeizedFor, collectRk8TurnEndQueue, openRk8TurnEndEntry } from "./rk/rk8UnitEffects";
 import { applyXg2TurnEnd } from "./xg2/xg2Effects";
+import { isXg3RaijingoUnit } from "./xg3/xg3Fields";
 import { collectRk10TurnEndQueue, openRk10TurnEndEntry } from "./rk/rk10UnitEffects";
 import { collectRk11TurnEndQueue, openRk11TurnEndEntry } from "./rk/rk11UnitEffects";
 import { collectRk13TurnEndQueue, openRk13TurnEndEntry } from "./rk/rk13UnitEffects";
@@ -100,6 +101,18 @@ function isVehicleUnit(state: GameState, cardId: string): boolean {
   return !!getDefinition(state.definitions, cardId)?.features?.includes("車両");
 }
 
+/**
+ * RS-216 の「特徴「車両」を持つ自軍ユニット」か。ライドされていないビークルはユニットではないので数えない。XG3-103【噛みつき】で
+ * S ユニットとして扱っているライジンゴーは、ターンを終えるときの判定の時点ではまだ S ユニットなので数える（atwiki/page-385 Q2）。
+ */
+function isOwnVehicleFeatureUnit(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  if (!isVehicleUnit(state, card.cardId)) return false;
+  if (getDefinition(state.definitions, card.cardId)?.type !== "vehicle") return true;
+  if (isXg3RaijingoUnit(state, card)) return true;
+  const p = state.players[playerId];
+  return [...p.rush, ...p.battle].some((c) => c.mountedOnInstanceId === card.instanceId);
+}
+
 /** RS-216 エグゾスの※: 自分がターンを終えるとき、特徴「車両」を持つ自軍ユニットがなければ山札に戻してシャッフルする。 */
 function applyExodusTurnEnd(state: GameState, endingPlayerId: PlayerId): GameState {
   let nextState = state;
@@ -108,7 +121,7 @@ function applyExodusTurnEnd(state: GameState, endingPlayerId: PlayerId): GameSta
     if (card.cardId !== "RS-216") continue;
     if (!findUnitInField(nextState, endingPlayerId, card.instanceId)) continue;
     const hasVehicleUnit = units().some(
-      (c) => c.instanceId !== card.instanceId && isVehicleUnit(nextState, c.cardId),
+      (c) => c.instanceId !== card.instanceId && isOwnVehicleFeatureUnit(nextState, endingPlayerId, c),
     );
     if (!hasVehicleUnit) {
       nextState = returnUnitToDeckShuffle(nextState, endingPlayerId, card.instanceId);
@@ -133,7 +146,7 @@ function exodusOrderChoice(state: GameState, endingPlayerId: PlayerId): GameStat
   const units = [...player.rush, ...player.battle];
   const exodus = units.find((c) => c.cardId === "RS-216");
   if (!exodus) return null;
-  const vehicles = units.filter((c) => c.instanceId !== exodus.instanceId && isVehicleUnit(state, c.cardId));
+  const vehicles = units.filter((c) => c.instanceId !== exodus.instanceId && isOwnVehicleFeatureUnit(state, endingPlayerId, c));
   if (vehicles.length === 0) return null;
   const surviving = vehicles.filter((c) => !kakuhengeWillDestroy(state, endingPlayerId, c));
   if (surviving.length > 0) return null;

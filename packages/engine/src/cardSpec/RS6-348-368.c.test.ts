@@ -215,7 +215,32 @@ describe("RS-363 バルパンサー（2nd）", () => {
     expect(zoneOf(s, "player2", "RS-354:old")).toBe("command");
   });
 
-  it.todo("RS-363: 公式Q&A — 敵軍ゴーゴーファイヤー【プロジェットカノン】との無限ループは、ターンプレイヤーが優先順を選んで処理を終える（捨札にしたままで終えられる）（出典: grnrngr/faq-card-6 RS-363 Q2）— 【パンサークロー】が未実装（上の it.fails）で前提が作れない");
+  it("RS-363: 公式Q&A — 敵軍ゴーゴーファイヤー【プロジェットカノン】との無限ループは、ターンプレイヤーが優先順を選んで処理を終える（捨札にしたままで終えられる）（出典: grnrngr/faq-card-6 RS-363 Q2）", () => {
+    // 「ターンプレイヤーが「RS-363 バルパンサー（２nd）」のＮＣで破壊した敵軍コマンドを、そのまま捨札にしたままにで処理を終えることになります。」
+    let s = st({
+      player1: { rush: [inst("RS-363", "pan"), inst("RS-362", "shark")], deck: deckCards(5) },
+      player2: { battle: [inst("RS-354", "c3")], rush: [inst("RS-238", "fire")], deck: deckCards(5, "e") },
+    });
+    s = passEntry(resolveAll(enter(s, "RS-363:pan")));
+    s = pick(enter(s, "RS-362:shark"), "RS-354:c3");
+    // 自軍（ターンプレイヤー）の【パンサークロー】で捨札にする。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-363");
+    s = pick(s, "RS-354:c3");
+    expect(zoneOf(s, "player2", "RS-354:c3")).toBe("discard");
+    // 敵軍の【プロジェットカノン】で捨札からホールド状態で戻す（ループ）。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-238");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    s = pick(s, "RS-354:c3");
+    expect(zoneOf(s, "player2", "RS-354:c3")).toBe("command");
+    // 一度ループを回したので、次の【パンサークロー】ではカードを選び直せず、優先（バルパンサー）か見送りだけ
+    // （選び続けると同じ局面に戻り続け、CPU が止まらなかった。2026-11-12）。優先すると捨札のまま終わる。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-363");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["RS-363:pan"]);
+    s = pick(s, "RS-363:pan");
+    s = resolveAll(s);
+    expect(zoneOf(s, "player2", "RS-354:c3")).toBe("discard");
+    expect(s.pendingEffectChoice).toBeUndefined();
+  });
 });
 
 // ===========================================================================
@@ -273,7 +298,35 @@ describe("RS-364 ヘルサターン総統", () => {
     expect(spOf(s, "player1", "RS-081:tyr")).toBe(1);
   });
 
-  it.todo("RS-364: 公式Q&A — 【ゴレンジャーハリケーン】は発動時点で BP8000以下のユニットだけが対象で、総統を先に撃破したとみなして残りを撃破することはできない（出典: grnrngr/faq-card-6 RS-364 Q2）— モモ〜アカレンジャーの5体の順のコンビネーションを敵軍の総統環境で組むのが API 上困難");
+  it("RS-364: 公式Q&A — 【ゴレンジャーハリケーン】は発動時点で BP8000以下のユニットだけが対象で、総統を先に撃破したとみなして残りを撃破することはできない（出典: grnrngr/faq-card-6 RS-364 Q2）", () => {
+    // 「いいえ。【ゴレンジャーハリケーン】の効果は、その発動時点で「ＢＰ８０００以下のユニット」のみが対象となります。」
+    // 敵軍（player2）: 総統（BP4000）と DA の S（BP6000＋3000＝9000）。総統が撃破されて BP6000 に戻っても撃破されない。
+    const DA6000 = sUnit("SPEC-DA6000", { category: "DA", bp: 6000, sp: undefined });
+    const order = ["RS-259:momo", "RS-189:ki", "RS-190:mido", "RS-258:ao", "RS-126:aka"];
+    let s = st(
+      {
+        player1: { rush: order.map((id) => inst(id.split(":")[0]!, id.split(":")[1]!)), deck: deckCards(5) },
+        player2: { battle: [inst("SPEC-DA6000", "d")], rush: [inst("RS-364", "hs")], deck: deckCards(5, "e") },
+      },
+      [DA6000],
+    );
+    expect(bpOf(s, "player2", "SPEC-DA6000:d")).toBe(9000);
+    for (const id of order) {
+      s = enter(s, id);
+      for (let i = 0; i < 12 && s.pendingEffectChoice?.playerId === "player1"; i += 1) {
+        const acts = legal(s);
+        const next = acts.find((a) => a.type === "confirm_effect_choice") ?? acts.find((a) => a.type === "skip_effect_choice");
+        if (!next) break;
+        s = act(s, next);
+      }
+      s = resolveAll(s);
+      if (id !== order.at(-1)) s = passEntry(s);
+    }
+    expect(spOf(s, "player1", "RS-126:aka")).toBe(2);
+    expect(zoneOf(s, "player2", "RS-364:hs")).toBe("discard");
+    expect(zoneOf(s, "player2", "SPEC-DA6000:d")).toBe("battle");
+    expect(bpOf(s, "player2", "SPEC-DA6000:d")).toBe(6000);
+  });
 
   // grnrngr/faq-card-6 RS-364 Q3「はい、その通りです。」
   it("RS-364: 公式Q&A — 自軍エリアに2体あれば効果は重複し、BP+6000 される（出典: grnrngr/faq-card-6 RS-364 Q3）", () => {
@@ -309,7 +362,21 @@ describe("RS-364 ヘルサターン総統", () => {
     expect(bpOf(b, "player1", "RS-354:red")).toBe(6000);
   });
 
-  it.todo("RS-364: 公式Q&A — 幽魔王サラマンデスとのループはターンプレイヤーがどちらかの効果を優先して処理する（出典: grnrngr/faq-card-6 RS-364 Q7）— XG2-029 と災魔ツリーの組み合わせを API で組めない");
+  // atwiki/page-576 Q7（= atwiki/page-1798 Q2）「ターンプレイヤーが効果の優先順を選択して処理してください。なお、必ずどちらかの効果が優先されるようにしてください。」
+  // 以前の it.todo は出典を grnrngr/faq-card-6 Q7 としていたが、grnrngr の RS-364 の Q は6つで、この Q は atwiki/page-576 の Q7。
+  it("RS-364: 公式Q&A — 幽魔王サラマンデス（BP8000以上で L ユニット）とのループはターンプレイヤーがどちらかの効果を優先して処理する（出典: atwiki/page-576 Q7・atwiki/page-1798 Q2）", () => {
+    const loop = toPhase(rushPhase({ rush: [inst("RS-364", "hs"), inst("XG2-029", "y")] }, {}, SPECS), "player1", "battle");
+    expect(loop.pendingEffectChoice?.effectId).toBe("loop_priority");
+    expect(loop.pendingEffectChoice?.playerId).toBe("player1");
+    // 総統を優先: BP+3000 された S ユニット（6500 + 3000）で、総統の効果により「SP1」。
+    const saturn = pick(loop, "RS-364:hs");
+    expect(bpOf(saturn, "player1", "XG2-029:y")).toBe(9500);
+    expect(spOf(saturn, "player1", "XG2-029:y")).toBe(1);
+    // サラマンデスを優先: 総統の効果を受けない（BP はそのまま）。
+    const tree = pick(loop, "XG2-029:y");
+    expect(bpOf(tree, "player1", "XG2-029:y")).toBe(6500);
+    expect(spOf(tree, "player1", "XG2-029:y")).toBe(0);
+  });
 });
 
 // ===========================================================================

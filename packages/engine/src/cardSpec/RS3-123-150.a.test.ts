@@ -458,9 +458,37 @@ describe("RS-125 百獣アニマルハート", () => {
   });
 
   // faq-card-5（RS-265 の項）「はい、発動できます。」— アニマルハートで撃破されたジェットシーカーのラウンドレーダー
-  it.todo(
-    "RS-125: 公式Q&A — 百獣アニマルハートで撃破されたジェットシーカーの【ラウンドレーダー】は発動できる（出典: grnrngr/faq-card-5 RS-265）— 撃破されたユニット自身の「オペレーション使用時」誘発をエンジンの公開 API で観測する手段がない",
-  );
+  it("RS-125: 公式Q&A — 百獣アニマルハートで撃破されたジェットシーカーの【ラウンドレーダー】は発動できる（出典: grnrngr/faq-card-5 RS-265）", () => {
+    let s = st(
+      {
+        phase: "rush",
+        player1: { hand: [inst("RS-125", "ah")], battle: [inst("SPEC-WBM", "b0")], command: [released("TST-OP", "wb")], power: powerCards(8, "p1") },
+        player2: { rush: [inst("RS-265", "seeker")], power: powerCards(3, "ep") },
+      },
+      EXTRA,
+    );
+    s = useCard(s, "player1", "RS-125:ah");
+    let radar = false;
+    for (let i = 0; i < 10; i += 1) {
+      const p = s.pendingEffectChoice;
+      if (!p) break;
+      if (p.sourceCardId === "RS-265") {
+        // 撃破されても（撃破されるユニットでも）ラウンドレーダーで敵軍パワーゾーンのカードを捨札にできる
+        radar = true;
+        s = act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: p.validInstanceIds[0]! });
+        continue;
+      }
+      if (p.playerId === "player1" && p.validInstanceIds.includes("RS-265:seeker") && !(p.selectedInstanceIds ?? []).includes("RS-265:seeker")) {
+        s = pick(s, "RS-265:seeker");
+        continue;
+      }
+      s = settle(confirm(s));
+    }
+    s = settle(s);
+    expect(radar).toBe(true);
+    expect(zoneOf(s, "player2", "RS-265:seeker")).toBe("discard");
+    expect(s.players.player1.discard.some((c) => c.instanceId.startsWith("TST-P:p1"))).toBe(true);
+  });
 });
 
 // ===========================================================================
@@ -676,9 +704,27 @@ describe("RS-127 バイオロボ", () => {
   });
 
   // faq-card-6（RS-359 の項）「はい、できます。」（デンジ犬アイシー2体でバイオジェット1号・2号を山札から捨札にしてラッシュ）
-  it.todo(
-    "RS-127: 公式Q&A — デンジ犬アイシー2体の【最後の手段】で山札のバイオジェット1号・2号を捨札にしてバイオロボをラッシュできる（出典: grnrngr/faq-card-6 RS-359）— デンジ犬アイシーの L ラッシュ置きかえの手順（2体分の連続使用）は RS-359 側の仕様テストで扱う範囲で、RS-127 側から公開 API で組む手順が定まっていない",
-  );
+  it("RS-127: 公式Q&A — デンジ犬アイシー2体の【最後の手段】で山札のバイオジェット1号・2号を捨札にしてバイオロボをラッシュできる（出典: grnrngr/faq-card-6 RS-359）", () => {
+    const s = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-127", "bio")],
+        rush: [inst("RS-359", "i1"), inst("RS-359", "i2")],
+        command: [released("TST-OP-OT", "ot")],
+        power: powerCards(6),
+        deck: [inst("RS-128", "j1"), inst("RS-129", "j2")],
+      },
+    });
+    const r = rushFromHand(s, "player1", "RS-127:bio", { materials: ["RS-128:j1", "RS-129:j2"] });
+    expect(r.ok, r.error).toBe(true);
+    let t = settle(r.state);
+    for (let i = 0; i < 8 && t.pendingEffectChoice; i += 1) t = settle(drain(t, t.pendingEffectChoice.playerId, ["RS-128:j1", "RS-129:j2"]));
+    expect(zoneOf(t, "player1", "RS-127:bio")).toBe("rush");
+    expect(zoneOf(t, "player1", "RS-128:j1")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-129:j2")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-359:i1")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-359:i2")).toBe("discard");
+  });
 });
 
 // ===========================================================================
@@ -827,9 +873,42 @@ describe("RS-129 バイオジェット2号", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:s3")).toBe("power");
   });
 
-  it.todo(
-    "RS-129: ※ダメージ以外のパワーが1枚しかなければそれを捨札にする（出典: atwiki/page-361「1枚しかなければそれを捨札にする」）— 追加条件で S ユニット3体をオモテ向きでパワーゾーンに送るため、通常のラッシュでは「1枚しかない」状況を作れない（ベン・G 経由は Q2 により実行しない）",
-  );
+  // RS-105 デカベースクローラー【母艦】で S ユニット2体分を OT コマンドのホールドで代え、1体だけをパワーゾーンに送る
+  // （1体ごとの置き換えなので混ぜて払える。ユーザー判断 2026-11-12）。ダメージ以外のパワーはその1枚だけになる。
+  it("RS-129: ※ダメージ以外のパワーが1枚しかなければそれを捨札にする（デカベースクローラーで S ユニット1体＋OT コマンド2つで追加条件を満たす）（出典: atwiki/page-361「1枚しかなければそれを捨札にする」・atwiki/page-304 RS-105）", () => {
+    const s0 = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-129", "j2")],
+        rush: [inst("RS-105", "base"), inst("TST-UNIT-0", "s1")],
+        command: [released("TST-OP-OT", "o1"), released("TST-OP-OT", "o2"), released("TST-OP-OT", "o3")],
+        power: damageCards(4),
+      },
+    });
+    let r = tryAct(s0, { type: "begin_zord_setup", playerId: "player1", zordInstanceId: "RS-129:j2" });
+    expect(r.ok, r.error).toBe(true);
+    r = tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1", materialInstanceId: "TST-UNIT-0:s1" });
+    expect(r.ok, r.error).toBe(true);
+    r = tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1", paymentPath: "mothership" });
+    expect(r.ok, r.error).toBe(true);
+    if (r.state.pendingZordSetup) r = tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1" });
+    expect(r.ok, r.error).toBe(true);
+    r = tryAct(r.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP-OT:o1"] });
+    expect(r.ok, r.error).toBe(true);
+    r = tryAct(r.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP-OT:o2", "TST-OP-OT:o3"] });
+    expect(r.ok, r.error).toBe(true);
+    let s = r.state;
+    expect(zoneOf(s, "player1", "RS-129:j2")).toBe("rush");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:s1")).toBe("power");
+    // 2枚選べないので、その1枚を捨札にする（選択が開くならそれを選ぶ）。
+    if (s.pendingEffectChoice?.sourceCardId === "RS-129") {
+      expect(s.pendingEffectChoice.validInstanceIds).toEqual(["TST-UNIT-0:s1"]);
+      s = pick(s, "TST-UNIT-0:s1");
+    }
+    s = settle(s);
+    expect(zoneOf(s, "player1", "TST-UNIT-0:s1")).toBe("discard");
+    expect(s.players.player1.power).toHaveLength(4);
+  });
 
   // 【ステルス】
   it("RS-129: 【ステルス】相手のオペレーション（RS-028 の「敵軍ユニットを1体選んで」）の対象に選べない（出典: atwiki/page-361）", () => {

@@ -13,6 +13,7 @@ import { cardCategories, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { getPlayerModifiers, hasTurnRuleModifier } from "../../core/scopedModifiers";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
+import { arkLargeLoopLost } from "../loopPriority";
 
 type Marks = NonNullable<NonNullable<GameState["xg6"]>["marks"]>;
 type Mark = Marks[number];
@@ -277,9 +278,11 @@ export function xg6TeddyCombo(state: Pick<GameState, "players" | "definitions">,
 }
 
 /** XG6-053 仮面ライダーアーク「※これ以外のユニットがSユニットだけなら、これはLユニットになり」（両軍の場のユニット。Q1） */
-export function xg6ArkIsLarge(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId, instance: CardInstance): boolean {
+export function xg6ArkIsLarge(state: Pick<GameState, "players" | "definitions"> & Partial<Pick<GameState, "loopPriority">>, playerId: PlayerId, instance: CardInstance): boolean {
   if (!isCardId(instance.cardId, "XG6-053")) return false;
   if (!fieldOf(state.players[playerId]).some((c) => c.instanceId === instance.instanceId)) return false;
+  // ガンマジン等（ほかの L があれば L）とのループで、ターンプレイヤーが相手側を優先したら L にならない（atwiki/page-1186 Q6。rules/loopPriority.ts）。
+  if (arkLargeLoopLost(state, instance.instanceId)) return false;
   const others = [...fieldUnitsOf(state, "player1"), ...fieldUnitsOf(state, "player2")].filter((c) => c.instanceId !== instance.instanceId);
   return others.every((c) => sizeOf(state, c) === "S");
 }

@@ -15,6 +15,7 @@
  *  - RK-040「ホールドしなければ出られない」を相手にホールドさせて出す — rulesSpec/07-perm-tag-other.test.ts R-KW-WRECKER-01
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems } from "../testing/noFreeze";
 import type { GameState, PlayerId } from "../types/game";
 import {
   act,
@@ -35,12 +36,14 @@ import {
   expectRarityIn,
   expectStats,
   held,
+  released,
   inst,
   legal,
   p1Battle,
   pick,
   powerCards,
   rcUnit,
+  released,
   releasedCat,
   resolveAll,
   ridingPair,
@@ -50,6 +53,7 @@ import {
   st,
   strike,
   sUnit,
+  tryAct,
   zoneOf,
 } from "./RK2-022-042.helpers";
 
@@ -141,12 +145,98 @@ describe("RK-036 仮面ライダーライア", () => {
     expect(canCounter(attacked({ rush: [inst("RK-036", "l")], command: [held("TST-OP", "h0")] }))).toBe(false);
   });
 
-  it.todo(
-    "RK-036: 公式Q&A — 天空勇者マジシャイン（RS-325）でコマンドゾーンのカウンターを発動するときは、そのカウンター自身のホールドは省けない（出典: grnrngr/faq-rider-1 RK-036 Q1・atwiki/page-181 Q1）— RS-325【天空の剣】でコマンドゾーンのカウンターを使う経路がエンジンにない",
-  );
-  it.todo(
-    "RK-036: 公式Q&A（相互参照）— ゴーゴーファイヤー（RS-238）がある状態でライアの効果でメカニック忍者（RK-008）を使うと、ライアで捨札にしたとき・メカニック忍者で出したときの2回【プロジェットカノン】を発動できる（出典: grnrngr/faq-rider-1 RK-008 Q）— メカニック忍者（RK-008）は照合済みだが、その処理の途中に RS-238【プロジェットカノン】を割り込ませる順番を公開 API で組めていない（cardSpec/RS4-222-242.c.test.ts の it.todo と同じ）",
-  );
+  it("RK-036: 公式Q&A — 天空勇者マジシャイン（RS-325）でコマンドゾーンのカウンターを発動するときは、そのカウンター自身のホールドは省けない（出典: grnrngr/faq-rider-1 RK-036 Q1・atwiki/page-181 Q1「「（発動させたい）そのコマンドをホールドして」とありますので、それを行わなければ発動させることはできません」）", () => {
+    const magi = (s: GameState) => legal(s).find((a) => a.type === "use_magi_ticket" && a.playerId === "player1" && a.instanceId === "RK-004:g" && a.counter === true);
+    // ホールド状態のギギの腕輪は、ライアがいてもマジチケットで発動できない
+    expect(magi(attacked({ hand: [], rush: [inst("RS-325", "ms")], battle: [inst("RK-036", "l")], command: [held("RK-004", "g"), held("TST-OP", "h0")] }))).toBeUndefined();
+    // リリース状態なら、ギギの腕輪自身をホールドして発動する（ライアの捨札は使わない）
+    let s = attacked({ hand: [], rush: [inst("RS-325", "ms")], battle: [inst("RK-036", "l")], command: [released("RK-004", "g"), held("TST-OP", "h0")] });
+    const use = magi(s);
+    expect(use).toBeDefined();
+    s = resolveAll(act(s, use!));
+    expect(zoneOf(s, "player1", "TST-OP:h0")).toBe("command");
+    expect(zoneOf(s, "player1", "RK-004:g")).toBe("discard");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("battle");
+    expect(zoneOf(s, "player2", "SPEC-E2500:a")).toBe("discard");
+  });
+  it("RK-036: ライアとメカニック忍者の途中で【プロジェットカノン】が割り込む盤面は、どの選び方でも最後まで解決する（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const KAIZO = sUnit("SPEC-KAIZO", { category: "ET", bp: 3000, features: ["男", "改造人間"] });
+    const start = () =>
+      attack(
+        st(
+          {
+            activePlayer: "player2",
+            player1: {
+              battle: [inst("TST-UNIT-0", "d"), inst("RK-036", "ra")],
+              rush: [inst("RS-238", "gf")],
+              hand: [inst("RK-008", "nin")],
+              command: [released("SPEC-KAIZO", "k"), released("TST-OP-ET", "pay")],
+              discard: [inst("TST-OP", "x1"), inst("TST-OP", "x2")],
+              power: powerCards(4),
+              deck: deckCards(5),
+            },
+            player2: { battle: [inst("SPEC-E2500", "a")], deck: deckCards(5, "e") },
+          },
+          [...EXTRA, KAIZO],
+        ),
+        "SPEC-E2500:a",
+        "TST-UNIT-0:d",
+        "player2",
+      );
+    expect(freezeProblems(start)).toEqual([]);
+  });
+
+  // faq-rider-1 RK-008 Q2「…「RK-036 仮面ライダーライア」の効果によりコマンドゾーンのカードを捨札にしたときと、「RK-008 メカニック忍者」の効果で…ラッシュエリアに出したときの２回、【プロジェットカノン】が発動できます…最後に、…アタックされたSユニットをコマンドゾーンに置いて、一連の処理を終了します。」
+  it("RK-036: 公式Q&A（相互参照）— ゴーゴーファイヤー（RS-238）がある状態でライアの効果でメカニック忍者（RK-008）を使うと、ライアで捨札にしたとき・メカニック忍者で出したときの2回【プロジェットカノン】を発動できる（出典: grnrngr/faq-rider-1 RK-008 Q）", () => {
+    const KAIZO = sUnit("SPEC-KAIZO", { category: "ET", bp: 3000, features: ["男", "改造人間"] });
+    let s = attack(
+      st(
+        {
+          activePlayer: "player2",
+          player1: {
+            battle: [inst("TST-UNIT-0", "d"), inst("RK-036", "ra")],
+            rush: [inst("RS-238", "gf")],
+            hand: [inst("RK-008", "nin")],
+            command: [released("SPEC-KAIZO", "k"), released("TST-OP-ET", "pay")],
+            discard: [inst("TST-OP", "x1"), inst("TST-OP", "x2")],
+            power: powerCards(4),
+            deck: deckCards(5),
+          },
+          player2: { battle: [inst("SPEC-E2500", "a")], deck: deckCards(5, "e") },
+        },
+        [...EXTRA, KAIZO],
+      ),
+      "SPEC-E2500:a",
+      "TST-UNIT-0:d",
+      "player2",
+    );
+    const pay = (legal(s) as unknown as Record<string, unknown>[]).find(
+      (a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-008:nin" && a.raiaDiscard === true && a.substituteInstanceId === "SPEC-KAIZO:k",
+    );
+    expect(pay).toBeDefined();
+    let r = tryAct(s, pay as never);
+    expect(r.ok, r.error).toBe(true);
+    // 【運命への反抗】同じカテゴリ（ET）のカードを自軍コマンドゾーンから捨札にする。
+    r = tryAct(r.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP-ET:pay"] });
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    const fired: string[] = [];
+    for (let i = 0; i < 4; i++) {
+      const p = s.pendingEffectChoice;
+      const x = p?.playerId === "player1" ? ["TST-OP:x1", "TST-OP:x2"].find((id) => p.validInstanceIds.includes(id)) : undefined;
+      if (!x) break;
+      fired.push(x);
+      s = pick(s, x);
+    }
+    s = settle(s);
+    // 2回とも【プロジェットカノン】で捨札のカードをホールド状態で置き、最後にアタックされたユニットをコマンドゾーンに置く。
+    expect(fired).toEqual(["TST-OP:x1", "TST-OP:x2"]);
+    expect(cardIn(s, "player1", "TST-OP:x1")?.commandHeld).toBe(true);
+    expect(cardIn(s, "player1", "TST-OP:x2")?.commandHeld).toBe(true);
+    expect(zoneOf(s, "player1", "SPEC-KAIZO:k")).toBe("rush");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("command");
+    expect(s.pendingBattle).toBeUndefined();
+  });
 });
 
 // ===========================================================================

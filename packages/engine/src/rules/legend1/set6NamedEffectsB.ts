@@ -22,6 +22,7 @@ import { unitFeatures } from "../addedFeatures";
 import { applyDamageToPlayer } from "../damagePayment";
 import { addBakiBakiExtraAttack } from "../turnModifierBridge";
 import { cardHasGrantKeyword } from "../../dsl/promotedKeywordBridge";
+import { arkLargeLoopWonBy } from "../loopPriority";
 import { fireAkaRedSoulNc } from "./set6AuditFixes";
 import { baseLargeNow, hasBecomesLIfAnyLText } from "./set8NamedEffectsB";
 import { rk6CommandHoldBlocked } from "../rk/rk6Fields";
@@ -192,9 +193,12 @@ export function zubaanIsLarge(state: GameState, instance: CardInstance): boolean
   ) {
     return false;
   }
+  // XG6-053 仮面ライダーアークとのループで、ターンプレイヤーがこちらを優先したら L（アークの※の L は数えない。atwiki/page-1186 Q6。
+  // rules/legend1/set8NamedEffectsB.ts の検出・rules/loopPriority.ts）。
+  if (arkLargeLoopWonBy(state, instance.instanceId)) return true;
   for (const pid of ["player1", "player2"] as const) {
     for (const c of fieldUnits(state, pid)) {
-      if (c.instanceId === instance.instanceId || c.cardId === "RS-420") continue;
+      if (c.instanceId === instance.instanceId || c.cardId === "RS-420" || isSameCardIdentity(c.cardId, "XG6-053")) continue;
       if (cardHasGrantKeyword(c.cardId, "becomes_l_if_l_present") || hasBecomesLIfAnyLText(state, c.cardId)) continue;
       if (baseLargeNow(state, c)) return true;
     }

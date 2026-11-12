@@ -124,6 +124,8 @@ export type UseMagiTicketAction = {
   instanceId: string;
   targetInstanceId?: string;
   extraInstanceId?: string;
+  /** カウンターとして、手札にあるものと同じタイミング（敵軍ターンの反応の窓等）で発動する（play_counter と同じ解決）。 */
+  counter?: boolean;
 };
 
 export type ShironLightAction = {

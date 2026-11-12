@@ -32,6 +32,8 @@ import {
   tryRushZord,
   zoneOf,
 } from "./04-helpers";
+import * as C1 from "../cardSpec/RS2-071-096.helpers";
+import * as C2 from "../cardSpec/RS2-097-122.helpers";
 
 // ---------------------------------------------------------------------------
 // テスト専用のバニラカード（効果なし。必要な数値だけを持つ）
@@ -327,9 +329,24 @@ describe("R-RUSH-03 ラッシュではないもの", () => {
   );
 
   // 「バトルエリアを離れたわけではありませんので、ラッシュされたことにはなりません」
-  it.todo(
-    "R-RUSH-03: 敵軍ターン中にライドオフさせられたユニットをバトルエリアに置き直してもラッシュではない（出典: atwiki/page-141 Q11）— 敵軍効果による強制ライドオフを公開 API で発生させる手段がない",
-  );
+  it("R-RUSH-03: 敵軍ターン中にライドオフさせられたユニットをバトルエリアに置き直してもラッシュではない（出典: atwiki/page-141 Q11）", () => {
+    // 敵軍（player2）の RK-039 メタルゲラス【突進】で、player1 のバトルエリアのライド中ユニットをライドオフさせる。
+    let s = mk({
+      activePlayer: "player2",
+      phase: "battle",
+      player1: { battle: [inst("RK-058", "v"), { ...inst("TST-UNIT-0", "r"), mountedOnInstanceId: "RK-058:v" }, inst("TST-UNIT-2", "x")] },
+      player2: { rush: [inst("RK-039", "mg")], command: [released("TST-OP", "c")] },
+    });
+    const entered = tryEnterBattle(s, "player2", "RK-039:mg");
+    expect(entered.ok).toBe(true);
+    s = entered.ok ? entered.state : s;
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-039");
+    const r = applyAction(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "TST-UNIT-0:r" });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(zoneOf(r.state, "player1", "TST-UNIT-0:r")).toBe("battle");
+    expect(rushedThisTurn(r.state, "player1", "TST-UNIT-0:r")).toBe(false);
+  });
 });
 
 describe("R-RUSH-04 同名ユニットは複数出せる", () => {
@@ -970,14 +987,42 @@ describe("R-ADD-07 複数の「〜しなければ出られない」", () => {
   });
 
   // 「リリース状態のコマンドが無くなったら」
-  it.todo(
-    "R-ADD-07: 敵軍ハリケンレオンがいるとき、ピットインダイブで出す敵軍Sユニットは1体ごとにホールドし、コマンドが尽きたら終了（出典: grnrngr/faq-card-2 RS-097 Q4）— ピットインダイブ（NC）の成立をこの章のテストで構成するのは困難なため保留",
-  );
+  it("R-ADD-07: 敵軍ハリケンレオンがいるとき、ピットインダイブで出す敵軍Sユニットは1体ごとにホールドし、コマンドが尽きたら終了（出典: grnrngr/faq-card-2 RS-097 Q4）", () => {
+    // player1 の RS-049【ピットインダイブ】（NC）で player2 のラッシュエリアの SP1 ユニットを出す。player2 のコマンドは1つだけ。
+    let s = C2.st({
+      player1: { battle: [inst("RS-097", "le"), ...C2.fillers(2)], rush: [inst("RS-049", "g")] },
+      player2: { rush: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")], command: [released("TST-OP", "c")] },
+    });
+    s = C2.enter(s, "RS-049:g");
+    for (let i = 0; i < 4 && s.pendingEffectChoice; i++) {
+      const target = s.pendingEffectChoice.validInstanceIds.find((id) => zoneOf(s, "player2", id) === "rush");
+      if (!target) break;
+      const r = C2.tryAct(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: target });
+      if (!r.ok) break;
+      s = C2.settle(r.state);
+    }
+    s = C2.settle(s);
+    expect(s.players.player2.battle).toHaveLength(1);
+    expect(s.players.player2.rush).toHaveLength(1);
+    expect(s.players.player2.command[0]?.commandHeld).toBe(true);
+  });
 
   // 「はい、その通りです」（ファイブテクターで出すときもホールド）
-  it.todo(
-    "R-ADD-07: 敵軍ハリケンレオンがいるとき、ファイブテクターで出す SP1 以上のSユニットもコマンドを1つホールドする（出典: grnrngr/faq-card-2 RS-097 Q6）— ストライク反応窓でのファイブテクター処理を経由する必要があり保留",
-  );
+  it("R-ADD-07: 敵軍ハリケンレオンがいるとき、ファイブテクターで出す SP1 以上のSユニットもコマンドを1つホールドする（出典: grnrngr/faq-card-2 RS-097 Q6）", () => {
+    // player1 のストライクに、player2 が RS-014 ファイブテクターで SP1 のユニットを出す。
+    const board = (cmds: ReturnType<typeof released>[]) =>
+      C2.st({
+        player1: { battle: [inst("RS-097", "le"), inst("TST-UNIT-2", "atk")] },
+        player2: { operation: [inst("RS-014", "ft")], rush: [inst("TST-UNIT-0", "sp1")], command: cmds, power: C2.powerCards(5) },
+      });
+    let s = C2.strike(board([released("TST-OP-ET", "p2c")]), "TST-UNIT-2:atk");
+    s = C2.act(s, { type: "five_tech_intercept", playerId: "player2", interceptInstanceId: "TST-UNIT-0:sp1" });
+    if (s.pendingCommandPayment) s = C2.act(s, { type: "resolve_command_payment", playerId: "player2", commandInstanceIds: ["TST-OP-ET:p2c"] });
+    expect(s.players.player2.command[0]?.commandHeld).toBe(true);
+    // ホールドできるコマンドがなければ、その SP1 ユニットは出せない。
+    const none = C2.strike(board([]), "TST-UNIT-2:atk");
+    expect(C2.legalOfType(none, "five_tech_intercept").map((a) => a.interceptInstanceId)).not.toContain("TST-UNIT-0:sp1");
+  });
 });
 
 describe("R-ADD-08 追加条件の代替手段がある場合", () => {
@@ -1127,9 +1172,26 @@ describe("R-ADD-08 追加条件の代替手段がある場合", () => {
   });
 
   // 「ホールドされてもラッシュすることができます」
-  it.todo(
-    "R-ADD-08: ダイナギャリーで選んだダイナマッハそのものをジャガーバルカンでホールドして追加条件の代わりにできる（出典: grnrngr/faq-card-2 RS-076 Q3・grnrngr/faq-card-4 RS-197 Q2）— パーツキャリアーの追加条件処理で母艦を選ぶ公開 API がない",
-  );
+  it("R-ADD-08: ダイナギャリーで選んだダイナマッハそのものをジャガーバルカンでホールドして追加条件の代わりにできる（出典: grnrngr/faq-card-2 RS-076 Q3・grnrngr/faq-card-4 RS-197 Q2）", () => {
+    let s = C1.st({
+      phase: "battle",
+      player1: { rush: [inst("RS-197", "gal"), inst("RS-076", "jag")], command: [inst("RS-195", "dm")], power: C1.powerCards(6) },
+    });
+    s = C1.act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-197:gal" });
+    expect(s.pendingEffectChoice?.validInstanceIds ?? []).toContain("RS-195:dm");
+    s = C1.act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-195:dm" });
+    // 母艦（ジャガーバルカン）で、選んだダイナマッハ自身をホールドする。
+    for (let i = 0; i < 6 && zoneOf(s, "player1", "RS-195:dm") !== "rush"; i += 1) {
+      const acts = C1.legal(s);
+      const step =
+        acts.find((a) => a.type === "resolve_zord_setup" && "paymentPath" in a && a.paymentPath === "mothership") ??
+        acts.find((a) => a.type === "resolve_command_payment" && a.commandInstanceIds.includes("RS-195:dm")) ??
+        acts.find((a) => a.type === "resolve_zord_setup");
+      if (!step) break;
+      s = C1.act(s, step);
+    }
+    expect(zoneOf(s, "player1", "RS-195:dm")).toBe("rush");
+  });
 
   // 「はい、その通りです」（人身略取は代替手段があれば満たす）
   it("R-ADD-08: 人身略取の追加条件は、Sユニットがなくてもジャガーバルカンで満たせるなら満たさなければならない（出典: grnrngr/faq-card-2 RS-076 Q1・RS-105 Q1）", () => {

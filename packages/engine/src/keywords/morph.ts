@@ -1,6 +1,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "../core/catalog";
+import { unitFeatures as effectiveUnitFeatures } from "../rules/addedFeatures";
 import { cardHasKeyword } from "./cardKeywords";
 import { ryuseioBlocksMove } from "../rules/restrictions";
 import { rushFromHandOnly } from "../rules/rushFromHandOnly";
@@ -45,8 +46,9 @@ export function listMorphReplacementCandidates(
   definitions: Record<string, CardDefinition>,
   morphUnitCardId: string,
   zones: readonly ReplacementSourceZone[] = MORPH_REPLACEMENT_ZONES,
+  morphUnitFeatures?: string[],
 ): MorphReplacementCandidate[] {
-  const morphFeatures = unitFeatures(getDefinition(definitions, morphUnitCardId));
+  const morphFeatures = morphUnitFeatures ?? unitFeatures(getDefinition(definitions, morphUnitCardId));
   if (morphFeatures.length === 0) return [];
 
   const results: MorphReplacementCandidate[] = [];
@@ -76,10 +78,13 @@ export function listPlaceableMorphReplacementCandidates(
   morphUnit: CardInstance,
 ): MorphReplacementCandidate[] {
   const defender = state.players[defenderId];
-  let candidates = listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId);
+  // R-KW-MORPH-03: 効果で追加された特徴も数え、本来の特徴の後ろに付く（J パワーで「人型」を追加した
+  // 「仮面ライダー/男/ディケイドライバー」は「…/ディケイドライバー/人型」。grnrngr/faq-rider-1 RK-013 Q7）。
+  const morphFeatures = effectiveUnitFeatures(state, defenderId, morphUnit);
+  let candidates = listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId, MORPH_REPLACEMENT_ZONES, morphFeatures);
   // RK-317 シュードラン【ポッドバッティング】: DA のコマンドをホールドすれば、かわりに自軍捨札から選べる（rules/rk/rk16Fields.ts）。
   if (rk16CanMorphFromDiscard(state, defenderId)) {
-    candidates = [...candidates, ...listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId, ["discard"])];
+    candidates = [...candidates, ...listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId, ["discard"], morphFeatures)];
   }
   // XG2-070 ライドブッカー・ブックモード: これに重ねたカードからも選べる（rules/xg2/xg2dEffects.ts）。
   candidates = [...candidates, ...xg2MorphStackCandidates(state, defenderId, morphUnit.cardId)];

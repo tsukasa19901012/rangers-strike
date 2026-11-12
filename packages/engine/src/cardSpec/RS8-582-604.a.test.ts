@@ -175,9 +175,26 @@ describe("RS-582 魔導神官メーミィ", () => {
     expect(zoneOf(s, "player1", "RS-255:k1")).toBe("deck");
   });
 
-  it.todo(
-    "RS-582: Q&A — 巨大化爆弾に重ねたユニットが後で撃破されて巨大化爆弾が捨札になったときも手札に加えない（出典: grnrngr/faq-card-8 RS-582 Q1「いいえ、できません」）— 重ねたユニットを敵軍ターンにバトルエリアで撃破させる状況を公開 API で組めないため",
-  );
+  it("RS-582: Q&A — 巨大化爆弾に重ねたユニットが後で撃破されて巨大化爆弾が捨札になったときも手札に加えない（出典: grnrngr/faq-card-8 RS-582 Q1「いいえ、できません」）", () => {
+    // 巨大化爆弾を重ねたボンベバンキ（BP+3000・L）が、敵軍ターンに BP40000 のユニットにアタックされて撃破される。
+    const BIG_ATK = sUnit("SPEC-BIGATK", { bp: 40000 });
+    let s = attackedInEnemyTurn(
+      {
+        battle: [{ ...inst("RS-603", "kaijin"), stackedCards: [inst("RS-255", "bomb")] }],
+        rush: [inst("RS-582", "m")],
+        deck: [inst("RS-255", "k1"), inst("TST-OP", "x")],
+      },
+      "RS-603:kaijin",
+      {},
+      "SPEC-BIGATK:atk",
+      [BIG_ATK],
+    );
+    s = resolveAll(s);
+    expect(zoneOf(s, "player1", "RS-603:kaijin")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-255:bomb")).toBe("discard");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-582");
+    expect(zoneOf(s, "player1", "RS-255:k1")).toBe("deck");
+  });
 
   it.todo("RS-582: 【メー・メガロ】その後、山札をシャッフルする（出典: atwiki/page-1196）— シャッフル結果は乱数に依存し、公開 API で確かめられないため");
 });

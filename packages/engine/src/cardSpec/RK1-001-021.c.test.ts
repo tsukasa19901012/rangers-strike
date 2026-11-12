@@ -344,9 +344,34 @@ describe("RK-016 ミラーワールド", () => {
     expect(pickableWith(3).sort()).toEqual(["SPEC-MIRROR:u", "TST-UNIT-0:x"]);
   });
 
-  it.todo(
-    "RK-016: 公式Q&A — ギンガベリック等でコマンドのホールドを代替できればアタックできる（出典: atwiki/page-176 Q5）— RS-469 ギンガベリックの代替手順が本範囲外のため",
-  );
+  // atwiki/page-176 Q5「ただし、「RS-469 ギンガベリック」等、何らかの方法でコマンドのホールドの代替ができれば、アタックすることができます。」
+  it("RK-016: 公式Q&A — ギンガベリック等でコマンドのホールドを代替できればアタックできる（出典: atwiki/page-176 Q5）", () => {
+    // 敵軍（player2）のアタッカーが RS-469 ギンガベリック【雷の星獣】（MA の自軍コマンドのかわりに敵軍コマンドをホールドしてもよい）にライドしている。
+    const ginga = (riding: boolean) =>
+      st(
+        {
+          activePlayer: "player2",
+          player1: {
+            operation: [mirror([inst("SPEC-MIRROR", "stk"), inst("SPEC-MIRROR", "stk2")])],
+            battle: [inst("SPEC-MIRROR", "u")],
+            command: releasedCat("WB", 2, "own"),
+            deck: deckCards(5),
+          },
+          player2: {
+            battle: [riding ? { ...inst("TST-UNIT-7", "atk"), mountedOnInstanceId: "RS-469:gb" } : inst("TST-UNIT-7", "atk"), inst("RS-469", "gb")],
+            command: releasedCat("MA", 5, "e"),
+            deck: deckCards(5, "e"),
+          },
+        },
+        EXTRA,
+      );
+    expect(attackersOf(ginga(false), "SPEC-MIRROR:u")).toEqual([]);
+    expect(attackersOf(ginga(true), "SPEC-MIRROR:u")).toEqual(["TST-UNIT-7:atk"]);
+    const s = settle(attack(ginga(true), "TST-UNIT-7:atk", "SPEC-MIRROR:u", "player2"));
+    // 6つのホールド = 自分自身のコマンド5つ＋かわりにホールドした相手（player1）のコマンド1つ。
+    expect(s.players.player2.command.filter((c) => c.commandHeld)).toHaveLength(5);
+    expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(1);
+  });
 });
 
 // ===========================================================================
@@ -418,9 +443,16 @@ describe("RK-017 ミッションメモリー", () => {
     expect(bpOf(s, "player1", "RK-073:other")).toBe(5000);
   });
 
-  it.todo(
-    "RK-017: 公式Q&A — コマンドゾーンに置くタイミングは「予約」の解決直後で、RC の効果の発動後ではない（出典: grnrngr/faq-rider-1 RK-017 Q1・atwiki/page-197 Q1）— 置いたタイミングの違いを公開 API で観測できる状況（ラッシュフェイズ中にコマンドゾーンの枚数を参照する効果等）が本範囲にないため",
-  );
+  // faq-rider-1 RK-017 Q1「…コマンドゾーンに置くタイミングは、その「予約」が解決したすぐ後になります。」
+  it("RK-017: 公式Q&A — コマンドゾーンに置くタイミングは「予約」の解決直後で、RC の効果の発動後ではない（出典: grnrngr/faq-rider-1 RK-017 Q1・atwiki/page-197 Q1）", () => {
+    const s = memorized();
+    // まだラッシュフェイズで、選んだユニットはバトルエリアに出ていない（RC の効果は発動していない）が、すでにホールド状態でコマンドゾーンにある。
+    expect(s.phase).toBe("rush");
+    expect(zoneOf(s, "player1", "RK-073:n2")).toBe("rush");
+    expect(bpOf(s, "player1", "RK-073:n2")).toBe(5000);
+    expect(zoneOf(s, "player1", "RK-017:mm")).toBe("command");
+    expect(cardIn(s, "player1", "RK-017:mm")?.commandHeld).toBe(true);
+  });
 });
 
 // ===========================================================================
@@ -681,11 +713,56 @@ describe("RK-021 クロックアップ", () => {
     expect(zoneOf(s, "player1", "TST-OP:stk1")).toBe("discard");
   });
 
-  it.todo(
-    "RK-021: 公式Q&A — 無限連鎖カードは常駐の効果を無効にするだけで、クロックアップと重ねたカードは常駐置き場に留まる（出典: grnrngr/faq-rider-1 RK-021 Q1・atwiki/page-173 Q1）— RS-072 無限連鎖カードの使用と常駐の無効化の手順は RS 系の担当範囲で、公開 API での組み立てを確認できなかったため",
-  );
-  it.todo(
-    "RK-021: 公式Q&A — 「加速」のユニットがアタックされたとき隠流忍術も使えるが、否定文優先でバトルは行われない（出典: grnrngr/faq-rider-1 RK-021 Q2・atwiki/page-173 Q2・R-PRI-01）— 強制の常駐の処理と隠流忍術の反応ウィンドウの順序を公開 API で観測できないため",
-  );
+  // faq-rider-1 RK-021 Q1「いいえ、捨札にはなりません。…そのまま常駐置き場に留まります。」
+  it("RK-021: 公式Q&A — 無限連鎖カードは常駐の効果を無効にするだけで、クロックアップと重ねたカードは常駐置き場に留まる（出典: grnrngr/faq-rider-1 RK-021 Q1・atwiki/page-173 Q1）", () => {
+    // 敵軍（player2）がラッシュフェイズに RS-072 無限連鎖カードを使い、バトルフェイズに「加速」の自軍ユニットへアタックする。
+    let s = st(
+      {
+        activePlayer: "player2",
+        phase: "rush",
+        player1: { operation: [clock(2)], battle: [inst("SPEC-ACCEL", "d")], deck: deckCards(3) },
+        player2: { hand: [inst("RS-072", "mr")], battle: [inst("TST-UNIT-7", "atk")], command: releasedCat("DA", 1, "e"), power: powerCards(3), deck: deckCards(5, "e") },
+      },
+      EXTRA,
+    );
+    s = resolveAll(played(s, "RS-072:mr", "player2"));
+    expect(zoneOf(s, "player2", "RS-072:mr")).toBe("discard");
+    expect(zoneOf(s, "player1", "RK-021:cu")).toBe("operation");
+    expect(s.players.player1.operation[0]?.stackedCards).toHaveLength(2);
+    s = nextPhase(s);
+    s = settle(attack(s, "TST-UNIT-7:atk", "SPEC-ACCEL:d", "player2"));
+    // 常駐の効果は無効なのでバトルが行われ、重ねたカードは山札に戻らない。
+    expect(zoneOf(s, "player1", "SPEC-ACCEL:d")).toBe("discard");
+    expect(zoneOf(s, "player1", "RK-021:cu")).toBe("operation");
+    expect(s.players.player1.operation[0]?.stackedCards).toHaveLength(2);
+  });
+  // faq-rider-1 RK-021 Q2「…「RS-018 隠流忍術」を使用することはできます。…バトルは行われないことになります。」
+  it("RK-021: 公式Q&A — 「加速」のユニットがアタックされたとき隠流忍術も使えるが、否定文優先でバトルは行われない（出典: grnrngr/faq-rider-1 RK-021 Q2・atwiki/page-173 Q2・R-PRI-01）", () => {
+    let s = st(
+      {
+        activePlayer: "player2",
+        player1: {
+          operation: [clock(2)],
+          battle: [inst("SPEC-ACCEL", "d"), inst("TST-UNIT-0", "sub")],
+          hand: [inst("RS-018", "nin")],
+          command: releasedCat("MA", 1),
+          power: powerCards(4),
+          deck: deckCards(3),
+        },
+        player2: { battle: [inst("TST-UNIT-7", "atk")], deck: deckCards(5, "e") },
+      },
+      EXTRA,
+    );
+    s = attack(s, "TST-UNIT-7:atk", "SPEC-ACCEL:d", "player2");
+    // 隠流忍術は使える（「加速」を持たない TST-UNIT-0 をかわりにバトルさせる）。
+    const use = legal(s).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RS-018:nin" && a.substituteInstanceId === "TST-UNIT-0:sub");
+    expect(use).toBeDefined();
+    s = settle(act(s, use!));
+    expect(zoneOf(s, "player1", "RS-018:nin")).toBe("discard");
+    // クロックアップの「バトルは行われない」が優先され、どちらのユニットも撃破されず、重ねたカードが1枚山札の下に戻る。
+    expect(zoneOf(s, "player1", "TST-UNIT-0:sub")).toBe("battle");
+    expect(zoneOf(s, "player1", "SPEC-ACCEL:d")).toBe("battle");
+    expect(s.players.player1.operation[0]?.stackedCards).toHaveLength(1);
+  });
 });
 

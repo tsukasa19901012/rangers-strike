@@ -23,6 +23,7 @@ import { promoteDeferredBattleEntry } from "../battleEntry";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { commandCategoriesNow } from "../legend3/battleEffects";
 import { namedEffectActive } from "../ncGatedEffects";
+import { applyRk1DestroyerDamage } from "../rk/rk1NamedEffects";
 import { openDestroyTimedChoice } from "../destroyTriggerTiming";
 
 // ---------------------------------------------------------------------------
@@ -269,7 +270,7 @@ function applyDSwordVega(state: GameState, ctx: GrantKeywordContext): GrantKeywo
       const leave = applyUnitLeave(next, id, "discard", ctx.phasePlayerId);
       if (!("error" in leave)) next = leave.state;
     }
-    return { state: next, detail: D_SWORD_VEGA_EFFECT_ID };
+    return { state: dSwordVegaDynamo(state, next, ctx, targets), detail: D_SWORD_VEGA_EFFECT_ID };
   }
   // 複数体の撃破（離場反応での中断／再開）は select_units_bp_budget の確定処理を共用する。
   const opened = openEffectChoice(next, {
@@ -286,7 +287,27 @@ function applyDSwordVega(state: GameState, ctx: GrantKeywordContext): GrantKeywo
   });
   const confirmed = applyConfirmEffectChoice(opened, ctx.playerId);
   if ("error" in confirmed) return { state, detail: `${D_SWORD_VEGA_EFFECT_ID}:failed` };
-  return { state: confirmed.state, detail: D_SWORD_VEGA_EFFECT_ID };
+  return { state: dSwordVegaDynamo(state, confirmed.state, ctx, targets), detail: D_SWORD_VEGA_EFFECT_ID };
+}
+
+/**
+ * RK-005 超電子ダイナモの能力を得たデカマスターが【ディーソードベガ】で撃破したとき、撃破した SP が空欄ではないユニット
+ * 1体につき相手に1点（grnrngr/faq-rider-1 RK-005 Q「「撃破する」と直接書かれているテキストの持ち主であるユニット…が、
+ * 「RK-005 超電子ダイナモ」の効果を受けていれば、撃破したユニット1体につき1点のダメージを与えられる」）。
+ */
+function dSwordVegaDynamo(before: GameState, after: GameState, ctx: GrantKeywordContext, targets: string[]): GameState {
+  const src = ctx.triggerSourceInstanceId;
+  if (!src) return after;
+  const enemyId = opponent(ctx.playerId);
+  const was = [...before.players[enemyId].battle, ...before.players[enemyId].rush];
+  let out = after;
+  for (const id of targets) {
+    const card = was.find((c) => c.instanceId === id);
+    if (!card || !out.players[enemyId].discard.some((c) => c.instanceId === id)) continue;
+    const d = applyRk1DestroyerDamage(out, ctx.playerId, src, card.cardId);
+    out = d.logs.length > 0 ? { ...d.state, log: [...d.state.log, ...d.logs] } : d.state;
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------------------
@@ -396,7 +417,9 @@ export function magiMergeAllowsRushAttack(state: GameState, attackerPlayerId: Pl
 // 発動は通常の play_operation と同じ解決を使う（カードを手札に、同じカードのホールド状態の写しをコマンドゾーンに一時的に置く）。
 
 export const MAGI_TICKET_KEEP_EFFECT_ID = "rs325_magi_ticket_keep";
-const MAGI_TICKET_STAND_IN_SUFFIX = "#magi_ticket";
+import { MAGI_TICKET_STAND_IN_SUFFIX, magiTicketCounterCandidates, stageMagiTicket } from "../magiTicketStage";
+
+export { magiTicketCounterCandidates, stageMagiTicket };
 
 /** マジチケットで発動できるコマンドゾーンのオペレーションか（タイミング以外の条件。タイミングは呼び出し側＝ラッシュフェイズの合法手）。 */
 export function magiTicketUsable(
@@ -415,33 +438,16 @@ export function magiTicketUsable(
   return availablePower >= parsePowerCost(def.powerCost);
 }
 
-/**
- * play_operation を通すための仮の状態: コマンドゾーンのカードを手札へ移し、同じカードのホールド状態の写しをコマンドゾーンに置く。
- */
-export function stageMagiTicket(state: GameState, playerId: PlayerId, commandInstanceId: string): GameState | null {
-  const player = state.players[playerId];
-  const found = findInZone(player, "command", commandInstanceId);
-  if (!found) return null;
-  const { commandHeld: _h, paymentHeld: _p, mothershipHold: _m, ...card } = found.card;
-  const standIn: CardInstance = {
-    ...card,
-    instanceId: `${card.instanceId}${MAGI_TICKET_STAND_IN_SUFFIX}`,
-    commandHeld: true,
-    paymentHeld: true,
-  };
-  const command = [...player.command];
-  command[found.index] = standIn;
-  const staged = satisfyCostWindow({ ...player, command, hand: [...player.hand, card] }, "operation_category");
-  return { ...state, ...updatePlayer(state, playerId, staged) };
-}
-
 /** play_operation の後: 写しを取り除き、捨札になるときの選択（applyAction の後処理）のために記録する。 */
 export function finishMagiTicketStaging(state: GameState, playerId: PlayerId, commandInstanceId: string): GameState {
   const player = state.players[playerId];
   const standInId = `${commandInstanceId}${MAGI_TICKET_STAND_IN_SUFFIX}`;
   const command = player.command.filter((c) => c.instanceId !== standInId);
-  // 手札に残っていれば（使用に失敗）コマンドゾーンに戻す。
-  const leftInHand = player.hand.find((c) => c.instanceId === commandInstanceId);
+  // 手札に残っていれば（使用に失敗）コマンドゾーンに戻す。ただし、効果を実行する前の割り込み（RK-251 ゴルゴムの仕業の確認など）が
+  // 開いているなら使用の途中なので手札に置いたまま記録し、無効にされて捨札になったときも「かわりに」を選べるようにする
+  // （grnrngr/faq-card-1 RS-011「はい、できます。」）。
+  const inUse = !!state.pendingEffectChoice;
+  const leftInHand = inUse ? undefined : player.hand.find((c) => c.instanceId === commandInstanceId);
   const next = {
     ...state,
     ...updatePlayer(state, playerId, {
@@ -459,7 +465,8 @@ export function finishMagiTicketStaging(state: GameState, playerId: PlayerId, co
  */
 export function settleMagiTicket(state: GameState): GameState {
   const ticket = state.magiTicketPending;
-  if (!ticket) return state;
+  // 相手の RK-251 ゴルゴムの仕業の選択を待っている間（使用の途中）はまだ片付けない（core/applyAction.ts）。
+  if (!ticket || ticket.staged) return state;
   const cleared: GameState = { ...state, magiTicketPending: undefined };
   const player = cleared.players[ticket.playerId];
   if (!player.discard.some((c) => c.instanceId === ticket.instanceId)) return cleared;

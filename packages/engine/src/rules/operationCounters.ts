@@ -1,3 +1,6 @@
+import { collectCallLeadFieldUnits } from "./callLead";
+import { afterCommandCardsLeft } from "./commandLeaveRefill";
+import { magiTicketCounterCandidates, stageMagiTicket } from "./magiTicketStage";
 import { applyXg5AttackWin, XG5_CONFINE_WINDOW_EFFECT_ID } from "./xg5/xg5Core";
 import { xg5BattleUsesPrintedBp } from "./xg5/xg5Fields";
 import { rm2AfterBattle } from "./rm/rm2Effects";
@@ -321,6 +324,15 @@ export function canPayCounterCategoryHold(
   if (categories.length === 0) return true;
   // RK-036 仮面ライダーライア【運命への反抗】: 同じカテゴリのカードを自軍コマンドゾーンから捨札にして使える（rules/rk/rk2UnitEffects.ts）。
   if (rk2RaiaDiscardCandidates(player, definitions, categories).length > 0) return true;
+  // リード（XG7-055 ※リードET 等）を持つ場のユニットも、カウンターを使うためのコマンドとしてホールドできる（R-KW-READ-01・
+  // atwiki/page-2250 A2）。単色なら、コマンドゾーンにそのカテゴリがなくてもよい（R-KW-CALL-01 補足）。以前はここで見ておらず、
+  // 場のリードしか払えるものがないと「ラッシュされたとき」の窓が開かなかった（atwiki/page-198 Q1）。
+  if (
+    collectCallLeadFieldUnits(player, definitions, "lead", categories).length > 0 &&
+    (categories.length === 1 || allCategoriesExistInCommandZone(player, definitions, categories))
+  ) {
+    return true;
+  }
   if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
   if (hasReleasedCommandForCategories(player, definitions, categories)) return true;
   return (
@@ -420,6 +432,21 @@ function discardHandCounter(
 }
 
 export function hasBattleCounterReactions(
+  state: GameState,
+  defenderId: PlayerId,
+  defenderInstanceId: string,
+  attackerPlayerId?: PlayerId,
+  attackerInstanceId?: string,
+): boolean {
+  if (hasBattleCounterReactionsFromHand(state, defenderId, defenderInstanceId, attackerPlayerId, attackerInstanceId)) return true;
+  // RS-325【マジチケット】: コマンドゾーンのカウンターも手札にあるものとして窓を開くかを見る（rules/magiTicketStage.ts。faq-rider-1 RK-036 Q1）。
+  return magiTicketCounterCandidates(state, defenderId).some((c) => {
+    const staged = stageMagiTicket(state, defenderId, c.instanceId, "counter_category");
+    return !!staged && hasBattleCounterReactionsFromHand(staged, defenderId, defenderInstanceId, attackerPlayerId, attackerInstanceId);
+  });
+}
+
+function hasBattleCounterReactionsFromHand(
   state: GameState,
   defenderId: PlayerId,
   defenderInstanceId: string,
@@ -614,7 +641,7 @@ export function applyMechanicNinjaCounter(
   counterInstanceId: string,
   recruitInstanceId: string | undefined,
   pending: PendingBattle,
-): { state: GameState; log: string; battleCancelled: boolean } {
+): { state: GameState; log: string; battleCancelled: boolean; paused?: boolean } {
   const discarded = discardHandCounter(state, defenderId, counterInstanceId);
   if (!discarded) {
     return {
@@ -625,6 +652,7 @@ export function applyMechanicNinjaCounter(
   }
   let nextState = discarded.state;
   let defender = nextState.players[defenderId];
+  let recruited = false;
   if (recruitInstanceId && collectMechanicNinjaRecruits(nextState, defenderId).includes(recruitInstanceId)) {
     const found = findInZone(defender, "command", recruitInstanceId);
     if (found) {
@@ -632,8 +660,35 @@ export function applyMechanicNinjaCounter(
       const recruit = { ...found.card };
       delete recruit.commandHeld;
       defender = { ...defender, command, rush: [...defender.rush, recruit] };
+      recruited = true;
     }
   }
+  nextState = { ...nextState, ...updatePlayer(nextState, defenderId, defender) };
+  if (recruited) {
+    // カードがコマンドゾーンを離れたとき、RS-238【プロジェットカノン】を処理の途中で発動でき、
+    // それを解決してから「その後、」の続きを実行する（grnrngr/faq-rider-1 RK-008 Q1・Q2）。
+    const resumeActive = nextState.activePlayer;
+    const refilled = afterCommandCardsLeft({ ...nextState, activePlayer: pending.attackerPlayerId }, defenderId, 1);
+    if (refilled.pendingEffectChoice) {
+      // 選択の間はバトルの反応ウィンドウを止めておき、続きを実行するときに戻す（core/applyAction.ts の後処理）。
+      return {
+        state: { ...refilled, pendingBattle: undefined, rk1MechanicNinjaResume: { defenderId, activePlayer: resumeActive, pendingBattle: pending } },
+        log: buildLogEntry(defenderId, "play_counter", "RK-008", nextState.definitions, "mechanic_ninja:recruit"),
+        battleCancelled: false,
+        paused: true,
+      };
+    }
+  }
+  return finishMechanicNinjaCounter(nextState, defenderId, pending);
+}
+
+/** RK-008: 「その後、アタックされたユニットを自軍コマンドゾーンにホールド状態で置く。このとき、バトルは行われない」。 */
+export function finishMechanicNinjaCounter(
+  state: GameState,
+  defenderId: PlayerId,
+  pending: PendingBattle,
+): { state: GameState; log: string; battleCancelled: boolean } {
+  let defender = state.players[defenderId];
   let battleCancelled = false;
   const attacked = findInZone(defender, "battle", pending.defenderInstanceId);
   if (attacked && defender.command.length < COMMAND_ZONE_MAX) {
@@ -645,7 +700,7 @@ export function applyMechanicNinjaCounter(
     };
     battleCancelled = true;
   }
-  nextState = { ...nextState, ...updatePlayer(nextState, defenderId, defender) };
+  const nextState = { ...state, ...updatePlayer(state, defenderId, defender) };
   return {
     state: nextState,
     log: buildLogEntry(
@@ -750,7 +805,9 @@ function rushCounterConditionMet(
   const snapshot = state.rushedBpSnapshot?.instanceId === rushedInstanceId ? state.rushedBpSnapshot.bp : undefined;
   if (isShippuNinjaCard(state, counterCardId)) return (snapshot ?? bp) <= 8000;
   if (isMusicBoxClockCard(state, counterCardId)) {
-    return isSmallUnit(state.definitions, rushed.card) && bp >= 4000;
+    // 宏のオルゴール時計も、ラッシュされた時点の BP で判定する（「ラッシュしたとき」の【覚醒】で BP6000 になった
+    // XG3-076 仮面ライダーアギトには使えない。atwiki/page-198 Q6）。
+    return isSmallUnit(state.definitions, rushed.card) && (snapshot ?? bp) >= 4000;
   }
   // XG7-027 雷撃ディスク「敵軍Sユニットがラッシュされたとき」（rules/xg7/xg7Effects.ts）。
   if (isXg7RushCounterCard(counterCardId)) return xg7RushCounterConditionMet(state, rushed.card, rushed.ownerId, rusherId, userId);
@@ -1116,6 +1173,20 @@ export function applyShippuNinjaCounter(
     };
   }
 
+  // ラッシュしたユニットの効果で BP0 以下になっていたユニットは、それが山札に戻されても撃破される
+  // （RS-210 ゴーマ16世【大地動転の玉】「はい、発動します。」grnrngr/faq-card-4 RS-210 Q1）。撃破は R-BP-02 のルールの撃破で行う。
+  const bpZero: string[] = [];
+  for (const pid of ["player1", "player2"] as const) {
+    for (const zone of ["battle", "rush"] as const) {
+      for (const c of discarded.state.players[pid][zone]) {
+        if (c.instanceId === pending.rushedInstanceId) continue;
+        const def = discarded.state.definitions[c.cardId];
+        if (!def || def.type !== "unit" || typeof def.bp !== "number" || def.bp <= 0) continue;
+        if (effectiveBp(discarded.state, pid, c) <= 0) bpZero.push(c.instanceId);
+      }
+    }
+  }
+
   const [, rush] = removeAt(owner.rush, found.index);
   const nextOwner = {
     ...owner,
@@ -1127,6 +1198,7 @@ export function applyShippuNinjaCounter(
     state: {
       ...discarded.state,
       ...updatePlayer(discarded.state, ownerId, nextOwner),
+      ...(bpZero.length > 0 ? { bpZeroRuleDestroyIds: [...(discarded.state.bpZeroRuleDestroyIds ?? []), ...bpZero] } : {}),
     },
     log: buildLogEntry(defenderId, "play_counter", discarded.cardId, state.definitions, "shippu_ninja"),
   };

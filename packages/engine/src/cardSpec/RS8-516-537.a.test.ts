@@ -45,6 +45,10 @@ import {
   sUnit,
   zoneOf,
   canStrike,
+  act,
+  passEntry,
+  endTurn,
+  toPhase,
 } from "./RS8-516-537.helpers";
 import type { GameState } from "../types/game";
 
@@ -472,9 +476,30 @@ describe("RS-521 スーパー戦隊魂", () => {
     expect(resolveAll(s).players.player1.hand).toHaveLength(4);
   });
 
-  it.todo(
-    "RS-521: バトルエリアに出たユニットのナンバーは、並び順確定前（コマンドアタッカーによるナンバー減少の前）の数字で見る（出典: atwiki/page-1154 Q1「5以下のユニットです」）— 本効果そのものが未実装（上の it.fails）で、RS-393 のライドとナンバー減少を組み合わせた検証ができない",
-  );
+  it("RS-521: バトルエリアに出たユニットのナンバーは、並び順確定前（コマンドアタッカーによるナンバー減少の前）の数字で見る（出典: atwiki/page-1154 Q1「5以下のユニットです」）", () => {
+    // 1番目にライドされたコマンドアタッカー（RS-393【アタッカーポッド】続く S ユニットのナンバー −3）。2番目にレッド CN5 を出す。
+    const RIDER = sUnit("SPEC-RIDER-ET", { category: "ET" });
+    const RED5 = sUnit("SPEC-RED5", { comboNumber: 5, features: ["レッド"] });
+    let s = st(
+      {
+        player1: {
+          operation: [inst("RS-521", "tm")],
+          rush: [inst("RS-393", "v"), inst("SPEC-RIDER-ET", "rd"), inst("SPEC-RED5", "r5")],
+          hand: [inst("SPEC-CN4", "h4"), inst("SPEC-CN2-M", "hm")],
+          deck: deckCards(3),
+        },
+        player2: { deck: deckCards(3, "e") },
+      },
+      [...EXTRA, RIDER, RED5],
+    );
+    s = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "SPEC-RIDER-ET:rd", vehicleInstanceId: "RS-393:v" });
+    s = act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: false });
+    s = enter(passEntry(s), "SPEC-RED5:r5");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-521");
+    s = pick(s, "SPEC-RED5:r5");
+    // 減少後の2ではなく本来の5で見るので、CN4 の S ユニットを選べる。
+    expect(choiceIds(s)).toEqual(["SPEC-CN4:h4"]);
+  });
 });
 
 // ===========================================================================
@@ -634,9 +659,31 @@ describe("RS-524 呉越同舟", () => {
     expect(anyActivation(field("battle", []))).toBe(false);
   });
 
-  it.todo(
-    "RS-524: 呉越同舟で ET を追加した L ユニットからゴーゴーショベルがコンビネーションした場合、追加カテゴリが失われてもコンビネーションは成立したまま（出典: grnrngr/faq-card-8 RS-524 Q1「はい」）— カテゴリ追加の起動が未実装（上の it.fails）",
-  );
+  it("RS-524: 呉越同舟で ET を追加した L ユニットからゴーゴーショベルがコンビネーションした場合、追加カテゴリが失われてもコンビネーションは成立したまま（出典: grnrngr/faq-card-8 RS-524 Q1「はい」）", () => {
+    const WB_L = sUnit("SPEC-WB-L", { category: "WB", size: "L", bp: 8000 });
+    let s = st(
+      {
+        phase: "battle",
+        turn: 3,
+        player1: { operation: [inst("RS-524", "gd")], hand: [inst("TST-OP", "h")], battle: [inst("SPEC-WB-L", "L")], rush: [inst("RS-172", "sh")], deck: deckCards(3) },
+        player2: { rush: [inst("TST-UNIT-0", "st")], power: powerCards(3, "e"), deck: deckCards(5, "e") },
+      },
+      [WB_L],
+    );
+    s = activateResident(s, "player1", "RS-524:gd");
+    s = pick(s, "TST-OP:h");
+    s = pick(s, "SPEC-WB-L:L");
+    s = pick(s, "ET");
+    s = enter(s, "RS-172:sh");
+    // 追加した ET で同カテゴリの L ユニットからのコンビネーションになり、【ショベルディフェンス】を発動できる。
+    expect(s.pendingEffectChoice?.effectId).toBe("shovel_defense");
+    s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
+    // 自軍ターンが終わって追加カテゴリが失われても、コンビネーションは成立したまま（敵軍ユニットはストライクできない）。
+    s = endTurn(passEntry(s));
+    s = toPhase(s, "player2", "battle");
+    s = enter(s, "TST-UNIT-0:st", "player2");
+    expect(canStrike(s, "TST-UNIT-0:st", "player2")).toBe(false);
+  });
   it("RS-524: 頼もしい相棒の太字部分を呉越同舟の太字部分に読み替えるとき、頼もしい相棒で見せた L ユニットのカードを見せるカードに選べる（出典: grnrngr/faq-card-8 RS-524 Q2「はい、できます」）", () => {
     let s = st({
       phase: "rush",

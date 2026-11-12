@@ -38,6 +38,8 @@ import {
   DEFS,
   bpOf,
   endTurn,
+  canEnter,
+  toPhase,
 } from "./RS6-390-410.helpers";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState } from "../types/game";
@@ -371,9 +373,30 @@ describe("RS-393 コマンドアタッカー", () => {
   });
 
   // atwiki 転載 Q2:「5以下のユニットです。…「RS- 393 コマンドアタッカー」によるナンバーの数字の減少は起こっていないとして扱います。」
-  it.todo(
-    "RS-393: Q&A — スーパー戦隊魂（RS-521）の効果でラッシュできるのは、出たユニットの本来のナンバー5以下（並び順確定前なのでアタッカーポッドの減少は未適用）— アタッカーポッドの減少自体が未実装のため差が観測できず、RS-521 側（範囲外）のテストで扱う（出典: atwiki/page-539 Q2）",
-  );
+  it("RS-393: Q&A — スーパー戦隊魂（RS-521）の効果でラッシュできるのは、出たユニットの本来のナンバー5以下（並び順確定前なのでアタッカーポッドの減少は未適用）（出典: atwiki/page-539 Q2）", () => {
+    const RED5 = sUnit("SPEC-RED5", { comboNumber: 5, features: ["レッド"] });
+    const CN4 = sUnit("SPEC-CN4", { comboNumber: 4 });
+    const CN6 = sUnit("SPEC-CN6", { comboNumber: 6 });
+    let s = st(
+      {
+        player1: {
+          operation: [inst("RS-521", "tm")],
+          rush: [inst("RS-393", "v"), inst("SPEC-RC", "r"), inst("SPEC-RED5", "n")],
+          hand: [inst("SPEC-CN4", "h4"), inst("SPEC-CN6", "h6")],
+          deck: deckCards(5),
+        },
+        player2: { deck: deckCards(5, "e") },
+      },
+      [...SPECS, RED5, CN4, CN6],
+    );
+    s = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "SPEC-RC:r", vehicleInstanceId: "RS-393:v" });
+    s = act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: false });
+    s = enter(passEntry(s), "SPEC-RED5:n");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-521");
+    s = pick(s, "SPEC-RED5:n");
+    // 減少後の2ではなく本来の5以下: CN4 は選べ、CN6 は選べない。
+    expect(choiceIds(s)).toEqual(["SPEC-CN4:h4"]);
+  });
 });
 
 // ===========================================================================
@@ -464,14 +487,57 @@ describe("RS-394 タイムロボα", () => {
   changeFormationTests("RS-394", "RS-395", "タイムロボβ", "atwiki/page-518");
 
   // grnrngr/faq-card-6 RS-394 Q1:「はい、捨札にならずに済むことになります。」
-  it.todo(
-    "RS-394: 公式Q&A — 魔法猫スモーキー（RS-326）で出したβを、がんがんじい（RK-026）で戻すときにαと置き換えれば、αはスモーキーの効果で出したユニットとして扱われず、ターン終了時に捨札にならない — RS-203 ラー・デウスの特徴追加・RS-326・RK-026 の連鎖が必要なため保留（置き換え自体はスタートフェイズの戻しで実装済み）（出典: grnrngr/faq-card-6 RS-394 Q1）",
-  );
+  /**
+   * ラー・デウス（RS-203）を特徴「仮面ライダー」のユニットを捨札にしてラッシュし、すべてのユニットに「仮面ライダー」を追加してから、
+   * バトルフェイズにタイムロボα（RS-394）・がんがんじい（RK-026）の順に出し、がんがんじいでαを戻してパワーのβ（RS-395）と置き換える。
+   */
+  function gangan(nekoDamashi: boolean): GameState {
+    const KR = sUnit("SPEC-KR", { name: "ライダー", features: ["仮面ライダー"], category: "DA" });
+    let s = st(
+      {
+        phase: "rush",
+        player1: {
+          hand: [inst("RS-203", "d")],
+          rush: [{ ...inst("RS-394", "a"), ...(nekoDamashi ? { tempDiscardAtTurnEnd: true } : {}) }, inst("RK-026", "g"), inst("SPEC-KR", "m")],
+          power: [...powerCards(5), inst("RS-395", "b")],
+          command: [released("TST-OP-DA", "da")],
+          deck: deckCards(5),
+        },
+        player2: { deck: deckCards(5, "e") },
+      },
+      [...SPECS, KR],
+    );
+    const rush = legal(s).find(
+      (a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RS-203:d" && (a as { zordMaterialInstanceIds?: string[] }).zordMaterialInstanceIds?.includes("SPEC-KR:m"),
+    );
+    expect(rush).toBeDefined();
+    s = resolveAll(act(s, rush!));
+    expect(zoneOf(s, "player1", "RS-203:d")).toBe("rush");
+    s = toPhase(s, "player1", "battle");
+    s = enter(s, "RS-394:a");
+    s = enter(passEntry(s), "RK-026:g");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-026");
+    s = pick(s, "RS-394:a");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-394");
+    s = pick(s, "RS-395:b");
+    expect(zoneOf(s, "player1", "RS-395:b")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-394:a")).toBe("power");
+    return s;
+  }
+
+  it("RS-394: 公式Q&A — 魔法猫スモーキー（RS-326）で出したユニットを、がんがんじい（RK-026）で戻すときに置き換えれば、置き換えて出たユニットはスモーキーの効果で出したユニットとして扱われず、ターン終了時に捨札にならない（出典: grnrngr/faq-card-6 RS-394 Q1）", () => {
+    // スモーキーの効果で出したこと（ターン終了時に捨札）を、出した状態の印として直接置く。
+    let s = gangan(true);
+    s = resolveAll(endTurn(passEntry(s)));
+    expect(zoneOf(s, "player1", "RS-395:b")).toBe("rush");
+  });
 
   // grnrngr/faq-card-6 RS-394 Q2:「…戻したユニットとしては扱わず、再びバトルエリアに出ることができます。」
-  it.todo(
-    "RS-394: 公式Q&A — がんがんじいで戻すときに置き換えた相手（β）は「戻したユニット」として扱わず、同じターンに再びバトルエリアに出られる — ラー・デウスで特徴「仮面ライダー」を追加する連鎖が必要なため保留（置き換え自体はスタートフェイズの戻しで実装済み）（出典: grnrngr/faq-card-6 RS-394 Q2）",
-  );
+  it("RS-394: 公式Q&A — がんがんじいで戻すときに置き換えた相手（β）は「戻したユニット」として扱わず、同じターンに再びバトルエリアに出られる（出典: grnrngr/faq-card-6 RS-394 Q2）", () => {
+    const s = passEntry(gangan(false));
+    expect(canEnter(s, "RS-395:b")).toBe(true);
+    expect(zoneOf(enter(s, "RS-395:b"), "player1", "RS-395:b")).toBe("battle");
+  });
 });
 
 describe("RS-395 タイムロボβ", () => {

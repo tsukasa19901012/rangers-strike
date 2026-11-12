@@ -177,7 +177,7 @@ import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { needsHoldExtraCommand, needsZordExtendedMaterial } from "../rules/zordExtended";
 import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
-import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
+import { magiTicketCounterCandidates, magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import { appendIcyRushActions, icyStateForAction } from "../rules/legend1/icyLastResort";
@@ -2108,12 +2108,41 @@ export function getLegalActions(input: GameState): GameAction[] {
   // XG3-024・XG3-025（ラッシュフェイズのかわりに発動した後）の絞り込み（rules/xg3/xg3Effects.ts）。
   const computed = filterXg3LegalActions(state, xg1ForcedAttackFilter(state, runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value));
   // 「山札の上から…をオモテにしてもよい」の発動の確認の間は、発動する・しないだけ（rules/revealGate.ts）。
-  const actions = revealGateActions(state, computed) ?? computed;
+  const actions = appendMagiTicketCounterActions(input, revealGateActions(state, computed) ?? computed);
   if (cache && engineSideEffectCount() === sideEffectsBefore) {
     for (const action of actions) deepFreeze(action);
     cache.set(input, [...actions]);
   }
   return actions;
+}
+
+let magiTicketCounterDepth = 0;
+
+/**
+ * RS-325【マジチケット】: 自軍コマンドゾーンのリリース状態のカウンターを、手札にあるものとして使える窓（敵軍ターンの反応・
+ * RS-255 巨大化爆弾の窓等）では use_magi_ticket（counter）を足す（faq-card-5 RS-325 Q3）。そのカードを手札に移し、
+ * ホールド状態の写しをコマンドゾーンに置いた状態（stageMagiTicket）で play_counter が合法かで決める。
+ */
+function appendMagiTicketCounterActions(state: GameState, actions: GameAction[]): GameAction[] {
+  if (magiTicketCounterDepth > 0 || state.winner) return actions;
+  let out = actions;
+  for (const pid of ["player1", "player2"] as const) {
+    for (const card of magiTicketCounterCandidates(state, pid)) {
+      const staged = stageMagiTicket(state, pid, card.instanceId, "counter_category");
+      if (!staged) continue;
+      magiTicketCounterDepth += 1;
+      let inner: GameAction[];
+      try {
+        inner = getLegalActions(staged);
+      } finally {
+        magiTicketCounterDepth -= 1;
+      }
+      if (!inner.some((a) => a.type === "play_counter" && a.playerId === pid && a.instanceId === card.instanceId && !a.substituteInstanceId)) continue;
+      if (out === actions) out = [...actions];
+      out.push({ type: "use_magi_ticket", playerId: pid, instanceId: card.instanceId, counter: true });
+    }
+  }
+  return out;
 }
 
 function getLegalActionsCore(state: GameState): GameAction[] {

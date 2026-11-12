@@ -18,7 +18,7 @@ import { effectiveBp, getDefinition, unitEffectiveCategories, unitSizeOf } from 
 import { opponent } from "../../core/helpers";
 import { hasNameOrAlias, sameCardName } from "../../core/cardNames";
 import { unitFeatures } from "../addedFeatures";
-import { hasFlag } from "./xg7Registry";
+import { flagsOf, hasFlag } from "./xg7Registry";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 type Defs = Pick<GameState, "definitions">;
@@ -344,5 +344,6 @@ export function xg7CanDeployFromPower(state: GameState, playerId: PlayerId, card
 export function xg7NextCardCostReduction(state: Pick<GameState, "activePlayer">, playerId: PlayerId): number {
   const full = state as Partial<GameState>;
   if (full.activePlayer !== playerId || full.turn === undefined) return 0;
-  return hasFlag(full as GameState, "xg7054_cost_minus3", playerId) ? 3 : 0;
+  // 2回発動していれば6少なくなる（重複する。atwiki/page-485 Q2・page-187 Q2）。
+  return flagsOf(full as GameState, "xg7054_cost_minus3", playerId).length * 3;
 }

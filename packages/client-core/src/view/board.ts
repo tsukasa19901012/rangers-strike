@@ -219,6 +219,13 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
       title: `モーフの順番: ${who(morph.rusherPlayerId)}が「${instanceName(state, morph.rushedInstanceId, index)}」をラッシュ。先にモーフする${who(morph.defenderPlayerId)}のユニットを選ぶ（${morph.morphUnitInstanceIds.length}体が反応）`,
     };
   }
+  // 止められないループ（engine rules/loopPriority.ts）: ターンプレイヤーが優先する効果を選ぶ。
+  if (choice?.kind === "simultaneous_order" && choice.effectId === "loop_priority") {
+    return {
+      actor: who(choice.playerId),
+      title: "ループの優先: 互いの条件を崩し合う効果のうち、優先して適用するものを選ぶ",
+    };
+  }
   if (choice?.kind === "simultaneous_order") {
     return {
       actor: who(choice.playerId),

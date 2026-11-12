@@ -12,6 +12,7 @@
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
 import {
+  act,
   attackedInEnemyTurn,
   attackUntilRegister,
   canMount,
@@ -31,6 +32,7 @@ import {
   heldUnit,
   inst,
   ncEnter,
+  passEntry,
   pick,
   powerCards,
   registerOffered,
@@ -97,9 +99,21 @@ describe("RM-057 レッドル", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-057");
   });
 
-  it.todo(
-    "RM-057: 公式Q&A — SX-003 仮面ライダーW・FJ で敵軍のレジストが無効になっていても、レジストを持つユニットは「レジストを持たない」ユニットとして選べない（出典: atwiki/page-2017 SX-003 Q1「いいえ、それはできません。無効になっているだけであり、テキスト自体を失っているわけではないからです」）。未照合の理由: Q の前提（自軍バトルエリアに SX-003 があるときにレッドルの NC1 が成立する）を公開 API の盤面で作れない（SX-003 がレッドルより前に並ぶとレッドルは1番目にならない。ナンバーに関係なく発動させる別のカードの組み合わせが必要）。実装はレジストの判定に無効を見ない（rules/rm/rm3Effects.ts）",
-  );
+  // atwiki/page-2017 SX-003 Q1「いいえ、それはできません。無効になっているだけであり、テキスト自体を失っているわけではないからです」
+  // SX-003 を1番目に出したうえで、4番目のタイムピンク（RS-222）【戦闘指揮】でレッドルの NC をナンバーに関係なく発動させる
+  // （敵軍コマンドを1つリリース）。SX-003 により敵軍バトルエリアの RM-055 のレジスト（効果名を持たないテキスト）は無効になっている。
+  it("RM-057: 公式Q&A — SX-003 仮面ライダーW・FJ で敵軍のレジストが無効になっていても、レジストを持つユニットは「レジストを持たない」ユニットとして選べない（出典: atwiki/page-2017 SX-003 Q1「いいえ、それはできません。無効になっているだけであり、テキスト自体を失っているわけではないからです」）", () => {
+    let s = battleBoard(
+      { rush: [inst("SX-003", "w"), inst("SPEC-ES", "f1"), inst("SPEC-ES", "f2"), inst("RS-222", "tp"), inst("RM-057", "rd")] },
+      { battle: [inst("SPEC-ES", "a"), inst("RM-055", "bb")], command: [{ ...inst("TST-OP", "eh"), commandHeld: true }] },
+    );
+    for (const id of ["SX-003:w", "SPEC-ES:f1", "SPEC-ES:f2", "RS-222:tp"]) s = passEntry(settle(enter(s, id)));
+    s = enter(s, "RM-057:rd");
+    expect(s.pendingEffectChoice?.effectId).toBe("battle_command");
+    s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
+    expectChoiceFrom(s, "player1", "RM-057");
+    expect(choiceIds(s)).toEqual(["SPEC-ES:a"]);
+  });
 });
 
 // ===========================================================================

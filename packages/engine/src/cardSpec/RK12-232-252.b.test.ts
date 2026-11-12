@@ -170,9 +170,27 @@ describe("RK-239 ウエイクアップ！", () => {
     expect(cardIn(s, "player1", "SPEC-C1:r")?.commandHeld ?? false).toBe(false);
   });
 
-  it.todo(
-    "RK-239: 公式Q&A — ホールド状態の XG4-075 アポロガイストを出してウエイクアップ！でリリースしても【生命の強奪】は使え、相手はリリース状態のアポロガイストをリリースできないので S ユニットを撃破するしかない（出典: atwiki/page-763 Q2）— XG4-075【生命の強奪】が未実装（本範囲外のカード。DSL がない）",
-  );
+  // atwiki/page-763 Q2「はい、【生命の強奪】の効果を使用することができます。また、リリース状態のユニットをリリースすることはできないので、相手は自分自身のユニットを1体選び撃破することを必ず選ばなければなりません。」
+  // 同時に誘発したウエイクアップ！と【生命の強奪】は、ターンプレイヤーが処理順を選ぶ（R-SIM-01。rules/triggerOrder.ts）。
+  it("RK-239: 公式Q&A — ホールド状態の XG4-075 アポロガイストを出してウエイクアップ！でリリースしても【生命の強奪】は使え、相手はリリース状態のアポロガイストをリリースできないので S ユニットを撃破するしかない（出典: atwiki/page-763 Q2）", () => {
+    let s = enter(
+      board({ operation: [resident("RK-239", "wu")], rush: [heldUnit("XG4-075", "ap"), inst("SPEC-C1", "r")] }, { battle: [inst("SPEC-C2", "e")] }),
+      "XG4-075:ap",
+    );
+    expect(s.pendingEffectChoice?.effectId).toBe("simultaneous_order");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    s = pick(s, "RK-239:wu");
+    expectChoiceFrom(s, "player1", "RK-239");
+    s = pick(s, "SPEC-C1:r");
+    expect(cardIn(s, "player1", "SPEC-C1:r")?.commandHeld).toBe(true);
+    expect(cardIn(s, "player1", "XG4-075:ap")?.commandHeld ?? false).toBe(false);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG4-075");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(choiceIds(s)).toEqual(["SPEC-C2:e"]);
+    s = resolveAll(act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "SPEC-C2:e" }));
+    expect(zoneOf(s, "player2", "SPEC-C2:e")).toBe("discard");
+  });
+
 });
 
 // ===========================================================================

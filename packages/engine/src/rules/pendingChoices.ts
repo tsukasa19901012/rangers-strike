@@ -1,3 +1,4 @@
+import { recordLoopPriority } from "./loopPriority";
 import { recordReveal } from "./revealNotice";
 import { deckLookChoice, skipDeckLook } from "./deckLook";
 import { closeWithDeckOrder, deckOrderChoice, resolveDeckOrderPick } from "./deckOrder";
@@ -148,7 +149,7 @@ import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, tryS
 import { isSet8DChoiceEffect, tryResolveSet8DChoice, trySkipSet8DChoice } from "./legend1/set8NamedEffectsD";
 import { isSet9AChoiceEffect, tryConfirmSet9AChoice, tryResolveSet9AChoice, trySkipSet9AChoice } from "./legend1/set9NamedEffectsA";
 import { isSet9DChoiceEffect, tryResolveSet9DChoice, trySkipSet9DChoice } from "./legend1/set9NamedEffectsD";
-import { isRk1ChoiceEffect, tryResolveRk1Choice, trySkipRk1Choice } from "./rk/rk1NamedEffects";
+import { isRk1ChoiceEffect, takeHybridRevealedToHand, tryResolveRk1Choice, trySkipRk1Choice } from "./rk/rk1NamedEffects";
 import { isRk2ChoiceEffect, tryResolveRk2Choice, trySkipRk2Choice } from "./rk/rk2UnitEffects";
 import { isRk3ChoiceEffect, tryConfirmRk3Choice, tryResolveRk3Choice, trySkipRk3Choice } from "./rk/rk3UnitEffects";
 import { isRk4ChoiceEffect, tryConfirmRk4Choice, tryResolveRk4Choice, trySkipRk4Choice } from "./rk/rk4UnitEffects";
@@ -173,6 +174,7 @@ import { isXg4ChoiceEffect, tryConfirmXg4Choice, tryResolveXg4Choice, trySkipXg4
 import { isPromoChoiceEffect, promoInterceptDeckReveal, tryConfirmPromoChoice, tryResolvePromoChoice, trySkipPromoChoice } from "./promo";
 import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryResolveRm2Choice, trySkipRm2Choice } from "./rm/rm2Effects";
 import { isXg5ChoiceEffect, tryConfirmXg5Choice, tryResolveXg5Choice, trySkipXg5Choice } from "./xg5/xg5Effects";
+import { openXg5WarpOnDeckReveal } from "./xg5/xg5eEffects";
 import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryResolveRm3Choice, trySkipRm3Choice } from "./rm/rm3Effects";
 import { isXg7ChoiceEffect, tryConfirmXg7Choice, tryResolveXg7Choice, trySkipXg7Choice } from "./xg7/xg7Effects";
 import { isXg3ChoiceEffect, tryCompleteXg3HoldChoice, tryConfirmXg3Choice, tryResolveXg3Choice, trySkipXg3Choice } from "./xg3/xg3Effects";
@@ -866,6 +868,9 @@ export function applySeabedDrawPlacement(
 
   const meta = pending.seabedDrawMeta ?? { drawCount: 1 };
   const from = placement === "bottom" ? "bottom" : "top";
+  // RK-010 ハイブリッドエネルギー: 下からひくのは「ドロー以外で山札の状態が変更される操作」なので、
+  // オモテにしたカードを手札に加えてから下のカードをひく（grnrngr/faq-rider-1 RK-010 Q3）。
+  if (from === "bottom") state = takeHybridRevealedToHand(state, playerId);
   const player = state.players[playerId];
   if (meta.toDiscard) {
     const taken = takeFromDeck(player, meta.drawCount, from);
@@ -1440,6 +1445,20 @@ export function startAkaRedSoulChoice(
     commandAction: "hold",
     optional: true,
   });
+}
+
+/**
+ * RS-029【勇気の魔法】でリリースした後、同じ進入で RS-421【ソウル降臨】をまだ使っていなければ、もう一度選べるようにする
+ * （同時に誘発した2つの効果を【勇気の魔法】から解決した扱い。grnrngr/faq-card-6 RS-421 Q「勇気の魔法の効果によって…
+ * リリースしたユニットカードをホールドすることで、そのＮＣの効果を発動させることはできますか？」「はい、できます」）。
+ */
+function reofferAkaRedSoulAfterCourage(state: GameState, playerId: PlayerId, enteredInstanceId: string): GameState {
+  if (state.pendingEffectChoice || state.activePlayer !== playerId) return state;
+  const unit = state.players[playerId].battle.find((c) => c.instanceId === enteredInstanceId);
+  if (!unit || unit.cardId !== "RS-421" || unit.activatedNcEffects?.includes("souru_no_strike")) return state;
+  return (
+    startAkaRedSoulChoice(state, { playerId, effectId: "souru", sourceCardId: "RS-421", sourceInstanceId: enteredInstanceId, phasePlayerId: playerId }) ?? state
+  );
 }
 
 /** RS-616 巨大ボール化。 */
@@ -4717,7 +4736,7 @@ export function applyEffectChoiceSelect(
           const enemyId = opponent(pending.playerId);
           // ルール: R-TGT-02 — プレイヤーが「選ぶ」ので、相手に選ばれないユニットは候補にならない。
           const enemyTargets = collectFieldUnitIds(nextState, enemyId, pending.maxBp ?? 5000).filter(
-            (id) => isSelectableByOpponentEffect(nextState, pending.playerId, id, pending.sourceCardId),
+            (id) => isSelectableByOpponentEffect(nextState, pending.playerId, id, pending.sourceCardId, undefined, { sourceNotUnit: pending.sourceNotUnit }),
           );
           if (enemyTargets.length === 0) {
             return finishChoice(nextState, pending, "own_only");
@@ -4958,7 +4977,11 @@ export function applyEffectChoiceSelect(
         return finishChoice(moved, pending, cardName(state.definitions, found.card.cardId));
       } else if (pending.commandAction === "release") {
         const released = applyCommandReleaseChoice(state, owner, instanceId);
-        return finishChoice(released, pending, cardName(state.definitions, found.card.cardId));
+        const out = finishChoice(released, pending, cardName(state.definitions, found.card.cardId));
+        if (pending.effectId === "courage_magic" && pending.courageEnteredInstanceId && "state" in out) {
+          return { ...out, state: reofferAkaRedSoulAfterCourage(out.state, pending.playerId, pending.courageEnteredInstanceId) };
+        }
+        return out;
       } else if (pending.commandAction === "sp_half") {
         const spHalf = applyCommandSpHalfChoice(state, owner, instanceId);
         return finishChoice(spHalf, pending, cardName(state.definitions, found.card.cardId));
@@ -5607,6 +5630,10 @@ export function applyEffectChoiceSelect(
         );
         return { state: next, log };
       }
+      if (pending.loopPriorityMeta) {
+        // ルール: R-SIM-02 — 止められないループは、ターンプレイヤーが優先する効果を選んで止める（rules/loopPriority.ts）。
+        return finishChoice(recordLoopPriority(state, pending.loopPriorityMeta.key, instanceId), pending, instanceId);
+      }
       if (pending.mutualDestructionMeta) {
         // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順はターンプレイヤーが決める。
         const cleared = clearChoice(state, pending.phasePlayerId);
@@ -5757,6 +5784,9 @@ export function applyEffectChoiceSelect(
       if (pending.effectId === "arino" && instanceId === "reveal_top") {
         const top = state.players[pending.playerId].deck[0];
         if (!top) return finishChoice(state, pending, "empty_deck");
+        // XG5-085【ワープ】: オモテになったグランナスカを対象にする前に出すか（rules/xg5/xg5eEffects.ts。見送れば分身魔球へ）。
+        const warp = openXg5WarpOnDeckReveal(state, pending, top.instanceId);
+        if (warp) return { state: warp };
         // SR-006【超忍法・分身魔球】: オモテにしたカードを効果の対象にする前に（rules/promo/promo2Effects.ts）。
         const promoIntercepted = promoInterceptDeckReveal(state, pending, top.instanceId);
         if (promoIntercepted) return { state: promoIntercepted };

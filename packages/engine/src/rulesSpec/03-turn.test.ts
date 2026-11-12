@@ -4,6 +4,7 @@
  * 現エンジンが満たさないものは it.fails（既知の不具合）として残す。
  */
 import { describe, expect, it } from "vitest";
+import { freezeProblems, watchedOpened } from "../testing/noFreeze";
 import { applyAction, createGame, getLegalActions } from "../index";
 import { withSyncedEffectStack } from "../rules/effectStack";
 import type { GameState } from "../types/game";
@@ -325,9 +326,28 @@ describe("R-TURN-04 「このターン」の期間", () => {
     );
   });
 
-  it.todo(
-    "R-TURN-04: バルパンサー（2nd）のパンサークローは発動前にホールド状態で置かれたユニットカードには及ばない（出典: grnrngr/faq-card-6 RS-363 Q1）— RS-363 のNC効果がエンジン未実装で組み立てられない",
-  );
+  it("R-TURN-04: バルパンサー（2nd）のパンサークローは発動前にホールド状態で置かれたユニットカードには及ばない（出典: grnrngr/faq-card-6 RS-363 Q1）", () => {
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      definitions: allDefs(),
+      player1: { rush: [inst("RS-363", "pan"), inst("RS-362", "shark")], deck: cards("d", 5) },
+      player2: { battle: [inst("RS-354", "c3")], command: [held("RS-354", "old")], deck: cards("e", 5) },
+    });
+    // 1番目にバルパンサー（NC）: 発動前から置かれていた RS-354:old には何も起こらない
+    state = settle(act(state, { type: "move_to_battle", playerId: "player1", instanceId: "RS-363:pan" }));
+    expect(state.pendingEffectChoice).toBeUndefined();
+    // 2番目にバルシャーク（NC）で RS-354:c3 を敵軍コマンドゾーンにホールド状態で置く
+    state = act(state, { type: "move_to_battle", playerId: "player1", instanceId: "RS-362:shark" });
+    state = act(state, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-354:c3" });
+    // パンサークローの対象は発動後に置かれた c3 だけ
+    expect(state.pendingEffectChoice?.sourceCardId).toBe("RS-363");
+    expect(state.pendingEffectChoice?.validInstanceIds).toEqual(["RS-354:c3"]);
+    state = act(state, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-354:c3" });
+    state = settle(state);
+    expect(state.players.player2.discard.map((c) => c.instanceId)).toContain("RS-354:c3");
+    expect(state.players.player2.command.map((c) => c.instanceId)).toContain("RS-354:old");
+  });
 });
 
 describe("R-TURN-05 ターンプレイヤー", () => {
@@ -359,9 +379,61 @@ describe("R-TURN-05 ターンプレイヤー", () => {
     }
   });
 
-  it.todo(
-    "R-TURN-05: 止められない無限ループ（RS-363 パンサークロー×RS-238 プロジェットカノン）ではターンプレイヤーが優先する効果を選ぶ（出典: grnrngr/faq-card-6 RS-363 Q2, atwiki/page-2167）— 両カードの効果がエンジン未実装",
-  );
+  // grnrngr/faq-card-6 RS-363 Q2「ターンプレイヤーが効果の優先順を選択して処理してください。…ターンプレイヤーが「RS-363 バルパンサー（2nd）」の
+  // NCで破壊した敵軍コマンドを、そのまま捨札にしたままにで処理を終えることになります。」・atwiki/page-2167。
+  // 【パンサークロー】の選択に、このユニット（パンサークローを優先してループを止める）が候補として加わる（rules/legend1/set6NamedEffects348.ts）。
+  const pantherLoop = () => {
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      definitions: allDefs(),
+      player1: { rush: [inst("RS-363", "pan"), inst("RS-362", "shark")], deck: cards("d", 5) },
+      player2: { battle: [inst("RS-354", "c3")], rush: [inst("RS-238", "fire")], deck: cards("e", 5) },
+    });
+    state = settle(act(state, { type: "move_to_battle", playerId: "player1", instanceId: "RS-363:pan" }));
+    state = act(state, { type: "move_to_battle", playerId: "player1", instanceId: "RS-362:shark" });
+    return act(state, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-354:c3" });
+  };
+
+  it("R-TURN-05: 同じカードで一度ループを回したら、次の【パンサークロー】ではカードを選べず、優先（バルパンサー）か見送りだけになる（同じ局面に戻り続けない。grnrngr/faq-card-6 RS-363 Q2）", () => {
+    let state = act(pantherLoop(), { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-354:c3" });
+    // 相手（player2）の【プロジェットカノン】で同じカードをコマンドゾーンに置き直す。
+    for (let i = 0; i < 4 && state.pendingEffectChoice?.playerId === "player2"; i++) {
+      const id = state.pendingEffectChoice.validInstanceIds.includes("RS-354:c3") ? "RS-354:c3" : state.pendingEffectChoice.validInstanceIds[0]!;
+      state = act(state, { type: "resolve_effect_choice", playerId: "player2", instanceId: id });
+    }
+    expect(state.players.player2.command.map((c) => c.instanceId)).toContain("RS-354:c3");
+    expect(state.pendingEffectChoice?.sourceCardId).toBe("RS-363");
+    expect(state.pendingEffectChoice?.validInstanceIds).toEqual(["RS-363:pan"]);
+    state = settle(act(state, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-363:pan" }));
+    expect(state.players.player2.discard.map((c) => c.instanceId)).toContain("RS-354:c3");
+  });
+
+  it("R-TURN-05: パンサークローとプロジェットカノンのループは、どの選び方でも止まる（フリーズ・ループの回帰: CPU Lv1/Lv3/Lv5・いつも最初の手・いつも最後の手で進めても止まらず、同じ局面に戻り続けない）", () => {
+    const claw = pantherLoop().pendingEffectChoice!.effectId;
+    expect(freezeProblems(pantherLoop, { watch: [claw], maxOpen: 3 })).toEqual([]);
+  });
+
+  it("R-TURN-05: 止められない無限ループ（RS-363 パンサークロー×RS-238 プロジェットカノン）ではターンプレイヤーが優先する効果を選ぶ（出典: grnrngr/faq-card-6 RS-363 Q2, atwiki/page-2167）", () => {
+    const state = pantherLoop();
+    expect(state.pendingEffectChoice?.sourceCardId).toBe("RS-363");
+    expect(state.pendingEffectChoice?.playerId).toBe("player1");
+    expect(state.pendingEffectChoice?.validInstanceIds).toEqual(["RS-354:c3", "RS-363:pan"]);
+    expect(legal(state).some((a) => a.type === "resolve_effect_choice" && a.instanceId === "RS-363:pan")).toBe(true);
+  });
+
+  it("R-TURN-05: パンサークローを優先すると、捨札にしたカードはそのまま捨札で、プロジェットカノンは発動しない（出典: grnrngr/faq-card-6 RS-363 Q2）", () => {
+    let state = act(pantherLoop(), { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-363:pan" });
+    expect(state.pendingEffectChoice).toBeUndefined();
+    state = settle(state);
+    expect(state.players.player2.discard.map((c) => c.instanceId)).toContain("RS-354:c3");
+    expect(state.players.player2.command.map((c) => c.instanceId)).not.toContain("RS-354:c3");
+  });
+
+  it("R-TURN-05: パンサークローを使わなければ（プロジェットカノン側を優先）、カードはコマンドゾーンに残る（出典: grnrngr/faq-card-6 RS-363 Q2）", () => {
+    const state = settle(act(pantherLoop(), { type: "skip_effect_choice", playerId: "player1" }));
+    expect(state.players.player2.command.map((c) => c.instanceId)).toContain("RS-354:c3");
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -1239,9 +1311,35 @@ describe("R-END-01 ターン終了", () => {
     expect(state.phase).toBe("start");
   });
 
-  it.todo(
-    "R-END-01: ゴウライビートルの撃破判定より先にエグゾスの留まり判定を行うよう、ターンプレイヤーが順番を選べる（出典: grnrngr/faq-card-5 RS-310 Q2）— 「ターンを終えるとき」の同時効果の順序選択がエンジンにない",
-  );
+  it("R-END-01: ゴウライビートルの撃破判定より先にエグゾスの留まり判定を行うよう、ターンプレイヤーが順番を選べる（出典: grnrngr/faq-card-5 RS-310 Q2）", () => {
+    const facedown = (prefix: string) => cards(prefix, 3, "TST-UNIT-0").map((c) => ({ ...c, faceDown: true }));
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      turn: 1,
+      definitions: allDefs(),
+      player1: { battle: [inst("RS-216", "x"), inst("RS-310", "beetle")], damage: 3, power: facedown("pd"), deck: cards("d", 3) },
+      player2: { damage: 3, power: facedown("ed"), deck: cards("e", 3) },
+    });
+    let ordered = false;
+    for (let i = 0; i < 10 && state.activePlayer === "player1"; i += 1) {
+      const p = state.pendingEffectChoice;
+      if (p && p.playerId === "player1") {
+        const exodus = p.validInstanceIds.find((id) => id.includes("RS-216"));
+        if (exodus && p.validInstanceIds.some((id) => id.includes("RS-310"))) ordered = true;
+        state = act(state, { type: "resolve_effect_choice", playerId: "player1", instanceId: exodus ?? p.validInstanceIds[0]! });
+        continue;
+      }
+      const end = legal(state).find((a) => a.type === "end_phase");
+      if (!end) break;
+      state = act(state, end);
+    }
+    // 順番の選択肢が開き、エグゾスを先にすれば（ゴウライビートルがまだ場にあるので）エグゾスは山札に戻らない
+    expect(ordered).toBe(true);
+    const zone = (id: string) => (["battle", "deck", "discard"] as const).find((z) => state.players.player1[z].some((c) => c.instanceId === id));
+    expect(zone("RS-310:beetle")).toBe("discard");
+    expect(zone("RS-216:x")).not.toBe("deck");
+  });
 
   it.todo(
     "R-END-01: 「自軍エンドフェイズ」の効果は「ターンを終えるとき」の効果より先に処理する（出典: atwiki/page-155）— 「自軍エンドフェイズ」効果（闇の戒律等）がエンジン未実装",

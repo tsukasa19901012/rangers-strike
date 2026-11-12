@@ -18,6 +18,7 @@ import {
   canSkip,
   canStartRush,
   canStrike,
+  cardIn,
   choiceIds,
   damageCards,
   deckCards,
@@ -168,7 +169,7 @@ describe("RS-264 ジェットデルタ", () => {
 
   // faq-card-5 RS-264 Q1「はい、そのとおりです。」（カードを置く処理は1枚ずつ合計2枚）
   it.todo(
-    "RS-264: 公式Q&A — 追加条件でパワーゾーンに置く処理は1枚ずつ合計2枚（出典: grnrngr/faq-card-5 RS-264 Q1）— 1枚ずつの配置を区別して観測できる公開 API（配置ごとの誘発）がないため",
+    "RS-264: 公式Q&A — 追加条件でパワーゾーンに置く処理は1枚ずつ合計2枚（出典: grnrngr/faq-card-5 RS-264 Q1）— パワーゾーンにカードが置かれるたびに発動する効果を持つカードがカタログになく（RS-352 等はパワーゾーンを離れるときだけ）、1枚ずつ置いたことを結果から区別できない（2枚とも置かれることは下のテストで照合済み）",
   );
   it("RS-264: 公式Q&A — 追加条件の2体は2枚ともパワーゾーンに置かれる（出典: grnrngr/faq-card-5 RS-264 Q1「１枚ずつ合計２枚のカードを置く」）", () => {
     const r = rushJet("RS-264", powerCards(4));
@@ -338,13 +339,51 @@ describe("RS-265 ジェットシーカー", () => {
   });
 
   // faq-card-5 RS-265 Q5 / RS-325 Q「はい、発動します。」
-  it.todo(
-    "RS-265: 公式Q&A — 相手が天空勇者マジシャイン（RS-325）でコマンドゾーンのオペレーションを使っても【ラウンドレーダー】は発動する（出典: grnrngr/faq-card-5 RS-265 Q5・RS-325 Q3）— 【ラウンドレーダー】自体が未実装で、マジチケット経由の使用を区別する観測点がないため",
-  );
+  it("RS-265: 公式Q&A — 相手が天空勇者マジシャイン（RS-325）でコマンドゾーンのオペレーションを使っても【ラウンドレーダー】は発動する（出典: grnrngr/faq-card-5 RS-265 Q5・RS-325 Q3）", () => {
+    let s = radarState();
+    s = {
+      ...s,
+      players: {
+        ...s.players,
+        player2: { ...s.players.player2, hand: [], rush: [inst("RS-325", "ms"), inst("TST-UNIT-0", "target")], command: [released("RS-011", "aura"), released("TST-OP-MA", "spare")] },
+      },
+    };
+    const use = legal(s).find((a) => {
+      const r = a as unknown as Record<string, unknown>;
+      return r.playerId === "player2" && !["move_to_battle", "battle", "strike", "end_phase"].includes(String(r.type)) && (r.sourceInstanceId === "RS-011:aura" || r.instanceId === "RS-011:aura");
+    });
+    expect(use).toBeDefined();
+    s = act(s, use!);
+    if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:target")) s = pick(s, "TST-UNIT-0:target");
+    expect(radarOpen(s)).toBe(true);
+    expect(s.pendingEffectChoice?.validInstanceIds).toContain("TST-P:q0");
+  });
   // atwiki/page-455 Q6「はい、無効になります。」（XG-034 = XG1-034 害気大臣キタネイダス）
-  it.todo(
-    "RS-265: Q&A — 害気大臣キタネイダスがあるバトルフェイズ中にジェットシーカーをラッシュしたとき、ラッシュ時の捨札効果は無効になる（出典: atwiki/page-455 Q6）— バトルフェイズ中にジェットシーカーを「ラッシュ」させる手段（それを許す効果）を公開 API で組み立てられない",
-  );
+  it("RS-265: Q&A — 害気大臣キタネイダスがあるバトルフェイズ中にジェットシーカーをラッシュしたとき、ラッシュ時の捨札効果は無効になる（出典: atwiki/page-455 Q6）", () => {
+    // 自軍バトルフェイズ、RS-197 ダイナギャリー【パーツキャリアー】でコマンドゾーンのジェットシーカーを（追加条件を満たして）ラッシュエリアに出す
+    const viaCarrier = (kita: boolean) => {
+      let s = st(
+        {
+          phase: "battle",
+          player1: { rush: [inst("RS-197", "dg"), ...(kita ? [inst("XG1-034", "kita")] : []), ...fillers(2)], command: [released("RS-265", "js")], power: powerCards(3), deck: deckCards(3) },
+          player2: { deck: deckCards(3, "e") },
+        },
+        SPECS,
+      );
+      s = enter(s, "RS-197:dg");
+      s = pick(s, "RS-265:js");
+      for (const id of ["TST-UNIT-0:fill0", "TST-UNIT-0:fill1"]) {
+        if (s.pendingEffectChoice?.effectId === "effect_rush_material") s = pick(s, id);
+      }
+      expect(zoneOf(s, "player1", "RS-265:js")).toBe("rush");
+      return s;
+    };
+    // 対照: キタネイダスがなければ、パワーゾーンのカードを1枚捨札にする選択が開く
+    expect(viaCarrier(false).pendingEffectChoice?.sourceCardId).toBe("RS-265");
+    const s = viaCarrier(true);
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-265");
+    expect(s.players.player1.power).toHaveLength(5);
+  });
 
   // atwiki/page-455 Q7「はい、無効になりますので、…パワーゾーンからカードを捨てることはできません。」
   it("RS-265: Q&A — 害気大臣キタネイダスとジェットシーカーが自軍エリアにある間、バトルフェイズ中は【ラウンドレーダー】が無効になる（出典: atwiki/page-455 Q7）", () => {
@@ -703,7 +742,19 @@ describe("RS-271 マグ", () => {
   });
 
   // faq-card-6 RS-350 Q「はい、できます。」
-  it.todo(
-    "RS-271: 公式Q&A — 暗黒の鎧（RS-350）に重ねたマグを【修復作業】で捨札にしたとき、ダメージとして置かれた暗黒の鎧をオモテにできる（出典: grnrngr/faq-card-6 RS-350）— 【修復作業】が未実装で発動させる手段がないため",
-  );
+  it("RS-271: 公式Q&A — 暗黒の鎧（RS-350）に重ねたマグを【修復作業】で捨札にしたとき、ダメージとして置かれた暗黒の鎧をオモテにできる（出典: grnrngr/faq-card-6 RS-350）", () => {
+    let s = st({
+      phase: "start",
+      player1: { rush: [{ ...inst("RS-271", "mg"), stackedCards: [inst("RS-350", "ar")] }], power: [...powerCards(2), ...damageCards(1)], command: [held("TST-OP", "c1")], deck: deckCards(5) },
+      player2: { deck: deckCards(5, "e") },
+    });
+    s = act(s, { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: "RS-271:mg" });
+    expect(zoneOf(s, "player1", "RS-271:mg")).toBe("discard");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-271");
+    expect(choiceIds(s)).toContain("RS-350:ar");
+    s = pick(s, "RS-350:ar");
+    expect(zoneOf(s, "player1", "RS-350:ar")).toBe("power");
+    expect(cardIn(s, "player1", "RS-350:ar")?.faceDown ?? false).toBe(false);
+    expect(s.players.player1.power.filter((c) => c.faceDown)).toHaveLength(1);
+  });
 });

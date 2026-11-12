@@ -136,9 +136,35 @@ describe("PR-002 ダイボウケン", () => {
     expect(r.state.players.player1.discard).toHaveLength(5);
   });
 
-  it.todo(
-    "PR-002: 公式Q&A（RS-117 と同じ本文）— スモーキーで出したダイボウケンを素材にスーパーダイボウケンをラッシュした場合、ターン終了時にスーパーダイボウケンは捨札にならない（出典: grnrngr/faq-card-2 RS-117 Q1）— RS-326 魔法猫スモーキーと RS-208 キリンレンジャー「時間返し」の組み合わせを公開 API で再現できない（RS2-097-122.c の RS-117 と同じ）",
-  );
+  // faq-card-2 RS-117 Q1「いいえ、捨札にはなりません。…捨札にする対象の「RS-117 ダイボウケン」はすでに捨札になっているため」
+  it("PR-002: 公式Q&A（RS-117 と同じ本文）— スモーキーで出したダイボウケンを素材にスーパーダイボウケンをラッシュした場合、ターン終了時にスーパーダイボウケンは捨札にならない（出典: grnrngr/faq-card-2 RS-117 Q1）", () => {
+    const four = ["RS-171", "RS-172", "RS-173", "RS-174"].map((id) => inst(id, "m"));
+    let s = st({
+      player1: {
+        battle: fillers(2),
+        rush: [inst("RS-326", "sm"), inst("RS-208", "k"), ...four],
+        hand: [inst("PR-002", "db"), inst("RS-236", "sdb")],
+        command: [released("TST-OP-ET", "et")],
+        power: powerCards(7),
+        deck: deckCards(5),
+      },
+      player2: { battle: [inst("TST-UNIT-0", "eb")], deck: deckCards(5, "e") },
+    });
+    // 3番目のスモーキー【猫だまし】で手札のダイボウケンをラッシュエリアに出す。
+    s = settle(pick(enter(s, "RS-326:sm"), "PR-002:db"));
+    expect(zoneOf(s, "player1", "PR-002:db")).toBe("rush");
+    // 4番目のキリンレンジャー【時間返し】でラッシュフェイズからやり直す（ダイボウケンは BP16000 なので残る）。
+    s = enter(passEntry(s), "RS-208:k");
+    s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
+    expect(s.phase).toBe("rush");
+    expect(zoneOf(s, "player1", "PR-002:db")).toBe("rush");
+    // ダイボウケン＋ドリル・ショベル・ミキサー・クレーンを捨札にしてスーパーダイボウケンをラッシュする。
+    const r = rushFromHand(s, "player1", "RS-236:sdb");
+    expect(r.ok, r.error).toBe(true);
+    expect(zoneOf(r.state, "player1", "PR-002:db")).toBe("discard");
+    s = endTurn(r.state);
+    expect(zoneOf(s, "player1", "RS-236:sdb")).toBe("rush");
+  });
 });
 
 // ===========================================================================

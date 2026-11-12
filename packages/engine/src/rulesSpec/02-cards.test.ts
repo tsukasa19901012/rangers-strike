@@ -8,8 +8,11 @@ import { applyAction } from "../core/applyAction";
 import { isCounterOperation, isPermanentOperation, isMediumUnit } from "../core/catalog";
 import { countAvailablePower } from "../core/power";
 import { countFieldFeatureUnits } from "../rules/rs/rsCatchallChoices";
+import { wasRushedThisTurn } from "../rules/turnModifiers";
+import type { GameState } from "../types/game";
 import {
   DEFS,
+  cardIn,
   deckCards,
   hasLegal,
   inst,
@@ -285,13 +288,34 @@ describe("R-CARD-04 ビークル", () => {
     expect(zoneOf(s, "player1", "SPEC-VEHICLE-S:v")).toBe("rush");
   });
 
-  it.todo(
-    "R-CARD-04: 敵軍ターン中にライドオフさせられたユニットはバトルエリアの一番右に置く（出典: atwiki/page-141 Q10/A10）— 敵軍ターン中の強制ライドオフを起こす公開アクションがなく状況を作れない",
-  );
+  /** 敵軍（player2）ターン: player2 が RK-039 メタルゲラス【突進】で player1 のバトルエリアのライド中ユニット r をライドオフさせる。 */
+  const forcedRideOff = (): GameState => {
+    let s = st({
+      activePlayer: "player2",
+      phase: "battle",
+      player1: { battle: [inst("RK-058", "v"), { ...inst("TST-UNIT-0", "r"), mountedOnInstanceId: "RK-058:v" }, inst("TST-UNIT-2", "x")], deck: deckCards(3) },
+      player2: { rush: [inst("RK-039", "mg")], command: [inst("TST-OP", "c")], deck: deckCards(3, "e") },
+    });
+    s = unwrap(applyAction(s, { type: "initiate_command_payment", playerId: "player2", kind: "battle_entry", sourceInstanceId: "RK-039:mg" }));
+    const pay = s.pendingCommandPayment;
+    if (pay) s = unwrap(applyAction(s, { type: "resolve_command_payment", playerId: "player2", commandInstanceIds: pay.validInstanceIds.slice(0, pay.totalNeeded) }));
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-039");
+    return unwrap(applyAction(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "TST-UNIT-0:r" }));
+  };
 
-  it.todo(
-    "R-CARD-04: 敵軍ターン中にライドオフしてバトルエリアに置き直したユニットはラッシュされたことにならない（出典: atwiki/page-141 Q11/A11）— 同上（強制ライドオフの公開アクションがない）",
-  );
+  // 「バトルエリアにユニットを出すときと同じように、バトルエリアの一番右に置きます」
+  it("R-CARD-04: 敵軍ターン中にライドオフさせられたユニットはバトルエリアの一番右に置く（出典: atwiki/page-141 Q10/A10）", () => {
+    const s = forcedRideOff();
+    expect(s.players.player1.battle.map((c) => c.instanceId)).toEqual(["RK-058:v", "TST-UNIT-2:x", "TST-UNIT-0:r"]);
+    expect(cardIn(s, "player1", "TST-UNIT-0:r")?.mountedOnInstanceId).toBeUndefined();
+  });
+
+  // 「いいえ、バトルエリアを離れたわけではありませんので、ラッシュされたことにはなりません」
+  it("R-CARD-04: 敵軍ターン中にライドオフしてバトルエリアに置き直したユニットはラッシュされたことにならない（出典: atwiki/page-141 Q11/A11）", () => {
+    const s = forcedRideOff();
+    expect(zoneOf(s, "player1", "TST-UNIT-0:r")).toBe("battle");
+    expect(wasRushedThisTurn(s.players.player1, "TST-UNIT-0:r")).toBe(false);
+  });
 });
 
 describe("R-SIZE-01 ユニットサイズ", () => {

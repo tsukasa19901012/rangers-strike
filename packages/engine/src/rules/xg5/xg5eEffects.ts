@@ -5,9 +5,12 @@
  */
 import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PendingStrike, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
+import { applyZorobTopDeckReveal } from "../batch06FieldEffects";
+import { recordReveal } from "../revealNotice";
+import { promoInterceptDeckReveal } from "../promo/promoRegistry";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { effectiveBp } from "../../core/catalog";
+import { cardName, effectiveBp } from "../../core/catalog";
 import { addTurnRestrictionModifier } from "../../core/scopedModifiers";
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import { applyDamageToPlayer } from "../damagePayment";
@@ -16,6 +19,7 @@ import { tryOpenEndTurnEffectsMenu } from "../legend3/endTurnEffects";
 import { patchPlayer } from "../playerPatches";
 import {
   close,
+  confirmChoice,
   ctxBase,
   destroyAll,
   fieldCards,
@@ -31,11 +35,13 @@ import {
   selectableEnemy,
   shuffleDeck,
   simpleSkip,
+  skipLog,
   stripForZone,
 } from "../rm/rm1Effects";
 import {
   AFTER_ACTION_HOOKS,
   ATTACKED_HOOKS,
+  CHOICE_CONFIRMERS,
   CHOICE_RESOLVERS,
   CHOICE_SKIPPERS,
   HAND_ACTIVATIONS,
@@ -488,6 +494,7 @@ CHOICE_RESOLVERS[SATAN] = (state, playerId, instanceId) => {
 // ---------------------------------------------------------------------------
 // 継続効果・ほかの処理の場所から発動する効果（DSL からは何もしない）。
 XG5_KEYWORDS["XG5-081::despair"] = noop("xg5_081:despair");
+// XG5-085【ワープ】は山札でオモテになったときに openXg5WarpOnDeckReveal（下）から開く。
 XG5_KEYWORDS["XG5-085::warp"] = noop("xg5_085:warp");
 XG5_KEYWORDS["XG5-087::big_bang_cannon"] = noop("xg5_087:big_bang_cannon");
 XG5_KEYWORDS["XG5-088::chikara_makase"] = noop("xg5_088:chikara_makase");
@@ -497,3 +504,67 @@ XG5_KEYWORDS["XG5-091::no_gender_attack"] = noop("xg5_091:no_gender_attack");
 XG5_KEYWORDS["XG5-091::no_face_up_power"] = noop("xg5_091:no_face_up_power");
 XG5_KEYWORDS["XG5-094::kekki"] = noop("xg5_094:kekki");
 XG5_KEYWORDS["XG5-096::gill_flute"] = noop("xg5_096:gill_flute");
+
+// ---------------------------------------------------------------------------
+// XG5-085 超時空戦闘母艦グランナスカ【ワープ】
+// 「これが自軍山札にある間、このカードがオモテになったとき、これを効果の対象にする前に自軍ラッシュエリアに出してもよい。
+//  そうしたとき、自軍山札の上から1枚をオモテにして、かわりに効果の対象にする。」（atwiki/page-2220）。
+// 山札の上をオモテにして効果の対象にする処理のうち、割り込みの口がある RS-367【軍隊アリの遺伝子】（rules/pendingChoices.ts）から呼ぶ。
+// SR-006【超忍法・分身魔球】も同じ時点に割り込むが、【ワープ】を発動するとそのタイミングは過ぎる（atwiki/page-2220 Q1・page-811 Q1）。
+// そのため【ワープ】の確認を先に開き、見送ったときだけ分身魔球（promoInterceptDeckReveal）へ進む。
+// 【ワープ】で次にオモテにしたカードには、分身魔球も【ワープ】も割り込ませずにそのまま元の効果の対象にする。
+
+const WARP = "xg5_085_warp";
+
+/** 山札の上の XG5-085 がオモテになったとき【ワープ】の確認を開く。対象外なら null。 */
+export function openXg5WarpOnDeckReveal(state: GameState, pending: PendingEffectChoice, topInstanceId: string): GameState | null {
+  if (pending.effectId !== "arino") return null;
+  const top = state.players[pending.playerId].deck[0];
+  if (!top || top.instanceId !== topInstanceId || !isSameCardIdentity(top.cardId, "XG5-085")) return null;
+  const choice: PendingEffectChoice = {
+    ...confirmChoice({ playerId: pending.playerId, phasePlayerId: pending.phasePlayerId, sourceInstanceId: top.instanceId }, "XG5-085", WARP),
+    xg5Meta: { target: top.instanceId, step: pending.sourceCardId },
+  };
+  return openNext(close(state, pending), pending, choice);
+}
+
+/** 元の効果（RS-367）がオモテのカードを対象にする。 */
+function warpApplyReveal(state: GameState, pending: PendingEffectChoice, top: CardInstance): GameState {
+  const applied = applyZorobTopDeckReveal(state, pending.playerId, top.instanceId);
+  const source = pending.xg5Meta?.step ?? "RS-367";
+  return recordReveal(applied, {
+    playerId: pending.playerId,
+    ownerId: pending.playerId,
+    sourceCardId: source,
+    effectLabel: `${cardName(state.definitions, source)}の効果`,
+    from: "deck_top",
+    cards: [{ instanceId: top.instanceId, cardId: top.cardId, destination: applied.players[pending.playerId].rush.some((c) => c.instanceId === top.instanceId) ? "rush" : "discard" }],
+  });
+}
+
+CHOICE_RESOLVERS[WARP] = () => ({ error: "invalid_target" });
+CHOICE_CONFIRMERS[WARP] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  const id = pending.xg5Meta?.target ?? "";
+  let next = close(state, pending);
+  const self = next.players[playerId].deck[0];
+  if (!self || self.instanceId !== id) return { state: proceed(next, pending), log: logFor(state, playerId, "XG5-085", `${WARP}:gone`) };
+  next = patchPlayer(next, playerId, (p) => ({ ...p, deck: p.deck.slice(1), rush: [...p.rush, { ...self, faceDown: false }] }));
+  const rushed = finalizeEffectRush(next, playerId, [id], pending.phasePlayerId);
+  next = { ...rushed.state, log: [...rushed.state.log, ...rushed.logs] };
+  // 自軍山札の上から1枚をオモテにして、かわりに効果の対象にする（山札が0枚なら対象はない）。
+  const nextTop = next.players[playerId].deck[0];
+  if (nextTop) next = warpApplyReveal(next, pending, nextTop);
+  return { state: proceed(next, pending), log: logFor(state, playerId, "XG5-085", `${WARP}:${id}`) };
+};
+CHOICE_SKIPPERS[WARP] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  const next = close(state, pending);
+  const log = skipLog(state, playerId, "XG5-085", WARP);
+  const top = next.players[playerId].deck[0];
+  if (!top || top.instanceId !== pending.xg5Meta?.target) return { state: proceed(next, pending), log };
+  // 【ワープ】を発動しなければ、同じ時点の SR-006【超忍法・分身魔球】を選べる（atwiki/page-811 Q1「【ワープ】の効果を発動する前に適用してください」）。
+  const intercepted = promoInterceptDeckReveal(next, { ...pending, effectId: "arino", sourceCardId: pending.xg5Meta?.step ?? "RS-367" }, top.instanceId);
+  if (intercepted) return { state: intercepted, log };
+  return { state: proceed(warpApplyReveal(next, pending, top), pending), log };
+};

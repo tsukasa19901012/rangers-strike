@@ -66,3 +66,19 @@ export function findBattleUnit(
 ): CardInstance | undefined {
   return player.battle.find((c) => c.instanceId === instanceId);
 }
+
+/**
+ * 効果でライドオフさせたユニット（ids）のうち、持ち主の敵軍ターン中にバトルエリアにあったものを、バトルエリアの一番右に置き直す。
+ * 「敵軍ターン中に…ライドオフさせられるとき…バトルエリアにユニットを出すときと同じように、バトルエリアの一番右に置きます」
+ * （atwiki/page-141 Q10/A10）。置き直してもバトルエリアを離れたわけではないのでラッシュされたことにはならない（同 Q11/A11）。
+ */
+export function moveRiddenOffToRight(state: GameState, ownerId: PlayerId, ids: readonly string[]): GameState {
+  if (state.activePlayer === ownerId) return state;
+  const set = new Set(ids);
+  const battle = state.players[ownerId].battle;
+  if (!battle.some((c) => set.has(c.instanceId))) return state;
+  return patchPlayer(state, ownerId, (p) => ({
+    ...p,
+    battle: [...p.battle.filter((c) => !set.has(c.instanceId)), ...p.battle.filter((c) => set.has(c.instanceId))],
+  }));
+}

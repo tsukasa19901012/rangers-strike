@@ -11,6 +11,7 @@
  *   core/legalActions.ts・core/applyAction.ts の activate_field_unit_ability）。
  * 継続効果（XG6-004 のブラスト・XG6-012・XG6-013・XG6-020・XG6-021 の能力）は rules/xg6/xg6Fields.ts。
  */
+import { getLegend3JointREffect, resolveLegend3JointComboR } from "../legend3/jointComboEffects";
 import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity, matchesJointLPartnerById, matchesJointRPartnerById } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingStrike, PlayerId, ZoneName } from "../../types/game";
@@ -410,6 +411,18 @@ CHOICE_RESOLVERS[MULTI_COMBINE] = (state, playerId, instanceId) => {
   const valid = side === "l" ? matchesJointLPartnerById(shown.cardId, shownDef, selfDef) : matchesJointRPartnerById(shown.cardId, shownDef, selfDef);
   if (!valid) return { state: proceed(next, pending), log: `${log}:not_valid` };
   next = addXg6Mark(next, { key: "XG6-003", playerId, instanceId: shown.instanceId, ref: self.instanceId });
+  // 第3弾の R の JC（RS-168【爆竜必殺クロスサンダー】等）は DSL ではなく legend3 の処理で発動する（rules/jointComboProcedure.ts と同じ。
+  // atwiki/page-2355 Q5「手札から見せた RS-168 の効果」）。
+  const legend3R = side === "r" ? getLegend3JointREffect(shown.cardId) : undefined;
+  if (legend3R) {
+    const r = resolveLegend3JointComboR(next, playerId, shown.cardId, legend3R, pending.phasePlayerId);
+    next = r.logs.length > 0 ? { ...r.state, log: [...r.state.log, ...r.logs] } : r.state;
+    // 手札から見せたカードの効果はユニットの効果ではない（ブレイカー持ちも選べる。atwiki/page-2355 Q5）。
+    const opened = next.pendingEffectChoice;
+    if (opened && opened !== state.pendingEffectChoice && opened.sourceCardId === shown.cardId) {
+      next = { ...next, pendingEffectChoice: { ...opened, sourceNotUnit: true } };
+    }
+  }
   const fx = tryResolveDslTriggeredEffects({
     state: next,
     cardId: shown.cardId,

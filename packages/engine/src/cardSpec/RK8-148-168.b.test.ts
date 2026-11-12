@@ -10,7 +10,7 @@
  * レアリティは atwiki の「ノーマル／ノーマルレア／レア／スーパーレア」を N／NR／R／SR として照合する。
  *
  * 既存の照合で済んでいるもの（重複させない）:
- *  - RK-161 公式Q&A Q3（巨大化爆弾・暗黒の鎧を重ねたショッカーライダーを含んでも SP1）— cardSpec/RS5-243-263.b.test.ts RS-255 の it.todo（巨大化爆弾の手順がエンジンにない）
+ *  - RK-161 公式Q&A Q3（巨大化爆弾・暗黒の鎧を重ねたショッカーライダーを含んでも SP1）— cardSpec/RS5-243-263.b.test.ts RS-255 で照合（巨大化爆弾）
  *  - RK-157 ※「バトルエリアに出たとき撃破される」— rules/imaginDestroyOnEnter.test.ts
  */
 import { describe, expect, it } from "vitest";
@@ -43,6 +43,7 @@ import {
   faceUp,
   heldUnit,
   inst,
+  legal,
   lastBattleBps,
   p1Battle,
   pick,
@@ -97,8 +98,9 @@ const WB5 = sUnit("SPEC-WB5", { category: "WB", bp: 4000, powerCost: 5 });
 const DA4 = sUnit("SPEC-DA4", { category: "DA", bp: 4000, powerCost: 4 });
 const MORPH = sUnit("SPEC-MORPH", { category: "WB", bp: 2000, powerCost: 1, features: ["仮面ライダー", "男"], text: KW_MORPH } as never);
 const MORPH_T = sUnit("SPEC-MORPH-T", { category: "WB", bp: 3000, powerCost: 5, features: ["仮面ライダー", "男"] });
+const MORPH_T6 = sUnit("SPEC-MORPH-T6", { category: "WB", bp: 3000, powerCost: 6, features: ["仮面ライダー", "男"] });
 const RES = { id: "SPEC-RES", name: "SPEC-RES", type: "operation", category: "OT", rarity: "N", expansion: "card-spec", powerCost: 0 } as never;
-const EXTRA = [PLAIN_VEHICLE, RC, VEH_S, VEH_M, PLAIN_M, ATK8000, D6000, IMAGIN, MINUS_S, MINUS_M, PLUS_S, ES, E5, E5M, E5C, DA5, DA5C, WB5, DA4, MORPH, MORPH_T, RES];
+const EXTRA = [PLAIN_VEHICLE, RC, VEH_S, VEH_M, PLAIN_M, ATK8000, D6000, IMAGIN, MINUS_S, MINUS_M, PLUS_S, ES, E5, E5M, E5C, DA5, DA5C, WB5, DA4, MORPH, MORPH_T, MORPH_T6, RES];
 
 const board = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
   p1Battle(p1, p2, EXTRA);
@@ -482,9 +484,28 @@ describe("RK-160 シザーズジャガー", () => {
 
   // grnrngr/faq-rider-2 RK-160 Q3・Q4（自軍 RK-275 ゴ・ガドル・バ【ザバギンバシグラ】・RK-276 ズ・バヅー・バ【キョクギンジャンママ】で敵軍ラッシュエリアに
   // 出た、追加条件を持たない S ユニットに対しても発動できる）は RK14-274-294.a の RK-275・RK-276 で照合する。
-  it.todo(
-    "RK-160: 公式Q&A — 【ナノロボット散布実験】で XG2-060 スカラベアンデッドを出すとき、自軍ラッシュフェイズ中ならゲームから除外して【スペード10―タイム】を発動できる（出典: atwiki/page-703 Q5）— XG2-060 は本範囲外のカードで、効果は敵軍のラッシュ（敵軍ラッシュフェイズ）で発動するため自軍ラッシュフェイズ中の状況を組むには RK-275 等（照合済み）で相手のカードを出す必要があり、XG2-060 自体が本範囲外",
-  );
+  // atwiki/page-703 Q5「はい、自軍ラッシュフェイズ中であればできます。」
+  it("RK-160: 公式Q&A — 【ナノロボット散布実験】で XG2-060 スカラベアンデッドを出すとき、自軍ラッシュフェイズ中ならゲームから除外して【スペード10―タイム】を発動できる（出典: atwiki/page-703 Q5）", () => {
+    // 自軍ラッシュフェイズ中、自軍のラッシュに対して相手がモーフで必要パワー6の S ユニットを敵軍ラッシュエリアに出す（上の Q2 と同じ手順）
+    let s = rushPhase(
+      { rush: [inst("RK-160", "sj")], hand: [inst("SPEC-ES", "mine"), inst("XG2-060", "sc")], command: [released("TST-OP", "w"), ...releasedCat("DA", 1)], power: powerCards(5) },
+      { rush: [inst("SPEC-MORPH", "m")], command: [inst("SPEC-MORPH-T6", "t")] },
+    );
+    const r = rushFromHand(s, "player1", "SPEC-ES:mine");
+    expect(r.ok, r.error).toBe(true);
+    s = settle(pick(r.state, "SPEC-MORPH-T6:t"));
+    expectChoiceFrom(s, "player1", "RK-160");
+    expect(choiceIds(s)).toEqual(["XG2-060:sc"]);
+    s = settle(pick(s, "XG2-060:sc"));
+    expectChoiceFrom(s, "player1", "XG2-060");
+    s = resolveAll(confirm(s));
+    expect((s.players.player1.exile ?? []).map((c) => c.instanceId)).toContain("XG2-060:sc");
+    expect(zoneOf(s, "player2", "SPEC-MORPH-T6:t")).toBe("discard");
+    expect(s.phase).toBe("rush");
+    const end = legal(s).find((a) => a.type === "end_phase" && a.playerId === "player1");
+    expect(end).toBeDefined();
+    expect(act(s, end!).phase).not.toBe("battle");
+  });
   it("RK-160: 公式Q&A — XP-017 仮面ライダーディケイド激情態（※手札からしかラッシュできない）も【ナノロボット散布実験】で出せる（出典: atwiki/page-703 Q6・atwiki/page-1981 Q1）", () => {
     const E4 = sUnit("SPEC-E4X", { category: "WB", bp: 1000, powerCost: 4 });
     const s0 = st(
