@@ -22,7 +22,7 @@ import type {
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { namesWithAliases } from "../../core/cardNames";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import { buildLogEntry } from "../../log/formatLog";
@@ -852,7 +852,7 @@ export function openLoyaltyToEmperor(
     sourceCardId: "RS-450",
     sourceInstanceId: selfId,
     kind: "select_unit",
-    phasePlayerId: state.pendingEffectChoice?.phasePlayerId ?? state.activePlayer,
+    phasePlayerId: turnPlayerOf(state),
     validInstanceIds: [enemyId],
     selectCount: 1,
     optional: true,
@@ -1103,7 +1103,7 @@ export function openPowerUnitToHandAfterPlace(state: GameState, playerId: Player
     sourceCardId: operation.cardId,
     sourceInstanceId: operation.instanceId,
     kind: "select_power",
-    phasePlayerId: state.activePlayer,
+    phasePlayerId: turnPlayerOf(state),
     validInstanceIds: ids,
     selectCount: 1,
     optional: true,
@@ -1485,7 +1485,7 @@ function openAreLeaveDestroy(state: GameState, playerId: PlayerId, op: CardInsta
     sourceCardId: op.cardId,
     sourceInstanceId: op.instanceId,
     kind: "select_unit",
-    phasePlayerId: state.pendingEffectChoice?.phasePlayerId ?? state.activePlayer,
+    phasePlayerId: turnPlayerOf(state),
     validInstanceIds: ids,
     selectCount: 1,
     optional: false,

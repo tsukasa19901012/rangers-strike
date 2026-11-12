@@ -17,7 +17,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { shuffleCards } from "../../core/deckShuffle";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -585,7 +585,7 @@ export function rk16OnBattleDestroy(
   const defeated = state.players[defeatedOwnerId].discard.find((c) => c.instanceId === defeatedInstanceId);
   if (!defeated || unitSizeOf(state.definitions, defeated) !== "S") return state;
   return openOrQueue(state, {
-    ...confirmChoice({ playerId: winnerId, phasePlayerId: state.activePlayer, sourceInstanceId: vehicle.instanceId }, "RK-324", BOOST_EFFECT_ID),
+    ...confirmChoice({ playerId: winnerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: vehicle.instanceId }, "RK-324", BOOST_EFFECT_ID),
     rk16Meta: { picked: defeatedInstanceId, owner: defeatedOwnerId },
   });
 }

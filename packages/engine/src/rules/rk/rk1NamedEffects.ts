@@ -22,7 +22,7 @@ import type {
 } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, cardName, effectiveBp, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
@@ -487,7 +487,7 @@ export function applyRk1DestroyerDamage(
     (p) => p.instanceId === killerInstanceId,
   ).length;
   if (copies === 0 || !spNotBlank(state, destroyedCardId)) return { state, logs: [] };
-  const next = applyDamageToPlayer(state, opponent(killerOwner), copies, { kind: "none", activePlayer: state.activePlayer });
+  const next = applyDamageToPlayer(state, opponent(killerOwner), copies, { kind: "none", activePlayer: turnPlayerOf(state) });
   return { state: next, logs: [buildLogEntry(killerOwner, "named_effect", "RK-005", state.definitions, `dynamo_damage_${copies}`)] };
 }
 

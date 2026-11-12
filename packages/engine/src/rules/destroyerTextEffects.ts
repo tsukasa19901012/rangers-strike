@@ -9,7 +9,7 @@
  */
 import type { GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
-import { opponent } from "../core/helpers";
+import { opponent, turnPlayerOf } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
 
@@ -32,7 +32,7 @@ export function resolveDestroyerDamageByText(
   const amount = Number(m[4]);
   const next = applyDamageToPlayer(state, opponent(winnerOwner), amount, {
     kind: "none",
-    activePlayer: state.activePlayer,
+    activePlayer: turnPlayerOf(state),
   });
   return {
     state: next,

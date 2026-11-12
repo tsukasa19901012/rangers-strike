@@ -19,7 +19,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, cardName, effectiveBp, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { shuffleCards } from "../../core/deckShuffle";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -1164,7 +1164,7 @@ export function applyRm1AfterAction(before: GameState, after: GameState): GameSt
   while (queue.length > 0) {
     const trigger = queue.shift()!;
     const existing = next.pendingEffectChoice;
-    const phasePlayerId = existing?.phasePlayerId ?? next.activePlayer;
+    const phasePlayerId = existing?.phasePlayerId ?? turnPlayerOf(next);
     const choice = trophyChoice(next, trigger.playerId, phasePlayerId, trigger.sourceInstanceId, trigger.unitCardId);
     if (!choice) continue;
     next = existing ? { ...next, pendingEffectChoice: { ...choice, resumeChoice: existing }, activePlayer: choice.playerId } : openEffectChoice(next, choice);

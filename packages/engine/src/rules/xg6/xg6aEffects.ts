@@ -16,7 +16,7 @@ import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity, matchesJointLPartnerById, matchesJointRPartnerById } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingStrike, PlayerId, ZoneName } from "../../types/game";
 import { cardCategories, effectiveBp, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { countAvailablePower } from "../../core/power";
 import { addTurnRuleModifier } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -836,7 +836,7 @@ function finishTitanNova(state: GameState, pending: PendingEffectChoice, ids: st
       const from = acc.players[playerId].command.some((c) => c.instanceId === id) ? "command" : "power";
       return moveZoneCard(acc, playerId, from, id, "discard");
     }, s);
-    if (ids.length > 0) next = applyDamageToPlayer(next, opponent(playerId), ids.length, { kind: "none", activePlayer: next.activePlayer });
+    if (ids.length > 0) next = applyDamageToPlayer(next, opponent(playerId), ids.length, { kind: "none", activePlayer: turnPlayerOf(next) });
     return next;
   });
 }

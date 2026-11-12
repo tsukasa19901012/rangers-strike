@@ -6,7 +6,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { addNextTurnRuleModifier, addTurnRestrictionModifier, addTurnRuleModifier } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { cardHasGrantKeyword } from "../../dsl/promotedKeywordBridge";
@@ -180,7 +180,7 @@ xg2Hook("comboEnter", (state, playerId, card, battleBeforeEnter) => {
   if (battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).length + 1 !== 2) return state;
   // ログには RC ではなくナンバー「2」の NC で発動したことを残す（ライドオフしていないのに発動して見えないように）。
   const reason = buildLogEntry(playerId, "xg2_042_number_two", card.cardId, state.definitions);
-  const out = tryResolveDslTriggeredEffects({ state, cardId: card.cardId, instanceId: card.instanceId, playerId, phasePlayerId: state.activePlayer, triggerType: "riding_combo", logAction: "number_combo" });
+  const out = tryResolveDslTriggeredEffects({ state, cardId: card.cardId, instanceId: card.instanceId, playerId, phasePlayerId: turnPlayerOf(state), triggerType: "riding_combo", logAction: "number_combo" });
   return { ...out.state, log: [...out.state.log, reason, ...out.logs] };
 });
 

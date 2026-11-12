@@ -61,7 +61,7 @@ import {
 } from "./legend3/battleEffects";
 import { legend2EffectiveSp } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
-import { findBattleAttacker, findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { findBattleAttacker, findInZone, opponent, removeAt, updatePlayer, turnPlayerOf } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
 import { patchPlayer } from "./playerPatches";
@@ -629,7 +629,7 @@ export function resolveSkyMagicSlash(
       effectId: "sky_magic_slash",
       sourceCardId: cardId,
       sourceInstanceId,
-      phasePlayerId: state.activePlayer,
+      phasePlayerId: turnPlayerOf(state),
     }),
     logs: [
       buildLogEntry(playerId, "enter_battle", cardId, state.definitions, "choice:sky_magic_slash"),
@@ -793,7 +793,7 @@ export function resolveFocusedBreakthroughDamage(
   const enemyId = opponent(strikerPlayerId);
   const nextState = applyDamageToPlayer(state, enemyId, 1, {
     kind: "none",
-    activePlayer: state.activePlayer,
+    activePlayer: turnPlayerOf(state),
   });
   return {
     state: nextState,
@@ -924,7 +924,7 @@ export function resolveBlackCondorDestroyDamage(
   const enemyId = opponent(strikerPlayerId);
   const nextState = applyDamageToPlayer(state, enemyId, 1, {
     kind: "none",
-    activePlayer: state.activePlayer,
+    activePlayer: turnPlayerOf(state),
   });
   return {
     state: nextState,
@@ -948,7 +948,7 @@ export function resolveAbaRedDestroyDamage(
   if (!hasDestroySelfDamageNote(cardId)) return { state, logs: [] };
   const nextState = applyDamageToPlayer(state, ownerId, 1, {
     kind: "none",
-    activePlayer: state.activePlayer,
+    activePlayer: turnPlayerOf(state),
   });
   return {
     state: nextState,
@@ -1100,7 +1100,7 @@ export function tryStartBlowKnuckle(
     effectId: "blow_knuckle",
     sourceCardId,
     sourceInstanceId,
-    phasePlayerId: state.activePlayer,
+    phasePlayerId: turnPlayerOf(state),
   });
 }
 

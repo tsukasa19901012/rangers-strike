@@ -14,7 +14,7 @@
  */
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 import { effectiveBp, unitSizeOf } from "../../core/catalog";
-import { drawOne, opponent } from "../../core/helpers";
+import { drawOne, opponent, turnPlayerOf } from "../../core/helpers";
 import { advancePhase, loseDamageThreshold } from "../../core/createGame";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { patchPlayer } from "../playerPatches";
@@ -401,7 +401,7 @@ export function xg6OnAttackWin(state: GameState, attackerId: PlayerId, attackerI
   const unit = findField(state, attackerId, attackerInstanceId);
   if (!unit || !isCard(unit.cardId, "XG6-035") || state.winner) return state;
   if (effectiveBp(state, attackerId, unit) < 11000) return state;
-  return applyDamageToPlayer(state, opponent(attackerId), 1, { kind: "none", activePlayer: state.activePlayer });
+  return applyDamageToPlayer(state, opponent(attackerId), 1, { kind: "none", activePlayer: turnPlayerOf(state) });
 }
 
 // ---------------------------------------------------------------------------

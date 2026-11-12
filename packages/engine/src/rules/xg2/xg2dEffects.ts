@@ -8,7 +8,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { effectiveBp, getDefinition } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { shuffleCards } from "../../core/deckShuffle";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
@@ -325,7 +325,7 @@ xg2Hook("residentPlaced", (state, ownerId, opInstanceId, cardId) => {
   if (!isSameCardIdentity(cardId, "XG2-070")) return null;
   const ids = bookSearchIds(state, ownerId);
   if (ids.length === 0) return patchPlayer(state, ownerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
-  return openAfter(state, selectOne({ playerId: ownerId, phasePlayerId: state.activePlayer, sourceInstanceId: opInstanceId }, "XG2-070", BOOK_EFFECT_ID, ids, true));
+  return openAfter(state, selectOne({ playerId: ownerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: opInstanceId }, "XG2-070", BOOK_EFFECT_ID, ids, true));
 });
 
 registerXg2Choice(BOOK_EFFECT_ID, {
@@ -558,7 +558,7 @@ function fireMountedVehicleEnter(state: GameState, playerId: PlayerId, vehicleIn
   const vehicle = state.players[playerId].battle.find((c) => c.instanceId === vehicleInstanceId);
   const vehicleCardId = vehicle ? mountedVehicleCardId(vehicle.cardId) : undefined;
   if (!vehicle || !vehicleCardId) return state;
-  const ctx: GrantKeywordContext = { playerId, phasePlayerId: state.activePlayer, sourceCardId: vehicleCardId, effectId: `${vehicleCardId}:mounted_enter`, triggerSourceInstanceId: vehicle.instanceId };
+  const ctx: GrantKeywordContext = { playerId, phasePlayerId: turnPlayerOf(state), sourceCardId: vehicleCardId, effectId: `${vehicleCardId}:mounted_enter`, triggerSourceInstanceId: vehicle.instanceId };
   return MOUNTED_VEHICLE_ENTER[vehicleCardId]!(state, ctx).state;
 }
 

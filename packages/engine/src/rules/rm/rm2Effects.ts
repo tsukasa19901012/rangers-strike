@@ -19,7 +19,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
-import { drawOne, opponent } from "../../core/helpers";
+import { drawOne, opponent, turnPlayerOf } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
@@ -419,7 +419,7 @@ export function openRm2MotoSharian(state: GameState, rusherPlayerId: PlayerId, r
   if (!unitFeatures(state, rusherPlayerId, rushed).includes("宇宙刑事")) return state;
   let next = state;
   for (const moto of state.players[rusherPlayerId].power.filter((c) => !c.faceDown && isSameCardIdentity(c.cardId, "RM-028"))) {
-    next = openAfter(next, confirmChoice({ playerId: rusherPlayerId, phasePlayerId: state.activePlayer, sourceInstanceId: moto.instanceId }, "RM-028", MOTO_EFFECT_ID));
+    next = openAfter(next, confirmChoice({ playerId: rusherPlayerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: moto.instanceId }, "RM-028", MOTO_EFFECT_ID));
   }
   return next;
 }
@@ -473,7 +473,7 @@ function applyCosmicHarley(state: GameState, ctx: GrantKeywordContext): GrantKey
     return { state: next, detail: "rm029:wb_unit_rushed" };
   }
   let next = patchPlayer(state, enemyId, (p) => ({ ...p, deck: p.deck.slice(1), power: [...p.power, { ...stripForZone(top), faceDown: false }] }));
-  next = applyDamageToPlayer(next, enemyId, 1, { kind: "none", activePlayer: next.activePlayer });
+  next = applyDamageToPlayer(next, enemyId, 1, { kind: "none", activePlayer: turnPlayerOf(next) });
   return { state: next, detail: "rm029:power_and_damage" };
 }
 
@@ -680,7 +680,7 @@ export function rm2AfterBattle(
     let next = s;
     for (const target of hits) {
       if (next.winner) break;
-      next = applyDamageToPlayer(next, target, 1, { kind: "none", activePlayer: next.activePlayer });
+      next = applyDamageToPlayer(next, target, 1, { kind: "none", activePlayer: turnPlayerOf(next) });
       next = { ...next, log: [...next.log, buildLogEntry(opponent(target), "named_effect", "RM-036", next.definitions, "ken_no_tsukaite")] };
     }
     return next;

@@ -6,7 +6,7 @@
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
@@ -283,7 +283,7 @@ CHOICE_RESOLVERS[RED_LEGEND_EFFECT_ID] = (state, playerId, instanceId) => {
   let next = close(state, pending);
   if (!card) return { state: proceed(next, pending) };
   next = patchPlayer(next, playerId, (p) => ({ ...p, power: p.power.filter((c) => c.instanceId !== instanceId), discard: [...p.discard, stripForZone(card)] }));
-  next = applyDamageToPlayer(next, opponent(playerId), 1, { kind: "none", activePlayer: next.activePlayer });
+  next = applyDamageToPlayer(next, opponent(playerId), 1, { kind: "none", activePlayer: turnPlayerOf(next) });
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG7-003", `${RED_LEGEND_EFFECT_ID}:damage`) };
 };
 CHOICE_SKIPPERS[RED_LEGEND_EFFECT_ID] = simpleSkip();

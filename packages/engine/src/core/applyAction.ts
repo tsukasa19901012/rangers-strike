@@ -421,6 +421,7 @@ import {
   createBattleEntryPrompt,
   finishBattleEntryIf,
   openBattleEntryOrRideOffChoice,
+  promoteDeferredBattleEntry,
 } from "../rules/battleEntry";
 import { resolveRidingComboOnRideOff } from "../rules/ridingComboEffects";
 import { beginKamenRideDeploy } from "../rules/riderKickEffects";
@@ -708,6 +709,17 @@ function settleChargeAdvance(state: GameState): GameState {
  * 選択待ちで止まったら phase "end" のまま返し、解決後に再度呼ばれて続きから処理する。
  * ルール: R-TURN-04 — 効果をすべて処理してから「このターン」の修正を消し、ターンを1回だけ渡す。
  */
+/** 操作待ちがなく、中断したバトル進入だけが残っていれば再開する。ターンプレイヤーの進入でない・ユニットがもうバトルエリアにいないなら捨てる。 */
+function resumeDeferredBattleEntryWhenIdle(state: GameState): GameState {
+  const entry = state.deferredBattleEntry;
+  if (!entry || hasPendingPromptBlockingEffectRush(state) || state.pendingBattleEntry || state.pendingScry) return state;
+  const stillInBattle = state.players[entry.playerId].battle.some((c) => c.instanceId === entry.instanceId);
+  if (state.phase !== "battle" || entry.phasePlayerId !== state.activePlayer || !stillInBattle) {
+    return { ...state, deferredBattleEntry: undefined };
+  }
+  return promoteDeferredBattleEntry(state);
+}
+
 function finalizeTurnEnd(state: GameState): GameState {
   const prevPlayer = state.turnEndProgress?.endingPlayerId ?? state.activePlayer;
   const afterEffects = state.turnEndProgress
@@ -726,6 +738,8 @@ function finalizeTurnEnd(state: GameState): GameState {
     phase: "end",
     turnEndProgress: undefined,
     endPhaseStep: undefined,
+    // 中断したままのバトル進入は次のターンへ持ち越さない（持ち越すと相手のターンの効果解決後に再開され、ターンが入れ替わる。2026-11-12）。
+    deferredBattleEntry: undefined,
   };
   // 「このターン」の修正はターン終了で消える。どちらのプレイヤーのカードかは問わない（page-588 Q1）。
   next = {
@@ -1165,6 +1179,9 @@ function applyActionWithRng(
   if (next.deferredMorphContinuation && !hasPendingPromptBlockingEffectRush(next)) {
     next = resumeMorphAfterEntry(next, next.deferredMorphContinuation);
   }
+  // バトル進入の効果（RS-572【ディーソード・ベガ】等）の選択のあとにダメージの支払いなどが挟まると、中断したバトル進入
+  // （deferredBattleEntry）を再開する経路がなかった。操作待ちがすべて終わった時点でここから再開する（2026-11-12）。
+  if (applyActionDepth === 0) next = resumeDeferredBattleEntryWhenIdle(next);
   // RS-660【SPインカム】: このターン、場の外からラッシュエリアに出たユニットを記録する（rules/legend1/set9NamedEffectsC.ts）。
   next = trackSpIncomeEntries(state, next);
   // RS-110【ゼニボム】: このターン、場の外から相手のラッシュエリアに出たユニットに目印を付ける（rules/rushAreaEntries.ts）。

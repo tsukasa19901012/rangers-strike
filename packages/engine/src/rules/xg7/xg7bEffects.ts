@@ -8,7 +8,7 @@ import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { commandCategoriesOf, cardName, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { buildLogEntry } from "../../log/formatLog";
-import { drawOne, opponent } from "../../core/helpers";
+import { drawOne, opponent, turnPlayerOf } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { listCardGrantKeywords } from "../../dsl/promotedKeywordBridge";
@@ -145,7 +145,7 @@ function openBloom(state: GameState, playerId: PlayerId, card: CardInstance): Ga
   if (!holders) return state;
   const ids = bloomCandidates(state, playerId, card);
   if (ids.length === 0) return state;
-  return openAfter(state, selectOne({ playerId, phasePlayerId: state.activePlayer, sourceInstanceId: card.instanceId }, "XG7-024", BLOOM_EFFECT_ID, ids, true, { kind: "select_hand" }));
+  return openAfter(state, selectOne({ playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: card.instanceId }, "XG7-024", BLOOM_EFFECT_ID, ids, true, { kind: "select_hand" }));
 }
 
 CHOICE_RESOLVERS[BLOOM_EFFECT_ID] = (state, playerId, instanceId) => {
@@ -203,7 +203,7 @@ export function xg7bOnAttackWin(state: GameState, before: GameState, attackerId:
   if (!attacker || !defender || findField(state, defenderOwner, defenderInstanceId)) return state;
   let next = state;
   if (isCard(attacker.cardId, "XG7-037") && rk1IsSmallNow(before, defender) && defenderBp % 1000 === 500) {
-    next = applyDamageToPlayer(next, defenderOwner, 1, { kind: "none", activePlayer: next.activePlayer });
+    next = applyDamageToPlayer(next, defenderOwner, 1, { kind: "none", activePlayer: turnPlayerOf(next) });
   }
   if (isCard(attacker.cardId, "XG7-025") && hasFlag(next, WINGS_FLAG, attackerId, attacker.instanceId)) {
     const row = before.players[defenderOwner].battle;
@@ -213,7 +213,7 @@ export function xg7bOnAttackWin(state: GameState, before: GameState, attackerId:
       .filter((c) => findField(next, defenderOwner, c.instanceId) && isUnitCard(next, c.cardId) && rk1IsSmallNow(next, c) && selectableEnemy(next, attackerId, "XG7-025", c))
       .map((c) => c.instanceId);
     if (ids.length > 0) {
-      next = openAfter(next, selectOne({ playerId: attackerId, phasePlayerId: next.activePlayer, sourceInstanceId: attacker.instanceId }, "XG7-025", WINGS_EFFECT_ID, ids, true));
+      next = openAfter(next, selectOne({ playerId: attackerId, phasePlayerId: turnPlayerOf(next), sourceInstanceId: attacker.instanceId }, "XG7-025", WINGS_EFFECT_ID, ids, true));
     }
   }
   return next;
@@ -382,7 +382,7 @@ function openGreatStrike(state: GameState, playerId: PlayerId, card: CardInstanc
     .filter((c) => !cardHasKeyword(state.definitions, c.cardId, "wing", { state, playerId: enemyId }) && selectableEnemy(state, playerId, "XG7-029", c))
     .map((c) => c.instanceId);
   if (ids.length === 0) return state;
-  return openAfter(state, selectOne({ playerId, phasePlayerId: state.activePlayer, sourceInstanceId: left.instanceId }, "XG7-029", GREAT_STRIKE_EFFECT_ID, ids, true));
+  return openAfter(state, selectOne({ playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: left.instanceId }, "XG7-029", GREAT_STRIKE_EFFECT_ID, ids, true));
 }
 
 registerDestroyPick(GREAT_STRIKE_EFFECT_ID);
@@ -430,7 +430,7 @@ function openHeaderFromCommand(state: GameState, playerId: PlayerId, card: CardI
   if (headerCandidates(state, playerId).length === 0) return state;
   let next = state;
   for (const cz of state.players[playerId].command.filter((c) => isCard(c.cardId, "XG7-030") && !c.commandHeld)) {
-    next = openAfter(next, selectOne({ playerId, phasePlayerId: state.activePlayer, sourceInstanceId: cz.instanceId }, "XG7-030", HEADER_COMMAND_EFFECT_ID, [cz.instanceId], true));
+    next = openAfter(next, selectOne({ playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: cz.instanceId }, "XG7-030", HEADER_COMMAND_EFFECT_ID, [cz.instanceId], true));
   }
   return next;
 }
@@ -770,7 +770,7 @@ function openDoubleAction(state: GameState, enteredOwner: PlayerId): GameState {
   if (fieldUnits(state, holder).length > 0 || releasedOt(state, holder).length < 2) return state;
   let next = state;
   for (const card of state.players[holder].hand.filter((c) => isCard(c.cardId, "XG7-040"))) {
-    next = openAfter(next, selectOne({ playerId: holder, phasePlayerId: state.activePlayer, sourceInstanceId: card.instanceId }, "XG7-040", DOUBLE_ACTION_EFFECT_ID, [card.instanceId], true, { kind: "select_hand" }));
+    next = openAfter(next, selectOne({ playerId: holder, phasePlayerId: turnPlayerOf(state), sourceInstanceId: card.instanceId }, "XG7-040", DOUBLE_ACTION_EFFECT_ID, [card.instanceId], true, { kind: "select_hand" }));
   }
   return next;
 }
@@ -940,7 +940,7 @@ export function openXg7bOnSelfRushFromZone(state: GameState, rusherId: PlayerId,
   const holder = opponent(rusherId);
   let next = state;
   for (const card of state.players[holder].command.filter((c) => isCard(c.cardId, "XG7-044") && !c.commandHeld)) {
-    next = openAfter(next, selectOne({ playerId: holder, phasePlayerId: state.activePlayer, sourceInstanceId: card.instanceId }, "XG7-044", WIND_CITY_EFFECT_ID, [card.instanceId], true, { xg7Meta: { target: rushedInstanceId, owner: rusherId } }));
+    next = openAfter(next, selectOne({ playerId: holder, phasePlayerId: turnPlayerOf(state), sourceInstanceId: card.instanceId }, "XG7-044", WIND_CITY_EFFECT_ID, [card.instanceId], true, { xg7Meta: { target: rushedInstanceId, owner: rusherId } }));
   }
   return next;
 }

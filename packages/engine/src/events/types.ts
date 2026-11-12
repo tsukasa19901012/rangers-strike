@@ -1,3 +1,4 @@
+import { turnPlayerOf } from "../core/helpers";
 import { noteEngineSideEffect } from "../core/sideEffects";
 import type {
   EnterBattleResumeFrom,
@@ -138,7 +139,7 @@ export function eventContextFromState(
   phasePlayerId?: PlayerId,
 ): Pick<GameEventBase, "phasePlayerId" | "activePlayerId" | "phase"> {
   return {
-    phasePlayerId: phasePlayerId ?? state.activePlayer,
+    phasePlayerId: phasePlayerId ?? turnPlayerOf(state),
     activePlayerId: state.activePlayer,
     phase: state.phase,
   };

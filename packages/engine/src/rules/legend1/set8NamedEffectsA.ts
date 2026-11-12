@@ -12,7 +12,7 @@ import type { CardInstance, GameState, PendingEffectChoice, PlayerId, TagChoiceM
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { commandCategoriesOf, cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf as turnPlayerOfState } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import { buildLogEntry } from "../../log/formatLog";
@@ -397,7 +397,7 @@ function openPhoenixFireIfReady(state: GameState): GameState {
 }
 
 function turnPlayerOf(state: GameState): PlayerId {
-  return state.pendingEffectChoice?.phasePlayerId ?? state.activePlayer;
+  return turnPlayerOfState(state);
 }
 
 register(
@@ -918,7 +918,7 @@ export function trySet8AOnEnterBattle(state: GameState, playerId: PlayerId, ente
   let next = state;
   // RS-523 臨気で得た能力「バトルエリアに出たとき、相手に1点ダメージを与える。」
   if (rinkiGranted(next, playerId, entered.instanceId)) {
-    next = applyDamageToPlayer(next, opponent(playerId), 1, { kind: "none", activePlayer: next.activePlayer });
+    next = applyDamageToPlayer(next, opponent(playerId), 1, { kind: "none", activePlayer: turnPlayerOf(next) });
     next = { ...next, log: [...next.log, buildLogEntry(playerId, "enter_battle", "RS-523", next.definitions, "rs523_rinki_damage")] };
   }
   if (ownBattlePhase && !next.pendingEffectChoice && !next.pendingDamagePayment) {

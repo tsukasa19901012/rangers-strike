@@ -11,7 +11,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardCategories, getDefinition, parsePowerCost, unitSizeOf, effectiveBp } from "../../core/catalog";
 import { countAvailablePower } from "../../core/power";
-import { effectivePowerCost, opponent, drawOne } from "../../core/helpers";
+import { effectivePowerCost, opponent, drawOne, turnPlayerOf } from "../../core/helpers";
 import { emitUnitLeftZoneAndResolve } from "../../events/emitUnitLeftZone";
 import { openEffectChoice } from "../pendingChoices";
 import { patchPlayer, grantSpOverrideOnPlayer } from "../playerPatches";
@@ -386,7 +386,7 @@ ENTER_BATTLE_HOOKS.push((state, playerId, card, battleBeforeEnter) => {
   if (size !== "L" && size !== "XL") return state;
   if (!unitFeatures(state, playerId, left).includes("人型")) return state;
   return openAfter(state, {
-    ...base({ playerId, phasePlayerId: state.activePlayer, sourceInstanceId: card.instanceId }, LINER_BOY_CARD_ID),
+    ...base({ playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: card.instanceId }, LINER_BOY_CARD_ID),
     effectId: LINER_COMBO_EFFECT_ID,
     kind: "confirm",
     validInstanceIds: ["accept"],
@@ -610,7 +610,7 @@ ENTER_BATTLE_HOOKS.push((state, playerId, card, battleBeforeEnter) => {
     const ids = fieldUnits(state, enemyId)
       .filter((c) => c.commandHeld && selectableEnemy(state, playerId, "XG3-015", c))
       .map((c) => c.instanceId);
-    const ctx = { playerId, phasePlayerId: state.activePlayer, sourceInstanceId: card.instanceId };
+    const ctx = { playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: card.instanceId };
     if (ids.length > 0) {
       next = openAfter(next, { ...base(ctx, "XG3-015"), effectId: BEAR_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true });
     } else if (bearSpApplies(state, playerId)) {
@@ -625,7 +625,7 @@ ENTER_BATTLE_HOOKS.push((state, playerId, card, battleBeforeEnter) => {
       .map((c) => c.instanceId);
     if (ids.length > 0) {
       next = openAfter(next, {
-        ...base({ playerId, phasePlayerId: state.activePlayer, sourceInstanceId: left.instanceId }, "XG3-013"),
+        ...base({ playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: left.instanceId }, "XG3-013"),
         effectId: POLAR_EFFECT_ID,
         kind: "select_unit",
         validInstanceIds: ids,
@@ -833,7 +833,7 @@ STRIKE_HOOKS.push((state, playerId, striker) => {
       .map((c) => c.instanceId);
     if (ids.length === 0) continue;
     next = openAfter(next, {
-      ...base({ playerId, phasePlayerId: state.activePlayer, sourceInstanceId: striker.instanceId }, "XG3-018"),
+      ...base({ playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: striker.instanceId }, "XG3-018"),
       effectId: SPIN_BEE_EFFECT_ID,
       kind: "select_unit",
       validInstanceIds: ids,

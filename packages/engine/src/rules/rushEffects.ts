@@ -1,6 +1,6 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
-import { findInZone, opponent } from "../core/helpers";
+import { findInZone, opponent, turnPlayerOf } from "../core/helpers";
 import { hasRushCounterReactions } from "./operationCounters";
 import { buildUnitRushedEvent } from "../events/builders";
 import { EventQueue } from "../events/EventQueue";
@@ -37,7 +37,7 @@ export function resolveRushTriggeredEffects(
   queue.enqueue(
     buildUnitRushedEvent({
       state,
-      phasePlayerId: state.activePlayer,
+      phasePlayerId: turnPlayerOf(state),
       rusherPlayerId,
       instanceId: rushedInstanceId,
       cardId: found.card.cardId,

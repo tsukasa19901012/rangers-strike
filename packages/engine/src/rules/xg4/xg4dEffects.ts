@@ -4,7 +4,7 @@
  */
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
 import { cardCategories, getDefinition, parsePowerCost } from "../../core/catalog";
-import { countAvailablePower, opponent } from "../../core/helpers";
+import { countAvailablePower, opponent, turnPlayerOf } from "../../core/helpers";
 import { shuffleCards } from "../../core/deckShuffle";
 import { patchPlayer } from "../playerPatches";
 import { applyDamageToPlayer } from "../damagePayment";
@@ -683,7 +683,7 @@ export function xg4dOnBattleDestroy(state: GameState, winnerId: PlayerId, winner
   if (winnerId === defeatedOwnerId || defeatedBp === undefined || defeatedBp % 1000 !== 500) return state;
   const winner = findField(state, winnerId, winnerInstanceId);
   if (!winner || !isCard(winner.cardId, "XG4-083") || !hasTurnRecordFor(state, winnerId, XG4_ATTACKRIDE_RULE, winner.instanceId)) return state;
-  return applyDamageToPlayer(state, defeatedOwnerId, 1, { kind: "none", activePlayer: state.activePlayer });
+  return applyDamageToPlayer(state, defeatedOwnerId, 1, { kind: "none", activePlayer: turnPlayerOf(state) });
 }
 
 

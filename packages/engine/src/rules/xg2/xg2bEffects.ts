@@ -5,7 +5,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, unitEffectiveCategories as unitEffectiveCategoriesSafe, unitSizeOf } from "../../core/catalog";
-import { drawOne, opponent } from "../../core/helpers";
+import { drawOne, opponent, turnPlayerOf } from "../../core/helpers";
 import { addTurnRestrictionModifier } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { emitUnitLeftZoneAndResolve } from "../../events/emitUnitLeftZone";
@@ -396,7 +396,7 @@ xg2Hook("unitLeftZone", (state, event) => {
   if (event.destroyed === false) return state;
   const killerOwner = opponent(event.ownerPlayerId);
   let next = state;
-  const phasePlayerId = event.phasePlayerId ?? state.activePlayer;
+  const phasePlayerId = event.phasePlayerId ?? turnPlayerOf(state);
   if (event.toZone === "discard" && event.battleOpponentInstanceId) {
     const killer = findField(next, killerOwner, event.battleOpponentInstanceId);
     if (killer && isSameCardIdentity(killer.cardId, "XG2-026") && (hasBattleNcEffect(killer, GEKIRYU_MARK) || hasBattleNcEffect(killer, GEKIRYU_NC_EFFECT_ID))) {

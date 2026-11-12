@@ -5,7 +5,7 @@ import {
 } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
-import { opponent, updatePlayer } from "../../core/helpers";
+import { opponent, updatePlayer, turnPlayerOf } from "../../core/helpers";
 import { bounceToHand } from "../bounce";
 import { applyDamageToPlayer } from "../damagePayment";
 import { buildLogEntry } from "../../log/formatLog";
@@ -32,7 +32,7 @@ export function resolveLegend2OnDestroy(
       for (const pid of ["player1", "player2"] as const) {
         nextState = applyDamageToPlayer(nextState, pid, 1, {
           kind: "none",
-          activePlayer: ownerId,
+          activePlayer: turnPlayerOf(state),
         });
         // 1人目の支払いで選択が発生しても、2人目のダメージは後回し（queuedDamagePayments）にして必ず受ける。
       }

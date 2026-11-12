@@ -21,7 +21,7 @@ import type {
 } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { shuffleCards } from "../../core/deckShuffle";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -194,7 +194,7 @@ export function applyRk2ResidentPlaced(state: GameState, ownerId: PlayerId, opIn
   const ids = riderPassSearchIds(state, ownerId);
   if (ids.length === 0) return patchPlayer(state, ownerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
   return openOrQueue(state, {
-    ...base({ playerId: ownerId, phasePlayerId: state.activePlayer, sourceInstanceId: opInstanceId }, "RK-022"),
+    ...base({ playerId: ownerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: opInstanceId }, "RK-022"),
     effectId: RIDER_PASS_SEARCH_EFFECT_ID,
     kind: "select_unit",
     validInstanceIds: ids,

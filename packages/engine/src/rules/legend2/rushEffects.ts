@@ -1,7 +1,7 @@
 import { releasedCommandUnitIds, startEffectRush } from "../effectRush";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition } from "../../core/catalog";
-import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { findInZone, opponent, removeAt, updatePlayer, turnPlayerOf } from "../../core/helpers";
 import { applyDamageToPlayer } from "../damagePayment";
 import { buildLogEntry } from "../../log/formatLog";
 import {
@@ -50,7 +50,7 @@ export function resolveLegend2OnRushEffects(
     case "sure_win_combination": {
       nextState = applyDamageToPlayer(state, enemyId, 2, {
         kind: "none",
-        activePlayer: rusherPlayerId,
+        activePlayer: turnPlayerOf(state),
       });
       logs.push(
         buildLogEntry(rusherPlayerId, "named_effect", cardId, state.definitions, effectId),

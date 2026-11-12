@@ -8,7 +8,7 @@ import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { countAvailablePower } from "../../core/power";
 import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
 import { patchPlayer } from "../playerPatches";
@@ -437,7 +437,7 @@ CHOICE_RESOLVERS[GRENADE_EFFECT_ID] = (state, playerId, instanceId) => {
   const sp = victim ? strikeDamageFor(state.definitions, victim, state, enemyId) : 0;
   let next = destroyAll(close(state, pending), pendingBase(pending), "XG3-080", GRENADE_EFFECT_ID, [instanceId]);
   if (sp >= 1 && !findField(next, enemyId, instanceId) && !next.pendingLeave) {
-    next = applyDamageToPlayer(next, enemyId, 1, { kind: "none", activePlayer: next.activePlayer });
+    next = applyDamageToPlayer(next, enemyId, 1, { kind: "none", activePlayer: turnPlayerOf(next) });
   }
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG3-080", `${GRENADE_EFFECT_ID}:${instanceId}`) };
 };

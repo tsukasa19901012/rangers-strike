@@ -14,7 +14,7 @@
 import { isSameCardIdentity, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId, PlayerState } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
-import { opponent } from "../../core/helpers";
+import { opponent, turnPlayerOf } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { deckShuffledSince } from "../../core/deckShuffle";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -422,7 +422,7 @@ function rk7TriggerChoice(state: GameState, trigger: Rk7Trigger): PendingEffectC
     const ids = heldEnemyUnitIds(state, trigger.playerId);
     if (ids.length === 0) return null;
     return {
-      ...base({ playerId: trigger.playerId, phasePlayerId: state.activePlayer, sourceInstanceId: trigger.sourceInstanceId }, "RK-129"),
+      ...base({ playerId: trigger.playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: trigger.sourceInstanceId }, "RK-129"),
       effectId: THUNDER_SPADER_EFFECT_ID,
       kind: "select_unit",
       validInstanceIds: ids,
@@ -433,7 +433,7 @@ function rk7TriggerChoice(state: GameState, trigger: Rk7Trigger): PendingEffectC
   }
   const self = fieldCards(state, trigger.playerId).find((c) => c.instanceId === trigger.sourceInstanceId);
   if (!self?.commandHeld) return null;
-  return confirmChoice({ playerId: trigger.playerId, phasePlayerId: state.activePlayer, sourceInstanceId: trigger.sourceInstanceId }, "RK-132", FAMILY_BACKUP_EFFECT_ID);
+  return confirmChoice({ playerId: trigger.playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: trigger.sourceInstanceId }, "RK-132", FAMILY_BACKUP_EFFECT_ID);
 }
 
 CHOICE_RESOLVERS[FAMILY_BACKUP_EFFECT_ID] = () => ({ error: "invalid_target" });

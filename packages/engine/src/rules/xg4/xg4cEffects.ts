@@ -4,7 +4,7 @@
  */
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardCategories, effectiveBp, effectiveCommandCategories, getDefinition } from "../../core/catalog";
-import { opponent, performDeckDraws } from "../../core/helpers";
+import { opponent, performDeckDraws, turnPlayerOf } from "../../core/helpers";
 import { patchPlayer } from "../playerPatches";
 import { applyDamageToPlayer } from "../damagePayment";
 import { addBakiBakiExtraAttack } from "../turnModifierBridge";
@@ -98,7 +98,7 @@ function yoto(state: GameState, winnerId: PlayerId, winnerInstanceId: string, de
   const defeated = [...p.discard, ...p.power, ...p.command, ...p.hand, ...p.deck, ...p.battle, ...p.rush].find((c) => c.instanceId === defeatedInstanceId);
   const sp = defeated ? (getDefinition(state.definitions, defeated.cardId) as { sp?: unknown } | undefined)?.sp : undefined;
   if (typeof sp !== "number" || sp < 1) return state;
-  return applyDamageToPlayer(state, defeatedOwnerId, 1, { kind: "none", activePlayer: state.activePlayer });
+  return applyDamageToPlayer(state, defeatedOwnerId, 1, { kind: "none", activePlayer: turnPlayerOf(state) });
 }
 
 // ---------------------------------------------------------------------------
@@ -137,7 +137,7 @@ function rearVulcan(before: GameState, after: GameState): GameState {
         .filter((c) => isUnit(next, c.cardId) && rk1IsSmallNow(next, c) && effectiveBp(next, enemyId, c) === 3000 && selectableEnemy(next, pid, "XG4-050", c))
         .map((c) => c.instanceId);
       if (ids.length === 0) continue;
-      next = openAfter(next, genericPick({ playerId: pid, phasePlayerId: after.activePlayer, sourceInstanceId: v.instanceId }, "XG4-050", VULCAN_EFFECT_ID, ids, true, "discard"));
+      next = openAfter(next, genericPick({ playerId: pid, phasePlayerId: turnPlayerOf(after), sourceInstanceId: v.instanceId }, "XG4-050", VULCAN_EFFECT_ID, ids, true, "discard"));
     }
   }
   return next;
@@ -189,7 +189,7 @@ function agito(before: GameState, after: GameState): GameState {
       .filter((c) => !c.commandHeld && (effectiveCommandCategories(after.players[pid], after.definitions, c.cardId) as string[]).includes("MA"))
       .map((c) => c.instanceId);
     if (ids.length === 0) continue;
-    next = openAfter(next, { ...base({ playerId: pid, phasePlayerId: after.activePlayer, sourceInstanceId: card.instanceId }, "XG4-053"), effectId: AGITO_EFFECT_ID, kind: "select_command", validInstanceIds: ids, selectCount: 1, optional: true });
+    next = openAfter(next, { ...base({ playerId: pid, phasePlayerId: turnPlayerOf(after), sourceInstanceId: card.instanceId }, "XG4-053"), effectId: AGITO_EFFECT_ID, kind: "select_command", validInstanceIds: ids, selectCount: 1, optional: true });
   }
   return next;
 }
@@ -308,7 +308,7 @@ XG4_SKIPPERS[NEGAI_POWER_EFFECT_ID] = simpleSkip();
 
 export function applyXg4cRideOff(state: GameState, playerId: PlayerId, rider: CardInstance): GameState {
   if (isCard(rider.cardId, "XG4-057")) {
-    return openAfter(state, confirmChoice({ playerId, phasePlayerId: state.activePlayer, sourceInstanceId: rider.instanceId }, "XG4-057", NEGAI_EFFECT_ID));
+    return openAfter(state, confirmChoice({ playerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: rider.instanceId }, "XG4-057", NEGAI_EFFECT_ID));
   }
   // XG4-060【フォトンブレイカー】は RC（ライドオフしたこのターン）。
   if (isCard(rider.cardId, "XG4-060")) return addTurnRecord(state, playerId, XG4_PHOTON_RULE, "XG4-060", { instanceId: rider.instanceId });
