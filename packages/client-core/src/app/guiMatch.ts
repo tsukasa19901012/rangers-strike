@@ -15,7 +15,7 @@ import { CPU, HUMAN } from "../engineApi";
 import type { LogicalInput } from "../input/actions";
 import { ListCursor } from "../input/actions";
 import type { ActionOption, GameSession, StepResult } from "../session/session";
-import { ACTION_LABELS, describeAction, indexInstances, PHASE_LABELS, revealDestination, revealSummary } from "../text/labels";
+import { ACTION_LABELS, describeAction, indexInstances, isPantherClawLoopStop, PHASE_LABELS, revealDestination, revealSummary } from "../text/labels";
 import { cardFieldLines, effectParagraphs } from "../view/cardFields";
 import { clipLine, fitLine, fitLineKeepTail, measureText, wrapText, type WrapOptions } from "../text/wrap";
 import { buildPendingView, viewedCardIds } from "../view/board";
@@ -660,7 +660,7 @@ export class GuiMatch {
     const pass: DialogItem[] = [];
     for (const item of this.allItems()) {
       const id = actionTargetId(item.option.action) ?? actionSubjectId(item.option.action) ?? actionInstanceIds(item.option.action)[0];
-      if (id && locateInstance(this.state(), id)) {
+      if (id && locateInstance(this.state(), id) && !isPantherClawLoopStop(this.state(), item.option.action)) {
         const list = cards.get(id) ?? [];
         list.push(item);
         cards.set(id, list);

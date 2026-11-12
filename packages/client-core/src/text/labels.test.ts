@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { describeAction, humanizeLogEntry } from "./labels";
+import { describeAction, humanizeLogEntry, isPantherClawLoopStop } from "./labels";
 import { testEngine } from "../testing/engine";
 
 describe("describeAction", () => {
@@ -68,6 +68,41 @@ describe("describeAction option tokens", () => {
     expect(pick("rs485_hamster_destroy_draw", "draw:2")).toBe("選ぶ: 2枚ドロー");
     expect(pick("rs566_ultima_storm_order", "commands_first")).toBe("選ぶ: コマンドから先に山札に戻す");
     expect(pick("rs566_ultima_storm_order", "units_first")).toBe("選ぶ: ユニットから先に山札に戻す");
+  });
+});
+
+describe("describeAction panther claw loop", () => {
+  // RS-363【パンサークロー】×敵軍 RS-238【プロジェットカノン】のループ（faq-card-6 RS-363 Q2）。
+  const choice = (valid: string[]) =>
+    ({
+      players: {},
+      definitions: {},
+      pendingEffectChoice: { effectId: "rs363_panther_claw", sourceInstanceId: "pan", validInstanceIds: valid },
+    }) as unknown as Parameters<typeof describeAction>[0];
+  const act = (type: string, instanceId?: string) => ({ type, playerId: "player1", instanceId }) as never;
+
+  it("names the source-unit pick as stopping the loop, and the skip as giving Projet Canon priority", () => {
+    const state = choice(["held", "pan"]);
+    expect(isPantherClawLoopStop(state, act("resolve_effect_choice", "pan"))).toBe(true);
+    expect(isPantherClawLoopStop(state, act("resolve_effect_choice", "held"))).toBe(false);
+    expect(describeAction(state, act("resolve_effect_choice", "pan"), new Map())).toBe(
+      "パンサークローを優先してループを止める（捨札にして、プロジェットカノンは発動しない）",
+    );
+    expect(describeAction(state, act("skip_effect_choice"), new Map())).toBe("捨札にしない（プロジェットカノンを優先）");
+  });
+
+  it("keeps the plain labels when there is no loop", () => {
+    const state = choice(["held"]);
+    expect(describeAction(state, act("skip_effect_choice"), new Map())).toBe("選ばない");
+  });
+});
+
+describe("describeAction XG5-085 warp", () => {
+  it("says whether the confirm and skip buttons warp", () => {
+    const state = { players: {}, definitions: {}, pendingEffectChoice: { effectId: "xg5_085_warp", validInstanceIds: [] } } as unknown as Parameters<typeof describeAction>[0];
+    const act = (type: string) => ({ type, playerId: "player1" }) as never;
+    expect(describeAction(state, act("confirm_effect_choice"), new Map())).toBe("ワープする（ラッシュエリアに出して、山札の次の1枚をかわりに対象にする）");
+    expect(describeAction(state, act("skip_effect_choice"), new Map())).toBe("ワープしない（このカードを効果の対象にする）");
   });
 });
 

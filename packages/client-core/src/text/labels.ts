@@ -336,6 +336,20 @@ export function isDuplicateSelfHoldPayment(state: GameState, action: GameAction,
   return id === state.pendingEffectChoice!.sourceInstanceId && legal.some((a) => a.type === "resolve_effect_choice" && a.instanceId === id);
 }
 
+/**
+ * RS-363【パンサークロー】×敵軍 RS-238【プロジェットカノン】のループ（faq-card-6 RS-363 Q2）: エンジンは
+ * 「パンサークローを優先して止める」を効果の元のユニット（バルパンサー）を選ぶ手で出す。カードではなくボタンとして見せる。
+ */
+export function isPantherClawLoopStop(state: GameState, action: GameAction): boolean {
+  const pending = state.pendingEffectChoice;
+  return (
+    pending?.effectId === "rs363_panther_claw" &&
+    action.type === "resolve_effect_choice" &&
+    !!pending.sourceInstanceId &&
+    action.instanceId === pending.sourceInstanceId
+  );
+}
+
 /** Human-readable one-line label for an engine action. */
 export function describeAction(
   state: GameState,
@@ -352,6 +366,15 @@ export function describeAction(
     if (action.type === "resolve_effect_choice") return "ホールドして発動する";
     if (action.type === "skip_effect_choice") return "発動しない";
   }
+  // XG5-085【ワープ】: 確定 = ラッシュエリアに出して次の1枚を対象にする、選ばない = そのまま対象にする。
+  if (state.pendingEffectChoice?.effectId === "xg5_085_warp") {
+    if (action.type === "confirm_effect_choice") return "ワープする（ラッシュエリアに出して、山札の次の1枚をかわりに対象にする）";
+    if (action.type === "skip_effect_choice") return "ワープしない（このカードを効果の対象にする）";
+  }
+  if (isPantherClawLoopStop(state, action)) return "パンサークローを優先してループを止める（捨札にして、プロジェットカノンは発動しない）";
+  const pending = state.pendingEffectChoice;
+  if (pending?.effectId === "rs363_panther_claw" && action.type === "skip_effect_choice" && pending.sourceInstanceId && pending.validInstanceIds.includes(pending.sourceInstanceId))
+    return "捨札にしない（プロジェットカノンを優先）";
   const base = ACTION_LABELS[action.type] ?? action.type;
   const record = action as unknown as Record<string, unknown>;
   if (action.type === "battle") {
