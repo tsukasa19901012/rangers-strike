@@ -46,6 +46,8 @@ import {
   canBeginZordSetup,
   listZordSetupResolveActions,
 } from "../rules/zordSetup";
+import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
+import { withZordFeatureContext } from "../rules/zordFeatureContext";
 import {
   canToggleBpBudgetTarget,
   budgetBpForInstance,
@@ -750,6 +752,16 @@ function cpuWouldCancelProcedureUncached(state: GameState, playerId: PlayerId, a
   return false;
 }
 
+/**
+ * 合体の判定を、合法手の一覧（core/legalActions.ts getLegalActions）と同じ前提で行う。
+ * 「※このカードの追加条件は、…のとき、次のように変更される」（XG6-019 ダイボウケンの捨札7枚以上など）を反映した定義と、
+ * 素材の特徴の文脈を使わないと、合法な素材を「選べない」と判断して合体を取り消していた。
+ */
+function inZordRules<T>(state: GameState, fn: (effective: GameState) => T): T {
+  const effective = withEffectiveRushConditionDefinitions(state);
+  return withZordFeatureContext(effective, () => fn(effective));
+}
+
 export function pickBeginZordSetup(
   state: GameState,
   playerId: PlayerId,
@@ -759,7 +771,7 @@ export function pickBeginZordSetup(
 
   for (const action of actions) {
     if (action.type !== "begin_zord_setup" || action.playerId !== playerId) continue;
-    if (!canBeginZordSetup(state, playerId, action.zordInstanceId)) continue;
+    if (!inZordRules(state, (eff) => canBeginZordSetup(eff, playerId, action.zordInstanceId))) continue;
     if (findDirectZordRushAction(state, playerId, action.zordInstanceId)) continue;
 
     const card = state.players[playerId].hand.find(
@@ -839,7 +851,7 @@ export function pickZordSetupStep(
   const setup = state.pendingZordSetup;
   if (!setup || setup.playerId !== playerId) return null;
 
-  const resolves = listZordSetupResolveActions(state, setup);
+  const resolves = inZordRules(state, (eff) => listZordSetupResolveActions(eff, setup));
   if (resolves.length === 0) {
     return { type: "cancel_zord_setup", playerId };
   }
@@ -853,11 +865,13 @@ export function pickZordSetupStep(
   let best = resolves[0]!;
   let bestScore = Number.NEGATIVE_INFINITY;
   for (const action of resolves) {
-    const advanced = advanceZordSetup(state, setup, {
-      materialInstanceId: action.materialInstanceId,
-      destination: action.destination,
-      paymentPath: action.paymentPath,
-    });
+    const advanced = inZordRules(state, (eff) =>
+      advanceZordSetup(eff, setup, {
+        materialInstanceId: action.materialInstanceId,
+        destination: action.destination,
+        paymentPath: action.paymentPath,
+      }),
+    );
     if (advanced.kind === "rush") {
       const score = scoreRushAction(state, advanced.action);
       if (score > bestScore) {

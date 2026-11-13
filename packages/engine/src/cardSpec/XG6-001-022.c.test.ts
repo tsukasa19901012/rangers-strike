@@ -10,6 +10,9 @@
  * レアリティは atwiki の「ノーマル／レア／スーパーレア」を N／R／SR として照合する。
  */
 import { describe, expect, it } from "vitest";
+import { pickCpuAction } from "../ai/index";
+import { applyAction } from "../core/applyAction";
+import { getLegalActions } from "../core/legalActions";
 import type { CardInstance, GameState } from "../types/game";
 import {
   accept,
@@ -253,6 +256,25 @@ describe("XG6-019 ダイボウケン", () => {
   it(`XG6-019: ※ 自軍捨札が6枚なら、イエローの S ユニットだけではラッシュできない（出典: ${PAGE}「自軍捨札が7枚以上あるとき」）`, () => {
     expect(rushWith([inst("SPEC-YEL", "y")], deckCards(6, "dd")).ok).toBe(false);
   });
+
+  it.each([1, 2, 5] as const)(
+    "XG6-019: CPU（Lv%i）も捨札7枚以上の変更後の追加条件（イエローの S ユニット）で合体を最後まで進める（取り消さない・同じ手を繰り返さない）",
+    (level) => {
+      let s = rushBoard({ hand: [inst("XG6-019", "db")], rush: [inst("SPEC-YEL", "y")], discard: deckCards(7, "dd"), command: releasedCat("ET", 1), power: powerCards(5) }, {}, EXTRA);
+      expect(getLegalActions(s).some((a) => a.type === "begin_zord_setup")).toBe(true);
+      s = act(s, { type: "begin_zord_setup", playerId: "player1", zordInstanceId: "XG6-019:db" });
+      for (let i = 0; i < 12 && zoneOf(s, "player1", "XG6-019:db") === "hand"; i++) {
+        const a = pickCpuAction(s, "player1", level);
+        expect(a?.type).not.toBe("cancel_zord_setup");
+        const r = applyAction(s, a!);
+        expect(r.ok).toBe(true);
+        if (!r.ok) break;
+        s = r.state;
+      }
+      expect(zoneOf(s, "player1", "XG6-019:db")).toBe("rush");
+      expect(zoneOf(s, "player1", "SPEC-YEL:y")).toBe("discard");
+    },
+  );
 
   const enemyBoard = () => enemyTurn({ battle: [inst("XG6-019", "db"), inst("SPEC-RED", "r")] }, { battle: [inst("TST-UNIT-7", "atk")] }, EXTRA);
 
