@@ -21,6 +21,8 @@ export type CpuLevelConfig = {
   deckGuard?: number;
   /** チャージの先読みで、デッキの中身から決めた方針（パワーの上限・最初のコマンド）を守る。 */
   deckAwareCharge?: boolean;
+  /** 切り札（合体ユニット）とその素材を、最後の 1 枚までチャージしない（ai/level1.ts guardKeyCharges）。 */
+  keyCardGuard?: boolean;
   /** 盤面の評価に、同梱の価値ネットワーク（ai/weights）の評価をこの倍率で足す（0／省略で手書きの評価だけ）。 */
   valueNetBlend?: number;
   /** 読みの前に相手の手札を山札と混ぜて配り直す（相手の手札を覗かない）。 */
@@ -55,7 +57,7 @@ const LEVEL_CONFIG: Record<CpuLevel, CpuLevelConfig> = {
   // skipIdleEntry: 出ても何もできない（アタック・ストライク・効果のどれも無い、負けるアタックしか無い）ユニットをバトルエリアに出さない。
   // NC の並べ方の先出しと、あとから出すユニットにできることが増える先出し（コンビネーション等）は残す。何もしない進入 -36%、
   // skipIdleEntry なしに同デッキ戦でスターター 58.0%（368 試合）・共有デッキ 50.3%（736 試合。先出しを残す前は 42.7%）（2026-11-10）。
-  5: { enableSearch: true, maxCandidates: 64, maxResponseDepth: 28, searchPly: 2, planSamples: 2, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true, valueNetBlend: 0.5, hideOpponentHand: true, turnPlanSteps: 60, skipIdleEntry: true },
+  5: { enableSearch: true, maxCandidates: 64, maxResponseDepth: 28, searchPly: 2, planSamples: 2, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true, keyCardGuard: true, valueNetBlend: 0.5, hideOpponentHand: true, turnPlanSteps: 60, skipIdleEntry: true },
 };
 
 export function getCpuLevelConfig(level: CpuLevel): CpuLevelConfig {
