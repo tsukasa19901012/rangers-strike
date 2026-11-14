@@ -71,6 +71,8 @@ export type PickCpuActionOptions = {
   deckGuard?: number;
   /** チャージの先読みで、デッキの中身から決めた方針（パワーの上限・最初のコマンド）を守る。 */
   deckAwareCharge?: boolean;
+  /** 切り札（合体ユニット）とその素材を、最後の 1 枚までチャージしない（guardKeyCharges）。 */
+  keyCardGuard?: boolean;
   /**
    * 0 より大きいと、自分のラッシュ・バトルフェイズの決定を、候補ごとにターンの終わりまで指し進めて比べる
    * （ターン単位の読み。1 回の決定で指し進める手の数の合計の上限）。
@@ -685,11 +687,12 @@ function pickCpuActionInner(
     }
 
     case "charge": {
-      const heuristicCharge = pickChargeAction(state, playerId, actions) ?? endPhase(actions);
+      const chargeActions = options.keyCardGuard ? guardKeyCharges(state, playerId, actions) : actions;
+      const heuristicCharge = pickChargeAction(state, playerId, chargeActions) ?? endPhase(actions);
       if (plans("charge")) {
         const choices = options.planChargeTop
-          ? chargeCandidates(state, playerId, actions, options.planChargeTop)
-          : sameCardOnce(state, playerId, actions.filter((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase"));
+          ? chargeCandidates(state, playerId, chargeActions, options.planChargeTop)
+          : sameCardOnce(state, playerId, chargeActions.filter((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase"));
         if (options.deckAwareCharge) {
           const self = state.players[playerId];
           // コマンドが 1 枚もないのに簡易判断がコマンドを置くなら従う（先読みはパワーを選びがちで、
@@ -896,4 +899,24 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
     return state.pendingBattleEntry.playerId === cpuPlayer;
   }
   return state.activePlayer === cpuPlayer;
+}
+
+/**
+ * 切り札の道筋を残すチャージ（keyCardGuard）。キーカード（deckProfile.keyCards）をチャージした後に、
+ * 同じカードが手札・山札・ラッシュ・バトルに 1 枚も残らないなら、パワーには置かない。
+ * コマンドに置くのは、コマンドを手札に戻す手段がデッキにあるか、他に残りがあるときだけ。
+ */
+export function guardKeyCharges(state: GameState, playerId: PlayerId, actions: GameAction[]): GameAction[] {
+  const prof = deckProfile(state, playerId);
+  if (prof.keyCards.size === 0) return actions;
+  const p = state.players[playerId];
+  const out = actions.filter((a) => {
+    if (a.type !== "charge_power" && a.type !== "charge_command") return true;
+    const card = p.hand.find((c) => c.instanceId === a.instanceId);
+    if (!card || !prof.keyCards.has(card.cardId)) return true;
+    const left = [...p.hand, ...p.deck, ...p.rush, ...p.battle].filter((c) => c.cardId === card.cardId && c.instanceId !== card.instanceId).length;
+    if (left > 0) return true;
+    return a.type === "charge_command" && prof.commandRecovery;
+  });
+  return out.some((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase") ? out : actions;
 }
