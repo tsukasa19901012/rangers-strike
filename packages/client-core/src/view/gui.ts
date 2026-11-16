@@ -79,7 +79,14 @@ export type GuiGeometry = {
   endButton: Rect;
   detailLines: number;
   detailTextWidth: number;
+  /** Height of one pickable row in popups, lists and the selection window (lineHeight when absent; a phone uses a finger-sized row). */
+  rowHeight?: number;
 };
+
+/** Height of one pickable menu row. */
+export function menuRowHeight(geometry: GuiGeometry): number {
+  return geometry.rowHeight ?? geometry.lineHeight;
+}
 
 /** Tile size and how many fit, for one board row. */
 export type RowTiles = { tileW: number; tileH: number; tilesPerRow: number };

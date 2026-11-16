@@ -163,6 +163,8 @@ const PORTRAIT_TOP_H = 40;
 const PORTRAIT_PHASE_H = 28;
 const PORTRAIT_BUTTONS_H = 48;
 const PORTRAIT_FOOTER_H = 24;
+/** Menu rows on a phone: about a fingertip (44 logical ≈ 40 CSS px on a 390-wide phone), not a text line. */
+const PORTRAIT_MENU_ROW_H = 44;
 /** Board cards that fit across one row beside the pile column. */
 const PORTRAIT_BOARD_CARDS = 5;
 
@@ -226,6 +228,7 @@ function computePortraitGuiGeometry(viewport: Viewport): GuiGeometry {
     endButton,
     detailLines: Math.max(3, Math.floor((detail.h - 8) / WEB_LINE_H)),
     detailTextWidth: detail.w - 16,
+    rowHeight: PORTRAIT_MENU_ROW_H,
   };
 }
 

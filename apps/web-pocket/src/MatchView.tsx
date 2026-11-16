@@ -391,6 +391,9 @@ function ScrollMarks(props: { marks: ScrollMark[] | undefined }) {
   );
 }
 
+/** A finger-sized menu row (phone): drawn as a separate button with a gap to the next one. */
+const tall = (rect: { h: number }) => rect.h > 32;
+
 export function MenuBox(props: { box: GuiBox; accent: boolean }) {
   return (
     <>
@@ -404,8 +407,14 @@ export function MenuBox(props: { box: GuiBox; accent: boolean }) {
       <Index each={props.box.rows}>
         {(row) => (
           <View
-            class={row().selected ? "absolute flex-row items-center px-[4] rounded-[5] bg-gradient-to-r from-sky-600 to-blue-700" : "absolute flex-row items-center px-[4] rounded-[5]"}
-            style={at({ x: row().rect.x - 2, y: row().rect.y, w: row().rect.w + 12, h: row().rect.h })}
+            class={
+              row().selected
+                ? "absolute flex-row items-center px-[8] rounded-[6] bg-gradient-to-r from-sky-600 to-blue-700"
+                : tall(row().rect)
+                  ? "absolute flex-row items-center px-[8] rounded-[6] bg-[#1e293b] border border-[#334155]"
+                  : "absolute flex-row items-center px-[4] rounded-[5]"
+            }
+            style={at(tall(row().rect) ? { x: row().rect.x - 2, y: row().rect.y + 3, w: row().rect.w + 12, h: row().rect.h - 6 } : { x: row().rect.x - 2, y: row().rect.y, w: row().rect.w + 12, h: row().rect.h })}
           >
             <Text class={row().selected ? "text-sm text-white font-bold" : "text-sm text-slate-100"}>{row().text}</Text>
           </View>
