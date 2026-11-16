@@ -106,7 +106,7 @@ npm run test:sim -w @rangers-strike/engine    # src/verticalSlice とモンキ�
 npm run test:monkey -w @rangers-strike/engine # ランダム対戦のモンキーテストだけ
 ```
 
-`src/ai/legalActionsApply.test.ts` は、CPU 同士の対戦を進めながら局面ごとに合法手（`getLegalActions`）を全部 `applyAction` に通し、合法手に出るのに断られる手がないことを確かめます（合法手の一覧と受け付けの判定の食い違いは、画面ではボタンを押してもエラーになり、CPU は指せずに対局が止まります）。合法手や「誰の番か」（`getActionPlayerId`・`isCpuTurn`）を変えたときは、`getLegalActions` と `isLegalAction` の両方に同じ順で入れてください。
+`src/ai/legalActionsApply.test.ts` は、CPU 同士の対戦を進めながら局面ごとに合法手（`getLegalActions`）を全部 `applyAction` に通し、合法手に出るのに断られる手がないことを確かめます（合法手の一覧と受け付けの判定の食い違いは、画面ではボタンを押してもエラーになり、CPU は指せずに対局が止まります）。合法手や「誰の番か」（`getActionPlayerId`・`isCpuTurn`）を変えたときは、`getLegalActions` と `isLegalAction` の両方に同じ順で入れてください。`applyAction` の入口（`applyActionCore`）の「○○の選択待ち」で断る判定も同じ優先順にそろえます。たとえばチェイスの窓（`pendingChase`）とライドオフの選択（`pendingRideOffChoice`）が同時に開いたとき（RK-264 アクロバッターで相手がライド中のチェイスユニットを山札の下に戻したとき）は、チェイスが進入効果の処理（離場）への反応なので先に解決し、ライドオフの選択はそのあとです（以前は合法手と手番がチェイスを出すのに、`applyAction` がライドオフの選択待ちで断り、対局が止まっていた）。
 
 Lv5 のチャージは、切り札の道筋を残します（`keyCardGuard`、`src/ai/level1.ts` の `guardKeyCharges`）。
 - 切り札は、デッキで一番重い「合体―」ユニットです。その合体の文に名前が出る自分のカードも対象になります（`src/ai/deckProfile.ts` の `keyCards`）。
