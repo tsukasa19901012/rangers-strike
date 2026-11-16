@@ -29,7 +29,7 @@ const TILE_GAP = 6;
 /** The smallest landscape screen the web layouts are designed for; shells scale below it. */
 export const WEB_MIN_VIEWPORT: Viewport = { width: 1024, height: 640 };
 /** The smallest portrait (phone) screen. */
-export const WEB_MIN_PORTRAIT: Viewport = { width: 400, height: 640 };
+export const WEB_MIN_PORTRAIT: Viewport = { width: 360, height: 640 };
 
 /** Board rows of the web match screen: both players' command zones are open cards. */
 export const WEB_GUI_ROWS: readonly GuiRowDef[] = [

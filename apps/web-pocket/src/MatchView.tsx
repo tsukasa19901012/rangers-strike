@@ -13,6 +13,7 @@ import {
   powerCount,
   powerNotes,
   webPileRect,
+  fitLine,
   measureText,
   wrapText,
   zoneLabel,
@@ -60,15 +61,32 @@ export const TONE: Record<PanelTone, string> = {
   accent: "text-sm text-amber-300 font-bold",
 };
 
+/**
+ * The turn line in the top bar, within maxPx: 16 px if it fits, else 14 px,
+ * else 「あなた」 shortened to 「自分」, else cut with 「…」.
+ */
+export function fitTopBar(text: string, maxPx: number): { text: string; px: 14 | 16 } {
+  if (measureText(text, 16) <= maxPx) return { text, px: 16 };
+  if (measureText(text, 14) <= maxPx) return { text, px: 14 };
+  const short = text.replace("あなた", "自分");
+  return { text: fitLine(short, { fontPx: 14, maxWidthPx: maxPx }), px: 14 };
+}
+
 /** Buttons beside the end-phase button (not part of GuiView; the app handles their clicks). */
 export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; leave: Box; settings: Box; share: Box } {
   const e = g.endButton;
   if (isPortrait(g)) {
     const w = Math.floor((e.x - 8 - 8 - 12) / 3);
+    // Narrow phones (logical width under 400): smaller top buttons leave room for the turn.
+    const narrow = g.width < 400;
+    const leaveW = narrow ? 88 : 108;
+    const smallW = narrow ? 48 : 64;
+    const gap = narrow ? 6 : 8;
+    const leaveX = g.width - 8 - leaveW;
     return {
-      leave: { x: g.width - 116, y: 6, w: 108, h: 28 },
-      settings: { x: g.width - 116 - 8 - 64, y: 6, w: 64, h: 28 },
-      share: { x: g.width - 116 - (8 + 64) * 2, y: 6, w: 64, h: 28 },
+      leave: { x: leaveX, y: 6, w: leaveW, h: 28 },
+      settings: { x: leaveX - gap - smallW, y: 6, w: smallW, h: 28 },
+      share: { x: leaveX - (gap + smallW) * 2, y: 6, w: smallW, h: 28 },
       turn: { x: 8, y: e.y, w, h: e.h },
       all: { x: 8 + w + 6, y: e.y, w, h: e.h },
       log: { x: 8 + (w + 6) * 2, y: e.y, w, h: e.h },
@@ -347,6 +365,8 @@ type TileState = { tile: GuiTile; rect: Box; focused: boolean; targetable: boole
 
 function Tile(props: TileState) {
   const badgeH = 20;
+  // A 4-digit BP needs about 36 px; on narrow phones the badge may overhang the tile's edges a little.
+  const badgeW = () => Math.max(props.rect.w - 4, 36);
   return (
     <>
       <CardFace cardId={props.tile.cardId} hidden={props.tile.kind === "hidden"} name={props.tile.name} rect={props.rect} sideways={props.tile.held} />
@@ -361,7 +381,7 @@ function Tile(props: TileState) {
       <Show when={props.tile.kind !== "hidden" && props.tile.sub && !props.covered}>
         <View
           class="absolute flex-row items-center justify-center bg-[#000000c0] rounded-[3]"
-          style={{ insetL: props.rect.x + 2, insetT: props.rect.y + props.rect.h - badgeH - 2, width: props.rect.w - 4, height: badgeH }}
+          style={{ insetL: props.rect.x + Math.round((props.rect.w - badgeW()) / 2), insetT: props.rect.y + props.rect.h - badgeH - 2, width: badgeW(), height: badgeH }}
         >
           <Text class={props.tile.held ? "text-xs text-amber-300 font-bold" : "text-xs text-white font-bold"}>{props.tile.sub}</Text>
         </View>
@@ -632,11 +652,13 @@ export function MatchView(props: {
   const endLines = () => (choose() ? ["操作を選ぶ"] : v().endButton.lines.filter((line) => line && line !== "R" && line !== "×:操作"));
   const endLive = () => v().endButton.enabled || choose();
   const buttons = () => matchButtons(g());
+  const topBarFit = () => fitTopBar(v().topBar, portrait() ? buttons().share.x - 10 - 8 : g().width);
+  const turnTwoLines = () => portrait() && measureText("ターン終了", 14) > buttons().turn.w - 8;
   return (
     <View class="w-full h-full bg-gradient-to-b from-[#0b1426] to-[#04070d]">
       {/* top bar: turn */}
-      <View class="absolute flex-row items-center px-[16] bg-[#0f172acc] border border-[#1e293b]" style={at(g().topBar)}>
-        <Text class="text-base text-sky-300 font-bold">{v().topBar}</Text>
+      <View class={portrait() ? "absolute flex-row items-center px-[10] bg-[#0f172acc] border border-[#1e293b]" : "absolute flex-row items-center px-[16] bg-[#0f172acc] border border-[#1e293b]"} style={at(g().topBar)}>
+        <Text class={topBarFit().px === 16 ? "text-base text-sky-300 font-bold" : "text-sm text-sky-300 font-bold"}>{topBarFit().text}</Text>
       </View>
 
       <View
@@ -808,9 +830,19 @@ export function MatchView(props: {
         <Show
           when={props.turnWarning && portrait()}
           fallback={
-            <Text class={props.endingTurn || props.turnWarning ? "text-sm text-white font-bold" : "text-sm text-slate-100"}>
-              {props.endingTurn ? "終了中…" : props.turnWarning ? "もう一度押すと終了" : "ターン終了"}
-            </Text>
+            <Show
+              when={turnTwoLines() && !props.endingTurn}
+              fallback={
+                <Text class={props.endingTurn || props.turnWarning ? "text-sm text-white font-bold" : "text-sm text-slate-100"}>
+                  {props.endingTurn ? "終了中…" : props.turnWarning ? "もう一度押すと終了" : "ターン終了"}
+                </Text>
+              }
+            >
+              <View class="flex-col items-center">
+                <Text class="text-sm text-slate-100">ターン</Text>
+                <Text class="text-sm text-slate-100">終了</Text>
+              </View>
+            </Show>
           }
         >
           <View class="flex-col items-center">
