@@ -3,7 +3,7 @@
 // desktop pointer gives hover (focus) and click (onPress) to every button.
 import { createSignal, For, Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
-import { START_STEP_LABELS, startOrder, type AppController, type DeckChoice, type ScreenView, type Settings } from "@rangers-strike/client-core";
+import { fitLine, START_STEP_LABELS, startOrder, type AppController, type DeckChoice, type ScreenView, type Settings } from "@rangers-strike/client-core";
 import { engine } from "./engine";
 
 const PICKER_PAGE = 12;
@@ -110,7 +110,7 @@ export function TitleView(props: Props) {
         >
           <View class="flex-col">
             <Text class="text-sm text-white">自動進行の設定</Text>
-            <Text class="text-xs text-slate-400">{assistSummary(settings())}</Text>
+            <Text class="text-xs text-slate-400">{fitLine(assistSummary(settings()), { fontPx: 12, maxWidthPx: panelW() - 40 - 28 - 24 })}</Text>
           </View>
           <Text class="text-xs text-slate-400">▶</Text>
         </View>

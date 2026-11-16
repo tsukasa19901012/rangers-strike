@@ -299,7 +299,8 @@ export function cardTile(
     instanceId: card.instanceId,
     cardId: card.cardId,
     name: hidden ? "" : clipLine(def?.name ?? card.cardId, fit),
-    sub: clipLine(sub, fit),
+    // The sub badge may overhang a narrow tile so a 4-digit BP (「3000」) stays whole.
+    sub: clipLine(sub, { ...fit, maxWidthPx: Math.max(fit.maxWidthPx, 36) }),
     kind,
     held: !!card.commandHeld,
     actionable,
