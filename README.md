@@ -125,7 +125,7 @@ Lv5 の価値ネットワークの重みは `packages/engine/src/ai/weights/valu
 
 ## 対人戦（開発中）
 
-招待URLで知り合いとネット対戦できるようにする作業を進めています。判定はサーバーが行い、相手の手札・山札・シードはブラウザに渡しません。今は、プレイヤーごとに見える盤面を作るエンジン側の部品（`packages/engine/src/view/viewFor.ts`、説明は [packages/engine/README.md](packages/engine/README.md#対人戦の自分から見える盤面viewfor)）までで、画面からはまだ遊べません。
+招待URLで知り合いとネット対戦できるようにする作業を進めています。判定はサーバーが行い、相手の手札・山札・シードはブラウザに渡しません。今は、プレイヤーごとに見える盤面を作るエンジン側の部品（`packages/engine/src/view/viewFor.ts`、説明は [packages/engine/README.md](packages/engine/README.md#対人戦の自分から見える盤面viewfor)）と、部屋・操作の受け付け・持ち時間を進める対戦進行の処理（`packages/engine/src/match/match.ts`、[説明](packages/engine/README.md#対人戦の対戦進行match)）までで、画面からはまだ遊べません。
 
 ## カードとデッキ
 
