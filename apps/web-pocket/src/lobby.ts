@@ -104,7 +104,8 @@ export class Lobby {
   resume(room: SavedRoom): void {
     this.set({ kind: "resuming" });
     fetchRoom(room).then(
-      ({ view }) => {
+      (out) => {
+        const view = out.view!;
         if (view.status === "playing") {
           this.set({ kind: "closed" });
           this.onStart(room, view);
@@ -140,7 +141,8 @@ export class Lobby {
     this.polling = true;
     const room = s.room;
     fetchRoom(room).then(
-      ({ view }) => {
+      (out) => {
+        const view = out.view!;
         this.polling = false;
         this.nextPoll = this.now() + WAIT_POLL_MS;
         const current = this.state();

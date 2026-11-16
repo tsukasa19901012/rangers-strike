@@ -1,11 +1,12 @@
 // 人と CPU の対戦の記録（apps/web-pocket/scripts/list-game-records.mjs --out の JSON）をエンジンで再生し、CPU の負けた対戦を並べる。
+// 対人戦の記録（pvp: true。engine src/match/match.ts matchRecord）も同じく再生し、--nn-out の学習用の局面に入れる（CPU の負けには数えない）。
 //   npx tsx scripts/replay-game-records.ts game-records.json [--log <key>] [--nn-out .cache/selfplay/human1 --positions 12]
 // 記録は種・デッキ・指した手の全部なので、同じエンジンで再生すれば同じ対戦になる（エンジンが変わって手が通らなくなったら「再生失敗」）。
 // --log <key>: その対戦のログ（日本語）を全部出す。
 // --nn-out: selfplay.ts と同じ形式（shard-0.f32 / shard-0.jsonl / features.json）で学習用の局面を書く（scripts/nn/train.py にそのまま渡せる）。
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { allCardsCatalog, type CardDefinition } from "@rangers-strike/cards";
+import { allCardsCatalog, getFullPlayableCardById, type CardDefinition } from "@rangers-strike/cards";
 import { applyAction } from "../src/core/applyAction";
 import { FEATURE_DIM, FEATURE_NAMES, FEATURE_VERSION, encodeState } from "../src/ai/valueFeatures";
 import { formatGameLog } from "../src/log/formatLog";
@@ -15,6 +16,10 @@ import type { GameState, PlayerId } from "../src/types/game";
 
 type GameRecord = {
   key: string;
+  /** 対人戦（player1 = 部屋を作った人、player2 = 参加した人）。 */
+  pvp?: boolean;
+  firstPlayer?: PlayerId;
+  reason?: string;
   at: number;
   seed: number;
   cpuLevel: number;
@@ -39,9 +44,10 @@ if (!input || input.startsWith("--")) {
 }
 const records = JSON.parse(readFileSync(input, "utf8")) as GameRecord[];
 const byId = new Map(allCardsCatalog.cards.map((c) => [c.id, c]));
-const cards = (ids?: string[]): CardDefinition[] | undefined =>
+const cards = (ids?: string[], pvp = false): CardDefinition[] | undefined =>
   ids?.map((id) => {
-    const card = byId.get(id);
+    // 対人戦のサーバーは自作デッキのカードを getFullPlayableCardById で作る（match.ts resolveDeck）。
+    const card = pvp ? getFullPlayableCardById(id) : byId.get(id);
     if (!card) throw new Error(`unknown card ${id}`);
     return card;
   });
@@ -52,9 +58,10 @@ function replay(r: GameRecord): Replay {
   let state = createStarterGame({
     player1Starter: r.humanDeck as never,
     player2Starter: r.cpuDeck as never,
-    player1Deck: cards(r.humanCards),
-    player2Deck: cards(r.cpuCards),
+    player1Deck: cards(r.humanCards, r.pvp),
+    player2Deck: cards(r.cpuCards, r.pvp),
     seed: r.seed,
+    ...(r.firstPlayer ? { firstPlayer: r.firstPlayer } : {}),
   });
   const states: GameState[] = [];
   for (let i = 0; i < r.actions.length; i++) {
@@ -86,7 +93,9 @@ for (const [g, r] of records.entries()) {
     console.log(`${r.key}\t再生失敗: ${String(e).slice(0, 200)}`);
     continue;
   }
-  if (rep.failedAt !== null || rep.final.winner !== r.winner) {
+  // 対人戦の投了・時間切れの決着は盤面の外（盤面には勝者がいない）。
+  const expectedWinner = r.pvp && r.reason && r.reason !== "win" ? null : r.winner;
+  if (rep.failedAt !== null || rep.final.winner !== expectedWinner) {
     failed++;
     console.log(`${r.key}\t再生失敗: ${rep.failedAt !== null ? `${rep.failedAt + 1} 手目が通らない` : "勝者が記録と違う"}`);
     continue;
@@ -97,7 +106,7 @@ for (const [g, r] of records.entries()) {
       if (line) console.log(line);
     }
   }
-  if (r.winner === "player1") {
+  if (r.winner === "player1" && !r.pvp) {
     const p = rep.final.players;
     losses.push(
       `${r.key}\t${date(r.at)}\tLv${r.cpuLevel}\t人 ${deckName(r.humanDeck)} vs CPU ${deckName(r.cpuDeck)}\t${r.turns} ターン\t` +
@@ -122,12 +131,13 @@ for (const [g, r] of records.entries()) {
         rows.push(row);
       }
     }
-    metas.push(JSON.stringify({ game: g, key: r.key, d1: r.humanDeck, d2: r.cpuDeck, lv1: "human", lv2: r.cpuLevel, winner: r.winner, steps: r.actions.length, turn: r.turns }));
+    metas.push(JSON.stringify({ game: g, key: r.key, d1: r.humanDeck, d2: r.cpuDeck, lv1: "human", lv2: r.pvp ? "human" : r.cpuLevel, winner: r.winner, steps: r.actions.length, turn: r.turns }));
   }
 }
 
-const cpuWins = records.filter((r) => r.winner === "player2").length;
-console.log(`記録 ${records.length} 件: CPU の勝ち ${cpuWins}、負け ${records.length - cpuWins}、再生失敗 ${failed}`);
+const cpuRecords = records.filter((r) => !r.pvp);
+const cpuWins = cpuRecords.filter((r) => r.winner === "player2").length;
+console.log(`記録 ${records.length} 件（うち対人戦 ${records.length - cpuRecords.length}）: CPU の勝ち ${cpuWins}、負け ${cpuRecords.length - cpuWins}、再生失敗 ${failed}`);
 if (losses.length) {
   console.log("CPU の負けた対戦（--log <key> で手順を表示）:");
   for (const l of losses) console.log(l);

@@ -28,10 +28,16 @@ import {
   matchTick,
   TIMEOUT_LOG_KIND,
   TURN_TIME_MS,
+  createRematch,
+  matchRecord,
+  touchMatch,
   type FirstPlayerChoice,
   type MatchDeps,
+  type MatchRecord,
   type MatchState,
 } from "./match";
+import { getFullPlayableCardById } from "@rangers-strike/cards";
+import { createStarterGame } from "../verticalSlice/createStarterGame";
 
 const ENGINE = "test-1";
 
@@ -381,5 +387,91 @@ describe("読み込み直した画面の通し番号", () => {
     expect(result.ok).toBe(true);
     expect(matchView(m, actor, deps).lastSeq).toBe(1);
     expect(matchView(m, actor === "player1" ? "player2" : "player1", deps).lastSeq).toBe(0);
+  });
+});
+
+describe("再戦", () => {
+  it("同じ席・同じデッキで、先攻を前の対戦の逆にしてすぐ始める", () => {
+    const { m, deps } = started("host");
+    matchResign(m, "player2", deps);
+    const r = createRematch(m, "m2", ENGINE, deps);
+    expect(r.status).toBe("playing");
+    expect(r.id).toBe("m2");
+    expect(r.decks).toEqual({ player1: { starter: "abarenoh" }, player2: { starter: "dekaranger" } });
+    expect(r.firstPlayer).toBe("player2");
+    matchResign(r, "player1", deps);
+    expect(createRematch(r, "m3", ENGINE, deps).firstPlayer).toBe("player1");
+  });
+
+  it("終わっていない対戦からは作れない", () => {
+    const { m, deps } = started();
+    expect(() => createRematch(m, "m2", ENGINE, deps)).toThrow(MatchError);
+    expect(() => touchMatch(m)).toThrow(MatchError);
+  });
+
+  it("終わった対戦の版番号だけを進められる（再戦の希望・デッキ公開を poll に知らせる）", () => {
+    const { m, deps } = started();
+    matchResign(m, "player1", deps);
+    const v = m.version;
+    touchMatch(m);
+    expect(m.version).toBe(v + 1);
+    expect(m.status).toBe("finished");
+  });
+});
+
+describe("対戦の記録", () => {
+  /** 記録をエンジンで再生した最後の盤面（記録を読む scripts/replay-game-records.ts と同じ作り方）。 */
+  function replayRecord(r: MatchRecord) {
+    let state = createStarterGame({
+      player1Starter: r.humanDeck as never,
+      player2Starter: r.cpuDeck as never,
+      player1Deck: r.humanCards?.map((id) => getFullPlayableCardById(id)!),
+      player2Deck: r.cpuCards?.map((id) => getFullPlayableCardById(id)!),
+      seed: r.seed,
+      firstPlayer: r.firstPlayer,
+    });
+    for (const action of r.actions) {
+      const out = applyAction(state, action);
+      if (!out.ok) throw new Error(`replay failed: ${JSON.stringify(action)}`);
+      state = out.state;
+    }
+    return state;
+  }
+
+  const strip = (s: object) => JSON.stringify({ ...s, definitions: undefined });
+
+  for (const [label, host, guest, first] of [
+    ["スターター同士・ゲスト先攻", { starter: "abarenoh" }, { starter: "dekaranger" }, "guest"],
+    ["自作デッキ・ホスト先攻", { cards: resolveDeck({ starter: "abarenoh" }).map((c) => c.id) }, { starter: "dekaranger" }, "host"],
+  ] as const) {
+    it(`記録を再生すると同じ盤面になる（${label}、時間切れの自動進行を含む）`, () => {
+      const deps = makeDeps(5_000_000);
+      const m = createMatch({ id: "rec", engineVersion: ENGINE, hostDeck: host, firstPlayer: first, now: deps.now });
+      joinMatch(m, guest, deps);
+      let seq = 0;
+      for (let i = 0; i < 120 && m.status === "playing"; i++) {
+        if (i === 30) {
+          deps.now = deadlineOf(m.clock!);
+          matchTick(m, deps);
+          continue;
+        }
+        deps.now += 200;
+        actCpu(m, deps, ++seq);
+      }
+      if (m.status === "playing") matchResign(m, "player2", deps);
+      expect(m.autoActions.length).toBeGreaterThan(0);
+      const r = matchRecord(m, 123)!;
+      expect(r).toMatchObject({ v: 1, pvp: true, at: 123, cpuLevel: 0, seed: m.seed, firstPlayer: m.firstPlayer, winner: m.result!.winner, reason: m.result!.reason });
+      expect(r.humanCards).toEqual("cards" in host ? host.cards : undefined);
+      expect(strip(replayRecord(r))).toBe(strip(m.game!));
+    });
+  }
+
+  it("1手も指していない対戦・まだ終わっていない対戦は記録しない", () => {
+    const { m, deps } = started();
+    matchResign(m, "player1", deps);
+    expect(matchRecord(m, 1)).toBeNull();
+    const playing = started().m;
+    expect(matchRecord(playing, 1)).toBeNull();
   });
 });

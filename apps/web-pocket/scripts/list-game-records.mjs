@@ -57,10 +57,12 @@ for (let i = 0; i < keys.length; i += 50) {
 }
 records.sort((a, b) => a.at - b.at);
 
-const cpuWins = records.filter((r) => r.winner === "player2").length;
-console.log(`対戦の記録: ${records.length} 件（CPU の勝ち ${cpuWins}、負け ${records.length - cpuWins}）`);
+// 対人戦の記録（pvp: true、api/match.js が保存）は CPU の勝ち負けに数えない。
+const cpuRecords = records.filter((r) => !r.pvp);
+const cpuWins = cpuRecords.filter((r) => r.winner === "player2").length;
+console.log(`対戦の記録: ${records.length} 件（うち対人戦 ${records.length - cpuRecords.length}。CPU の勝ち ${cpuWins}、負け ${cpuRecords.length - cpuWins}）`);
 const byLevel = new Map();
-for (const r of records) {
+for (const r of cpuRecords) {
   const s = byLevel.get(r.cpuLevel) ?? { games: 0, cpuWins: 0 };
   s.games++;
   if (r.winner === "player2") s.cpuWins++;

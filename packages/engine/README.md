@@ -13,7 +13,7 @@ UI を持たず、`@rangers-strike/cards` のカードデータだけに依存�
 | `pickCpuAction(state, playerId, level)` | `src/ai/index.ts`（レベル設定は `src/ai/types.ts` の `getCpuLevelConfig`） |
 | `formatGameLog` / `formatActionError` | `src/log/` |
 | `viewFor` / `resolveViewAction` / `redactNewLogLines` / `forgetHiddenAliases`（対人戦でプレイヤーごとに見える盤面） | `src/view/viewFor.ts` |
-| `createMatch` / `joinMatch` / `matchAct` / `matchTick` / `matchResign` / `matchView` / `serializeMatch` / `deserializeMatch`（対人戦の対戦進行） | `src/match/match.ts` |
+| `createMatch` / `joinMatch` / `matchAct` / `matchTick` / `matchResign` / `matchView` / `serializeMatch` / `deserializeMatch` / `createRematch` / `touchMatch` / `matchRecord`（対人戦の対戦進行） | `src/match/match.ts` |
 
 UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、選ばれたアクションを `applyAction` に渡すだけです。
 
@@ -58,6 +58,8 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 - 持ち時間はターン制です。ターンプレイヤーは 1 ターン 3 分（`TURN_TIME_MS`。ターンが変わると戻る）、相手ターン中の選択は 1 回ごとに 30 秒（`CHOICE_TIME_MS`）で、その間はターン側の残りを減らしません。期限は `matchTick`（`matchAct` / `matchResign` も最初に呼ぶ）で確かめ、過ぎていれば期限の時刻で順に処理します。時間切れはサーバーが自動で進め（ターンプレイヤーならターンが変わるまで、途中で相手の選択が入ってもその後また続ける。相手の選択なら操作番が移るまで。見送り・取り消しを優先する `pickCpuFallbackAction`、次に CPU Lv1 の手。その自動進行ですでに通った盤面に戻る手は選ばない。合法手が「支払いを始める」だけの選択で、支払いの取り消しと行き来し続けたため）、ログに `player|match_timeout_auto|N` を残し、対戦を通して 3 回目で負けです。自動で進める手が 400 手を超えるか、進める手が無ければ無効試合にします（止まる・ループする不具合で対戦が終わらなくならないように）。
 - `matchView(m, player, deps)` はブラウザに返す表示（形式の版 `format`・版番号・時計と期限・時間切れの回数・そのプレイヤーが最後に通した操作の `lastSeq`（読み込み直した画面はこの次の番号から送る）・結果・`viewFor` の表示とそのプレイヤー用に伏せたログ）。操作のたびに両者の別 ID を振っておくので、表示を作るだけでは `MatchState` は変わらず、poll で保存し直す必要はありません。
 - 保存は `serializeMatch`（盤面のカード定義を除く）、読み込みは `deserializeMatch(json, engineVersion, deps)`。保存時とエンジンの版が違えば、シードと操作の記録（`actions`。時間切れで自動で進めた手も含み、その位置は `autoActions`）から最初から再生して盤面を作り直し、再生できなければ無効試合（`engine_update`）にします。盤面が保存されていないとき（操作の記録だけ）も再生します。
+- 再戦は `createRematch(prev, id, engineVersion, deps)`（終わった対戦から、同じ席・同じデッキで先攻を前の逆にして、すぐ `playing` の部屋を作る）。終わった対戦の外の変化（再戦の希望・デッキ公開の同意。部屋の側が持つ）は `touchMatch` で版番号だけ進めて poll に知らせます（対戦中は使えない）。
+- 対戦の記録は `matchRecord(m, at)`。CPU 戦の記録（client-core `app/gameRecord.ts`）と同じ形に `pvp: true`・`firstPlayer`・`reason` を足したもので、`createStarterGame`（`seed`・`firstPlayer`・デッキ。自作デッキは `getFullPlayableCardById`）に `actions` を順に当てると同じ対戦になります（テストで時間切れの自動進行を含めて確かめている）。勝者のいない対戦・1 手も指していない対戦は `null`。
 
 テストは `src/match/match.test.ts`（単体）と `src/verticalSlice/matchPlay.test.ts`（`test:sim`。CPU 同士 8 試合を表示の別 ID だけで操作し、保存と読み込みを挟みながら毎 7 手に漏れ検査。さらに 10 試合で、ときどき操作番を放置して時間切れにしても無効試合にならず終わることを確かめる）です。自動進行のループの回帰テストは、見つかった盤面を `src/match/fixtures/timeoutPaymentLoop.json`（デッキ・シード・操作の記録）に置いています。
 

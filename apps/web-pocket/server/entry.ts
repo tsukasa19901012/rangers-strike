@@ -12,5 +12,9 @@ export {
   deadlineOf,
   MatchError,
   MAX_DECK_CARDS,
+  createRematch,
+  touchMatch,
+  matchRecord,
+  resolveDeck,
 } from "../../../packages/engine/src/match/match";
 export { ALL_STARTER_DECK_IDS } from "../../../packages/engine/src/index";

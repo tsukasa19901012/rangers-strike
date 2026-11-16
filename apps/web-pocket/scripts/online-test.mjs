@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Browser check of 対人戦（オンライン）, two browsers against the local server (scripts/serve.mjs, in-memory rooms):
 //   npm run web:build   (once; web:build:app after UI-only changes)
-//   npm run web:online-test [-- --shots=<dir>] [-- --moves=<n>]
+//   npm run web:online-test [-- --shots=<dir>] [-- --moves=<n>] [-- --base=https://…]
+// --base: play against a deployed site instead of the local server (its rooms go to that site's store).
 // The host (PC, 1280x800) opens the lobby, picks 自分が先攻 and makes a room; the guest (phone, 390x844) opens the
 // invite URL (?m=<id>) and joins. Both then play random moves from their own screen's choices, each sent through
 // the real fetch → /api/match → engine path, and the test checks that
@@ -9,6 +10,8 @@
 //   - the host's answer from the server shows the guest's hand only as "?",
 //   - a reload of the guest page goes back into the same match (the room is kept in localStorage),
 //   - the guest resigns with the two-press 投了 and both screens show the result (host 勝利, guest 敗北),
+//   - both agree to show their decks (nothing shows after one agreement), then each sees the other's deck,
+//   - the guest asks for a rematch, the host accepts, and both are in a new match (same seats, the guest first),
 //   - the board calls the other side 「相手」 (not 「CPU」),
 //   - no page errors.
 // With --shots, screenshots of the lobby, the waiting room, the join screen, the match and the results land there.
@@ -33,8 +36,9 @@ function check(label, ok, detail = "") {
   if (!ok) failures++;
 }
 
-const server = spawn(process.execPath, [resolve(HERE, "serve.mjs"), `--port=${PORT}`], { stdio: "ignore" });
-const base = `http://127.0.0.1:${PORT}/`;
+const REMOTE = arg("base", null);
+const server = REMOTE ? null : spawn(process.execPath, [resolve(HERE, "serve.mjs"), `--port=${PORT}`], { stdio: "ignore" });
+const base = REMOTE ? `${REMOTE.replace(/\/$/, "")}/` : `http://127.0.0.1:${PORT}/`;
 for (let i = 0; i < 50; i++) {
   try {
     if ((await fetch(base)).ok) break;
@@ -43,12 +47,14 @@ for (let i = 0; i < 50; i++) {
   }
 }
 
-const browser = await chromium.launch().catch(() =>
-  chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium", args: ["--headless", "--no-sandbox"] }),
+// A deployed site may only be reachable through the environment's proxy.
+const proxy = REMOTE && process.env.HTTPS_PROXY ? { proxy: { server: process.env.HTTPS_PROXY } } : {};
+const browser = await chromium.launch(proxy).catch(() =>
+  chromium.launch({ ...proxy, executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium", args: ["--headless", "--no-sandbox"] }),
 );
 
 async function open(name, viewport, touch, url = base) {
-  const ctx = await browser.newContext({ viewport, deviceScaleFactor: SHOTS ? 2 : 1, hasTouch: touch, isMobile: touch });
+  const ctx = await browser.newContext({ viewport, deviceScaleFactor: SHOTS ? 2 : 1, hasTouch: touch, isMobile: touch, ignoreHTTPSErrors: !!REMOTE });
   const page = await ctx.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
@@ -197,6 +203,55 @@ try {
     check("投了: ゲストの画面は敗北", gr.winner === "player2" && gr.reason === "resign", JSON.stringify(gr));
     await shot(host, "6-result-pc.png");
     await shot(guestPage, "6-result-phone.png");
+
+    // Deck reveal: nothing until both agree, then each sees the other's deck.
+    const post = (who) => who.page.evaluate(() => globalThis.__rsApp.postGame.state().post);
+    const waitPost = (who, fn, label) =>
+      who.page
+        .waitForFunction(fn, null, { timeout: 15000 })
+        .then(() => true)
+        .catch(async () => (check(label, false, JSON.stringify(await post(who))), false));
+    await host.page.evaluate(() => globalThis.__rsApp.postGame.reveal());
+    if (await waitPost(guestPage, () => globalThis.__rsApp.postGame.state().post?.reveal.them, "ゲスト: ホストの公開の同意が届く")) {
+      check("片方の同意ではデッキは届かない", !(await post(guestPage)).reveal.deck && !(await post(host)).reveal.deck);
+    }
+    await guestPage.page.evaluate(() => globalThis.__rsApp.postGame.reveal());
+    await waitPost(host, () => globalThis.__rsApp.postGame.state().post?.reveal.deck, "ホスト: 両者の同意でゲストのデッキが届く");
+    await waitPost(guestPage, () => globalThis.__rsApp.postGame.state().post?.reveal.deck, "ゲスト: 両者の同意でホストのデッキが届く");
+    const decks = [(await post(host))?.reveal.deck?.length, (await post(guestPage))?.reveal.deck?.length];
+    check("公開されたデッキはどちらも 40 枚以上", decks.every((n) => n >= 40), JSON.stringify(decks));
+    await shot(host, "7-reveal-pc.png");
+    await shot(guestPage, "7-reveal-phone.png");
+
+    // Rematch: the guest asks, the host sees it and accepts, and both are in a new match where the guest goes first.
+    const oldId = await host.page.evaluate(() => globalThis.__rsApp.controller.remoteSession.match.id);
+    await guestPage.page.evaluate(() => globalThis.__rsApp.postGame.rematch());
+    await waitPost(host, () => globalThis.__rsApp.postGame.state().post?.rematch.them, "ホスト: ゲストの再戦の希望が届く");
+    await shot(host, "8-rematch-asked-pc.png");
+    await host.page.evaluate(() => globalThis.__rsApp.postGame.rematch());
+    const inRematch = (who) =>
+      who.page
+        .waitForFunction((id) => {
+          const s = globalThis.__rsApp.controller.remoteSession;
+          return s && s.match.id !== id && s.match.status === "playing" && globalThis.__rsApp.controller.view().screen === "match";
+        }, oldId, { timeout: 20000 })
+        .then(() => true)
+        .catch(() => false);
+    check("再戦: ホストが新しい対戦に入る", await inRematch(host));
+    check("再戦: ゲストが新しい対戦に入る", await inRematch(guestPage));
+    const [hr2, gr2] = [await status(host), await status(guestPage)];
+    check("再戦: 席はそのままで、先攻は前の逆（ゲスト）", hr2.you === "player1" && gr2.you === "player2" && gr2.owner === "human" && hr2.owner === "remote", JSON.stringify([hr2, gr2]));
+    const saved = await guestPage.page.evaluate(() => JSON.parse(localStorage.getItem("rs.online.v1")).id);
+    check("再戦: 新しい部屋が保存される（再読み込みで戻れる）", saved !== oldId, saved);
+    await shot(guestPage, "9-rematch-phone.png");
+    await host.page.evaluate(() => globalThis.__rsApp.controller.remoteSession.resign());
+    check(
+      "再戦の対戦も投了で両方に結果が出る",
+      await guestPage.page
+        .waitForFunction(() => globalThis.__rsApp.controller.view().screen === "result", null, { timeout: 15000 })
+        .then(() => true)
+        .catch(() => false),
+    );
   }
   // タイトルへ戻ると部屋は忘れる（再読み込みで戻らない）。
   await guestPage.page.evaluate(() => {
@@ -208,7 +263,7 @@ try {
   check("ゲスト: ページのエラーなし", guestPage.errors.length === 0, guestPage.errors.join(" / "));
 } finally {
   await browser.close();
-  server.kill();
+  server?.kill();
 }
 console.log(failures ? `\n${failures} 件失敗` : "\nすべて通過");
 process.exit(failures ? 1 : 0);
