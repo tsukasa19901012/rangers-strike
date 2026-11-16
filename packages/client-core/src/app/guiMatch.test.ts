@@ -5,7 +5,7 @@ import { input } from "../input/actions";
 import { hitTestGui } from "../input/devices";
 import { testEngine, testPlatform } from "../testing/engine";
 import { measureText } from "../text/wrap";
-import { dropCardName, variantLabels, type GuiView } from "./guiMatch";
+import { dropCardName, dropSharedEnd, popupCardInfo, variantLabels, type GuiView } from "./guiMatch";
 import { parseSharePayload } from "./share";
 
 const VITA = { width: 480, height: 272 };
@@ -861,6 +861,58 @@ describe("windows that keep cards or rows out of view", () => {
     app.dispatch(input.scroll("rows", 1));
     expect(gui().list!.rows[0]!.text).not.toBe(before);
   });
+
+  it("groups the every-action list by card: one line per card with its verbs as buttons, a tap runs that move", () => {
+    const app = startGui(5);
+    app.dispatch(input.allActions);
+    const list = app.view().gui!.list!;
+    const groups = list.groups!;
+    expect(groups.length).toBeGreaterThan(0);
+    // A card's moves share its line (fewer named lines than buttons: the hand cards each have two charges),
+    // and its verbs (no card name repeated) sit inside its lines.
+    const names = groups.map((g) => g.text).filter(Boolean);
+    expect(names.length).toBeGreaterThan(0);
+    expect(names.length).toBeLessThan(list.rows.length);
+    const inRect = (r: { x: number; y: number; w: number; h: number }, o: typeof r) => r.x >= o.x && r.y >= o.y && r.x + r.w <= o.x + o.w && r.y + r.h <= o.y + o.h;
+    for (const row of list.rows) {
+      expect(groups.some((g) => inRect(row.rect, g.rect))).toBe(true);
+      expect(inRect(row.rect, list.rect)).toBe(true);
+      for (const name of names) expect(row.text.endsWith(`: ${name}`)).toBe(false);
+    }
+    for (let i = 0; i < list.rows.length; i++)
+      for (let j = i + 1; j < list.rows.length; j++) {
+        const a = list.rows[i]!.rect;
+        const b = list.rows[j]!.rect;
+        expect(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y).toBe(true);
+      }
+    // A tap on the second button runs the move it shows (the list closes and the move is played).
+    const target = list.rows[1]!;
+    const before = app.session!.state;
+    expect(hitTestGui(app.view().gui!, { x: target.rect.x + 2, y: target.rect.y + 2 })).toEqual({ type: "select", row: 1, confirm: true });
+    app.dispatch(hitTestGui(app.view().gui!, { x: target.rect.x + 2, y: target.rect.y + 2 })!);
+    expect(app.view().gui!.list).toBeUndefined();
+    expect(app.session!.state).not.toBe(before);
+  });
+
+  it("shows a card's stats and first effect line under the name in its popup", () => {
+    const app = startGui(3);
+    for (let i = 0; i < 200 && !(humanTurn(app) && !app.view().gui!.dialog); i++) {
+      if (humanTurn(app)) playOneStep(app, i);
+      else app.tick();
+    }
+    const gui = app.view().gui!;
+    const handRow = gui.rows.length - 1;
+    const tile = gui.rows[handRow]!.tiles.find((t) => t.actionable)!;
+    app.dispatch(hitTestGui(gui, { x: tile.rect.x + 2, y: tile.rect.y + 4 })!);
+    const popup = app.view().gui!.popup!;
+    const def = app.session!.state.definitions[tile.cardId]!;
+    expect(popup.title).toBe(def.name);
+    expect(popup.info![0]!.text).toContain(`必要パワー${def.powerCost}`);
+    // The verb rows start under the info lines.
+    const lastInfo = popup.info![popup.info!.length - 1]!.rect;
+    expect(popup.rows[0]!.rect.y).toBeGreaterThanOrEqual(lastInfo.y + lastInfo.h);
+    expect(popup.rows[popup.rows.length - 1]!.rect.y + popup.rows[popup.rows.length - 1]!.rect.h).toBeLessThanOrEqual(popup.rect.y + popup.rect.h + 1);
+  });
 });
 
 describe("rush paid with a コール unit chosen first", () => {
@@ -1121,5 +1173,26 @@ describe("GuiMatch: phase ended for the human because nothing else was legal", (
     expect(state().phase).toBe("battle");
     expect(app.view().gui!.toast).toBe("できる行動がないのでラッシュ終了");
     expect(app.session!.log).toContain("（できる行動がないのでラッシュフェイズを自動で終了）");
+  });
+});
+
+describe("popupCardInfo", () => {
+  it("joins the stats a card has and keeps only the first effect line", () => {
+    expect(popupCardInfo({ id: "X", name: "x", type: "unit", powerCost: 0, bp: 1000, size: "S", category: ["WB"], text: "※これが撃破されたとき、1点ダメージを受ける。 【二撃目】ほか" } as never)).toEqual([
+      "必要パワー0 ・ BP1000 ・ S ・ WB",
+      "※これが撃破されたとき、1点ダメージを受ける。",
+    ]);
+    expect(popupCardInfo({ id: "Y", name: "y", type: "operation", powerCost: 2 } as never)).toEqual(["必要パワー2"]);
+    expect(popupCardInfo(undefined)).toEqual([]);
+  });
+});
+
+describe("dropSharedEnd", () => {
+  it("keeps what differs between one card's verbs", () => {
+    expect(dropSharedEnd(["パワーにチャージ", "コマンドにチャージ"])).toEqual(["パワー", "コマンド"]);
+    expect(dropSharedEnd(["ラッシュ", "アタック"])).toEqual(["ラッシュ", "アタック"]);
+    expect(dropSharedEnd(["パワーにチャージ"])).toEqual(["パワーにチャージ"]);
+    // Nothing left to tell them apart: unchanged.
+    expect(dropSharedEnd(["Aにチャージ", "Bにチャージ"])).toEqual(["Aにチャージ", "Bにチャージ"]);
   });
 });

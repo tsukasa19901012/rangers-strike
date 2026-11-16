@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { describeAction, humanizeLogEntry, isPantherClawLoopStop } from "./labels";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { testEngine } from "../testing/engine";
 
 describe("describeAction", () => {
@@ -35,6 +38,32 @@ describe("describeAction", () => {
     expect(humanizeLogEntry("player2|pass_battle_entry", state)).toBe("CPU: 進入を終える");
     expect(humanizeLogEntry("player1|command_payment_pending", state)).toBeNull();
     expect(humanizeLogEntry("あなたが1枚ドローした", state)).toBe("あなたが1枚ドローした");
+  });
+
+  it("writes every engine log kind in Japanese, never its raw name (command_payment_cancel etc.)", () => {
+    // Every kind the engine logs with buildSimpleLogEntry, read from its sources.
+    const root = join(dirname(fileURLToPath(import.meta.url)), "../../../engine/src");
+    const kinds = new Set<string>();
+    const walk = (dir: string) => {
+      for (const name of readdirSync(dir)) {
+        const path = join(dir, name);
+        if (statSync(path).isDirectory()) walk(path);
+        else if (name.endsWith(".ts") && !name.endsWith(".test.ts")) {
+          for (const m of readFileSync(path, "utf8").matchAll(/buildSimpleLogEntry\(\s*[\w.]+,\s*"([a-z_]+)"/g)) kinds.add(m[1]!);
+        }
+      }
+    };
+    walk(root);
+    expect(kinds.size).toBeGreaterThan(20);
+    const instance = state.players.player1.hand[0]!;
+    const raw = [...kinds]
+      .map((kind) => humanizeLogEntry(testEngine.formatGameLog(`player1|${kind}`, state.definitions), state))
+      .filter((text) => text !== null && /[a-z]+_[a-z_]+|player[12]/.test(text));
+    expect(raw).toEqual([]);
+    expect(humanizeLogEntry("player1|command_payment_cancel", state)).toBe("あなた: コマンドの支払いをやめた");
+    expect(humanizeLogEntry("player1|turn_ending_effects", state)).toBe("あなた: ターン終了時の効果を処理");
+    expect(humanizeLogEntry("player1|damage_payment|done", state)).toBe("あなた: ダメージを支払った");
+    expect(humanizeLogEntry(`player1|hold_for_wing|${instance.instanceId}`, state)).toBe(`あなた: ウイングのためホールド 「${name}」`);
   });
 
   it("falls back to the raw type for unknown actions", () => {

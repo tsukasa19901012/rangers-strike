@@ -75,7 +75,14 @@ export type GuiRowView = {
 /** A tappable "more above / below" mark of a window that shows only part of its cards or rows. */
 export type ScrollMark = { text: string; rect: Rect; area: "cards" | "rows"; direction: 1 | -1 };
 
-export type GuiBox = { rect: Rect; title: string; titleRect: Rect; rows: MenuRowView[]; marks?: ScrollMark[] };
+/** `info`: a card popup's lines under the title (stats, then the first line of the effect), so the card needs no detail look first. */
+/**
+ * `groups`: the every-action list grouped by card: one panel per line with the card name on its first line,
+ * and `rows` are then the verb buttons inside those panels (drawn at their rects, not as full-width rows).
+ */
+export type GuiBox = { rect: Rect; title: string; titleRect: Rect; rows: MenuRowView[]; marks?: ScrollMark[]; info?: PanelLine[]; groups?: MenuGroupView[] };
+/** One line of a grouped list: its panel, and the card name on the group's first line ("" on the lines after it). */
+export type MenuGroupView = { text: string; rect: Rect; nameRect: Rect };
 
 export type GuiDialogView = {
   rect: Rect;
@@ -147,6 +154,7 @@ function sameChoice(next: GameState["pendingEffectChoice"], base: NonNullable<Ga
   );
 }
 
+const ALL_LIST_TITLE = "すべての操作（カードごと）";
 const CHECK_RESET = "選び直す（チェックをすべて外す）";
 /** `callPick`: the verb opens the selection window to pick the card a コール unit pays the rush of. */
 type Verb = { label: string; items: MenuItem[]; callPick?: string };
@@ -164,9 +172,11 @@ type Mode =
       entry?: string;
       /** The start phase's steps, asked once when the phase begins and assist leaves a choice (askStartPhase). */
       start?: boolean;
+      /** The one card the popup is about: its stats and first effect line show under the title. */
+      cardId?: string;
     }
   | { kind: "target"; prompt: string; targets: Target[]; cursor: number }
-  | { kind: "list"; title: string; items: MenuItem[]; labels: string[]; cursor: ListCursor };
+  | { kind: "list"; title: string; items: MenuItem[]; labels: string[]; cursor: ListCursor; grouped?: boolean };
 
 type DialogItem = { kind: "card"; id: string; items: MenuItem[] } | { kind: "button"; items: MenuItem[] };
 
@@ -767,7 +777,7 @@ export class GuiMatch {
       .map((item) => ({ label: item.option.label, items: [item] }));
   }
 
-  private openPopup(title: string, anchor: Rect, verbs: Verb[], preferPass = false): void {
+  private openPopup(title: string, anchor: Rect, verbs: Verb[], preferPass = false, cardId?: string): void {
     if (verbs.length === 0) {
       this.message = this.humanActive() ? "できる操作はありません" : "CPU の手番です";
       return;
@@ -781,7 +791,7 @@ export class GuiMatch {
         cursor.move(0);
       }
     }
-    this.mode = { kind: "popup", title, anchor, verbs, cursor };
+    this.mode = { kind: "popup", title, anchor, verbs, cursor, ...(cardId ? { cardId } : {}) };
   }
 
   /** `variants`: the moves of one verb; rows drop the start they share, so a narrow screen still shows what differs. */
@@ -791,6 +801,105 @@ export class GuiMatch {
     cursor.reset(items.length, this.listRows());
     const labels = items.map((i) => i.option.label);
     this.mode = { kind: "list", title, items, labels: this.placeDuplicates(items, labels, variants ? variantLabels(labels) : labels), cursor };
+  }
+
+  /**
+   * 「すべての操作」: every move, the moves of one card next to each other (in the order the card first
+   * comes), shown as a line per card with its verbs as buttons. The cursor still steps move by move.
+   */
+  private openAllList(): void {
+    const all = this.allItems();
+    if (all.length === 0) return;
+    const order: (string | null)[] = [];
+    const byCard = new Map<string | null, MenuItem[]>();
+    for (const item of all) {
+      const key = actionSubjectId(item.option.action) ?? null;
+      if (!byCard.has(key)) order.push(key);
+      byCard.set(key, [...(byCard.get(key) ?? []), item]);
+    }
+    // Moves of no card (フェイズ終了 and the like) come last, one line each.
+    const sorted = [...order.filter((k) => k !== null), ...order.filter((k) => k === null)].flatMap((k) => byCard.get(k)!);
+    const cursor = new ListCursor();
+    cursor.reset(sorted.length, this.listRows());
+    const labels = sorted.map((i) => i.option.label);
+    this.mode = { kind: "list", title: ALL_LIST_TITLE, items: sorted, labels: this.placeDuplicates(sorted, labels, labels), cursor, grouped: true };
+  }
+
+  /**
+   * The visible moves of a grouped list laid out from y = 0: a line per card (name on the left, verb buttons
+   * to its right, wrapping onto more lines of the same card), a whole-width button for a move of no card.
+   */
+  private groupedLayout(mode: Extract<Mode, { kind: "list" }>, x: number, w: number): { rows: MenuRowView[]; groups: MenuGroupView[]; lines: number } {
+    const g = this.geometry;
+    const rowH = menuRowHeight(g);
+    // Finger-sized rows get padded buttons; a PC's short rows keep the buttons nearly row-high.
+    const pad = rowH >= 36 ? 4 : 1;
+    const gap = rowH >= 36 ? 6 : 4;
+    const visible: { index: number; key: string | null; name: string; verb: string }[] = [];
+    for (let r = 0; r < mode.cursor.rows; r++) {
+      const index = mode.cursor.rowToIndex(r);
+      if (index < 0) break;
+      const key = actionSubjectId(mode.items[index]!.option.action) ?? null;
+      const name = key ? this.instanceName(key) : "";
+      visible.push({ index, key, name, verb: key ? dropCardName(mode.labels[index]!, name) : mode.labels[index]! });
+    }
+    // Two copies of a card tell their places apart (placeDuplicates: 「（自手札1）」): that goes with the name.
+    for (let i = 0; i < visible.length; ) {
+      let j = i;
+      while (j < visible.length && visible[j]!.key === visible[i]!.key) j++;
+      const place = visible[i]!.verb.match(/（[^（）]+）$/)?.[0];
+      if (visible[i]!.key !== null && place && visible.slice(i, j).every((v) => v.verb.endsWith(place) && v.verb.length > place.length)) {
+        for (const v of visible.slice(i, j)) {
+          v.verb = v.verb.slice(0, -place.length).trim();
+          v.name = `${v.name}${place}`;
+        }
+      }
+      i = j;
+    }
+    const nameW = Math.min(Math.floor(w * 0.42), Math.ceil(Math.max(0, ...visible.map((v) => measureText(v.name, g.fontPx)))) + 16);
+    const natural = (verb: string) => Math.max(64, Math.ceil(measureText(verb, g.fontPx)) + 24);
+    // A card whose verbs would wrap onto a second line gets them shortened to what differs (dropSharedEnd).
+    for (let i = 0; i < visible.length; ) {
+      let j = i;
+      while (j < visible.length && visible[j]!.key === visible[i]!.key) j++;
+      const run = visible.slice(i, j);
+      const room = w - nameW - pad;
+      if (run[0]!.key !== null && run.reduce((sum, v) => sum + natural(v.verb) + gap, -gap) > room) {
+        dropSharedEnd(run.map((v) => v.verb)).forEach((verb, k) => (run[k]!.verb = verb));
+      }
+      i = j;
+    }
+    const rows: MenuRowView[] = [];
+    const groups: MenuGroupView[] = [];
+    let line = -1;
+    let cx = 0;
+    let lastKey: string | null | undefined;
+    const newLine = (text: string) => {
+      line++;
+      const rect = { x, y: line * rowH + 1, w, h: rowH - 2 };
+      groups.push({ text, rect, nameRect: { x: x + 8, y: rect.y, w: nameW - 8, h: rect.h } });
+      cx = x + nameW;
+    };
+    for (const v of visible) {
+      if (v.key === null) {
+        newLine("");
+        rows.push({ text: fitLineKeepTail(v.verb, { fontPx: g.fontPx, maxWidthPx: w - 20 }), selected: v.index === mode.cursor.index, rect: { x: x + pad, y: line * rowH + 1 + pad, w: w - pad * 2, h: rowH - 2 - pad * 2 } });
+        lastKey = undefined;
+        continue;
+      }
+      const want = natural(v.verb);
+      if (v.key !== lastKey) newLine(v.name);
+      else if (cx + want > x + w - pad) newLine("");
+      const bw = Math.min(x + w - pad - cx, want);
+      rows.push({
+        text: fitLineKeepTail(v.verb, { fontPx: g.fontPx, maxWidthPx: bw - 12 }),
+        selected: v.index === mode.cursor.index,
+        rect: { x: cx, y: line * rowH + 1 + pad, w: bw, h: rowH - 2 - pad * 2 },
+      });
+      cx += bw + gap;
+      lastKey = v.key;
+    }
+    return { rows, groups, lines: line + 1 };
   }
 
   /** Rows the "every action" list shows at once: LIST_ROWS, or fewer when finger-sized rows would overflow the board. */
@@ -820,7 +929,7 @@ export class GuiMatch {
       // The popup title already names the card, so drop it from each row.
       const name = this.cardName(tile.cardId);
       const short = verbs.map((verb) => ({ ...verb, label: dropCardName(verb.label, name) }));
-      this.openPopup(name, this.focusedRect(), short);
+      this.openPopup(name, this.focusedRect(), short, false, tile.kind === "hidden" ? undefined : tile.cardId);
     } else {
       this.openPopup("全体の操作", this.geometry.endButton, this.globalVerbs());
     }
@@ -1154,7 +1263,7 @@ export class GuiMatch {
         else return this.endPhase();
         break;
       case "allActions":
-        this.openList("すべての操作", this.allItems());
+        this.openAllList();
         break;
       case "toggleLog":
       case "tabNext":
@@ -1181,7 +1290,8 @@ export class GuiMatch {
           // One card: the title names it; several: each row keeps its card name.
           return event.instanceIds.length === 1 ? own.map((verb) => ({ ...verb, label: dropCardName(verb.label, name) })) : own;
         });
-        if (verbs.length > 0) this.openPopup(event.title, event.anchor, verbs);
+        const only = event.instanceIds.length === 1 ? this.instanceCardId(event.instanceIds[0]!) : undefined;
+        if (verbs.length > 0) this.openPopup(event.title, event.anchor, verbs, false, only);
         break;
       }
       case "select":
@@ -1243,7 +1353,7 @@ export class GuiMatch {
         this.dialogHidden = true;
         break;
       case "allActions":
-        this.openList("すべての操作", this.allItems());
+        this.openAllList();
         break;
       default:
         break;
@@ -1289,7 +1399,7 @@ export class GuiMatch {
         this.mode = { kind: "board" };
         return this.endPhase();
       case "allActions":
-        this.openList("すべての操作", this.allItems());
+        this.openAllList();
         return null;
       case "focusTile": {
         // The battle-entry popup leaves the attack targets lit on the board: a tap on one attacks it.
@@ -1403,6 +1513,11 @@ export class GuiMatch {
 
   private cardName(cardId: string): string {
     return this.state().definitions[cardId]?.name ?? cardId;
+  }
+
+  /** The card id of an instance on the board, for a popup about it (undefined when not found). */
+  private instanceCardId(id: string): string | undefined {
+    return locateInstance(this.state(), id)?.card.cardId;
   }
 
   private instanceName(id: string): string {
@@ -1756,12 +1871,14 @@ export class GuiMatch {
     let list: GuiBox | undefined;
     if (mode.kind === "popup") {
       // Fit the widest row, between a small card-sized popup and the whole board.
-      const widest = Math.max(...[mode.title, ...mode.verbs.map((v) => v.label)].map((t) => measureText(t, g.fontPx)));
-      const w = Math.min(g.board.w, Math.max(110, Math.ceil(widest) + 12));
+      const info = mode.cardId ? popupCardInfo(state.definitions[mode.cardId]) : [];
+      const widest = Math.max(...[mode.title, ...info.slice(0, 1), ...mode.verbs.map((v) => v.label)].map((t) => measureText(t, g.fontPx)));
+      const w = Math.min(g.board.w, Math.max(info.length > 0 ? 200 : 110, Math.ceil(widest) + 12));
       const rowsShown = Math.min(mode.verbs.length, POPUP_ROWS);
       const more = mode.verbs.length > POPUP_ROWS ? 1 : 0;
       const rowH = menuRowHeight(g);
-      const h = g.lineHeight + (rowsShown + more) * rowH + 4;
+      const infoH = info.length * g.lineHeight;
+      const h = g.lineHeight + infoH + (rowsShown + more) * rowH + 4;
       const a = mode.anchor;
       const below = a.y + a.h + 2;
       const above = a.y - h - 2;
@@ -1772,8 +1889,36 @@ export class GuiMatch {
         rect: { x, y, w, h },
         title: fitLine(mode.title, wrap),
         titleRect: { x: x + 4, y: y + 2, w: w - 8, h: g.lineHeight },
-        rows: this.boxRows(mode.cursor, mode.verbs.map((v) => v.label), y + 2 + g.lineHeight, x + 4, w - 8, wrap),
-        marks: boxMarks(mode.cursor, { x: x + 4, y: y + 2 + g.lineHeight + rowsShown * rowH, w: w - 8, h: rowH }),
+        rows: this.boxRows(mode.cursor, mode.verbs.map((v) => v.label), y + 2 + g.lineHeight + infoH, x + 4, w - 8, wrap),
+        marks: boxMarks(mode.cursor, { x: x + 4, y: y + 2 + g.lineHeight + infoH + rowsShown * rowH, w: w - 8, h: rowH }),
+        ...(info.length > 0
+          ? {
+              info: info.map((text, i) => ({
+                text: fitLine(text, wrap),
+                tone: (i === 0 ? "body" : "dim") as PanelTone,
+                rect: { x: x + 4, y: y + 2 + g.lineHeight * (i + 1), w: w - 8, h: g.lineHeight },
+              })),
+            }
+          : {}),
+      };
+    } else if (mode.kind === "list" && mode.grouped) {
+      const b = g.board;
+      const x = b.x + 4;
+      const w = b.w - 8;
+      const laid = this.groupedLayout(mode, x + 4, w - 8);
+      const more = mode.items.length > mode.cursor.rows ? 1 : 0;
+      const rowH = menuRowHeight(g);
+      const h = g.lineHeight + (laid.lines + more) * rowH + 6;
+      const rect = { x, y: Math.max(b.y + 2, b.y + Math.floor((b.h - h) / 2)), w, h };
+      const top = rect.y + 3 + g.lineHeight;
+      const down = (r: Rect): Rect => ({ ...r, y: r.y + top });
+      list = {
+        rect,
+        title: fitLine(`${mode.title} ${mode.cursor.index + 1}/${mode.items.length}`, { fontPx: g.fontPx, maxWidthPx: w - 8 }),
+        titleRect: { x: x + 4, y: rect.y + 3, w: w - 8, h: g.lineHeight },
+        rows: laid.rows.map((row) => ({ ...row, rect: down(row.rect) })),
+        groups: laid.groups.map((group) => ({ ...group, rect: down(group.rect), nameRect: down(group.nameRect) })),
+        marks: boxMarks(mode.cursor, { x: x + 4, y: top + laid.lines * rowH, w: w - 8, h: rowH }),
       };
     } else if (mode.kind === "list") {
       const b = g.board;
@@ -1887,6 +2032,38 @@ export function variantLabels(labels: string[]): string[] {
   const short = labels.map((label) => label.slice(cut).trim());
   // Rows that still read the same get their cards' places added (placeDuplicates).
   return short.some((label) => label.length === 0) || new Set(short).size < new Set(labels).size ? labels : short;
+}
+
+/**
+ * What a card's popup shows under its name: 「必要パワー0 ・ BP1000 ・ S ・ WB」, then the first line of its effect.
+ * Only the parts a card has; nothing for an unknown card.
+ */
+/**
+ * One card's verb buttons when they don't fit on its line: the end they all share goes, with the particle
+ * before it (「パワーにチャージ」「コマンドにチャージ」 → 「パワー」「コマンド」). Unchanged when nothing
+ * sensible is shared or two would then read the same.
+ */
+export function dropSharedEnd(verbs: string[]): string[] {
+  if (verbs.length < 2) return verbs;
+  let n = 0;
+  const shortest = Math.min(...verbs.map((v) => v.length));
+  while (n < shortest && verbs.every((v) => v[v.length - 1 - n] === verbs[0]![verbs[0]!.length - 1 - n])) n++;
+  if (n < 2) return verbs;
+  const short = verbs.map((v) => v.slice(0, v.length - n).replace(/[にへをで]$/, "").trim());
+  return short.some((v) => v.length < 2) || new Set(short).size < new Set(verbs).size ? verbs : short;
+}
+
+export function popupCardInfo(def: GameState["definitions"][string] | undefined): string[] {
+  if (!def) return [];
+  const categories = ([] as string[]).concat(def.category ?? []);
+  const stats = [
+    def.powerCost !== undefined && def.powerCost !== null ? `必要パワー${def.powerCost}` : "",
+    def.bp !== undefined && def.bp !== null ? `BP${def.bp}` : "",
+    def.size ? String(def.size) : "",
+    categories.join("/"),
+  ].filter(Boolean);
+  const effect = effectParagraphs(def.text ?? "").split("\n")[0]?.trim() ?? "";
+  return [stats.join(" ・ "), effect].filter(Boolean);
 }
 
 /**

@@ -72,6 +72,16 @@ export function fitTopBar(text: string, maxPx: number): { text: string; px: 14 |
   return { text: fitLine(short, { fontPx: 14, maxWidthPx: maxPx }), px: 14 };
 }
 
+/** Where a phase's label goes: its box on a phone, its box past the current-phase bar on the PC. */
+function phaseTextRect(r: Box, portrait: boolean): Box {
+  return portrait ? r : { x: r.x + 12, y: r.y, w: r.w - 12, h: r.h };
+}
+
+/** The current phase's mark: an underline on a phone, a bar on the left on the PC. */
+function phaseMarkRect(r: Box, portrait: boolean): Box {
+  return portrait ? { x: r.x + 10, y: r.y + r.h - 3, w: r.w - 20, h: 3 } : { x: r.x, y: r.y + 4, w: 4, h: r.h - 8 };
+}
+
 /** Buttons beside the end-phase button (not part of GuiView; the app handles their clicks). */
 export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; leave: Box; settings: Box; share: Box } {
   const e = g.endButton;
@@ -111,6 +121,12 @@ export function turnWarningRect(g: GuiGeometry): Box {
   const w = Math.min(440, row.w - 16);
   return { x: row.x + row.w - w - 8, y: turn.y, w, h: turn.h };
 }
+
+/** A card a finger is held on (phone long press): `progress` 0→1 fills the ring, at 1 the card's sheet opens. */
+export type PressView = { cardId: string; rect: Box; progress: number };
+
+/** Dots of the long-press ring. */
+const RING_DOTS = 16;
 
 /** A card being dragged: drawn under the pointer. */
 export type DragView = { cardId: string; x: number; y: number; w: number; h: number };
@@ -435,7 +451,36 @@ export function MenuBox(props: { box: GuiBox; accent: boolean }) {
       <View class="absolute flex-row items-center" style={at(props.box.titleRect)}>
         <Text class="text-sm text-sky-300 font-bold">{props.box.title}</Text>
       </View>
-      <Index each={props.box.rows}>
+      <Index each={props.box.info ?? []}>
+        {(line) => (
+          <View class="absolute flex-row items-center" style={at(line().rect)}>
+            <Text class={TONE[line().tone]}>{line().text}</Text>
+          </View>
+        )}
+      </Index>
+      <Index each={props.box.groups ?? []}>
+        {(group) => (
+          <>
+            <View class="absolute rounded-[8] bg-[#1e293b] border border-[#334155]" style={at(group().rect)} />
+            <View class="absolute flex-row items-center" style={at(group().nameRect)}>
+              <Text class="text-sm text-slate-100 font-bold">{group().text}</Text>
+            </View>
+          </>
+        )}
+      </Index>
+      <Show when={props.box.groups}>
+        <Index each={props.box.rows}>
+          {(row) => (
+            <View
+              class={row().selected ? "absolute flex-row items-center justify-center rounded-[6] bg-gradient-to-r from-sky-600 to-blue-700" : "absolute flex-row items-center justify-center rounded-[6] bg-[#334155]"}
+              style={at(row().rect)}
+            >
+              <Text class={row().selected ? "text-sm text-white font-bold" : "text-sm text-slate-100"}>{row().text}</Text>
+            </View>
+          )}
+        </Index>
+      </Show>
+      <Index each={props.box.groups ? [] : props.box.rows}>
         {(row) => (
           <View
             class={
@@ -452,6 +497,38 @@ export function MenuBox(props: { box: GuiBox; accent: boolean }) {
         )}
       </Index>
       <ScrollMarks marks={props.box.marks} />
+    </>
+  );
+}
+
+/**
+ * A held card lifted a little above its place, with a ring of dots over it that lights clockwise
+ * from the top as the press goes on: the player sees the long press coming and can let go first.
+ */
+function PressRing(props: { press: PressView }) {
+  const r = () => props.press.rect;
+  const lift = 8;
+  const center = () => ({ x: r().x + r().w / 2, y: r().y - lift + r().h / 2 });
+  // Around the card's middle, wider than the card so the dots stand out beside it as well as over it.
+  const radius = () => Math.max(20, r().w / 2 + 6);
+  const dots = Array.from({ length: RING_DOTS }, (_, i) => i);
+  return (
+    <>
+      <View class="absolute rounded-[8] border-[2] border-sky-300 shadow-lg" style={at({ x: r().x - 2, y: r().y - lift - 2, w: r().w + 4, h: r().h + 4 })}>
+        <CardFace cardId={props.press.cardId} rect={{ x: 2, y: 2, w: r().w, h: r().h }} />
+      </View>
+      <Index each={dots}>
+        {(i) => {
+          const angle = () => (i() / RING_DOTS) * Math.PI * 2 - Math.PI / 2;
+          const lit = () => i() < Math.round(props.press.progress * RING_DOTS);
+          return (
+            <View
+              class={lit() ? "absolute w-[8] h-[8] rounded-full bg-sky-300 border border-[#0f172a]" : "absolute w-[8] h-[8] rounded-full bg-[#334155] border border-[#0f172a]"}
+              style={at({ x: center().x + Math.cos(angle()) * radius() - 4, y: center().y + Math.sin(angle()) * radius() - 4, w: 8, h: 8 })}
+            />
+          );
+        }}
+      </Index>
     </>
   );
 }
@@ -627,6 +704,7 @@ export function MatchView(props: {
   /** The end-turn button was pressed once while moves are open: what it would skip (a second press ends the turn). */
   turnWarning: string | null;
   drag: DragView | null;
+  press: PressView | null;
   fullText: boolean;
   /** A long-pressed card shown whole from the bottom of the screen (CardSheet). */
   sheet: string | null;
@@ -652,6 +730,7 @@ export function MatchView(props: {
   const endLines = () => (choose() ? ["操作を選ぶ"] : v().endButton.lines.filter((line) => line && line !== "R" && line !== "×:操作"));
   const endLive = () => v().endButton.enabled || choose();
   const buttons = () => matchButtons(g());
+  const activePhase = () => v().phases.findIndex((phase) => phase.active);
   const topBarFit = () => fitTopBar(v().topBar, portrait() ? buttons().share.x - 10 - 8 : g().width);
   const turnTwoLines = () => portrait() && measureText("ターン終了", 14) > buttons().turn.w - 8;
   return (
@@ -757,25 +836,25 @@ export function MatchView(props: {
           <Text class="text-xs text-slate-400 font-bold">フェイズ</Text>
         </View>
       </Show>
+      {/* Phases are a read-only step display, not tabs: no boxes, 「›」 between them on a phone, the current one in orange. */}
       <Index each={v().phases}>
         {(phase, i) => (
-          <View
-            class={
-              portrait()
-                ? phase().active
-                  ? "absolute flex-row items-center justify-center rounded-[6] bg-gradient-to-r from-amber-500 to-orange-600"
-                  : "absolute flex-row items-center justify-center rounded-[6] bg-[#111827] border border-[#1f2937]"
-                : phase().active
-                  ? "absolute flex-row items-center px-[10] gap-2 rounded-[6] bg-gradient-to-r from-amber-500 to-orange-600"
-                  : "absolute flex-row items-center px-[10] gap-2 rounded-[6] bg-[#111827] border border-[#1f2937]"
-            }
-            style={at(phase().rect)}
-          >
-            <Show when={!portrait()}>
-              <Text class={phase().active ? "text-xs text-white font-bold" : "text-xs text-slate-500"}>{String(i + 1)}</Text>
+          <>
+            <View class={portrait() ? "absolute flex-col items-center justify-center" : "absolute flex-row items-center gap-2"} style={at(phaseTextRect(phase().rect, portrait()))}>
+              <Show when={!portrait()}>
+                <Text class={phase().active ? "text-xs text-orange-400 font-bold" : "text-xs text-slate-600"}>{String(i + 1)}</Text>
+              </Show>
+              <Text class={phase().active ? "text-sm text-orange-400 font-bold" : i < activePhase() ? "text-sm text-slate-600" : "text-sm text-slate-400"}>{phase().label}</Text>
+            </View>
+            <Show when={phase().active}>
+              <View class="absolute rounded-[2] bg-orange-400" style={at(phaseMarkRect(phase().rect, portrait()))} />
             </Show>
-            <Text class={phase().active ? "text-sm text-white font-bold" : "text-sm text-slate-400"}>{phase().label}</Text>
-          </View>
+            <Show when={portrait() && i < v().phases.length - 1}>
+              <View class="absolute flex-row items-center justify-center" style={at({ x: phase().rect.x + phase().rect.w - 4, y: phase().rect.y, w: 12, h: phase().rect.h })}>
+                <Text class="text-sm text-slate-600">›</Text>
+              </View>
+            </Show>
+          </>
         )}
       </Index>
       <View
@@ -963,6 +1042,8 @@ export function MatchView(props: {
           </View>
         )}
       </Show>
+
+      <Show when={props.press}>{(press) => <PressRing press={press()} />}</Show>
 
       <Show when={v().popup}>{(box) => <MenuBox box={box()} accent={false} />}</Show>
       <Show when={v().list}>{(box) => <MenuBox box={box()} accent />}</Show>
