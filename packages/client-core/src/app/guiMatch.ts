@@ -372,6 +372,9 @@ export class GuiMatch {
       if (fallback >= 0) this.setFocus(fallback, Math.min(this.focusIndex, this.rows[fallback]!.tiles.length - 1));
       else this.focusedId = null;
     }
+    // The end-turn button works for the turn it was pressed on only. Left over (the turn ended
+    // while it ran), it kept the next turn's start-phase popup and battle-entry popups shut.
+    if (this.endTurnOn !== null && this.state().turn !== this.endTurnOn) this.endTurnOn = null;
     this.askBattleEntry();
     this.askStartPhase();
   }
@@ -1145,6 +1148,10 @@ export class GuiMatch {
       if (index !== null) return { item: { option: options[index]!, index }, endTurn: true };
       if (this.state().turn === this.endTurnOn) this.message = "ターン終了を止めました: 選ぶ操作があります";
       this.endTurnOn = null;
+      // The choice it stopped on opens as it would have without the button.
+      this.askBattleEntry();
+      this.askStartPhase();
+      if (this.mode.kind !== "board") return null;
     }
     const index = assistMove(this.state(), options, this.assist);
     return index === null ? null : { item: { option: options[index]!, index }, endTurn: false };
