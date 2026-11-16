@@ -8,15 +8,25 @@
 //   POST /api/match {"op":"act","id","t","seq","version","action"}            -> {"result","view"}
 //   POST /api/match {"op":"resign","id","t"}                                  -> {"view"}
 //   POST /api/match {"op":"cancel","id","t"}                                  -> {"ok":true}   相手を待つのをやめる（ホストだけ、参加前だけ）
+//   POST /api/match {"op":"rematch","id","t"}                                 -> {"view","post"} 再戦を希望する（終わった対戦だけ）。両者がそろうと
+//        同じ席・同じデッキ・先攻を逆にした新しい部屋 post.rematch.id ができ、両者とも同じトークンで入れる
+//   POST /api/match {"op":"reveal","id","t"}                                  -> {"view","post"} デッキの公開に同意する。両者がそろうと post.reveal.deck に相手のデッキ
+// 終わった対戦の表示には post（再戦・デッキ公開の状態）が付く。これが変わると版番号が進む（engine touchMatch）ので「変わりなし」の poll でも気づける。
+// 決着した対戦は game:<時刻>-<8文字> に対戦の記録（engine matchRecord。CPU 戦の記録 RG1 と同じ形に pvp の印）を1年保存する（1回だけ）。
 //
 // deck は {"starter":"<スターターの id>"} か {"cards":["RS-001",...]}（同じ番号を枚数分）。
 // 部屋の鍵は match:<id>、値は「改訂番号|JSON」。書き込みは改訂番号が読んだときのままなら（Lua で比べて）だけ通し、
 // 同時に書かれたら読み直してやり直す（同じ操作は seq で一度しか適用されない）。トークンは SHA-256 だけを保存する。
 // 期限（持ち時間）は誰かが読むか送るたびに matchTick で確かめ、過ぎていれば自動で進めて保存する。
+import { gzipSync } from "node:zlib";
 import {
   ENGINE_VERSION,
   MatchError,
   createMatch,
+  createRematch,
+  matchRecord,
+  resolveDeck,
+  touchMatch,
   deserializeMatch,
   joinMatch,
   matchAct,
@@ -28,6 +38,8 @@ import {
 
 /** Rooms are deleted this long after their last write (a finished match stays to show its result). */
 export const MATCH_TTL_SECONDS = 6 * 60 * 60;
+/** Records of finished matches are kept as long as the CPU games' records (api/share.js). */
+const GAME_TTL_SECONDS = 365 * 24 * 60 * 60;
 /** A request body larger than this is not a move or a deck. */
 const MAX_BODY = 64 * 1024;
 const ID_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
@@ -85,6 +97,8 @@ export function upstashMatchStore(env = process.env) {
     create: async (key, value, ttl) => (await command(["SET", key, value, "EX", String(ttl), "NX"])) === "OK",
     /** Writes `value` when the stored revision is still `rev` (0: absent). */
     swap: async (key, rev, value, ttl) => (await command(["EVAL", CAS_SCRIPT, "1", key, String(rev), value, String(ttl)])) === 1,
+    /** A finished match's record (never read back here; scripts/list-game-records.mjs reads them). */
+    record: async (key, value, ttl) => (await command(["SET", key, value, "EX", String(ttl), "NX"])) === "OK",
   };
 }
 
@@ -97,6 +111,7 @@ export function memoryMatchStore() {
     get: async (key) => map.get(key) ?? null,
     create: async (key, value) => (map.has(key) ? false : (map.set(key, value), true)),
     swap: async (key, rev, value) => (revOf(map.get(key)) === rev ? (map.set(key, value), true) : false),
+    record: async (key, value) => (map.set(key, value), true),
   };
 }
 
@@ -116,6 +131,33 @@ async function playerOf(room, token) {
   if (room.tokens.player1 === hash) return "player1";
   if (room.tokens.player2 === hash) return "player2";
   return null;
+}
+
+const other = (player) => (player === "player1" ? "player2" : "player1");
+
+/** What follows a finished match, as one player sees it: the rematch and the deck reveal (both need both players). */
+function postOf(room, m, player) {
+  if (m.status !== "finished") return undefined;
+  const rematch = room.rematch?.ready ?? {};
+  const reveal = room.reveal ?? {};
+  const both = (s) => !!s.player1 && !!s.player2;
+  let deck;
+  if (both(reveal)) {
+    try {
+      deck = resolveDeck(m.decks[other(player)]).map((card) => card.id);
+    } catch {
+      deck = undefined;
+    }
+  }
+  return {
+    rematch: { you: !!rematch[player], them: !!rematch[other(player)], ...(both(rematch) ? { id: room.rematch.id } : {}) },
+    reveal: { you: !!reveal[player], them: !!reveal[other(player)], ...(deck ? { deck } : {}) },
+  };
+}
+
+/** The finished match's record as the CPU games' records are stored (RG1. + gzip of the JSON). */
+function recordCode(record) {
+  return `RG1.${gzipSync(Buffer.from(JSON.stringify(record), "utf8")).toString("base64url")}`;
 }
 
 function isDeckSpec(deck) {
@@ -148,10 +190,21 @@ export function createMatchHandlers(getStore, clock = () => Date.now()) {
       const before = m.version;
       const out = await change(room, m, deps);
       if (out instanceof Response) return out;
-      const changed = out.changed || m.version !== before;
-      if (!changed) return ok(out.body);
+      // A match that has just ended is recorded once (the flag is saved with the room).
+      let record = null;
+      let recordedNow = false;
+      if (m.status === "finished" && !room.recorded) {
+        room.recorded = recordedNow = true;
+        record = matchRecord(m, deps.now);
+      }
+      if (!out.changed && m.version === before && !recordedNow) return ok(out.body);
       room.match = serializeMatch(m);
-      if (await store.swap(`match:${id}`, rev, encode(rev + 1, room), MATCH_TTL_SECONDS)) return ok(out.body);
+      if (await store.swap(`match:${id}`, rev, encode(rev + 1, room), MATCH_TTL_SECONDS)) {
+        if (record && store.record) {
+          await store.record(`game:${deps.now.toString(36)}-${randomText(ID_LENGTH)}`, recordCode(record), GAME_TTL_SECONDS).catch(() => false);
+        }
+        return ok(out.body);
+      }
     }
     return json(409, { error: "busy" });
   }
@@ -169,7 +222,7 @@ export function createMatchHandlers(getStore, clock = () => Date.now()) {
         if (!player) return json(403, { error: "bad_token" });
         matchTick(m, deps);
         if (since !== null && String(m.version) === since) return { body: { unchanged: true } };
-        return { body: { view: matchView(m, player, deps) } };
+        return { body: { view: matchView(m, player, deps), post: postOf(room, m, player) } };
       });
     },
 
@@ -244,7 +297,7 @@ export function createMatchHandlers(getStore, clock = () => Date.now()) {
           const player = await playerOf(room, body.t);
           if (!player) return json(403, { error: "bad_token" });
           const result = matchAct(m, player, { seq: body.seq, version: body.version, action: body.action }, deps);
-          return { body: { result, view: matchView(m, player, deps) } };
+          return { body: { result, view: matchView(m, player, deps), post: postOf(room, m, player) } };
         });
       }
 
@@ -253,7 +306,41 @@ export function createMatchHandlers(getStore, clock = () => Date.now()) {
           const player = await playerOf(room, body.t);
           if (!player) return json(403, { error: "bad_token" });
           matchResign(m, player, deps);
-          return { body: { view: matchView(m, player, deps) } };
+          return { body: { view: matchView(m, player, deps), post: postOf(room, m, player) } };
+        });
+      }
+
+      if (body.op === "rematch") {
+        return update(store, id, async (room, m, deps) => {
+          const player = await playerOf(room, body.t);
+          if (!player) return json(403, { error: "bad_token" });
+          if (m.status !== "finished") return json(409, { error: "not_finished" });
+          room.rematch ??= { id: randomText(ID_LENGTH), ready: {} };
+          if (room.rematch.ready[player]) return { body: { view: matchView(m, player, deps), post: postOf(room, m, player) } };
+          room.rematch.ready[player] = true;
+          touchMatch(m);
+          if (room.rematch.ready[other(player)]) {
+            // Both want it: the new room, already playing, with the same two tokens. A retry after a lost write
+            // finds it made (create only writes an absent key), so it is made once.
+            const next = createRematch(m, room.rematch.id, ENGINE_VERSION, deps);
+            await store.create(`match:${room.rematch.id}`, encode(1, { v: 1, tokens: { ...room.tokens }, match: serializeMatch(next) }), MATCH_TTL_SECONDS);
+          }
+          return { changed: true, body: { view: matchView(m, player, deps), post: postOf(room, m, player) } };
+        });
+      }
+
+      if (body.op === "reveal") {
+        return update(store, id, async (room, m, deps) => {
+          const player = await playerOf(room, body.t);
+          if (!player) return json(403, { error: "bad_token" });
+          if (m.status !== "finished") return json(409, { error: "not_finished" });
+          room.reveal ??= {};
+          const fresh = !room.reveal[player];
+          if (fresh) {
+            room.reveal[player] = true;
+            touchMatch(m);
+          }
+          return { changed: fresh, body: { view: matchView(m, player, deps), post: postOf(room, m, player) } };
         });
       }
 

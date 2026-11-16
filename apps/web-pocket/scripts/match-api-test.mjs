@@ -3,10 +3,13 @@
 //   node scripts/build-server.mjs && node --test scripts/match-api-test.mjs   (npm test)
 // Room creation and joining, tokens, a whole match played through the API (moves picked from each player's
 // own view, the clock pushed past the time limit now and then so it always ends), the 「unchanged」 poll,
-// resending a move, and a write that loses a race being retried from a fresh read.
+// resending a move, a write that loses a race being retried from a fresh read, the record of a finished match,
+// rematch and the deck reveal.
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { gunzipSync } from "node:zlib";
 import { createMatchHandlers, memoryMatchStore } from "../api/match.js";
+import { isGameCode } from "../api/share.js";
 
 function harness() {
   const store = memoryMatchStore();
@@ -147,4 +150,78 @@ test("参加前ならホストは部屋を閉じられ、閉じた部屋には�
   assert.equal((await h.post({ op: "join", id: created.body.id, deck: { starter: "abarenoh" } })).status, 404);
   const { id, tokens } = await room(h);
   assert.equal((await h.post({ op: "cancel", id, t: tokens.player1 })).status, 409);
+});
+
+test("終わった対戦は1回だけ記録され、記録は CPU 戦の記録と同じ形に対人戦の印", async () => {
+  const h = harness();
+  const { id, tokens } = await room(h, "guest");
+  // A few moves, then a resign.
+  for (let i = 0; i < 6; i++) {
+    const v = (await h.get({ id, t: tokens.player1 })).body.view;
+    const actor = v.view.actionPlayerId;
+    const own = (await h.get({ id, t: tokens[actor] })).body.view;
+    await h.post({ op: "act", id, t: tokens[actor], seq: own.lastSeq + 1, version: own.version, action: own.view.legalActions[0] });
+  }
+  assert.equal((await h.post({ op: "resign", id, t: tokens.player1 })).status, 200);
+  await h.get({ id, t: tokens.player2 });
+  await h.post({ op: "reveal", id, t: tokens.player2 });
+  const keys = [...h.store.map.keys()].filter((k) => k.startsWith("game:"));
+  assert.equal(keys.length, 1);
+  const code = h.store.map.get(keys[0]);
+  assert.ok(isGameCode(code));
+  const record = JSON.parse(gunzipSync(Buffer.from(code.slice(4), "base64url")).toString("utf8"));
+  assert.equal(record.pvp, true);
+  assert.equal(record.winner, "player2");
+  assert.equal(record.reason, "resign");
+  assert.equal(record.firstPlayer, "player2");
+  assert.equal(record.humanDeck, "abarenoh");
+  assert.equal(record.cpuDeck, "custom:pvp");
+  assert.equal(record.cpuCards.length, 40);
+  assert.equal(record.actions.length, 6);
+});
+
+test("再戦: 片方が希望すると相手に伝わり、両者そろうと同じトークンで入れる新しい部屋が始まる（先攻は逆）", async () => {
+  const h = harness();
+  const { id, tokens } = await room(h, "host");
+  assert.equal((await h.post({ op: "rematch", id, t: tokens.player1 })).status, 409); // まだ対戦中
+  await h.post({ op: "resign", id, t: tokens.player2 });
+  const seen = (await h.get({ id, t: tokens.player2 })).body.view.version;
+  const first = await h.post({ op: "rematch", id, t: tokens.player1 });
+  assert.deepEqual(first.body.post.rematch, { you: true, them: false });
+  // The other side's "anything new?" poll sees it.
+  const polled = await h.get({ id, t: tokens.player2, v: String(seen) });
+  assert.equal(polled.body.unchanged, undefined);
+  assert.deepEqual(polled.body.post.rematch, { you: false, them: true });
+  // Pressing again changes nothing.
+  const again = await h.post({ op: "rematch", id, t: tokens.player1 });
+  assert.equal(again.body.view.version, first.body.view.version);
+  const second = await h.post({ op: "rematch", id, t: tokens.player2 });
+  const next = second.body.post.rematch.id;
+  assert.match(next, /^[A-Za-z0-9]{8}$/);
+  assert.notEqual(next, id);
+  assert.equal((await h.get({ id, t: tokens.player1 })).body.post.rematch.id, next);
+  const p1 = (await h.get({ id: next, t: tokens.player1 })).body.view;
+  const p2 = (await h.get({ id: next, t: tokens.player2 })).body.view;
+  assert.equal(p1.status, "playing");
+  assert.equal(p1.you, "player1");
+  assert.equal(p2.you, "player2");
+  assert.equal(p1.view.actionPlayerId, "player2"); // the host went first last time
+  assert.equal((await h.get({ id: next, t: "x".repeat(24) })).status, 403);
+});
+
+test("デッキ公開: 両者が同意したときだけ相手のデッキが届く", async () => {
+  const h = harness();
+  const { id, tokens } = await room(h);
+  assert.equal((await h.post({ op: "reveal", id, t: tokens.player1 })).status, 409); // まだ対戦中
+  await h.post({ op: "resign", id, t: tokens.player1 });
+  const one = await h.post({ op: "reveal", id, t: tokens.player1 });
+  assert.deepEqual(one.body.post.reveal, { you: true, them: false });
+  assert.deepEqual((await h.get({ id, t: tokens.player2 })).body.post.reveal, { you: false, them: true });
+  const two = await h.post({ op: "reveal", id, t: tokens.player2 });
+  assert.equal(two.body.post.reveal.deck.length, 40);
+  // The guest sees the host's starter (abarenoh), the host the guest's 40 × RS-001.
+  assert.ok(two.body.post.reveal.deck.some((c) => c !== "RS-001"));
+  const host = (await h.get({ id, t: tokens.player1 })).body.post.reveal;
+  assert.equal(host.deck.length, 40);
+  assert.ok(host.deck.every((c) => c === "RS-001"));
 });

@@ -33,10 +33,12 @@ import {
   type ScreenView,
   type PlayerId,
   RemoteSession,
+  type RemoteMatchView,
 } from "@rangers-strike/client-core";
 import { engine } from "./engine";
 import { Lobby } from "./lobby";
-import { fetchTransport, inviteFromLocation, saveRoom, savedRoom, serverNow } from "./online";
+import { fetchTransport, inviteFromLocation, isOutdated, saveRoom, savedRoom, serverNow, type SavedRoom } from "./online";
+import { PostGameRoom } from "./postGame";
 import { vibrate, webPlatform } from "./platform";
 import { pollCardArt } from "./cardArt";
 import { MatchView, matchButtons, setOpponentName, peekLayout, pileHit, pileLayout, rowMarks, type DragView, type PilePeek, type PressView } from "./MatchView";
@@ -228,11 +230,15 @@ export default function App() {
       });
   };
   // 対人戦: the lobby (create a room / join from an invite URL ?m=<id>); a reload goes back to the room.
-  const lobby = new Lobby((room, first) => {
+  const startRemote = (room: SavedRoom, first: RemoteMatchView) => {
     const session = new RemoteSession({ engine, transport: fetchTransport(room, first), first, now: () => Date.now() });
     controller.startRemoteMatch(session);
     refresh();
-  });
+  };
+  const lobby = new Lobby(startRemote);
+  // After a 対人戦: the rematch and the deck reveal (the result screen's buttons).
+  const postGame = new PostGameRoom(startRemote);
+  let outdatedShown = false;
   const invite = inviteFromLocation();
   if (invite) lobby.openJoin(invite);
   else {
@@ -435,8 +441,9 @@ export default function App() {
   // For browser tests and debugging from the console.
   (globalThis as unknown as { __rsApp?: unknown }).__rsApp = {
     controller,
-    /** 対人戦のロビー (scripts/online-test.mjs). */
+    /** 対人戦のロビーと、結果画面の再戦・デッキ公開 (scripts/online-test.mjs). */
     lobby,
+    postGame,
     /** The match screen's buttons (ターン終了, 投了 / 中断, 設定, 共有, …) in the core's coordinates. */
     buttons: () => {
       const gui = controller.view().gui;
@@ -986,6 +993,18 @@ export default function App() {
     }
     if (sheet() && !controller.view().gui) setSheet(null);
     lobby.frame();
+    if (controller.remoteSession && controller.view().screen === "result") {
+      postGame.follow(savedRoom());
+      postGame.frame();
+    } else postGame.follow(null);
+    if (isOutdated() && !outdatedShown) {
+      outdatedShown = true;
+      // The match keeps going after a reload (the room is saved), so the notice stays up long.
+      showNotice("アプリが更新されました。ページを再読み込みしてください（対戦は再読み込みで続きから）");
+      noticeFrames = NOTICE_FRAMES * 8;
+      controller.notify("アプリが更新されました。ページを再読み込みしてください");
+      changed = true;
+    }
     setOpponentName(controller.remoteSession ? "相手" : "CPU");
     if (controller.tick()) changed = true;
     const nextClock = clockText();
@@ -1030,6 +1049,7 @@ export default function App() {
       <Match when={view().screen === "result"}>
         <ResultView
           controller={controller}
+          postGame={postGame}
           width={size().width}
           onBack={() => {
             if (controller.remoteSession) saveRoom(null);

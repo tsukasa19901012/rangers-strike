@@ -16,6 +16,19 @@ const g = globalThis as unknown as BrowserGlobals;
 export type DeckSpec = { starter: string } | { cards: string[] };
 export type FirstChoice = "host" | "guest" | "random";
 export type SavedRoom = { id: string; token: string };
+/** What follows a finished match (api/match.js postOf): the rematch and the deck reveal, each needing both players. */
+export type PostGame = {
+  rematch: { you: boolean; them: boolean; id?: string };
+  reveal: { you: boolean; them: boolean; deck?: string[] };
+};
+
+/** The view format this page understands (engine match.ts MATCH_VIEW_FORMAT). A newer server needs a reload. */
+const VIEW_FORMAT = 1;
+let outdated = false;
+/** The server sent a view this page cannot read (the site was updated): the page must be reloaded. */
+export function isOutdated(): boolean {
+  return outdated;
+}
 
 const ROOM_KEY = "rs.online.v1";
 const ID_PATTERN = /^[A-Za-z0-9]{8}$/;
@@ -94,8 +107,12 @@ async function call<T>(method: "GET" | "POST", query: string, body?: unknown): P
     cache: "no-store",
     ...(body !== undefined ? { headers: { "content-type": "application/json" }, body: JSON.stringify(body) } : {}),
   });
-  const data = (await res.json().catch(() => ({}))) as { error?: string; now?: number } & T;
+  const data = (await res.json().catch(() => ({}))) as { error?: string; now?: number; view?: { format?: number } } & T;
   if (!res.ok) throw new ApiError(res.status, data.error ?? "error");
+  if (data.view && data.view.format !== VIEW_FORMAT) {
+    outdated = true;
+    throw new ApiError(426, "outdated");
+  }
   if (typeof data.now === "number") clockOffset = data.now - (sent + Date.now()) / 2;
   return data;
 }
@@ -108,8 +125,18 @@ export function joinRoom(id: string, deck: DeckSpec): Promise<{ token: string; v
   return call("POST", "", { op: "join", id, deck });
 }
 
-export function fetchRoom(room: SavedRoom): Promise<{ view: RemoteMatchView }> {
-  return call("GET", `?id=${room.id}&t=${room.token}`);
+export function fetchRoom(room: SavedRoom, since?: number): Promise<{ view?: RemoteMatchView; post?: PostGame; unchanged?: boolean }> {
+  return call("GET", `?id=${room.id}&t=${room.token}${since !== undefined ? `&v=${since}` : ""}`);
+}
+
+/** Asks for a rematch of the finished match (the new room starts when both have asked). */
+export function requestRematch(room: SavedRoom): Promise<{ view: RemoteMatchView; post: PostGame }> {
+  return call("POST", "", { op: "rematch", id: room.id, t: room.token });
+}
+
+/** Agrees to show both decks (each sees the other's once both have agreed). */
+export function requestReveal(room: SavedRoom): Promise<{ view: RemoteMatchView; post: PostGame }> {
+  return call("POST", "", { op: "reveal", id: room.id, t: room.token });
 }
 
 /** The transport a RemoteSession plays through. Polls ask "anything newer than my version?". */
@@ -144,6 +171,7 @@ export function errorText(error: unknown): string {
     if (error.code === "bad_deck") return "このデッキでは対戦できません";
     if (error.code === "no_store") return "対人戦のサーバーが使えません";
     if (error.code === "bad_token") return "この部屋に入れません";
+    if (error.code === "outdated") return "アプリが更新されました。ページを再読み込みしてください";
     return `通信エラー（${error.status}）`;
   }
   return "通信できませんでした";

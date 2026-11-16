@@ -456,6 +456,80 @@ export function matchView(m: MatchState, player: PlayerId, deps: Pick<MatchDeps,
   };
 }
 
+/**
+ * 対局の外の変化（再戦の希望・デッキ公開の同意。部屋の側が持つ）を poll に知らせるため、版番号だけ進める。
+ * 終わった対戦にだけ使う（対戦中の版番号は操作の受け付けに使うので動かさない）。
+ */
+export function touchMatch(m: MatchState): void {
+  if (m.status !== "finished") throw new MatchError("not_finished");
+  m.version += 1;
+}
+
+/**
+ * 終わった対戦の再戦。同じ二人・同じ席・同じデッキで、先攻は前の対戦の逆にして、すぐ始める。
+ * id は新しい部屋の id。
+ */
+export function createRematch(prev: MatchState, id: string, engineVersion: string, deps: MatchDeps): MatchState {
+  if (prev.status !== "finished" || !prev.decks.player2) throw new MatchError("not_finished");
+  const m = createMatch({
+    id,
+    engineVersion,
+    hostDeck: prev.decks.player1,
+    firstPlayer: prev.firstPlayer === "player1" ? "guest" : "host",
+    now: deps.now,
+  });
+  joinMatch(m, prev.decks.player2, deps);
+  return m;
+}
+
+/** 対人戦の記録（CPU 戦の記録 client-core app/gameRecord.ts と同じ形に、pvp・firstPlayer・reason を足したもの）。 */
+export type MatchRecord = {
+  v: 1;
+  pvp: true;
+  at: number;
+  seed: number;
+  /** 対人戦なので CPU の強さはない（0）。 */
+  cpuLevel: 0;
+  firstPlayer: PlayerId;
+  /** player1（ホスト）・player2（ゲスト）のデッキ。スターターの id か、自作デッキなら "custom:pvp" とカード番号の並び。 */
+  humanDeck: string;
+  cpuDeck: string;
+  humanCards?: string[];
+  cpuCards?: string[];
+  winner: PlayerId | null;
+  reason: MatchEndReason;
+  turns: number;
+  actions: GameAction[];
+};
+
+/**
+ * 終わった対戦の記録。勝者がいない（無効試合）・1手も指していない対戦は null。
+ * createStarterGame（seed・firstPlayer・デッキ）に actions を順に当てると同じ対戦になる。
+ */
+export function matchRecord(m: MatchState, at: number): MatchRecord | null {
+  if (m.status !== "finished" || !m.result?.winner || m.seed === undefined || !m.firstPlayer || !m.decks.player2 || m.actions.length === 0) return null;
+  const deck = (spec: DeckSpec): { name: string; cards?: string[] } =>
+    "starter" in spec ? { name: spec.starter } : { name: "custom:pvp", cards: [...spec.cards] };
+  const host = deck(m.decks.player1);
+  const guest = deck(m.decks.player2);
+  return {
+    v: 1,
+    pvp: true,
+    at,
+    seed: m.seed,
+    cpuLevel: 0,
+    firstPlayer: m.firstPlayer,
+    humanDeck: host.name,
+    cpuDeck: guest.name,
+    ...(host.cards ? { humanCards: host.cards } : {}),
+    ...(guest.cards ? { cpuCards: guest.cards } : {}),
+    winner: m.result.winner,
+    reason: m.result.reason,
+    turns: m.game?.turn ?? 0,
+    actions: [...m.actions],
+  };
+}
+
 /** 保存用の JSON（盤面のカード定義は除く。読み込み時にデッキから作り直す）。 */
 export function serializeMatch(m: MatchState): string {
   const { game, ...rest } = m;
