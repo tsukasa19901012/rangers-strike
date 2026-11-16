@@ -60,4 +60,19 @@ describe("effect choice notices", () => {
     expect(isNoteworthyResolveEffectChoice("tyranno_sonic:own_only")).toBe(false);
     expect(isNoteworthyResolveEffectChoice("judgment_sword:2")).toBe(false);
   });
+
+  // A 352-game log scan (2026-11-16) showed internal names: 「self_damageを発動」, 「dark_dual_blade_commandを発動」,
+  // 「V-1システム (destroy_effect)」, a battle against 「cancelled」, 「pink_storm:move」 as a card name.
+  it("never shows an internal effect id, action or marker", () => {
+    const defs = { "RS-102": { name: "五の槍サーガイン" }, "RS-454": { name: "テストユニット" }, "RS-054": { name: "アバレッド" } } as never;
+    expect(formatGameLog("player2|resolve_effect_choice|RS-102|五の槍サーガイン|dark_dual_blade_command:仮面ライダーW・CT", defs)).not.toMatch(/[a-z]_[a-z]/);
+    expect(formatGameLog("player1|named_effect|RS-054|アバレッド|self_damage", defs)).toBe("あなたの「アバレッド」の効果が発動");
+    expect(formatGameLog("player2|destroy_effect|RS-054|アバレッド|choice:some_effect", defs)).toBe("CPUの「アバレッド」の撃破されたときの効果");
+    expect(formatGameLog("player2|battle|RS-454-60|RS-454-60|cancelled", defs)).toBe("CPUの「テストユニット」のバトルは行われなかった");
+    expect(formatGameLog("player1|resolve_effect_choice|RS-102|五の槍サーガイン|pink_storm:move", defs)).toBe("あなたの「五の槍サーガイン」のピンクストームを解決");
+    expect(formatGameLog("player2|joint_combo_l|RS-054|アバレッド|rk_passive:ride_grant_ability", defs)).toContain("「Lユニット」");
+    expect(isNoteworthyResolveEffectChoice("armor_attack:place_in_power")).toBe(false);
+    // A one-word id with a label keeps it (XG3-046 キングストーンフラッシュ).
+    expect(formatGameLog("player1|number_combo|RS-054|アバレッド|choice:kingusutonfurashu", defs)).toBe("あなたの「アバレッド」がNCでキングストーンフラッシュの対象選択");
+  });
 });

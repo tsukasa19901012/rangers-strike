@@ -106,6 +106,8 @@ export function isNoteworthyResolveEffectChoice(detail: string | undefined): boo
   const target = detail.slice(colon + 1);
   if (!target || IGNORED_RESOLVE_TARGETS.has(target)) return false;
   if (/^\d+$/.test(target)) return false;
+  // An internal marker of where the card went (place_in_power, move:RS-060), not a target name.
+  if (/^[a-z_]+(:[A-Z0-9-]+)?$/.test(target)) return false;
   return RESOLVE_EFFECT_TARGET_NOTICE_IDS.has(effectId);
 }
 
@@ -126,11 +128,26 @@ export function formatResolveEffectChoiceNotice(
   const target = targetName(detail.slice(colon + 1), definitions);
   const quoted = quoteChoiceTargets(target);
   const suffix = EFFECT_TARGET_SUFFIX[effectId];
-  const label = getEffectLabel(effectId);
+  const label = readableEffectLabel(effectId);
+  const did = label ? `が${label}を発動` : "の効果";
   if (suffix) {
-    return `${player}の「${sourceCardName}」が${label}を発動 → ${quoted}${suffix}`;
+    return `${player}の「${sourceCardName}」${did} → ${quoted}${suffix}`;
   }
-  return `${player}の「${sourceCardName}」が${label}を発動 → ${quoted}`;
+  return `${player}の「${sourceCardName}」${did} → ${quoted}`;
+}
+
+/**
+ * The player-facing name of an effect id, or null when there is none: the id itself, then shorter ids
+ * without its trailing parts (dark_dual_blade_command → dark_dual_blade). Internal ids never show.
+ */
+export function readableEffectLabel(effectId: string): string | null {
+  const parts = effectId.split("_");
+  for (let n = parts.length; n >= Math.min(2, parts.length); n--) {
+    const id = parts.slice(0, n).join("_");
+    const label = getEffectLabel(id);
+    if (label !== id && !/^[a-z0-9_]+$/.test(label)) return label;
+  }
+  return null;
 }
 
 export function shouldSuppressChoiceNoticeEffect(effectId: string): boolean {

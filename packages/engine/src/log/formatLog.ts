@@ -4,6 +4,7 @@ import type { PlayerId } from "../types/game";
 import {
   formatResolveEffectChoiceNotice,
   isNoteworthyResolveEffectChoice,
+  readableEffectLabel,
 } from "./effectChoiceNotice";
 
 export {
@@ -48,6 +49,39 @@ const PHASE_LABELS: Record<string, string> = {
   battle: "バトル",
   end: "エンド",
 };
+
+/** Actions with no sentence of their own: what the card did, after 「（プレイヤー）の「カード」」. */
+const ACTION_SUFFIX: Record<string, string> = {
+  activate_field_unit_ability: "の能力を使用",
+  activate_resident_operation: "（常駐オペ）を使用",
+  battle_dance: "のバトルダンス",
+  denji_machine: "（デンジマシーン）の効果",
+  destroy_effect: "の撃破されたときの効果",
+  morph_swap: "がモーフで入れ替わった",
+  operation_effect: "の効果",
+  reveal: "の効果で山札を公開",
+  rule_destroy: "がルールで撃破された",
+  s_combo_finisher: "のSコンボ",
+  shiron_light: "の効果",
+  skip_effect_choice: "の効果を使わなかった",
+  strike_effect: "のストライク時の効果",
+};
+
+/** An effect id the player can read (its label), or null when only the internal id is known (it never shows). */
+function effectName(id: string | undefined): string | null {
+  if (!id) return null;
+  return readableEffectLabel(id.replace(/^choice:/, "").split(":")[0]!);
+}
+
+/** Internal markers and ids (snake_case, "rk_passive:...") are not something to show the player. */
+const isInternal = (text: string | undefined) => !!text && /^[a-z0-9_:.\-]+$/.test(text) && /[a-z]/.test(text);
+
+/** A card name from a log part: the name itself, or a card / instance id (RS-454-60) looked up in the definitions. */
+function nameOfPart(part: string, definitions: Record<string, CardDefinition>): string {
+  if (definitions[part]) return definitions[part]!.name;
+  const card = /^([A-Z]+\d*-\d+[A-Za-z]?)-\d+$/.exec(part)?.[1];
+  return (card && definitions[card]?.name) || part;
+}
 
 export function formatGameLog(
   entry: string,
@@ -98,7 +132,7 @@ export function formatGameLog(
 
   if (parts.length >= 4) {
     const action = parts[1]!;
-    const cardName = parts[3]!;
+    const cardName = nameOfPart(parts[3]!, definitions);
     const detail = parts[4];
 
     switch (action) {
@@ -115,7 +149,8 @@ export function formatGameLog(
       case "move_to_battle":
         return `${player}が「${cardName}」をバトルエリアへ移動`;
       case "joint_combo_l": {
-        const partnerName = detail ?? "Lユニット";
+        // The partner's card or instance id; a triggered effect logs its own reference instead, which says nothing.
+        const partnerName = detail && !isInternal(detail) ? nameOfPart(detail, definitions) : detail && definitions[detail] ? definitions[detail]!.name : "Lユニット";
         return `${player}の「${cardName}」がジョイントLコンボを発動 → 「${partnerName}」にSP+1`;
       }
       case "joint_combo_r":
@@ -146,10 +181,12 @@ export function formatGameLog(
           return `${player}の「${cardName}」が未来予知を発動（1枚ドロー）`;
         }
         if (detail?.startsWith("choice:")) {
-          return `${player}の「${cardName}」がNCで${getEffectLabel(detail.slice("choice:".length))}の対象選択`;
+          const name = effectName(detail);
+          return name ? `${player}の「${cardName}」がNCで${name}の対象選択` : `${player}の「${cardName}」のNCの対象選択`;
         }
         if (detail) {
-          return `${player}の「${cardName}」が${getEffectLabel(detail)}を発動`;
+          const name = effectName(detail);
+          return name ? `${player}の「${cardName}」が${name}を発動` : `${player}の「${cardName}」がNCを発動`;
         }
         return `${player}の「${cardName}」がNCを発動`;
       case "resolve_ruin_survey": {
@@ -184,11 +221,12 @@ export function formatGameLog(
           return `${player}の「${cardName}」が一点突破を発動（相手に1ダメージ）`;
         }
         if (detail?.startsWith("choice:")) {
-          const effectId = detail.replace("choice:", "");
-          return `${player}の「${cardName}」が${getEffectLabel(effectId)}の対象選択`;
+          const name = effectName(detail);
+          return name ? `${player}の「${cardName}」が${name}の対象選択` : `${player}の「${cardName}」の効果の対象選択`;
         }
         if (detail) {
-          return `${player}の「${cardName}」が${getEffectLabel(detail)}を発動`;
+          const name = effectName(detail);
+          return name ? `${player}の「${cardName}」が${name}を発動` : `${player}の「${cardName}」の効果が発動`;
         }
         return `${player}の「${cardName}」の効果`;
       }
@@ -196,7 +234,8 @@ export function formatGameLog(
         if (detail && isNoteworthyResolveEffectChoice(detail)) {
           return formatResolveEffectChoiceNotice(player, cardName, detail, definitions);
         }
-        return `${player}の「${cardName}」の効果を解決`;
+        const name = effectName(detail);
+        return name ? `${player}の「${cardName}」の${name}を解決` : `${player}の「${cardName}」の効果を解決`;
       }
       case "rush_effect": {
         if (detail === "draw_1") {
@@ -273,6 +312,12 @@ export function formatGameLog(
         return `${player}が「${cardName}」でストライク！（${damage}ダメージ）`;
       }
       case "battle": {
+        // A marker instead of 「相手:BP」: the battle stopped or waits for an effect before it.
+        if (isInternal(detail) && !detail!.includes(":")) {
+          if (detail === "cancelled") return `${player}の「${cardName}」のバトルは行われなかった`;
+          if (detail === "failed") return `${player}の「${cardName}」のバトルは行えなかった`;
+          return `${player}の「${cardName}」のバトルの前に効果を処理`;
+        }
         const defenderName = detail?.split(":")[0] ?? "相手ユニット";
         const bpInfo = detail?.split(":")[1] ?? "";
         return `${player}の「${cardName}」が「${defenderName}」とバトル（${bpInfo}）`;
@@ -305,8 +350,11 @@ export function formatGameLog(
         }
         return `${player}がカウンター「${cardName}」を使用`;
       }
-      default:
-        return `${player}: ${cardName} (${action})`;
+      default: {
+        const name = effectName(detail);
+        const suffix = ACTION_SUFFIX[action] ?? "の効果";
+        return `${player}の「${cardName}」${suffix}${name ? `（${name}）` : ""}`;
+      }
     }
   }
 

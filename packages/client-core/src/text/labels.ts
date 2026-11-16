@@ -88,6 +88,15 @@ const LOG_LABELS: Record<string, string> = {
   turn_ending_effects: "ターン終了時の効果を処理",
   zord_setup_cancel: "ゾードラッシュをやめた",
   zord_setup_step: "ゾード素材を選んだ",
+  // Choices opened when a unit attacks or is attacked, before the battle (core/applyAction.ts).
+  rk177_hypnotic_wave: "【催眠音波】（蜂女）の選択へ",
+  rk188_agent_choice: "アタックされたときの選択へ（【地空人のエージェント】）",
+  rm062_lina_stick_choice: "アタックされたときの選択へ（【リーナステッキ】）",
+  xg1e_attacked_choice: "アタックされたときの選択へ（【人質と脅迫】・【瞬間移動】）",
+  xg4033_freezing_dagger_choice: "アタックするときの選択へ（【フリージングダガー】）",
+  xg5_attacked_choice: "アタックされたときの選択へ（【捨て身の一撃】）",
+  xg7055_cyclone_gale_choice: "アタックされたときの選択へ（【神出鬼没の疾風】）",
+  xp016_red_eye_choice: "アタックされたときの選択へ（【赤い瞳に宿るもの】）",
 };
 
 const FIELD_LABELS: Record<string, string> = {
