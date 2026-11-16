@@ -17,6 +17,8 @@ const SIZES = [
 
 // Phones held upright (logical px as the host picks them).
 const PORTRAIT_SIZES = [
+  { width: 360, height: 640 },
+  { width: 375, height: 667 },
   { width: 430, height: 736 },
   { width: 430, height: 931 },
   { width: 600, height: 800 },
@@ -218,6 +220,10 @@ describe("pointer shell over the web layout", () => {
 
   it("plays a match on a phone by tapping finger-sized menu rows", () => {
     playByClicks(PORTRAIT_SIZES[0]!, 44);
+  });
+
+  it("plays a match on the narrowest phone layout (360 wide)", () => {
+    playByClicks({ width: 360, height: 640 }, 44);
   });
 });
 
