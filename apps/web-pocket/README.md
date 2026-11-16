@@ -49,6 +49,7 @@ UI は Vita 版と同じ [PocketJS](https://github.com/pocket-stack/pocketjs)（
   開いた人は同じ場面から CPU 相手に続きを遊べます（デバッグで盤面を伝える用。結果は戦績に残りません）。
   URL は短い形 `/?s=<8文字>`（盤面は `api/share.js` が Upstash Redis に 30 日保存）で、保存先がないときは
   盤面を圧縮して入れた長い形 `/#s=RS1.…`（終盤で約 2,000〜3,500 文字）になります。クリップボードに書けないブラウザでは URL を表示します
+  PC では上部の通知（自動進行の終了など）は「共有」ボタンの手前で止まり、通知が出ていても「共有」を押せます
 - 対戦の記録: 人と CPU の対戦が終わると、種・デッキ・指した手の全部（client-core `app/gameRecord.ts`）を `api/share.js` に送ります（画面には出しません。
   共有した盤面から続けた対戦と、CPU 同士の自動対戦は送りません）。CPU の負け方を調べるためのもので、
   `node scripts/list-game-records.mjs --env <読み取り専用の鍵のファイル> --out game-records.json` で読み出し、
@@ -124,7 +125,7 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 | `npm run web:build` | `dist/` を作る（エンジン・UI・カード画像すべて） |
 | `npm run web:build:app` | UI とホストだけ再ビルド（エンジンとカード画像は前回のもの。engine / cards を変えたら `web:build`） |
 | `npm run web:serve` | `dist/` を http://127.0.0.1:8140/ で配信（`node scripts/serve.mjs --port=…` で変更可。開発用。`/api/share` はメモリに保存） |
-| `npm run web:exile-test` | ブラウザ（Playwright）で除外の表示を確認（PC・スマホ。除外 0 枚で何も出ない／「除外 N」行と帯の `除N`／乗せる・タップで新しい順に全部並ぶ）。先に `web:build` |
+| `npm run web:exile-test` | ブラウザ（Playwright）で除外の表示を確認（PC・スマホ。除外 0 枚で何も出ない／「除外 N」行（帯には出さない）／乗せる・タップで新しい順に全部並ぶ）。先に `web:build` |
 | `npm run pocket:check` | `pocket.json` を PocketJS の web-app プロファイルで検査し、型検査 |
 
 `web:*` / `pocket:*` はルートの turbo（`build` / `test` / `typecheck`）や CI からは実行されません。

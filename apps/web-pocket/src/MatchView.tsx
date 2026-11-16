@@ -13,6 +13,7 @@ import {
   powerCount,
   powerNotes,
   webPileRect,
+  measureText,
   wrapText,
   zoneLabel,
   type GameState,
@@ -622,7 +623,7 @@ export function MatchView(props: {
   };
   const g = () => props.view.geometry;
   // A phone's hint line is read at arm's length: 14 (≈13 CSS px) when it fits the width, 12 for a long prompt.
-  const bigFooter = () => portrait() && props.footer.length <= 28;
+  const bigFooter = () => portrait() && measureText(props.footer, 14) <= g().footer.w - 32;
   const portrait = () => isPortrait(g());
   // Several moves and none on a visible card (start phase: release commands or
   // draw): the button opens the list of moves, so it must look pressable.
