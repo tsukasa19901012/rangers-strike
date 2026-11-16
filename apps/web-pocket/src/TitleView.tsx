@@ -5,6 +5,8 @@ import { createSignal, For, Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
 import { fitLine, START_STEP_LABELS, startOrder, type AppController, type DeckChoice, type ScreenView, type Settings } from "@rangers-strike/client-core";
 import { engine } from "./engine";
+import type { Lobby } from "./lobby";
+import { OnlineView } from "./OnlineView";
 
 const PICKER_PAGE = 12;
 
@@ -17,6 +19,8 @@ type Props = {
   height: number;
   /** Opens the automatic-move settings (SettingsPanel). */
   openSettings: () => void;
+  /** 対人戦のロビー（部屋を作る・参加する）。 */
+  lobby: Lobby;
 };
 
 function SelectButton(props: { label: string; value: string; width: number; onPress: () => void }) {
@@ -72,7 +76,7 @@ export function TitleView(props: Props) {
   return (
     <View class="w-full h-full flex-col items-center justify-center gap-4 bg-gradient-to-b from-[#0f1b33] to-[#04070d]">
       <Text class="text-xl text-sky-300 font-bold">レンジャーズストライク</Text>
-      <Text class="text-sm text-slate-400">{`全カード（${engine.deckApi.cards.length}枚）— CPU対戦（Lv1〜5）`}</Text>
+      <Text class="text-sm text-slate-400">{`全カード（${engine.deckApi.cards.length}枚）— CPU対戦（Lv1〜5）・対人戦`}</Text>
 
       <View class="flex-col gap-4 p-[20] rounded-[16] bg-[#111a2e] border border-[#25324d] shadow-lg" style={{ width: panelW() }}>
         <Text class="text-xs text-slate-400 font-bold">対戦設定</Text>
@@ -139,6 +143,14 @@ export function TitleView(props: Props) {
         >
           <Text class="text-sm text-slate-100">デッキを作る</Text>
         </View>
+        <View
+          focusable
+          onPress={() => props.lobby.open()}
+          class="flex-row items-center justify-center h-[44] rounded-[22] bg-[#1e293b] border border-[#334155] focus:bg-[#2b3a55] focus:border-sky-400"
+          style={{ width: panelW() }}
+        >
+          <Text class="text-sm text-slate-100">対人戦（オンライン）</Text>
+        </View>
         <Show when={c.notice}>
           <Text class="text-sm text-amber-300">{(props.view(), c.notice)}</Text>
         </Show>
@@ -155,6 +167,17 @@ export function TitleView(props: Props) {
             )}
           </For>
         </View>
+      </Show>
+
+      <Show when={props.lobby.state().kind !== "closed"}>
+        <OnlineView
+          lobby={props.lobby}
+          deckName={nameOf(settings().humanDeck)}
+          width={props.width}
+          height={props.height}
+          pickDeck={() => openPicker("humanDeck")}
+          createDeck={() => c.onlineDeck()}
+        />
       </Show>
 
       {/* deck picker */}

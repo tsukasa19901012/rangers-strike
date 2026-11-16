@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 // Minimal static server for dist/ (development only).
 //   node scripts/serve.mjs [--port=8140]
-// /api/share runs api/share.js with an in-memory store (boards are lost on restart).
+// /api/share runs api/share.js and /api/match (対人戦) api/match.js, each with an in-memory store (lost on restart).
+// api/match.js needs server/match-engine.mjs (node scripts/build-server.mjs; the full web:build makes it).
 import { createServer } from "node:http";
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { dirname, extname, join, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createShareHandlers } from "../api/share.js";
+import { createMatchHandlers, memoryMatchStore } from "../api/match.js";
 
 const DIST = resolve(dirname(fileURLToPath(import.meta.url)), "../dist");
 const port = Number((process.argv.find((a) => a.startsWith("--port=")) ?? "--port=8140").slice(7));
@@ -26,8 +28,10 @@ const memoryStore = {
   get: async (key) => memory.get(key) ?? null,
 };
 const share = createShareHandlers(() => memoryStore);
+const matchStore = memoryMatchStore();
+const match = createMatchHandlers(() => matchStore);
 
-async function api(req, res) {
+async function api(req, res, handlers = share) {
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
   const request = new Request(new URL(req.url ?? "/", "http://127.0.0.1"), {
@@ -35,7 +39,7 @@ async function api(req, res) {
     headers: { "content-type": req.headers["content-type"] ?? "" },
     body: req.method === "POST" ? Buffer.concat(chunks) : undefined,
   });
-  const handler = req.method === "POST" ? share.POST : req.method === "GET" ? share.GET : null;
+  const handler = req.method === "POST" ? handlers.POST : req.method === "GET" ? handlers.GET : null;
   const response = handler ? await handler(request) : new Response("", { status: 405 });
   res.writeHead(response.status, Object.fromEntries(response.headers));
   res.end(Buffer.from(await response.arrayBuffer()));
@@ -45,6 +49,10 @@ createServer((req, res) => {
   const path = decodeURIComponent(new URL(req.url ?? "/", "http://x").pathname);
   if (path === "/api/share") {
     api(req, res).catch(() => res.writeHead(500).end());
+    return;
+  }
+  if (path === "/api/match") {
+    api(req, res, match).catch(() => res.writeHead(500).end());
     return;
   }
   let file = normalize(join(DIST, path));
