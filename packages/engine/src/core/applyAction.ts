@@ -1621,6 +1621,9 @@ function applyActionCore(
   if (
     state.pendingRideOffChoice &&
     action.type !== "resolve_ride_off_choice" &&
+    // 進入効果で場を離れたユニットのチェイス（離場への反応）は、その効果の処理の一部なのでライドオフの選択より先に解決する
+    // （legalActions の getLegalActions・isLegalAction・getActionPlayerId と同じ優先順。RK-264 アクロバッターで敵軍のチェイスユニットを山札の下に送ったとき）。
+    !(state.pendingChase && (action.type === "resolve_chase" || action.type === "pass_chase")) &&
     // RS-381【獅子の装光】（ライドオフさせるかわりに発動）。
     !(action.type === "activate_field_unit_ability" && lionArmorAvailable(state, action.playerId)) &&
     !(

@@ -15,6 +15,10 @@
  */
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
+import { applyAction } from "../core/applyAction";
+import { riding } from "./RK8-148-168.helpers";
+import { freezeProblems } from "../testing/noFreeze";
+import { getActionPlayerId, getLegalActions, isLegalAction } from "../core/legalActions";
 import {
   PLAIN_VEHICLE,
   attackUntilRegister,
@@ -320,6 +324,67 @@ describe("RK-264 アクロバッター", () => {
     const s = settle(enter(board({ battle: fill(1), rush: [inst("RK-264", "ab")] }, enemy), "RK-264:ab"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-264");
     expect(zoneOf(s, "player2", "SPEC-E1000:r")).toBe("rush");
+  });
+
+  // 2026-11-16: 相手がライド中のチェイスユニットを選ぶと、チェイスの窓とライドオフの選択が同時に開く。合法手・手番はチェイスを
+  // 先に出すのに、applyAction はライドオフの選択待ちで断り、対局が止まっていた。チェイスは山札の下に戻す処理（離場）への反応なので先に解決する。
+  describe("相手が RK-300 にライドしているチェイスユニット（XG1-083）を選んだとき", () => {
+    const chaseEnemy = { battle: riding(inst("RK-300", "k1"), inst("XG1-083", "ch")), rush: [inst("RK-300", "k2")] };
+    const chosen = () => {
+      const s = burn({ ...inst("SPEC-RC3000", "r"), bpModifier: 500 }, chaseEnemy);
+      expect(choiceIds(s)).toContain("XG1-083:ch");
+      return pickAs(s, "player2", "XG1-083:ch");
+    };
+
+    it("チェイスの窓（相手）が先に開き、手番・合法手・applyAction がそろってチェイスを先に受け付ける", () => {
+      const s = chosen();
+      expect(s.pendingChase).toMatchObject({ chaserPlayerId: "player2", chaserInstanceId: "XG1-083:ch" });
+      expect(s.pendingRideOffChoice).toMatchObject({ playerId: "player1", vehicleInstanceId: "RK-264:ab" });
+      expect(getActionPlayerId(s)).toBe("player2");
+      const legal = getLegalActions(s);
+      expect(legal.map((a) => a.type).sort()).toEqual(["pass_chase", "resolve_chase"]);
+      for (const action of legal) {
+        expect(isLegalAction(s, action)).toBe(true);
+        expect(applyAction(s, action).ok, JSON.stringify(action)).toBe(true);
+      }
+      // ライドオフの選択は、チェイスを解決するまで受け付けない（合法手と同じ）。
+      const rideOff = { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true } as const;
+      expect(isLegalAction(s, rideOff)).toBe(false);
+      expect(applyAction(s, rideOff).ok).toBe(false);
+    });
+
+    it("チェイスする: XG1-083 はもう1台の RK-300 にライドしてラッシュエリアに戻り、元の RK-300 は捨札。そのあと自軍がライドオフを選べる", () => {
+      const r = applyAction(chosen(), { type: "resolve_chase", playerId: "player2", newVehicleInstanceId: "RK-300:k2" });
+      expect(r.ok).toBe(true);
+      if (!r.ok) return;
+      const s = r.state;
+      expect(s.pendingChase).toBeUndefined();
+      expect(s.players.player2.rush.find((c) => c.instanceId === "XG1-083:ch")?.mountedOnInstanceId).toBe("RK-300:k2");
+      expect(zoneOf(s, "player2", "RK-300:k1")).toBe("discard");
+      expect(s.pendingRideOffChoice?.playerId).toBe("player1");
+      expect(getActionPlayerId(s)).toBe("player1");
+      for (const rideOff of [true, false]) {
+        expect(applyAction(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff }).ok).toBe(true);
+      }
+    });
+
+    it("この局面から CPU（Lv1/3/5）・いつも最初の手・いつも最後の手で進めても止まらず、ループしない", () => {
+      expect(freezeProblems(chosen)).toEqual([]);
+    });
+
+    it("チェイスしない: XG1-083 は山札の下に戻り、そのあと自軍がライドオフを選べる", () => {
+      const r = applyAction(chosen(), { type: "pass_chase", playerId: "player2" });
+      expect(r.ok).toBe(true);
+      if (!r.ok) return;
+      const s = r.state;
+      expect(s.pendingChase).toBeUndefined();
+      expect(s.players.player2.deck.at(-1)?.instanceId).toBe("XG1-083:ch");
+      expect(s.pendingRideOffChoice?.playerId).toBe("player1");
+      expect(getActionPlayerId(s)).toBe("player1");
+      for (const rideOff of [true, false]) {
+        expect(applyAction(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff }).ok).toBe(true);
+      }
+    });
   });
 });
 
