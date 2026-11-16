@@ -213,6 +213,42 @@ describe("GUI match (commercial-style controls)", () => {
     expect(steps).toBeGreaterThanOrEqual(3);
   });
 
+  // 2026-11-16「スタートフェイズで選択肢がある時にウインドウが開かないことがある」: 前のターンを「ターン終了」で終えると、
+  // そのターンの印（endTurnOn）が次の自分のターンまで残り、スタートフェイズのポップアップが開かなかった。
+  it("opens the start-phase popup on the turn after one ended with the end-turn button", () => {
+    const app = startGui(3);
+    app.updateSettings({ autoStart: false });
+    let checked = 0;
+    let ended = false;
+    for (let i = 0; i < 8000 && app.currentScreen === "match" && checked < 3; i++) {
+      const state = app.session!.state;
+      if (!humanTurn(app)) {
+        app.tick();
+        continue;
+      }
+      if (state.phase === "start" && state.activePlayer === "player1" && !app.view().gui!.dialog) {
+        if (ended) {
+          const gui = app.view().gui!;
+          expect(gui.popup?.title).toBe("スタートフェイズ");
+          checked++;
+          ended = false;
+        }
+        playOneStep(app, i);
+        continue;
+      }
+      if (state.phase === "rush" && state.activePlayer === "player1" && !app.view().gui!.dialog) {
+        app.endTurn();
+        ended = true;
+        for (let n = 0; n < 200 && humanTurn(app) && app.endingTurn; n++) app.tick();
+        if (humanTurn(app) && app.session!.state.activePlayer === "player1") ended = false; // stopped on a choice
+        if (humanTurn(app)) playOneStep(app, i);
+        continue;
+      }
+      playOneStep(app, i);
+    }
+    expect(checked).toBeGreaterThanOrEqual(3);
+  });
+
   it("scrolls the open log back to older lines and back to the newest", () => {
     const app = startGui(5);
     // Play until the log no longer fits the panel.
