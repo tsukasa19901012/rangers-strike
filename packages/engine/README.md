@@ -12,6 +12,7 @@ UI を持たず、`@rangers-strike/cards` のカードデータだけに依存�
 | `applyAction` | `src/core/applyAction.ts` |
 | `pickCpuAction(state, playerId, level)` | `src/ai/index.ts`（レベル設定は `src/ai/types.ts` の `getCpuLevelConfig`） |
 | `formatGameLog` / `formatActionError` | `src/log/` |
+| `viewFor` / `resolveViewAction` / `redactNewLogLines` / `forgetHiddenAliases`（対人戦でプレイヤーごとに見える盤面） | `src/view/viewFor.ts` |
 
 UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、選ばれたアクションを `applyAction` に渡すだけです。
 
@@ -26,10 +27,24 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 | `src/events/` | イベントキューとリスナー |
 | `src/effects/` | オペレーション解決などの効果ブリッジ |
 | `src/ai/` | CPU AI（ヒューリスティック・探索・チャージの先読み・ターン単位の読み・NC の並べ方・価値ネットワーク） |
+| `src/view/` | 対人戦（サーバー判定）で1人のプレイヤーに渡す盤面（`viewFor`）と、その漏れ検査（`viewChecks.ts`） |
 | `src/ai/weights/` | Lv5 が使う価値ネットワークの重み（`scripts/nn/pack.py` が作る。手で書き換えない） |
 | `src/cardSpec/`, `src/rulesSpec/` | カードごと・ルール章ごとのテスト |
 | `src/verticalSlice/` | スターター対戦の生成と、CPU 同士の長い対戦テスト |
 | `scripts/` | CPU の対戦台・監査・負荷テスト・デバッグ用スクリプト |
+
+## 対人戦の「自分から見える盤面」（viewFor）
+
+対人戦では、本物の盤面・シード・乱数の状態はサーバーだけが持ち、ブラウザには `viewFor(state, viewer, { aliases, newAliasBody })` の結果だけを渡します（仕様: 対人戦（C案）仕様書の「見える情報の切り分け」）。
+
+- カードの ID（`RS-024-17` のようにカード番号を含む）は、プレイヤーごとの意味のない別 ID（`~` で始まる）に振り直します。対応表 `IdAliasTable` はサーバーが対戦ごとに保存し、ブラウザから届いた操作は `resolveViewAction` で本物の ID に戻します（知らない別 ID・見えないカード・本物の ID を指す操作は `null`）。文字列に埋め込まれた ID（`search:XG7-042-42` 等）も同じに扱います。見えなくなったカード（山札に戻った・相手の手札に入った・ウラ向きになった）の別 ID は `viewFor` が忘れ、次に見えたときは新しい別 ID にします（一度見たカードを追跡させない）。対戦の進行側は `viewFor` を呼ばない手の後にも `forgetHiddenAliases` を呼びます。
+- 見えないカードは、中身も ID も持たない裏面（`cardId: "?"`）になります。相手の手札・お互いの山札は常に裏面で、ウラ向きのパワー（ダメージ）は持ち主にも見せません（ルール: ウラ向きのカードは誰も見られない）。
+- 「山札を見て」の中身・相手の手札を見る効果などで見えているカードは、並びを見せないよう `revealedCards` にカード番号順で入ります。選んでいない側には、選択の候補も `?` になります。
+- 合法手は操作番のプレイヤーにだけ別 ID で渡ります。`rngState` は渡さず、カード定義は表示に出てくるカードの分だけ渡します。
+- 効果の発生源・使用を宣言したカードの番号（`sourceCardId`・`zordCardId` 等）と、「このターン撃破した・ホールドした・使ったカード」の記録（`modifiers` の `payload.cardId`。場で表だったカード）は、公開済みの情報として、カードが手札にあっても伏せません（`src/view/viewChecks.ts` の `PUBLIC_CARD_ID_KEYS`）。
+- ログは、その時点で見えたかで決まるので `viewFor` では作りません。1回の `applyAction` で増えた行を `redactNewLogLines(before, after, viewer)` で伏せ（操作の前にも後にも見えていなかったカードの番号と名前を「？」にする）、対戦の進行側が貯めて `viewFor` の `log` に渡します。
+
+漏れ検査は `src/view/viewFor.test.ts`（単体）と `src/verticalSlice/viewForLeak.test.ts`（`test:sim`。スターター・ブログ／大会デッキ同士の CPU 対戦 20 試合で毎手、両者の表示に本物の ID・相手の手札や山札の中身・乱数の状態が無いこと、合法手が本物に戻せること、ログに見えなかったカードが出ないことを確かめ、さらに両者が自分の表示の合法手だけから選んで 6 試合を進める。2 分ほど）です。盤面に新しい欄を足して、そこに見えないカードの番号が出るとこの検査が落ちます。公開してよい情報なら `PUBLIC_CARD_ID_KEYS` に足し、そうでなければ `viewFor` で伏せてください。
 
 ## 効果を書くときの注意
 

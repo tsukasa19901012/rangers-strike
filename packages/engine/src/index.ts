@@ -36,6 +36,7 @@ export * from "./rules/commander";
 export * from "./rules/postDamageEffects";
 export * from "./rules/bounce";
 export * from "./rules/revealNotice";
+export * from "./view/viewFor";
 export {
   isDenjiRevealAudience,
   canActOnDenjiChoice,
