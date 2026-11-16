@@ -13,6 +13,7 @@ import {
   powerCount,
   powerNotes,
   webPileRect,
+  measureText,
   wrapText,
   zoneLabel,
   type GameState,
@@ -81,6 +82,16 @@ export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; l
     all: { x: e.x, y: e.y + e.h + 58, w: e.w, h: 36 },
     log: { x: e.x, y: e.y + e.h + 102, w: e.w, h: 36 },
   };
+}
+
+/** Where the end-turn button's question goes: above the phone's button row, or left of the PC's button. */
+export function turnWarningRect(g: GuiGeometry): Box {
+  const turn = matchButtons(g).turn;
+  if (isPortrait(g)) return { x: 8, y: turn.y - 44, w: g.width - 16, h: 38 };
+  // Over the board rows, short of the pile column.
+  const row = g.rows[0]!;
+  const w = Math.min(440, row.w - 16);
+  return { x: row.x + row.w - w - 8, y: turn.y, w, h: turn.h };
 }
 
 /** A card being dragged: drawn under the pointer. */
@@ -391,6 +402,9 @@ function ScrollMarks(props: { marks: ScrollMark[] | undefined }) {
   );
 }
 
+/** A finger-sized menu row (phone): drawn as a separate button with a gap to the next one. */
+const tall = (rect: { h: number }) => rect.h > 32;
+
 export function MenuBox(props: { box: GuiBox; accent: boolean }) {
   return (
     <>
@@ -404,8 +418,14 @@ export function MenuBox(props: { box: GuiBox; accent: boolean }) {
       <Index each={props.box.rows}>
         {(row) => (
           <View
-            class={row().selected ? "absolute flex-row items-center px-[4] rounded-[5] bg-gradient-to-r from-sky-600 to-blue-700" : "absolute flex-row items-center px-[4] rounded-[5]"}
-            style={at({ x: row().rect.x - 2, y: row().rect.y, w: row().rect.w + 12, h: row().rect.h })}
+            class={
+              row().selected
+                ? "absolute flex-row items-center px-[8] rounded-[6] bg-gradient-to-r from-sky-600 to-blue-700"
+                : tall(row().rect)
+                  ? "absolute flex-row items-center px-[8] rounded-[6] bg-[#1e293b] border border-[#334155]"
+                  : "absolute flex-row items-center px-[4] rounded-[5]"
+            }
+            style={at(tall(row().rect) ? { x: row().rect.x - 2, y: row().rect.y + 3, w: row().rect.w + 12, h: row().rect.h - 6 } : { x: row().rect.x - 2, y: row().rect.y, w: row().rect.w + 12, h: row().rect.h })}
           >
             <Text class={row().selected ? "text-sm text-white font-bold" : "text-sm text-slate-100"}>{row().text}</Text>
           </View>
@@ -584,6 +604,8 @@ export function MatchView(props: {
   peek: PilePeek | null;
   /** The end-turn button is still ending phases. */
   endingTurn: boolean;
+  /** The end-turn button was pressed once while moves are open: what it would skip (a second press ends the turn). */
+  turnWarning: string | null;
   drag: DragView | null;
   fullText: boolean;
   /** A long-pressed card shown whole from the bottom of the screen (CardSheet). */
@@ -600,6 +622,8 @@ export function MatchView(props: {
     return where ? `${where.player === HUMAN ? "自" : "敵"}${zoneLabel(where.zone)}` : undefined;
   };
   const g = () => props.view.geometry;
+  // A phone's hint line is read at arm's length: 14 (≈13 CSS px) when it fits the width, 12 for a long prompt.
+  const bigFooter = () => portrait() && measureText(props.footer, 14) <= g().footer.w - 32;
   const portrait = () => isPortrait(g());
   // Several moves and none on a visible card (start phase: release commands or
   // draw): the button opens the list of moves, so it must look pressable.
@@ -762,17 +786,38 @@ export function MatchView(props: {
           <Text class={endLive() ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{endLines().join("")}</Text>
         </Show>
       </View>
+      <Show when={props.turnWarning}>
+        {(text) => (
+          <View class="absolute flex-row items-center justify-center rounded-[8] bg-[#0c4a6e] border border-sky-400" style={at(turnWarningRect(g()))}>
+            <Text class="text-sm text-white font-bold">{text()}</Text>
+          </View>
+        )}
+      </Show>
       <View
         class={
           props.endingTurn
             ? "absolute flex-row items-center justify-center rounded-[8] bg-amber-700 border border-amber-400"
-            : props.hot === "turn"
+            : props.turnWarning
+              ? "absolute flex-row items-center justify-center rounded-[8] bg-rose-700 border border-rose-400"
+              : props.hot === "turn"
               ? "absolute flex-row items-center justify-center rounded-[8] bg-slate-600 border border-slate-400"
               : "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b] border border-[#334155]"
         }
         style={at(buttons().turn)}
       >
-        <Text class={props.endingTurn ? "text-sm text-white font-bold" : "text-sm text-slate-100"}>{props.endingTurn ? "終了中…" : "ターン終了"}</Text>
+        <Show
+          when={props.turnWarning && portrait()}
+          fallback={
+            <Text class={props.endingTurn || props.turnWarning ? "text-sm text-white font-bold" : "text-sm text-slate-100"}>
+              {props.endingTurn ? "終了中…" : props.turnWarning ? "もう一度押すと終了" : "ターン終了"}
+            </Text>
+          }
+        >
+          <View class="flex-col items-center">
+            <Text class="text-xs text-white font-bold">もう一度で</Text>
+            <Text class="text-xs text-white font-bold">ターン終了</Text>
+          </View>
+        </Show>
       </View>
       <View
         class={props.hot === "all" ? "absolute flex-row items-center justify-center rounded-[8] bg-slate-600 border border-slate-400" : "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b] border border-[#334155]"}
@@ -804,14 +849,14 @@ export function MatchView(props: {
       <Show when={props.peek}>{(peek) => <PeekPanel g={g()} peek={peek()} />}</Show>
       <Show when={props.fullText && v().detailFull}>{(full) => <FullTextPanel area={g().board} full={full()} />}</Show>
 
-      {/* toast: over the top bar, or over the phase pills on a phone */}
+      {/* toast: over the top bar short of its buttons (they stay visible), or over the phase pills on a phone */}
       <Show when={v().toast}>
         <View
           class="absolute flex-row items-center px-[14] rounded-[16] bg-gradient-to-r from-amber-600 to-orange-700 shadow-md"
           style={at(
             portrait()
               ? { x: 8, y: g().phaseRects[0]!.y, w: g().width - 16, h: g().phaseRects[0]!.h }
-              : { x: Math.round(g().width * 0.3), y: 8, w: Math.round(g().width * 0.45), h: 28 },
+              : { x: Math.round(g().width * 0.3), y: 8, w: buttons().share.x - 12 - Math.round(g().width * 0.3), h: 28 },
           )}
         >
           <Text class="text-sm text-white font-bold">{v().toast}</Text>
@@ -891,7 +936,19 @@ export function MatchView(props: {
       <Show when={v().list}>{(box) => <MenuBox box={box()} accent />}</Show>
 
       <View class={v().footerAccent ? "absolute flex-row items-center px-[16] bg-[#451a03e0]" : "absolute flex-row items-center px-[16] bg-[#0f172acc]"} style={at(g().footer)}>
-        <Text class={v().footerAccent ? "text-xs text-amber-200" : "text-xs text-slate-400"}>{props.footer}</Text>
+        <Text
+          class={
+            bigFooter()
+              ? v().footerAccent
+                ? "text-sm text-amber-200"
+                : "text-sm text-slate-300"
+              : v().footerAccent
+                ? "text-xs text-amber-200"
+                : "text-xs text-slate-300"
+          }
+        >
+          {props.footer}
+        </Text>
       </View>
       <Show when={props.sheet}>{(cardId) => <CardSheet g={g()} state={props.state} cardId={cardId()} />}</Show>
       <Show when={props.notice}>

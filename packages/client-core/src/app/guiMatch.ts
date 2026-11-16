@@ -31,6 +31,7 @@ import {
   detailArtWidth,
   isWideDetail,
   locateInstance,
+  menuRowHeight,
   PHASE_ORDER,
   playerStrip,
   rowFit,
@@ -787,9 +788,16 @@ export class GuiMatch {
   private openList(title: string, items: MenuItem[], variants = false): void {
     if (items.length === 0) return;
     const cursor = new ListCursor();
-    cursor.reset(items.length, LIST_ROWS);
+    cursor.reset(items.length, this.listRows());
     const labels = items.map((i) => i.option.label);
     this.mode = { kind: "list", title, items, labels: this.placeDuplicates(items, labels, variants ? variantLabels(labels) : labels), cursor };
+  }
+
+  /** Rows the "every action" list shows at once: LIST_ROWS, or fewer when finger-sized rows would overflow the board. */
+  private listRows(): number {
+    const g = this.geometry;
+    const rowH = menuRowHeight(g);
+    return Math.max(3, Math.min(LIST_ROWS, Math.floor((g.board.h - g.lineHeight - rowH - 10) / rowH)));
   }
 
   private focusedRect(): Rect {
@@ -990,6 +998,25 @@ export class GuiMatch {
     }
     this.mode = { kind: "board" };
     this.endTurnOn = this.state().turn;
+  }
+
+  /**
+   * What the "end turn" button would skip, to ask before it does, or null when ending the turn skips
+   * nothing (only end/pass moves are open) and needs no second press.
+   */
+  endTurnWarning(): string | null {
+    this.sync();
+    if (!this.humanActive() || this.state().activePlayer !== HUMAN || this.state().winner) return null;
+    const moves = this.options().filter((o) => !PASS_LIKE.test(o.action.type));
+    if (moves.length === 0) return null;
+    const attackers = new Set(
+      moves.flatMap((o) => (o.action.type === "battle" ? [o.action.attackerInstanceId] : o.action.type === "strike" ? [o.action.instanceId] : [])),
+    );
+    if (attackers.size > 0) return `アタック・ストライクできるユニットが ${attackers.size} 体あります`;
+    const types = new Set(moves.map((o) => o.action.type));
+    if (types.has("charge_power") || types.has("charge_command")) return "まだチャージしていません";
+    if (types.has("rush") || types.has("play_operation")) return "まだ出せるカードがあります";
+    return `まだできる操作が ${moves.length} 件あります`;
   }
 
   /** The "end turn" button is still working. */
@@ -1427,7 +1454,7 @@ export class GuiMatch {
   }
 
   private boxRows(cursor: ListCursor, labels: string[], top: number, x: number, w: number, wrap: WrapOptions): MenuRowView[] {
-    const g = this.geometry;
+    const rowH = menuRowHeight(this.geometry);
     const rows: MenuRowView[] = [];
     for (let r = 0; r < cursor.rows; r++) {
       const index = cursor.rowToIndex(r);
@@ -1435,7 +1462,7 @@ export class GuiMatch {
       rows.push({
         text: fitLineKeepTail(labels[index]!, wrap),
         selected: index === cursor.index,
-        rect: { x, y: top + r * g.lineHeight, w, h: g.lineHeight },
+        rect: { x, y: top + r * rowH, w, h: rowH },
       });
     }
     return rows;
@@ -1571,7 +1598,8 @@ export class GuiMatch {
       const cursor = new ListCursor();
       // As many buttons as the board has room for (a number choice can offer 0〜9 and 選ばない), at least DIALOG_BUTTONS.
       const board = this.geometry.board;
-      const room = Math.max(DIALOG_BUTTONS, Math.floor((board.y + board.h - y - 8) / g.lineHeight));
+      const rowH = menuRowHeight(g);
+      const room = Math.max(DIALOG_BUTTONS, Math.floor((board.y + board.h - y - 8) / rowH));
       // A line for the ▲▼ marks when the buttons don't all fit.
       cursor.reset(buttonItems.length, buttonItems.length > room ? room - 1 : room);
       this.dialogButtonRows = cursor.rows;
@@ -1583,7 +1611,7 @@ export class GuiMatch {
       const buttons = this.boxRows(cursor, buttonItems.map((i) => i.items[0]!.option.label), y, base.x + 4, base.w - 8, wrap).map(
         (row) => ({ ...row, selected: row.selected && buttonCursor >= 0 }),
       );
-      y += buttons.length * g.lineHeight;
+      y += buttons.length * rowH;
       const below = Math.max(0, buttonItems.length - cursor.offset - cursor.rows);
       if (cursor.offset > 0 || below > 0) {
         marks.push(...scrollMarks("rows", cursor.offset, below, "件", { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight }));
@@ -1732,7 +1760,8 @@ export class GuiMatch {
       const w = Math.min(g.board.w, Math.max(110, Math.ceil(widest) + 12));
       const rowsShown = Math.min(mode.verbs.length, POPUP_ROWS);
       const more = mode.verbs.length > POPUP_ROWS ? 1 : 0;
-      const h = (rowsShown + 1 + more) * g.lineHeight + 4;
+      const rowH = menuRowHeight(g);
+      const h = g.lineHeight + (rowsShown + more) * rowH + 4;
       const a = mode.anchor;
       const below = a.y + a.h + 2;
       const above = a.y - h - 2;
@@ -1744,13 +1773,14 @@ export class GuiMatch {
         title: fitLine(mode.title, wrap),
         titleRect: { x: x + 4, y: y + 2, w: w - 8, h: g.lineHeight },
         rows: this.boxRows(mode.cursor, mode.verbs.map((v) => v.label), y + 2 + g.lineHeight, x + 4, w - 8, wrap),
-        marks: boxMarks(mode.cursor, { x: x + 4, y: y + 2 + (rowsShown + 1) * g.lineHeight, w: w - 8, h: g.lineHeight }),
+        marks: boxMarks(mode.cursor, { x: x + 4, y: y + 2 + g.lineHeight + rowsShown * rowH, w: w - 8, h: rowH }),
       };
     } else if (mode.kind === "list") {
       const b = g.board;
-      const rowsShown = Math.min(mode.items.length, LIST_ROWS);
-      const more = mode.items.length > LIST_ROWS ? 1 : 0;
-      const h = (rowsShown + 1 + more) * g.lineHeight + 6;
+      const rowsShown = Math.min(mode.items.length, mode.cursor.rows);
+      const more = mode.items.length > mode.cursor.rows ? 1 : 0;
+      const rowH = menuRowHeight(g);
+      const h = g.lineHeight + (rowsShown + more) * rowH + 6;
       const rect = { x: b.x + 4, y: Math.max(b.y + 2, b.y + Math.floor((b.h - h) / 2)), w: b.w - 8, h };
       const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: rect.w - 8 };
       list = {
@@ -1758,7 +1788,7 @@ export class GuiMatch {
         title: fitLine(`${mode.title} ${mode.cursor.index + 1}/${mode.items.length}`, wrap),
         titleRect: { x: rect.x + 4, y: rect.y + 3, w: rect.w - 8, h: g.lineHeight },
         rows: this.boxRows(mode.cursor, mode.labels, rect.y + 3 + g.lineHeight, rect.x + 4, rect.w - 8, wrap),
-        marks: boxMarks(mode.cursor, { x: rect.x + 4, y: rect.y + 3 + (rowsShown + 1) * g.lineHeight, w: rect.w - 8, h: g.lineHeight }),
+        marks: boxMarks(mode.cursor, { x: rect.x + 4, y: rect.y + 3 + g.lineHeight + rowsShown * rowH, w: rect.w - 8, h: rowH }),
       };
     }
 
@@ -1802,8 +1832,8 @@ export class GuiMatch {
         rect: g.endButton,
       },
       strips: [
-        fitLine(playerStrip(this.engine, state, CPU), { fontPx: g.fontPx, maxWidthPx: g.strips[0].w - 8 }),
-        fitLine(playerStrip(this.engine, state, HUMAN), { fontPx: g.fontPx, maxWidthPx: g.strips[1].w - 8 }),
+        fitLine(playerStrip(this.engine, state, CPU, g.spelledStrip), { fontPx: g.fontPx, maxWidthPx: g.strips[0].w - 8 }),
+        fitLine(playerStrip(this.engine, state, HUMAN, g.spelledStrip), { fontPx: g.fontPx, maxWidthPx: g.strips[1].w - 8 }),
       ],
       rows,
       detailLines,
