@@ -13,6 +13,7 @@ UI を持たず、`@rangers-strike/cards` のカードデータだけに依存�
 | `pickCpuAction(state, playerId, level)` | `src/ai/index.ts`（レベル設定は `src/ai/types.ts` の `getCpuLevelConfig`） |
 | `formatGameLog` / `formatActionError` | `src/log/` |
 | `viewFor` / `resolveViewAction` / `redactNewLogLines` / `forgetHiddenAliases`（対人戦でプレイヤーごとに見える盤面） | `src/view/viewFor.ts` |
+| `createMatch` / `joinMatch` / `matchAct` / `matchTick` / `matchResign` / `matchView` / `serializeMatch` / `deserializeMatch`（対人戦の対戦進行） | `src/match/match.ts` |
 
 UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、選ばれたアクションを `applyAction` に渡すだけです。
 
@@ -28,6 +29,7 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 | `src/effects/` | オペレーション解決などの効果ブリッジ |
 | `src/ai/` | CPU AI（ヒューリスティック・探索・チャージの先読み・ターン単位の読み・NC の並べ方・価値ネットワーク） |
 | `src/view/` | 対人戦（サーバー判定）で1人のプレイヤーに渡す盤面（`viewFor`）と、その漏れ検査（`viewChecks.ts`） |
+| `src/match/` | 対人戦の対戦進行（部屋・操作の受け付け・持ち時間・保存と読み込み）。Vercel も Upstash も知らない純粋な処理 |
 | `src/ai/weights/` | Lv5 が使う価値ネットワークの重み（`scripts/nn/pack.py` が作る。手で書き換えない） |
 | `src/cardSpec/`, `src/rulesSpec/` | カードごと・ルール章ごとのテスト |
 | `src/verticalSlice/` | スターター対戦の生成と、CPU 同士の長い対戦テスト |
@@ -45,6 +47,19 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 - ログは、その時点で見えたかで決まるので `viewFor` では作りません。1回の `applyAction` で増えた行を `redactNewLogLines(before, after, viewer)` で伏せ（操作の前にも後にも見えていなかったカードの番号と名前を「？」にする）、対戦の進行側が貯めて `viewFor` の `log` に渡します。
 
 漏れ検査は `src/view/viewFor.test.ts`（単体）と `src/verticalSlice/viewForLeak.test.ts`（`test:sim`。スターター・ブログ／大会デッキ同士の CPU 対戦 20 試合で毎手、両者の表示に本物の ID・相手の手札や山札の中身・乱数の状態が無いこと、合法手が本物に戻せること、ログに見えなかったカードが出ないことを確かめ、さらに両者が自分の表示の合法手だけから選んで 6 試合を進める。2 分ほど）です。盤面に新しい欄を足して、そこに見えないカードの番号が出るとこの検査が落ちます。公開してよい情報なら `PUBLIC_CARD_ID_KEYS` に足し、そうでなければ `viewFor` で伏せてください。
+
+## 対人戦の対戦進行（match）
+
+`src/match/match.ts` は、対人戦の部屋 1 つ分の状態（`MatchState`）を進める純粋な処理です。API（`apps/web-pocket/api/match.js`）や将来の常時接続の対戦サーバーは、これを呼んで書き換わった `MatchState` を保存するだけにします。時刻・別 ID・シードの乱数は `MatchDeps`（`now` / `newAliasBody` / `randomSeed`）で渡すので、テストで差し替えられます。
+
+- 部屋は `waiting`（`createMatch`。ホスト = player1 のデッキと先攻の決め方 `host` / `guest` / `random`）→ `playing`（`joinMatch`。ゲスト = player2 が参加し、シードを作って `createGame`）→ `finished`（勝敗・投了・3 回目の時間切れ・無効試合）。
+- デッキは `{ starter: "<スターターの id>" }` か `{ cards: ["RS-001", ...] }`（同じ番号を枚数分）。実在するカードかだけを確かめ、枚数や同名の上限は確かめません（極端な入力を弾くため 1〜200 枚だけ）。
+- 操作は `matchAct(m, player, { seq, version, action }, deps)`。`action` はそのプレイヤーの表示の別 ID のまま受け取り、`resolveViewAction` で戻してから、本物の合法手と（キーの順番によらず）同じかを確かめて適用します。同じ `seq` の再送は適用せずに `{ ok: true, duplicate: true }`、古い `seq`・版番号のずれ（`stale`）・操作番でない（`not_your_turn`）・知らない別 ID（`unknown_card`）・合法でない（`illegal`）は盤面を変えずに断ります。
+- 持ち時間はターン制です。ターンプレイヤーは 1 ターン 3 分（`TURN_TIME_MS`。ターンが変わると戻る）、相手ターン中の選択は 1 回ごとに 30 秒（`CHOICE_TIME_MS`）で、その間はターン側の残りを減らしません。期限は `matchTick`（`matchAct` / `matchResign` も最初に呼ぶ）で確かめ、過ぎていれば期限の時刻で順に処理します。時間切れはサーバーが自動で進め（ターンプレイヤーならターンが変わるまで、途中で相手の選択が入ってもその後また続ける。相手の選択なら操作番が移るまで。見送り・取り消しを優先する `pickCpuFallbackAction`、次に CPU Lv1 の手。その自動進行ですでに通った盤面に戻る手は選ばない。合法手が「支払いを始める」だけの選択で、支払いの取り消しと行き来し続けたため）、ログに `player|match_timeout_auto|N` を残し、対戦を通して 3 回目で負けです。自動で進める手が 400 手を超えるか、進める手が無ければ無効試合にします（止まる・ループする不具合で対戦が終わらなくならないように）。
+- `matchView(m, player, deps)` はブラウザに返す表示（形式の版 `format`・版番号・時計と期限・時間切れの回数・結果・`viewFor` の表示とそのプレイヤー用に伏せたログ）。操作のたびに両者の別 ID を振っておくので、表示を作るだけでは `MatchState` は変わらず、poll で保存し直す必要はありません。
+- 保存は `serializeMatch`（盤面のカード定義を除く）、読み込みは `deserializeMatch(json, engineVersion, deps)`。保存時とエンジンの版が違えば、シードと操作の記録（`actions`。時間切れで自動で進めた手も含み、その位置は `autoActions`）から最初から再生して盤面を作り直し、再生できなければ無効試合（`engine_update`）にします。盤面が保存されていないとき（操作の記録だけ）も再生します。
+
+テストは `src/match/match.test.ts`（単体）と `src/verticalSlice/matchPlay.test.ts`（`test:sim`。CPU 同士 8 試合を表示の別 ID だけで操作し、保存と読み込みを挟みながら毎 7 手に漏れ検査。さらに 10 試合で、ときどき操作番を放置して時間切れにしても無効試合にならず終わることを確かめる）です。自動進行のループの回帰テストは、見つかった盤面を `src/match/fixtures/timeoutPaymentLoop.json`（デッキ・シード・操作の記録）に置いています。
 
 ## 効果を書くときの注意
 
