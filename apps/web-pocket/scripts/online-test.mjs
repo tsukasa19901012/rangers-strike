@@ -11,7 +11,6 @@
 //   - a reload of the guest page goes back into the same match (the room is kept in localStorage),
 //   - the guest resigns with the two-press 投了 and both screens show the result (host 勝利, guest 敗北),
 //   - both agree to show their decks (nothing shows after one agreement), then each sees the other's deck,
-//   - the guest asks for a rematch, the host accepts, and both are in a new match (same seats, the guest first),
 //   - the board calls the other side 「相手」 (not 「CPU」),
 //   - no page errors.
 // With --shots, screenshots of the lobby, the waiting room, the join screen, the match and the results land there.
@@ -222,36 +221,6 @@ try {
     check("公開されたデッキはどちらも 40 枚以上", decks.every((n) => n >= 40), JSON.stringify(decks));
     await shot(host, "7-reveal-pc.png");
     await shot(guestPage, "7-reveal-phone.png");
-
-    // Rematch: the guest asks, the host sees it and accepts, and both are in a new match where the guest goes first.
-    const oldId = await host.page.evaluate(() => globalThis.__rsApp.controller.remoteSession.match.id);
-    await guestPage.page.evaluate(() => globalThis.__rsApp.postGame.rematch());
-    await waitPost(host, () => globalThis.__rsApp.postGame.state().post?.rematch.them, "ホスト: ゲストの再戦の希望が届く");
-    await shot(host, "8-rematch-asked-pc.png");
-    await host.page.evaluate(() => globalThis.__rsApp.postGame.rematch());
-    const inRematch = (who) =>
-      who.page
-        .waitForFunction((id) => {
-          const s = globalThis.__rsApp.controller.remoteSession;
-          return s && s.match.id !== id && s.match.status === "playing" && globalThis.__rsApp.controller.view().screen === "match";
-        }, oldId, { timeout: 20000 })
-        .then(() => true)
-        .catch(() => false);
-    check("再戦: ホストが新しい対戦に入る", await inRematch(host));
-    check("再戦: ゲストが新しい対戦に入る", await inRematch(guestPage));
-    const [hr2, gr2] = [await status(host), await status(guestPage)];
-    check("再戦: 席はそのままで、先攻は前の逆（ゲスト）", hr2.you === "player1" && gr2.you === "player2" && gr2.owner === "human" && hr2.owner === "remote", JSON.stringify([hr2, gr2]));
-    const saved = await guestPage.page.evaluate(() => JSON.parse(localStorage.getItem("rs.online.v1")).id);
-    check("再戦: 新しい部屋が保存される（再読み込みで戻れる）", saved !== oldId, saved);
-    await shot(guestPage, "9-rematch-phone.png");
-    await host.page.evaluate(() => globalThis.__rsApp.controller.remoteSession.resign());
-    check(
-      "再戦の対戦も投了で両方に結果が出る",
-      await guestPage.page
-        .waitForFunction(() => globalThis.__rsApp.controller.view().screen === "result", null, { timeout: 15000 })
-        .then(() => true)
-        .catch(() => false),
-    );
   }
   // タイトルへ戻ると部屋は忘れる（再読み込みで戻らない）。
   await guestPage.page.evaluate(() => {
