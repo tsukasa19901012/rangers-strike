@@ -33,9 +33,9 @@ import {
   type ScreenView,
   type PlayerId,
 } from "@rangers-strike/client-core";
-import { webPlatform } from "./platform";
+import { vibrate, webPlatform } from "./platform";
 import { pollCardArt } from "./cardArt";
-import { MatchView, matchButtons, peekLayout, pileHit, pileLayout, rowMarks, type DragView, type PilePeek } from "./MatchView";
+import { MatchView, matchButtons, peekLayout, pileHit, pileLayout, rowMarks, type DragView, type PilePeek, type PressView } from "./MatchView";
 import { DeckView, deckButtons } from "./DeckView";
 import { TitleView } from "./TitleView";
 import { ResultView } from "./ResultView";
@@ -98,6 +98,9 @@ function hoverMatch(view: GuiView, point: { x: number; y: number }): LogicalInpu
 
 /** A press held this many frames without moving shows the card under it whole (CardSheet). */
 const LONG_PRESS_FRAMES = 27;
+/** Frames a press is held before the card lifts (a tap is over by then, so taps never flicker). */
+const LIFT_FRAMES = 6;
+const LONG_PRESS_BUZZ_MS = 15;
 /** A swipe over a row released within this many ms is a flick: it pages the row at least a screenful. */
 const FLICK_MS = 300;
 
@@ -225,10 +228,12 @@ export default function App() {
   });
   // A card picked up by a drag (pointer down on a card the player can act with, then moved).
   const [drag, setDrag] = createSignal<DragView | null>(null);
+  // The card a press is held on, lifted with a ring that fills until the long press opens it (shown after LIFT_FRAMES).
+  const [press, setPress] = createSignal<PressView | null>(null);
   // A long-pressed card shown whole (MatchView's CardSheet); any tap closes it.
   const [sheet, setSheet] = createSignal<string | null>(null);
   // The press that may become a long press: the card under it and how long it has been held.
-  let pressCard: string | null = null;
+  let pressCard: PressView | null = null;
   let pressFrames = 0;
   let longPressed = false;
   // The board row a press started on, when it hides some cards: a sideways swipe over it moves its cards
@@ -499,11 +504,11 @@ export default function App() {
     return "rows";
   }
   /** The face-up card a long press at `p` shows: in the selection window, the enlarged zone, the pile column or the board. */
-  function cardUnder(gui: GuiView, p: { x: number; y: number }): string | null {
+  function cardUnder(gui: GuiView, p: { x: number; y: number }): PressView | null {
     const box = gui.list ?? gui.popup;
     if (box && inside(box.rect, p)) return null;
     const faceUp = (card: { cardId: string; hidden?: boolean; kind?: string; rect: { x: number; y: number; w: number; h: number } } | undefined) =>
-      card && !card.hidden && card.kind !== "hidden" && card.cardId !== "back" ? card.cardId : null;
+      card && !card.hidden && card.kind !== "hidden" && card.cardId !== "back" ? { cardId: card.cardId, rect: card.rect, progress: 0 } : null;
     if (gui.dialog && inside(gui.dialog.rect, p)) return faceUp(gui.dialog.cards.find((c) => inside(c.rect, p)));
     const shown = peek();
     if (shown && !gui.dialog) {
@@ -917,11 +922,26 @@ export default function App() {
     if (open && ((open.kind !== "open" && !controller.view().deck) || (open.kind === "open" && controller.view().screen !== "title"))) setDeckPanel(null);
     // A press held still on a card shows it whole (the drag it might have started is dropped).
     if (pressed && pressCard && !longPressed && ++pressFrames >= LONG_PRESS_FRAMES) {
-      setSheet(pressCard);
+      setSheet(pressCard.cardId);
+      // A short buzz says the press took (phones with a vibration motor; iPhone Safari has none to call).
+      vibrate(LONG_PRESS_BUZZ_MS);
       longPressed = true;
       pressCard = null;
       dragFrom = null;
       setDrag(null);
+      changed = true;
+    }
+    // The held card lifts and its ring fills only once the press is clearly not a tap.
+    const lifting = pressed && pressCard && !longPressed && pressFrames >= LIFT_FRAMES ? pressCard : null;
+    const shown = press();
+    if (lifting) {
+      const progress = Math.min(1, (pressFrames - LIFT_FRAMES) / (LONG_PRESS_FRAMES - LIFT_FRAMES));
+      if (!shown || shown.progress !== progress || shown.cardId !== lifting.cardId) {
+        setPress({ ...lifting, progress });
+        changed = true;
+      }
+    } else if (shown) {
+      setPress(null);
       changed = true;
     }
     if (sheet() && !controller.view().gui) setSheet(null);
@@ -953,6 +973,7 @@ export default function App() {
             endingTurn={(gui(), controller.endingTurn)}
             turnWarning={turnWarning()}
             drag={drag()}
+            press={press()}
             fullText={fullText()}
             sheet={sheet()}
             sharing={sharing()}

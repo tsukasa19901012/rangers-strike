@@ -6,6 +6,7 @@ import { sendGameRecord } from "./share";
 type BrowserGlobals = {
   performance?: { now?: () => number; memory?: { usedJSHeapSize?: number } };
   console?: { log?: (...args: unknown[]) => void };
+  navigator?: { vibrate?: (ms: number) => boolean };
   localStorage?: { getItem(k: string): string | null; setItem(k: string, v: string): void; removeItem(k: string): void; key(i: number): string | null; length: number };
 };
 const g = globalThis as unknown as BrowserGlobals;
@@ -53,3 +54,12 @@ export const webPlatform: Platform = {
   },
   sendGameRecord: (record) => void sendGameRecord(record),
 };
+
+/** A short buzz where the browser can (Android Chrome); a no-op elsewhere (iPhone Safari has no vibrate). */
+export function vibrate(ms: number): void {
+  try {
+    g.navigator?.vibrate?.(ms);
+  } catch {
+    // blocked (no user activation yet) or unsupported
+  }
+}

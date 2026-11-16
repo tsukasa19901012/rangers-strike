@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { describeAction, humanizeLogEntry, isPantherClawLoopStop } from "./labels";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { testEngine } from "../testing/engine";
 
 describe("describeAction", () => {
@@ -35,6 +38,47 @@ describe("describeAction", () => {
     expect(humanizeLogEntry("player2|pass_battle_entry", state)).toBe("CPU: 進入を終える");
     expect(humanizeLogEntry("player1|command_payment_pending", state)).toBeNull();
     expect(humanizeLogEntry("あなたが1枚ドローした", state)).toBe("あなたが1枚ドローした");
+  });
+
+  it("writes every engine log kind in Japanese, never its raw name (command_payment_cancel etc.)", () => {
+    // Every kind the engine logs with buildSimpleLogEntry / buildLogEntry, read from its sources
+    // (the first argument may be a call such as opponent(playerId); kinds may hold digits: xg7055_…).
+    const root = join(dirname(fileURLToPath(import.meta.url)), "../../../engine/src");
+    const kinds = new Set<string>();
+    const cardKinds = new Set<string>();
+    const walk = (dir: string) => {
+      for (const name of readdirSync(dir)) {
+        const path = join(dir, name);
+        if (statSync(path).isDirectory()) walk(path);
+        else if (name.endsWith(".ts") && !name.endsWith(".test.ts")) {
+          const source = readFileSync(path, "utf8");
+          for (const m of source.matchAll(/buildSimpleLogEntry\(\s*[^,()]+(?:\([^()]*\))?,\s*"([a-z0-9_]+)"/g)) kinds.add(m[1]!);
+          for (const m of source.matchAll(/buildLogEntry\(\s*[^,()]+(?:\([^()]*\))?,\s*"([a-z0-9_]+)"/g)) cardKinds.add(m[1]!);
+        }
+      }
+    };
+    walk(root);
+    expect(kinds.size).toBeGreaterThan(50);
+    expect(kinds.has("xg7055_cyclone_gale_choice")).toBe(true);
+    expect(cardKinds.size).toBeGreaterThan(30);
+    const instance = state.players.player1.hand[0]!;
+    const raw = [...kinds]
+      .map((kind) => humanizeLogEntry(testEngine.formatGameLog(`player1|${kind}`, state.definitions), state))
+      .filter((text) => text !== null && /[a-z]+_[a-z_]+|player[12]/.test(text));
+    expect(raw).toEqual([]);
+    // Card logs: with an internal marker as the detail (an effect id, "cancelled") nothing English shows either.
+    const card = instance.cardId;
+    // (strike's detail is the damage and plasma_energy's the unit's name: no marker goes there.)
+    const cardRaw = [...cardKinds].filter((kind) => kind !== "strike" && kind !== "plasma_energy").flatMap((kind) =>
+      ["", "|some_effect_id", "|cancelled", ...(kind === "battle" ? [] : ["|choice:some_effect"])].map((detail) =>
+        humanizeLogEntry(testEngine.formatGameLog(`player1|${kind}|${card}|${name}${detail}`, state.definitions), state),
+      ),
+    ).filter((text) => text !== null && /[a-z]+_[a-z_]+|player[12]|\(\w+\)/.test(text));
+    expect(cardRaw).toEqual([]);
+    expect(humanizeLogEntry("player1|command_payment_cancel", state)).toBe("あなた: コマンドの支払いをやめた");
+    expect(humanizeLogEntry("player1|turn_ending_effects", state)).toBe("あなた: ターン終了時の効果を処理");
+    expect(humanizeLogEntry("player1|damage_payment|done", state)).toBe("あなた: ダメージを支払った");
+    expect(humanizeLogEntry(`player1|hold_for_wing|${instance.instanceId}`, state)).toBe(`あなた: ウイングのためホールド 「${name}」`);
   });
 
   it("falls back to the raw type for unknown actions", () => {
@@ -116,3 +160,37 @@ describe("describeAction magi ticket counter", () => {
     );
   });
 });
+
+describe("log lines of real games", () => {
+  // A 352-game scan (2026-11-16) found lines the per-kind check above cannot see: effect ids as details
+  // (「self_damageを発動」), instance ids as names, markers such as cancelled. A few CPU games guard them.
+  it("never shows an internal name in a played game's log", () => {
+    const e = testEngine as unknown as {
+      createStarterGame: (o: object) => GameStateLike;
+      isCpuTurn: (s: GameStateLike, p: string) => boolean;
+      getActionPlayerId: (s: GameStateLike) => string;
+      pickCpuAction: (s: GameStateLike, p: string, level: number) => unknown;
+      pickCpuFallbackAction: (s: GameStateLike, p: string) => unknown;
+      applyAction: (s: GameStateLike, a: unknown) => { ok: boolean; state: GameStateLike };
+    };
+    const starters = Object.keys(testEngine.starterDecks);
+    const english: string[] = [];
+    for (let i = 0; i < 12; i++) {
+      let state = e.createStarterGame({ player1Starter: starters[(i * 5) % starters.length], player2Starter: starters[(i * 11 + 3) % starters.length], seed: i + 1 });
+      for (let step = 0; step < 3000 && !state.winner; step++) {
+        const actor = e.isCpuTurn(state, "player2") ? "player2" : e.getActionPlayerId(state);
+        const action = e.pickCpuAction(state, actor, 1) ?? e.pickCpuFallbackAction(state, actor);
+        const result = action ? e.applyAction(state, action) : null;
+        if (!result?.ok) break;
+        state = result.state;
+      }
+      for (const raw of state.log) {
+        const text = humanizeLogEntry(testEngine.formatGameLog(raw, state.definitions), state as never);
+        if (text && /[a-z]+_[a-z_]+|player[12]|\b[a-z]{4,}\b/.test(text)) english.push(`${raw} => ${text}`);
+      }
+    }
+    expect([...new Set(english)]).toEqual([]);
+  }, 300_000);
+});
+
+type GameStateLike = { winner?: string; log: string[]; definitions: Record<string, { name: string }> };

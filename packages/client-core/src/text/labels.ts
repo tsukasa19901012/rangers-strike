@@ -73,6 +73,32 @@ export const ACTION_LABELS: Record<string, string> = {
   use_super_shield: "スーパーシールド",
 };
 
+/**
+ * Log-only entries ("player|kind") the engine's formatGameLog leaves as they are and no
+ * action has a label for. Without these the log showed the raw kind (「あなた: command_payment_cancel」).
+ */
+const LOG_LABELS: Record<string, string> = {
+  attack_hold_choice: "アタック時にホールドするコマンドの数を選ぶ",
+  command_payment: "カウンターのコマンドを支払う",
+  command_payment_cancel: "コマンドの支払いをやめた",
+  damage_payment: "ダメージを支払った",
+  machine_empire_choice: "アタックされたときの選択へ（【不滅のマシン帝国】・【ディオネを守る壁】）",
+  super_ninpo_lion_dance: "【超忍法・舞獅子】を発動",
+  third_eye_window: "「第三の眼」で無効にするかの選択へ",
+  turn_ending_effects: "ターン終了時の効果を処理",
+  zord_setup_cancel: "ゾードラッシュをやめた",
+  zord_setup_step: "ゾード素材を選んだ",
+  // Choices opened when a unit attacks or is attacked, before the battle (core/applyAction.ts).
+  rk177_hypnotic_wave: "【催眠音波】（蜂女）の選択へ",
+  rk188_agent_choice: "アタックされたときの選択へ（【地空人のエージェント】）",
+  rm062_lina_stick_choice: "アタックされたときの選択へ（【リーナステッキ】）",
+  xg1e_attacked_choice: "アタックされたときの選択へ（【人質と脅迫】・【瞬間移動】）",
+  xg4033_freezing_dagger_choice: "アタックするときの選択へ（【フリージングダガー】）",
+  xg5_attacked_choice: "アタックされたときの選択へ（【捨て身の一撃】）",
+  xg7055_cyclone_gale_choice: "アタックされたときの選択へ（【神出鬼没の疾風】）",
+  xp016_red_eye_choice: "アタックされたときの選択へ（【赤い瞳に宿るもの】）",
+};
+
 const FIELD_LABELS: Record<string, string> = {
   zone: "ゾーン",
   // use_magi_ticket の counter: コマンドゾーンのカウンターをマジチケットで使う（RS-325）。
@@ -241,10 +267,21 @@ export function humanizeLogEntry(entry: string, state: GameState): string | null
   const [player, action, ...rest] = entry.split("|");
   if (!action || /_pending(_|$)/.test(action)) return null;
   const who = PLAYER_LABELS[player as PlayerId] ?? player;
-  const label = ACTION_LABELS[action] ?? action;
+  const label = LOG_LABELS[action] ?? ACTION_LABELS[action] ?? action;
+  // Details name cards by card id or instance id; markers such as "done" say nothing to the player.
+  let instances: Map<string, string> | undefined;
+  const cardName = (part: string): string | null => {
+    if (/^[A-Z]{2,3}-\d{3}$/.test(part)) return null;
+    const direct = state.definitions[part]?.name;
+    if (direct) return direct;
+    instances ??= indexInstances(state);
+    const cardId = instances.get(part);
+    if (cardId) return `「${state.definitions[cardId]?.name ?? cardId}」`;
+    return /^[a-z_]+$/.test(part) ? null : part;
+  };
   const details = rest
     .filter((part) => part && part !== "unknown")
-    .map((part) => (/^[A-Z]{2,3}-\d{3}$/.test(part) ? null : (state.definitions[part]?.name ?? part)))
+    .map(cardName)
     .filter((part): part is string => !!part);
   return details.length ? `${who}: ${label} ${details.join(" ")}` : `${who}: ${label}`;
 }

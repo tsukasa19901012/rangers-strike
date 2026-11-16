@@ -146,9 +146,26 @@ export function MenuBox(props: { box: GuiBox; accent: boolean }) {
       <View class="absolute" style={at(props.box.titleRect)}>
         <Text class={props.accent ? "text-xs text-sky-300 font-bold" : "text-xs text-slate-300 font-bold"}>{props.box.title}</Text>
       </View>
+      <Index each={props.box.info ?? []}>
+        {(line) => (
+          <View class="absolute" style={at(line().rect)}>
+            <Text class={TONE[line().tone]}>{line().text}</Text>
+          </View>
+        )}
+      </Index>
+      <Index each={props.box.groups ?? []}>
+        {(group) => (
+          <>
+            <View class="absolute bg-slate-800 rounded-[2]" style={at(group().rect)} />
+            <View class="absolute" style={at(group().nameRect)}>
+              <Text class="text-xs text-slate-100 font-bold">{group().text}</Text>
+            </View>
+          </>
+        )}
+      </Index>
       <Index each={props.box.rows}>
         {(row) => (
-          <View class={row().selected ? "absolute bg-blue-700 rounded-[2]" : "absolute"} style={at(row().rect)}>
+          <View class={row().selected ? "absolute bg-blue-700 rounded-[2]" : props.box.groups ? "absolute bg-slate-700 rounded-[2]" : "absolute"} style={at(row().rect)}>
             <Text class={row().selected ? "text-xs text-white font-bold" : "text-xs text-slate-100"}>{row().text}</Text>
           </View>
         )}

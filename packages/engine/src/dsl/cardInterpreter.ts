@@ -1,3 +1,4 @@
+import { buildLogEntry } from "../log/formatLog";
 import { hasDeckLookText } from "../rules/deckLook";
 import type { EffectDefinition, EffectPrimitive, PlayerRef } from "@rangers-strike/cards/dsl/types";
 import type { CardInstance, DslChoiceResume, GameState, PlayerId } from "../types/game";
@@ -617,7 +618,7 @@ export function continueDslAfterChoice(
   const detail = outcome.detail ?? pending.effectId;
   return {
     state: nextState,
-    log: `${playerId}|resolve_effect_choice|${pending.sourceCardId}|${pending.effectId}:${detail}`,
+    log: buildLogEntry(playerId, "resolve_effect_choice", pending.sourceCardId, nextState.definitions, `${pending.effectId}:${detail}`),
   };
 }
 
