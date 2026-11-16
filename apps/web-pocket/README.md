@@ -66,6 +66,13 @@ UI は Vita 版と同じ [PocketJS](https://github.com/pocket-stack/pocketjs)（
   共有した盤面から続けた対戦と、CPU 同士の自動対戦は送りません）。CPU の負け方を調べるためのもので、
   `node scripts/list-game-records.mjs --env <読み取り専用の鍵のファイル> --out game-records.json` で読み出し、
   `packages/engine/scripts/replay-game-records.ts` でエンジンで再生して CPU の負けた対戦を並べます
+- 対人戦（オンライン）: タイトルの「対人戦（オンライン）」で、デッキと先攻（ランダム／自分が先攻／相手が先攻）を選んで「部屋を作る」と、
+  招待 URL `/?m=<8文字>` と QR が出ます。相手がそれを開いてデッキを選んで参加すると対戦が始まります（ホストの画面は 2 秒ごとに参加を確かめます）。
+  判定はサーバー（`api/match.js`）がして、ブラウザには自分に見える盤面だけが届きます（相手の手札・山札の中身・シードは来ません）。
+  操作は 1 手ずつ送り、答えが来るまで「送信中…」。相手の手番は 1 秒ごと、自分の手番は 3 秒ごとに問い合わせます。
+  通信が切れたら同じ手を同じ番号で送り直します（サーバーは 1 回だけ適用）。上の帯に手番の人の残り時間（1 ターン 3 分、相手の手番中の選択は 30 秒）を出し、
+  時間切れはサーバーが自動で進め、3 回目で負けです。投了は右上のボタンを 2 回。部屋とトークンは localStorage（`rs.online.v1`）に入れるので、
+  再読み込みしても同じ対戦（または相手を待つ画面）に戻ります。盤面の共有と CPU 戦の戦績・記録には入りません。対戦中の盤面では相手を「相手」と呼びます
 - 保存（設定・自作デッキ・戦績）は localStorage（キー `rs.settings.v1` / `rs.decks.v1` / `rs.records.v1`）
 
 ## 構成
@@ -76,7 +83,10 @@ src/app.tsx         画面の切り替えと入力（マウス・タッチ・キ
 src/TitleView.tsx   タイトル（フレックスレイアウト + focusable なボタン）
 src/MatchView.tsx   対戦画面（GuiView を client-core の矩形どおりに描く）
 src/DeckView.tsx    デッキ構築（DeckBuilderView を描く）
-src/ResultView.tsx  結果画面
+src/ResultView.tsx  結果画面（対人戦では投了・時間切れ・無効試合も）
+src/online.ts       対人戦: /api/match の呼び出し、招待 URL（?m=）、部屋とトークンの保存、RemoteSession が使う送受信（fetchTransport）
+src/lobby.ts        対人戦のロビー（部屋を作って待つ・招待から参加・再読み込みで戻る）の状態
+src/OnlineView.tsx  ロビーの画面（デッキ・先攻の選択、招待 URL と QR、参加）
 src/cardArt.ts      カード画像テクスチャ（ホストがデコードしてアップロード）
 src/engine.ts       ホストが読み込んだエンジン（globalThis.__rsEngine）を EngineApi として渡す
 src/platform.ts     ブラウザ用 Platform 実装（localStorage、プライベートウィンドウではメモリ）
@@ -85,6 +95,8 @@ src/deckShare.ts    デッキの共有 URL を作る・開く（RD1.、/api/shar
 src/DeckSharePanel.tsx  デッキの共有パネル・共有されたデッキの確認・テキスト取り込みの描画と当たり判定
 src/qr.ts           QR コードのモジュール計算（qrcode-generator。描画はホストの globalThis.__rsQr）
 api/share.js        Vercel Function: 共有された盤面とデッキを Upstash Redis に保存・取得、対戦の記録を保存（開発用サーバではメモリに保存）
+api/match.js        Vercel Function: 対人戦の部屋（作る・参加・操作・投了・取り消し）。Upstash Redis に保存（開発用サーバではメモリ）
+server/entry.ts     api/match.js が使うエンジン部分の入口。scripts/build-server.mjs が server/match-engine.mjs（git に入れない）に束ねる
 src/ui.tsx          画面共通の描画ヘルパ
 host/               ブラウザホスト（index.html, host.js）
 scripts/            ビルド・開発用静的サーバ・フォント取得・pocket check
@@ -102,7 +114,7 @@ scripts/            ビルド・開発用静的サーバ・フォント取得・
 - カード画像（`apps/web/public/cards` のコピー）はブラウザでデコードしてテクスチャにします
 - ルールエンジン（`dist/engine.js`）は UI と別ファイルの ESM として読み込みます
 - 入力欄は文字 16px 以上、viewport は `maximum-scale=1`、ページ全体を `touch-action: manipulation` にして、iPhone で入力欄に触れたときの自動ズーム・ダブルタップズームを止めています（入力を終えたらキーボードでずれたページ位置を戻します）
-- テスト用に `window.__rsApp`（`controller`・`pile(player)`・`peek()`（拡大表示中のゾーン）など）を公開しています
+- テスト用に `window.__rsApp`（`controller`・`lobby`・`buttons()`・`pile(player)`・`peek()`（拡大表示中のゾーン）など）を公開しています
 
 ## 操作
 
@@ -136,8 +148,10 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 |---|---|
 | `npm run web:build` | `dist/` を作る（エンジン・UI・カード画像すべて） |
 | `npm run web:build:app` | UI とホストだけ再ビルド（エンジンとカード画像は前回のもの。engine / cards を変えたら `web:build`） |
-| `npm run web:serve` | `dist/` を http://127.0.0.1:8140/ で配信（`node scripts/serve.mjs --port=…` で変更可。開発用。`/api/share` はメモリに保存） |
+| `npm run web:serve` | `dist/` を http://127.0.0.1:8140/ で配信（`node scripts/serve.mjs --port=…` で変更可。開発用。`/api/share` と `/api/match` はメモリに保存） |
 | `npm run web:exile-test` | ブラウザ（Playwright）で除外の表示を確認（PC・スマホ。除外 0 枚で何も出ない／「除外 N」行（帯には出さない）／乗せる・タップで新しい順に全部並ぶ）。先に `web:build` |
+| `npm run web:online-test` | 2 つのブラウザ（PC のホスト・スマホのゲスト）で対人戦を確認（部屋を作る → 招待 URL で参加 → 両方が自分の選べる手を 60 手送る → 相手の手札が「?」で本当のカード ID が届かない → ゲストの再読み込みで同じ対戦に戻る → 投了ボタン 2 回で両方に結果）。`-- --shots=<dir>` で画面写真。先に `web:build` |
+| `npm test` | `api/match.js` のテスト（node:test、メモリの保存先。部屋・トークン・API だけで決着まで・再送・「変わりなし」・同時書き込みのやり直し・投了・取り消し） |
 | `npm run pocket:check` | `pocket.json` を PocketJS の web-app プロファイルで検査し、型検査 |
 
 `web:*` / `pocket:*` はルートの turbo（`build` / `test` / `typecheck`）や CI からは実行されません。
@@ -164,7 +178,8 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 4. Deployments から最新の main を **Redeploy**
 
 ビルドはリポジトリ全体の `npm ci` → PocketJS ツールチェーンの `npm ci` → フォント取得 → `scripts/build.mjs` の順で、
-`dist/` を静的サイトとして配信します。
+`dist/` を静的サイトとして配信します。対人戦の `api/match.js` が読むエンジン（`server/match-engine.mjs`、約 9 MiB）は
+installCommand の最後の `scripts/build-server.mjs` で作ります（関数の束ねより前にあるように）。
 
 ### 共有 URL の保存先（Upstash Redis）
 
@@ -179,3 +194,17 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
   2,048 文字まで、サーバで展開して `{v:1, name, cards}` のカードリストであることを確かめたものだけ保存します
 - 対戦の記録: `POST /api/share {"game": "RG1.…"}` → `{"ok": true}`。キー `game:<時刻>-<8文字>` で 1 年保存し、読み出す API はありません
   （`scripts/list-game-records.mjs` が Upstash から直接読みます）。256 KiB まで、サーバで展開して `{v:1, seed, humanDeck, cpuDeck, actions}` であることを確かめます
+
+### 対人戦の部屋（`api/match.js`）
+
+同じ Upstash Redis を使います（保存先がなければ 503 `no_store`）。
+
+- `POST {"op":"create","deck":…,"first":"host|guest|random"}` → `{"id","token","view"}`（ホスト = player1）、
+  `POST {"op":"join","id","deck":…}` → `{"token","view"}`（ゲスト = player2。もう始まっていたら 409 `taken`）
+- `GET ?id=&t=<token>[&v=<版>]` → `{"view"}`。`v` が今の版と同じなら `{"unchanged":true}`（盤面を送らない）
+- `POST {"op":"act","id","t","seq","version","action"}` → `{"result","view"}`。同じ `seq` の再送は 1 回しか適用しません
+- `POST {"op":"resign",…}` → `{"view"}`、`POST {"op":"cancel",…}` → `{"ok":true}`（ホストが参加前だけ）
+- `deck` は `{"starter":"<id>"}` か `{"cards":["RS-001",…]}`。成功した答えにはサーバーの時刻 `now` が付きます（残り時間の表示用）
+- 鍵 `match:<id>`、値は「改訂番号|JSON」（1 部屋 約 130 KiB）。最後の書き込みから 6 時間で消えます。書き込みは改訂番号を Lua で比べて
+  読んだときのままなら通し、負けたら読み直して 4 回までやり直します。トークンは SHA-256 だけを保存します
+- 持ち時間は誰かが読むか送るたびに確かめ、過ぎていればサーバーが自動で進めて保存します

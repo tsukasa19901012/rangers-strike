@@ -32,10 +32,14 @@ import {
   type LogicalInput,
   type ScreenView,
   type PlayerId,
+  RemoteSession,
 } from "@rangers-strike/client-core";
+import { engine } from "./engine";
+import { Lobby } from "./lobby";
+import { fetchTransport, inviteFromLocation, saveRoom, savedRoom, serverNow } from "./online";
 import { vibrate, webPlatform } from "./platform";
 import { pollCardArt } from "./cardArt";
-import { MatchView, matchButtons, peekLayout, pileHit, pileLayout, rowMarks, type DragView, type PilePeek, type PressView } from "./MatchView";
+import { MatchView, matchButtons, setOpponentName, peekLayout, pileHit, pileLayout, rowMarks, type DragView, type PilePeek, type PressView } from "./MatchView";
 import { DeckView, deckButtons } from "./DeckView";
 import { TitleView } from "./TitleView";
 import { ResultView } from "./ResultView";
@@ -139,7 +143,7 @@ function matchFooter(v: GuiView): string {
   if (v.footer.startsWith("「可能なら出る」")) return `${v.footer} / 終了ボタン・Space: 出すユニットを選ぶ`;
   if (v.footerAccent) return `${v.footer.replace(/（[^）]*）$/, "")}（クリック: 決定 / 右クリック・Esc: やめる）`;
   if (v.footer.startsWith("盤面を確認中")) return "盤面を確認中（L・Esc・Space で選択ウィンドウに戻る）";
-  if (v.footer === "CPU の手番") return "CPU の手番です…";
+  if (v.footer.endsWith(" の手番")) return `${v.footer}です…`;
   return "マウスを乗せると詳細 / クリック: 操作 / ドラッグ: 登場・移動・アタック / Space: フェイズ終了 / Tab: すべての操作 / L: ログ";
 }
 
@@ -152,7 +156,7 @@ function touchFooter(v: GuiView): string {
   if (v.footer.startsWith("「可能なら出る」")) return v.footer;
   if (v.footer.startsWith("盤面を確認中")) return "盤面を確認中（空いた所かログをタップで選択に戻る）";
   if (v.footerAccent) return v.footer.replace(/（[^）]*）$/, "");
-  if (v.footer === "CPU の手番") return "CPU の手番です… / 長押し: カードの詳細";
+  if (v.footer.endsWith(" の手番")) return `${v.footer}です… / 長押し: カードの詳細`;
   return "タップ: 操作 / 長押し: 詳細 / 左右スワイプ: 送る";
 }
 
@@ -208,6 +212,10 @@ export default function App() {
     noticeFrames = NOTICE_FRAMES;
   };
   const share = () => {
+    if (controller.remoteSession) {
+      showNotice("対人戦の盤面は共有できません");
+      return;
+    }
     const payload = controller.sharePayload();
     if (!payload || sharing()) return;
     setSharing(true);
@@ -218,6 +226,28 @@ export default function App() {
         setSharing(false);
         refresh();
       });
+  };
+  // 対人戦: the lobby (create a room / join from an invite URL ?m=<id>); a reload goes back to the room.
+  const lobby = new Lobby((room, first) => {
+    const session = new RemoteSession({ engine, transport: fetchTransport(room, first), first, now: () => Date.now() });
+    controller.startRemoteMatch(session);
+    refresh();
+  });
+  const invite = inviteFromLocation();
+  if (invite) lobby.openJoin(invite);
+  else {
+    const room = savedRoom();
+    if (room) lobby.resume(room);
+  }
+  // The time left of whoever must act (対人戦), shown in the top bar.
+  const [clock, setClock] = createSignal<string | null>(null);
+  const clockText = (): string | null => {
+    const remote = controller.remoteSession;
+    const c = remote?.match.clock;
+    if (!remote || !c || remote.over) return null;
+    const left = Math.max(0, Math.ceil((c.deadline - serverNow()) / 1000));
+    const who = c.actor === remote.you ? "あなた" : "相手";
+    return `${who} 残り${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
   };
   // Opened from a shared URL: continue that board.
   void sharedBoardFromLocation().then((shared) => {
@@ -405,6 +435,13 @@ export default function App() {
   // For browser tests and debugging from the console.
   (globalThis as unknown as { __rsApp?: unknown }).__rsApp = {
     controller,
+    /** 対人戦のロビー (scripts/online-test.mjs). */
+    lobby,
+    /** The match screen's buttons (ターン終了, 投了 / 中断, 設定, 共有, …) in the core's coordinates. */
+    buttons: () => {
+      const gui = controller.view().gui;
+      return gui ? matchButtons(gui.geometry) : null;
+    },
     pile: (player: PlayerId) => {
       const gui = controller.view().gui;
       return gui && controller.session ? pileLayout(controller.session.state, player, webPileRect(gui.geometry, player)) : null;
@@ -745,7 +782,10 @@ export default function App() {
     if (inside(buttons.leave, p)) {
       if (leaving()) {
         setLeaving(false);
-        controller.leaveMatch();
+        // 対人戦: the second press resigns (the result screen comes with the server's answer).
+        const remote = controller.remoteSession;
+        if (remote) remote.resign();
+        else controller.leaveMatch();
       } else {
         setLeaving(true);
         leaveFrames = LEAVE_FRAMES;
@@ -945,7 +985,11 @@ export default function App() {
       changed = true;
     }
     if (sheet() && !controller.view().gui) setSheet(null);
+    lobby.frame();
+    setOpponentName(controller.remoteSession ? "相手" : "CPU");
     if (controller.tick()) changed = true;
+    const nextClock = clockText();
+    if (nextClock !== clock()) setClock(nextClock);
     pollCardArt();
     if (changed) refresh();
     syncFields();
@@ -957,7 +1001,7 @@ export default function App() {
       fallback={
         // The title's buttons take clicks through focus, so the title steps aside while the panel is open.
         <Show when={!settingsOpen() && !deckPanel()} fallback={<View class="w-full h-full bg-gradient-to-b from-[#0f1b33] to-[#04070d]" />}>
-          <TitleView controller={controller} view={view} refresh={refresh} width={size().width} height={size().height} openSettings={openSettings} />
+          <TitleView controller={controller} view={view} refresh={refresh} width={size().width} height={size().height} openSettings={openSettings} lobby={lobby} />
         </Show>
       }
     >
@@ -978,6 +1022,7 @@ export default function App() {
             sheet={sheet()}
             sharing={sharing()}
             notice={notice()}
+            clock={controller.remoteSession ? clock() : undefined}
           />
         )}
       </Match>
@@ -987,6 +1032,7 @@ export default function App() {
           controller={controller}
           width={size().width}
           onBack={() => {
+            if (controller.remoteSession) saveRoom(null);
             controller.backToTitle();
             refresh();
           }}

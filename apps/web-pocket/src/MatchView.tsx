@@ -30,10 +30,16 @@ import {
 import { engine } from "./engine";
 import { at, CardFace, inside, type Box } from "./ui";
 
+/** What the other side is called on the board: 「CPU」, or 「相手」 in 対人戦 (app sets it every frame). */
+let opponentName = "CPU";
+export function setOpponentName(name: string): void {
+  opponentName = name;
+}
+
 const ROW_LABELS: Record<string, [string, string]> = {
-  [`${CPU}:command`]: ["CPU", "コマンド"],
-  [`${CPU}:rush`]: ["CPU", "ラッシュ"],
-  [`${CPU}:battle`]: ["CPU", "バトル"],
+  [`${CPU}:command`]: ["", "コマンド"],
+  [`${CPU}:rush`]: ["", "ラッシュ"],
+  [`${CPU}:battle`]: ["", "バトル"],
   "player1:battle": ["自分", "バトル"],
   "player1:rush": ["自分", "ラッシュ"],
   "player1:command": ["自分", "コマンド"],
@@ -203,7 +209,7 @@ function peekCards(cards: readonly ZoneCard[]): PeekCard[] {
  */
 export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileLayout {
   const p = state.players[player];
-  const who = player === HUMAN ? "自分" : "CPU";
+  const who = player === HUMAN ? "自分" : opponentName;
   const narrow = rect.w < 110;
   const x0 = rect.x + 6;
   const availW = rect.w - 12;
@@ -712,6 +718,8 @@ export function MatchView(props: {
   sharing: boolean;
   /** A short message under the top bar (the share result). */
   notice: string | null;
+  /** 対人戦: the time left of whoever must act (「あなた 残り2:41」); null in a CPU match. */
+  clock?: string | null;
 }) {
   const v = () => props.view;
   // Where a selection-window card is ("自コマンド"), unclipped: the 12px caption fits the tile.
@@ -731,7 +739,11 @@ export function MatchView(props: {
   const endLive = () => v().endButton.enabled || choose();
   const buttons = () => matchButtons(g());
   const activePhase = () => v().phases.findIndex((phase) => phase.active);
-  const topBarFit = () => fitTopBar(v().topBar, portrait() ? buttons().share.x - 10 - 8 : g().width);
+  const online = () => props.clock !== undefined;
+  // A phone has no room for both 「相手の番」 and the clock: the clock already says whose time it is.
+  const topBarText = () =>
+    !props.clock ? v().topBar : portrait() ? `${v().topBar.replace(/\s*\S+の番$/, "")}　${props.clock.replace(" 残り", " ")}` : `${v().topBar}　${props.clock}`;
+  const topBarFit = () => fitTopBar(topBarText(), portrait() ? buttons().share.x - 10 - 8 : g().width);
   const turnTwoLines = () => portrait() && measureText("ターン終了", 14) > buttons().turn.w - 8;
   return (
     <View class="w-full h-full bg-gradient-to-b from-[#0b1426] to-[#04070d]">
@@ -750,7 +762,17 @@ export function MatchView(props: {
         }
         style={at(buttons().leave)}
       >
-        <Text class={props.leaving ? "text-xs text-white font-bold" : "text-xs text-slate-300"}>{props.leaving ? (portrait() ? "もう一度で退出" : "もう一度押すと退出") : "対戦をやめる"}</Text>
+        <Text class={props.leaving ? "text-xs text-white font-bold" : "text-xs text-slate-300"}>{props.leaving
+            ? online()
+              ? portrait()
+                ? "もう一度で投了"
+                : "もう一度押すと投了"
+              : portrait()
+                ? "もう一度で退出"
+                : "もう一度押すと退出"
+            : online()
+              ? "投了する"
+              : "対戦をやめる"}</Text>
       </View>
 
       <View
@@ -772,7 +794,10 @@ export function MatchView(props: {
       {/* board */}
       <Index each={v().rows}>
         {(row) => {
-          const label = () => ROW_LABELS[row().key] ?? ["", ""];
+          const label = (): [string, string] => {
+            const l = ROW_LABELS[row().key] ?? ["", ""];
+            return row().key.startsWith(`${CPU}:`) ? [opponentName, l[1]] : l;
+          };
           // Portrait rows have no label column: the zone name sits at the
           // right end of the row, under the cards when the row is full.
           const panel = () =>

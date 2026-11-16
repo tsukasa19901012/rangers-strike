@@ -123,9 +123,14 @@ Lv5 の価値ネットワークの重みは `packages/engine/src/ai/weights/valu
 
 どのレベルでも、常駐の起動は、自分の選択まで済ませて評価が下がるなら選びません（RK-242 クライマックス刑事でパワーを毎ターン山札に戻し、対戦が終わらなかったため）。
 
-## 対人戦（開発中）
+## 対人戦（オンライン）
 
-招待URLで知り合いとネット対戦できるようにする作業を進めています。判定はサーバーが行い、相手の手札・山札・シードはブラウザに渡しません。今は、プレイヤーごとに見える盤面を作るエンジン側の部品（`packages/engine/src/view/viewFor.ts`、説明は [packages/engine/README.md](packages/engine/README.md#対人戦の自分から見える盤面viewfor)）と、部屋・操作の受け付け・持ち時間を進める対戦進行の処理（`packages/engine/src/match/match.ts`、[説明](packages/engine/README.md#対人戦の対戦進行match)）までで、画面からはまだ遊べません。
+ブラウザ版のタイトルの「対人戦（オンライン）」で部屋を作り、招待 URL（`/?m=<8文字>`、QR も出ます）を送ると、知り合いとネット対戦できます。判定はサーバー（`apps/web-pocket/api/match.js`、Upstash Redis に保存）が行い、ブラウザには自分に見える盤面だけを渡します（相手の手札・山札の中身・シードは渡しません）。ブラウザは 1〜3 秒ごとに問い合わせて相手の手を受け取ります。持ち時間は 1 ターン 3 分（相手の手番中の選択は 30 秒）、時間切れはサーバーが自動で進め、3 回目で負けです。
+
+- 見える盤面を作る部品: `packages/engine/src/view/viewFor.ts`（[説明](packages/engine/README.md#対人戦の自分から見える盤面viewfor)）
+- 部屋・操作の受け付け・持ち時間: `packages/engine/src/match/match.ts`（[説明](packages/engine/README.md#対人戦の対戦進行match)）
+- 画面側（自分を常に下に描く・1 手ずつ送る・再送）: `packages/client-core/src/session/remoteSession.ts`（[説明](packages/client-core/README.md)）
+- 部屋の API・ロビー: [apps/web-pocket](apps/web-pocket/README.md)
 
 ## カードとデッキ
 

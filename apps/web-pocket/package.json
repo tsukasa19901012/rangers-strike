@@ -11,7 +11,9 @@
     "web:serve": "node scripts/serve.mjs",
     "web:dev": "node scripts/build.mjs && node scripts/serve.mjs",
     "pocket:check": "node scripts/pocket-check.mjs",
-    "web:exile-test": "node scripts/exile-test.mjs"
+    "web:exile-test": "node scripts/exile-test.mjs",
+    "test": "node scripts/build-server.mjs && node --test scripts/match-api-test.mjs",
+    "web:online-test": "node scripts/online-test.mjs"
   },
   "dependencies": {
     "@rangers-strike/client-core": "*",

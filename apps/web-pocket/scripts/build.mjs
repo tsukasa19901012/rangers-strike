@@ -36,6 +36,9 @@ if (!appOnly || !existsSync(engineOut)) {
   rmSync(join(DIST, "engine.meta.json"), { force: true });
 }
 
+// 1b. The 対人戦 server's engine (api/match.js imports it; Vercel makes it in the install step).
+if (!appOnly || !existsSync(join(APP_ROOT, "server/match-engine.mjs"))) run(process.execPath, [join(APP_ROOT, "scripts/build-server.mjs")]);
+
 // 2. Glyph coverage: every non-ASCII character the UI can draw (card names and
 //    texts, engine log strings, client-core and app UI strings).
 const sources = [readFileSync(engineOut, "utf8")];
