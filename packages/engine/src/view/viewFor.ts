@@ -7,6 +7,9 @@
  *    対応表（IdAliasTable）はサーバーが持ち、操作を受け取るときに resolveViewAction で本物の ID に戻す。
  *  - 見えないカード（相手の手札・お互いの山札・ウラ向きのカード）は、中身も ID も持たない裏面（HIDDEN_CARD_ID）にする。
  *    山札と相手の手札は、効果で見えているカードがあっても並びは見せず、見えるカードは revealedCards に カード番号順で並べる。
+ *    見えなくなったカード（山札に戻った・相手の手札に入った・ウラ向きになった）の別 ID は忘れ、次に見えたときは
+ *    新しい別 ID にする（一度見たカードを追跡されないように）。対戦の進行側は、viewFor を呼ばない手の後にも
+ *    forgetHiddenAliases を呼んで、短い間だけ見えなくなったカードも振り替える。
  *  - 乱数の状態（rngState）は渡さない。カード定義は、見えるカードの分だけ渡す。
  *  - ログは viewFor では作らない（その時点で見えたかで決まるので、対戦の進行側が redactNewLogLines で1行ずつ伏せて貯める）。
  */
@@ -178,6 +181,23 @@ function aliasOf(table: IdAliasTable, id: string, newAliasBody: () => string): s
   return alias;
 }
 
+/**
+ * 今このプレイヤーに見えないカードの別 ID を対応表から消す（消した数を返す）。
+ * そのカードが次に見えたときは新しい別 ID になり、前の別 ID で送られた操作は戻せなくなる。
+ */
+export function forgetHiddenAliases(state: GameState, viewer: PlayerId, aliases: IdAliasTable, visible?: Set<string>): number {
+  const now = visible ?? visibleInstanceIds(state, viewer);
+  let forgotten = 0;
+  for (const [real, alias] of Object.entries(aliases.toAlias)) {
+    if (now.has(real)) continue;
+    delete aliases.toAlias[real];
+    // 消した別 ID は使い回さない（fromAlias には印だけ残し、戻せないようにする）。
+    aliases.fromAlias[alias] = "";
+    forgotten += 1;
+  }
+  return forgotten;
+}
+
 type Ctx = {
   known: Map<string, CardInstance>;
   visible: Set<string>;
@@ -244,9 +264,11 @@ const byCardId = (a: CardInstance, b: CardInstance) => (a.cardId < b.cardId ? -1
 export function viewFor(state: GameState, viewer: PlayerId, options: ViewOptions): PlayerView {
   const actionPlayerId = getActionPlayerId(state);
   const legal = actionPlayerId === viewer ? getLegalActions(state) : [];
+  const visible = visibleInstanceIds(state, viewer, legal);
+  forgetHiddenAliases(state, viewer, options.aliases, visible);
   const ctx: Ctx = {
     known: collectInstances(state),
-    visible: visibleInstanceIds(state, viewer, legal),
+    visible,
     aliases: options.aliases,
     newAliasBody: options.newAliasBody,
     hiddenCount: 0,
@@ -331,7 +353,7 @@ const CARD_ID_IN_TEXT = /[A-Za-z]{1,4}\d?-\d{3}(?:-\d+)?/g;
 /**
  * 1回の applyAction で増えたログの行を、このプレイヤー向けに伏せる。
  * 行に出てくるカード番号（またはカードの ID）が、操作の前にも後にもこのプレイヤーに見えていなかったら、
- * そのカード番号と名前を「？」にする。
+ * そのカード番号と名前を「？」にする。見えるカードの本物の ID（RS-024-17）は、通し番号を外してカード番号にする。
  */
 export function redactNewLogLines(before: GameState, after: GameState, viewer: PlayerId, newLines?: string[]): string[] {
   const lines = newLines ?? after.log.slice(before.log.length);
@@ -344,7 +366,8 @@ export function redactNewLogLines(before: GameState, after: GameState, viewer: P
     out = out.replace(CARD_ID_IN_TEXT, (token) => {
       const cardId = token.replace(/-\d+$/, "").length < token.length && definitions[token.replace(/-\d+$/, "")] ? token.replace(/-\d+$/, "") : token;
       if (!definitions[cardId]) return token;
-      if (seen.has(cardId)) return token;
+      // 見えるカードでも、本物の ID（後ろの通し番号）は出さずカード番号にする。
+      if (seen.has(cardId)) return cardId;
       const name = definitions[cardId]?.name;
       if (name) hiddenNames.add(name);
       return HIDDEN_CARD_ID;

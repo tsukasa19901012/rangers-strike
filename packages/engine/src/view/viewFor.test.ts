@@ -11,6 +11,7 @@ import { createStarterGame } from "../verticalSlice/createStarterGame";
 import { checkView } from "./viewChecks";
 import {
   createIdAliasTable,
+  forgetHiddenAliases,
   HIDDEN_CARD_ID,
   HIDDEN_INSTANCE_ID,
   redactNewLogLines,
@@ -71,6 +72,51 @@ describe("viewFor", () => {
     expect(b.state.players.player1.hand.map((c) => c.instanceId)).toEqual(a.state.players.player1.hand.map((c) => c.instanceId));
     const real = state.players.player1.hand[0]!.instanceId;
     expect(tables.player2.toAlias[real]).toBeUndefined();
+  });
+
+  it("山札に戻ったカードは別 ID を忘れ、また見えたときは新しい別 ID になる（前の別 ID の操作は戻せない）", () => {
+    const state = game();
+    const aliases = createIdAliasTable();
+    const next = counter();
+    const card = state.players.player1.hand[0]!;
+    const first = viewFor(state, "player1", { aliases, newAliasBody: next }).state.players.player1.hand[0]!.instanceId;
+
+    const inDeck: GameState = {
+      ...state,
+      players: {
+        ...state.players,
+        player1: { ...state.players.player1, hand: state.players.player1.hand.slice(1), deck: [card, ...state.players.player1.deck] },
+      },
+    };
+    viewFor(inDeck, "player1", { aliases, newAliasBody: next });
+    expect(aliases.toAlias[card.instanceId]).toBeUndefined();
+    expect(resolveViewAction({ type: "charge_power", playerId: "player1", instanceId: first }, aliases)).toBeNull();
+
+    const again = viewFor(state, "player1", { aliases, newAliasBody: next }).state.players.player1.hand[0]!.instanceId;
+    expect(again).not.toBe(first);
+    expect(resolveViewAction({ type: "charge_power", playerId: "player1", instanceId: again }, aliases)).toMatchObject({ instanceId: card.instanceId });
+  });
+
+  it("forgetHiddenAliases は viewFor を呼ばない間に見えなくなったカードも振り替えられる", () => {
+    const state = game();
+    const aliases = createIdAliasTable();
+    const next = counter();
+    viewFor(state, "player2", { aliases, newAliasBody: next });
+    const card = state.players.player2.hand[0]!;
+    const before = aliases.toAlias[card.instanceId];
+    expect(before).toBeDefined();
+    const inEnemyHand: GameState = {
+      ...state,
+      players: {
+        ...state.players,
+        player1: { ...state.players.player1, hand: [...state.players.player1.hand, card] },
+        player2: { ...state.players.player2, hand: state.players.player2.hand.slice(1) },
+      },
+    };
+    expect(forgetHiddenAliases(inEnemyHand, "player2", aliases)).toBe(1);
+    expect(aliases.toAlias[card.instanceId]).toBeUndefined();
+    const back = viewFor(state, "player2", { aliases, newAliasBody: next });
+    expect(back.state.players.player2.hand[0]!.instanceId).not.toBe(before);
   });
 
   it("ウラ向きのパワー（ダメージ）は持ち主にも見えない", () => {
@@ -152,6 +198,28 @@ describe("viewFor", () => {
 });
 
 describe("checkView（漏れ検査そのもの）", () => {
+  it("このターン撃破したカードの記録（modifiers の payload.cardId）は、カードがその後見えなくなっても公開済みとして扱う", () => {
+    const state = game();
+    const card = state.players.player1.hand.find((c) => !state.players.player2.hand.some((e) => e.cardId === c.cardId))!;
+    const withRecord: GameState = {
+      ...state,
+      players: {
+        ...state.players,
+        player2: {
+          ...state.players.player2,
+          modifiers: [{ kind: "rule", ruleId: "rk258_female_destroyed", scope: "turn", sourceCardId: "RK-258", payload: { cardId: card.cardId } }],
+        },
+      },
+    } as GameState;
+    const aliases = createIdAliasTable();
+    const view = viewFor(withRecord, "player2", { aliases, newAliasBody: counter() });
+    expect(checkView(withRecord, "player2", view, aliases)).toEqual([]);
+    const elsewhere = structuredClone(view);
+    (elsewhere.state as unknown as Record<string, unknown>).payload = { cardId: card.cardId };
+    expect(checkView(withRecord, "player2", elsewhere, aliases).join("\n")).toMatch(/hidden card id/);
+  });
+
+
   it("相手の手札の中身・本物の ID・乱数の状態が表示に入っていたら見つける", () => {
     const state = game();
     const aliases = createIdAliasTable();
@@ -179,7 +247,8 @@ describe("redactNewLogLines", () => {
     const after: GameState = { ...before, log: [...before.log, line] };
 
     const forOwner = redactNewLogLines(before, after, "player1");
-    expect(forOwner).toEqual([line]);
+    expect(forOwner).toEqual([line.replace(card.instanceId, card.cardId)]);
+    expect(forOwner[0]).not.toContain(card.instanceId);
     const forEnemy = redactNewLogLines(before, after, "player2");
     expect(forEnemy[0]).not.toContain(card.cardId);
     expect(forEnemy[0]).not.toContain(name);

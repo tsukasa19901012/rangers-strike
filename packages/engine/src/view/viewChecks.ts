@@ -18,8 +18,10 @@ import {
  * カードに付いていない、カード番号だけの文字列が出てよい場所（効果の発生源・使用を宣言したカードなど、
  * 宣言した時点で公開されるもの）。ここにない場所に見えないカードの番号が出たらテストが落ちるので、
  * 新しい場所が出たら、公開してよい情報かを確かめてから足す。
+ * modifiers.#.payload.cardId は「このターン撃破した・ホールドした・使ったカード」の記録（RK-258・RK-242・RK-248・
+ * rk12_unit_held・XG6-060）で、どれも場で表になっていたカードなので、その後に山札や手札へ移っても公開済み。
  */
-export const PUBLIC_CARD_ID_KEYS = /(?:^|\.)(?:sourceCardId|zordCardId|zordMaterialCardId|leavingCardId|xg6Offered\.#)$/;
+export const PUBLIC_CARD_ID_KEYS = /(?:^|\.)(?:sourceCardId|zordCardId|zordMaterialCardId|leavingCardId|xg6Offered\.#|modifiers\.#\.payload\.cardId)$/;
 
 const REAL_ID = /[A-Za-z]{1,4}\d?-\d{3}-\d+/;
 
@@ -66,6 +68,11 @@ export function checkView(state: GameState, viewer: PlayerId, view: PlayerView, 
   }
   for (const player of Object.values(view.state.players)) {
     for (const card of player.deck) if (card.cardId !== HIDDEN_CARD_ID) problems.push(`deck card ${card.cardId} shown in place`);
+  }
+
+  // 見えなくなったカードの別 ID が残っていると、山札に戻ったカードを追跡できてしまう。
+  for (const real of Object.keys(aliases.toAlias)) {
+    if (!visible.has(real)) problems.push(`alias kept for a card that is not visible: ${aliases.toAlias[real]}`);
   }
 
   if (legal) {

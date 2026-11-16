@@ -71,6 +71,8 @@ async function sweep(start: GameState, seed: number): Promise<{ steps: number; p
     for (const viewer of PLAYERS) {
       const seen = new Set([...visibleCardIds(state, viewer), ...visibleCardIds(result.state, viewer)]);
       for (const line of redactNewLogLines(state, result.state, viewer)) {
+        const realId = line.match(/[A-Za-z]{1,4}\d?-\d{3}-\d+/);
+        if (realId && result.state.definitions[realId[0].replace(/-\d+$/, "")]) problems.push(`step ${steps} ${viewer}: log shows real id ${realId[0]}: ${line}`);
         for (const id of line.match(/[A-Za-z]{1,4}\d?-\d{3}/g) ?? []) {
           if (result.state.definitions[id] && !seen.has(id)) problems.push(`step ${steps} ${viewer}: log shows ${id}: ${line}`);
         }
