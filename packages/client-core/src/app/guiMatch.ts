@@ -1832,8 +1832,8 @@ export class GuiMatch {
         rect: g.endButton,
       },
       strips: [
-        fitLine(playerStrip(this.engine, state, CPU), { fontPx: g.fontPx, maxWidthPx: g.strips[0].w - 8 }),
-        fitLine(playerStrip(this.engine, state, HUMAN), { fontPx: g.fontPx, maxWidthPx: g.strips[1].w - 8 }),
+        fitLine(playerStrip(this.engine, state, CPU, g.spelledStrip), { fontPx: g.fontPx, maxWidthPx: g.strips[0].w - 8 }),
+        fitLine(playerStrip(this.engine, state, HUMAN, g.spelledStrip), { fontPx: g.fontPx, maxWidthPx: g.strips[1].w - 8 }),
       ],
       rows,
       detailLines,

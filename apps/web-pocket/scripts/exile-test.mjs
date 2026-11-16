@@ -5,7 +5,7 @@
 // Serves dist/ on a spare port, starts a match, moves deck cards to both
 // players' exile zones and checks that
 //   - nothing about 除外 shows while the zone is empty,
-//   - the pile column gets a 「除外 N」 row (under 山札/捨札, above パワー) and the strip 除N,
+//   - the pile column gets a 「除外 N」 row (under 山札/捨札, above パワー); the strip leaves 除外 to that column,
 //   - hovering (PC) / tapping (phone) the row shows every removed card, newest first.
 // Uses the Playwright + Chromium preinstalled in the dev container (or any `playwright` on the path).
 import { spawn } from "node:child_process";
@@ -94,9 +94,9 @@ try {
       if (!row || !power) continue;
       const countsBottom = Math.max(...v.counts[i].map((r) => r.y + r.h));
       check(`${name}: ${who}の「除外」行は山札・捨札の下、パワーの上で重ならない`, row.rect.y >= countsBottom && row.rect.y + row.rect.h <= power.rect.y, JSON.stringify({ row: row.rect, power: power.rect, countsBottom }));
-      // gui.strips is [CPU, あなた].
+      // gui.strips is [CPU, あなた]. The web strip spells its counts out and leaves 除外 to the pile column.
       const strip = v.strips[i === 0 ? 1 : 0];
-      check(`${name}: ${who}の帯に「除${n}」`, strip.includes(` 除${n} `), strip);
+      check(`${name}: ${who}の帯は略語なし（除外はパイル列だけ）`, !strip.includes("除") && strip.includes("パワー"), strip);
     }
 
     // Hover (PC) or tap (phone) the own 除外 row: the enlarged view lists every removed card, newest first.

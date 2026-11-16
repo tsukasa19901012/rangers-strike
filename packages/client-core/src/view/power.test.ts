@@ -27,6 +27,10 @@ describe("power display", () => {
   it("shows the power and where it comes from in the strip and the text board", () => {
     const state = stateWithEnemyMultiCommand();
     expect(playerStrip(testEngine, state, "player1")).toContain("P4(裏1・マルチ+1)");
+    // The web layouts spell it out (and leave 山札・捨札 to the pile column).
+    expect(playerStrip(testEngine, state, "player1", true)).toContain("パワー4(裏1・マルチ+1)");
+    expect(playerStrip(testEngine, state, "player2", true)).toMatch(/手札\d+ パワー\d+.* コマンド\d+/);
+    expect(playerStrip(testEngine, state, "player2", true)).not.toMatch(/山|捨/);
     const zone = buildPlayerBoard(testEngine, state, "player1", false).zones.find((z) => z.label === "パワー");
     expect(zone?.text).toBe("4（パワーゾーン3枚：表2・裏1、相手のマルチカテゴリ+1）");
   });

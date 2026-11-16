@@ -146,6 +146,7 @@ export function computeWebGuiGeometry(viewport: Viewport): GuiGeometry {
     endButton,
     detailLines: Math.max(4, Math.floor((detail.h - 12) / WEB_LINE_H)),
     detailTextWidth: detail.w - 24,
+    spelledStrip: true,
   };
 }
 
@@ -229,6 +230,7 @@ function computePortraitGuiGeometry(viewport: Viewport): GuiGeometry {
     detailLines: Math.max(3, Math.floor((detail.h - 8) / WEB_LINE_H)),
     detailTextWidth: detail.w - 16,
     rowHeight: PORTRAIT_MENU_ROW_H,
+    spelledStrip: true,
   };
 }
 

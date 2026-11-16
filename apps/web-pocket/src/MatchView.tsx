@@ -621,6 +621,8 @@ export function MatchView(props: {
     return where ? `${where.player === HUMAN ? "自" : "敵"}${zoneLabel(where.zone)}` : undefined;
   };
   const g = () => props.view.geometry;
+  // A phone's hint line is read at arm's length: 14 (≈13 CSS px) when it fits the width, 12 for a long prompt.
+  const bigFooter = () => portrait() && props.footer.length <= 28;
   const portrait = () => isPortrait(g());
   // Several moves and none on a visible card (start phase: release commands or
   // draw): the button opens the list of moves, so it must look pressable.
@@ -933,7 +935,19 @@ export function MatchView(props: {
       <Show when={v().list}>{(box) => <MenuBox box={box()} accent />}</Show>
 
       <View class={v().footerAccent ? "absolute flex-row items-center px-[16] bg-[#451a03e0]" : "absolute flex-row items-center px-[16] bg-[#0f172acc]"} style={at(g().footer)}>
-        <Text class={v().footerAccent ? "text-xs text-amber-200" : "text-xs text-slate-400"}>{props.footer}</Text>
+        <Text
+          class={
+            bigFooter()
+              ? v().footerAccent
+                ? "text-sm text-amber-200"
+                : "text-sm text-slate-300"
+              : v().footerAccent
+                ? "text-xs text-amber-200"
+                : "text-xs text-slate-300"
+          }
+        >
+          {props.footer}
+        </Text>
       </View>
       <Show when={props.sheet}>{(cardId) => <CardSheet g={g()} state={props.state} cardId={cardId()} />}</Show>
       <Show when={props.notice}>

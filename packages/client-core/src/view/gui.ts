@@ -79,6 +79,8 @@ export type GuiGeometry = {
   endButton: Rect;
   detailLines: number;
   detailTextWidth: number;
+  /** The strips spell their counts out and leave 山札・捨札・除外 to the pile column (the web layouts). */
+  spelledStrip?: boolean;
   /** Height of one pickable row in popups, lists and the selection window (lineHeight when absent; a phone uses a finger-sized row). */
   rowHeight?: number;
 };
@@ -413,10 +415,25 @@ export function powerNotes(count: PowerCount): string {
 }
 
 /** "CPU ダメージ2/7 手5 山30 捨3 除1 P5(裏1・マルチ+1) C3" — the zones not drawn as rows (除 only while cards are removed). */
-export function playerStrip(engine: EngineApi, state: GameState, player: PlayerId): string {
+/**
+ * The line above a player's rows. `spelled` (the web layouts, whose pile column already shows 山札・捨札・除外)
+ * writes the rest out in words instead of one-letter abbreviations.
+ */
+export function playerStrip(engine: EngineApi, state: GameState, player: PlayerId, spelled = false): string {
   const p = state.players[player];
   const power = powerCount(engine, state, player);
   const notes = powerNotes(power);
+  if (spelled) {
+    return [
+      `${PLAYER_LABELS[player]} ダメージ${p.damage}/${engine.WIN_DAMAGE}`,
+      player === HUMAN ? "" : `手札${p.hand.length}`,
+      `パワー${power.total}${notes ? `(${notes})` : ""}`,
+      player === HUMAN ? "" : `コマンド${p.command.length}`,
+      p.operation.length ? `常駐${p.operation.length}` : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+  }
   const parts = [
     `${PLAYER_LABELS[player]} ダメージ${p.damage}/${engine.WIN_DAMAGE}`,
     player === HUMAN ? "" : `手${p.hand.length}`,
