@@ -184,6 +184,11 @@ export class AppController {
     this.touch();
   }
 
+  /** What ending the turn now would skip (ask before ending), or null. */
+  endTurnWarning(): string | null {
+    return this.screen === "match" ? (this.gui?.endTurnWarning() ?? null) : null;
+  }
+
   /** The end-turn button is still ending phases. */
   get endingTurn(): boolean {
     return this.gui?.endingTurn ?? false;

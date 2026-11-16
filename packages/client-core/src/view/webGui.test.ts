@@ -304,3 +304,25 @@ describe("held command slots", () => {
     expect(rowMaxOffset(g, row, tiles)).toBe(2);
   });
 });
+
+describe("end-turn question", () => {
+  it("says what ending the turn would skip, and nothing on the CPU's turn", () => {
+    const app = new AppController({
+      platform: testPlatform(),
+      viewport: PORTRAIT_SIZES[0]!,
+      cpuDelayFrames: 0,
+      seed: () => 11,
+      gui: true,
+      cardArt: true,
+      layouts: { match: computeWebGuiGeometry, deck: computeWebDeckGeometry },
+    });
+    app.startMatch();
+    for (let i = 0; i < 200 && app.session!.turnOwner() !== "human"; i++) app.tick();
+    // The charge phase offers charging any hand card: the button would skip the charge.
+    expect(app.endTurnWarning()).toBe("まだチャージしていません");
+    app.endTurn();
+    for (let i = 0; i < 400 && app.session!.turnOwner() === "human"; i++) app.tick();
+    expect(app.session!.turnOwner()).toBe("cpu");
+    expect(app.endTurnWarning()).toBeNull();
+  });
+});

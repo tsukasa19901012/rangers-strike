@@ -179,6 +179,22 @@ export default function App() {
   const LEAVE_FRAMES = 180;
   let leaveFrames = 0;
   const [leaving, setLeaving] = createSignal(false);
+  // "End turn" while moves are still open asks for a second press within LEAVE_FRAMES, saying what it would skip.
+  // Any move made meanwhile (the board changed) drops the question.
+  let turnFrames = 0;
+  let turnVersion = -1;
+  const [turnWarning, setTurnWarning] = createSignal<string | null>(null);
+  const pressEndTurn = () => {
+    const warning = turnWarning() ? null : controller.endTurnWarning();
+    if (warning) {
+      setTurnWarning(warning);
+      turnFrames = LEAVE_FRAMES;
+      turnVersion = controller.session?.version ?? -1;
+      return;
+    }
+    setTurnWarning(null);
+    controller.endTurn();
+  };
   // The 共有 button: making the URL, then a notice for NOTICE_FRAMES.
   const NOTICE_FRAMES = 240;
   let noticeFrames = 0;
@@ -740,7 +756,7 @@ export default function App() {
       return true;
     }
     if (inside(buttons.turn, p)) {
-      controller.endTurn();
+      pressEndTurn();
       return true;
     }
     if (inside(buttons.all, p)) return dispatch(input.allActions);
@@ -876,6 +892,10 @@ export default function App() {
       else if (event.kind === "move") setCursor(false);
     }
     if (leaveFrames > 0 && --leaveFrames === 0) setLeaving(false);
+    if (turnWarning() && (--turnFrames <= 0 || controller.session?.version !== turnVersion || !controller.view().gui)) {
+      setTurnWarning(null);
+      changed = true;
+    }
     if (noticeFrames > 0 && --noticeFrames === 0) {
       setNotice(null);
       changed = true;
@@ -931,6 +951,7 @@ export default function App() {
             leaving={leaving()}
             peek={gui().dialog ? null : peek()}
             endingTurn={(gui(), controller.endingTurn)}
+            turnWarning={turnWarning()}
             drag={drag()}
             fullText={fullText()}
             sheet={sheet()}

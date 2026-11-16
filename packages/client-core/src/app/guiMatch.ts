@@ -1000,6 +1000,25 @@ export class GuiMatch {
     this.endTurnOn = this.state().turn;
   }
 
+  /**
+   * What the "end turn" button would skip, to ask before it does, or null when ending the turn skips
+   * nothing (only end/pass moves are open) and needs no second press.
+   */
+  endTurnWarning(): string | null {
+    this.sync();
+    if (!this.humanActive() || this.state().activePlayer !== HUMAN || this.state().winner) return null;
+    const moves = this.options().filter((o) => !PASS_LIKE.test(o.action.type));
+    if (moves.length === 0) return null;
+    const attackers = new Set(
+      moves.flatMap((o) => (o.action.type === "battle" ? [o.action.attackerInstanceId] : o.action.type === "strike" ? [o.action.instanceId] : [])),
+    );
+    if (attackers.size > 0) return `アタック・ストライクできるユニットが ${attackers.size} 体あります`;
+    const types = new Set(moves.map((o) => o.action.type));
+    if (types.has("charge_power") || types.has("charge_command")) return "まだチャージしていません";
+    if (types.has("rush") || types.has("play_operation")) return "まだ出せるカードがあります";
+    return `まだできる操作が ${moves.length} 件あります`;
+  }
+
   /** The "end turn" button is still working. */
   get endingTurn(): boolean {
     return this.endTurnOn !== null;

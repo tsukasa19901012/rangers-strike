@@ -83,6 +83,16 @@ export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; l
   };
 }
 
+/** Where the end-turn button's question goes: above the phone's button row, or left of the PC's button. */
+export function turnWarningRect(g: GuiGeometry): Box {
+  const turn = matchButtons(g).turn;
+  if (isPortrait(g)) return { x: 8, y: turn.y - 44, w: g.width - 16, h: 38 };
+  // Over the board rows, short of the pile column.
+  const row = g.rows[0]!;
+  const w = Math.min(440, row.w - 16);
+  return { x: row.x + row.w - w - 8, y: turn.y, w, h: turn.h };
+}
+
 /** A card being dragged: drawn under the pointer. */
 export type DragView = { cardId: string; x: number; y: number; w: number; h: number };
 
@@ -593,6 +603,8 @@ export function MatchView(props: {
   peek: PilePeek | null;
   /** The end-turn button is still ending phases. */
   endingTurn: boolean;
+  /** The end-turn button was pressed once while moves are open: what it would skip (a second press ends the turn). */
+  turnWarning: string | null;
   drag: DragView | null;
   fullText: boolean;
   /** A long-pressed card shown whole from the bottom of the screen (CardSheet). */
@@ -771,17 +783,38 @@ export function MatchView(props: {
           <Text class={endLive() ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{endLines().join("")}</Text>
         </Show>
       </View>
+      <Show when={props.turnWarning}>
+        {(text) => (
+          <View class="absolute flex-row items-center justify-center rounded-[8] bg-[#0c4a6e] border border-sky-400" style={at(turnWarningRect(g()))}>
+            <Text class="text-sm text-white font-bold">{text()}</Text>
+          </View>
+        )}
+      </Show>
       <View
         class={
           props.endingTurn
             ? "absolute flex-row items-center justify-center rounded-[8] bg-amber-700 border border-amber-400"
-            : props.hot === "turn"
+            : props.turnWarning
+              ? "absolute flex-row items-center justify-center rounded-[8] bg-rose-700 border border-rose-400"
+              : props.hot === "turn"
               ? "absolute flex-row items-center justify-center rounded-[8] bg-slate-600 border border-slate-400"
               : "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b] border border-[#334155]"
         }
         style={at(buttons().turn)}
       >
-        <Text class={props.endingTurn ? "text-sm text-white font-bold" : "text-sm text-slate-100"}>{props.endingTurn ? "終了中…" : "ターン終了"}</Text>
+        <Show
+          when={props.turnWarning && portrait()}
+          fallback={
+            <Text class={props.endingTurn || props.turnWarning ? "text-sm text-white font-bold" : "text-sm text-slate-100"}>
+              {props.endingTurn ? "終了中…" : props.turnWarning ? "もう一度押すと終了" : "ターン終了"}
+            </Text>
+          }
+        >
+          <View class="flex-col items-center">
+            <Text class="text-xs text-white font-bold">もう一度で</Text>
+            <Text class="text-xs text-white font-bold">ターン終了</Text>
+          </View>
+        </Show>
       </View>
       <View
         class={props.hot === "all" ? "absolute flex-row items-center justify-center rounded-[8] bg-slate-600 border border-slate-400" : "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b] border border-[#334155]"}
