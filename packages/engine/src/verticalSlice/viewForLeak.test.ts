@@ -1,7 +1,7 @@
 /**
  * 対人戦の「自分から見える盤面」（view/viewFor.ts）の漏れ検査。CPU 同士で対戦させ、毎手の後に両プレイヤーの
  * 表示を作り、相手の手札・山札・ウラ向きのカード・本物のカード ID・乱数の状態が入っていないこと、
- * 合法手が本物の操作に戻せることを確かめる（view/viewChecks.ts checkView）。
+ * 合法手が本物の操作に戻せることを確かめる（view/viewChecks.ts checkView）。ログに、見えていないカードの番号・本物の ID・名前が出ないことも見る。
  * もう1つは、両プレイヤーが自分の表示の合法手だけを見て（無作為に）選び、最後まで止まらずに遊べること。
  */
 import { describe, expect, it } from "vitest";
@@ -53,6 +53,7 @@ async function sweep(start: GameState, seed: number): Promise<{ steps: number; p
   const newAlias = aliasMaker(mulberry32(seed));
   const problems: string[] = [];
   let state = start;
+  const poolIds = new Set(PLAYERS.flatMap((p) => [...start.players[p].deck, ...start.players[p].hand].map((c) => c.cardId)));
   let steps = 0;
   for (; steps < MAX_STEPS && !state.winner; steps++) {
     if (steps % 100 === 0) await yieldToWorker();
@@ -75,6 +76,14 @@ async function sweep(start: GameState, seed: number): Promise<{ steps: number; p
         if (realId && result.state.definitions[realId[0].replace(/-\d+$/, "")]) problems.push(`step ${steps} ${viewer}: log shows real id ${realId[0]}: ${line}`);
         for (const id of line.match(/[A-Za-z]{1,4}\d?-\d{3}/g) ?? []) {
           if (result.state.definitions[id] && !seen.has(id)) problems.push(`step ${steps} ${viewer}: log shows ${id}: ${line}`);
+        }
+        // 番号がなくても、一度も見えていないカードの名前が出ていたら漏れ（見えるカードの名前の一部は除く）。
+        const seenNames = [...seen].map((id) => result.state.definitions[id]?.name ?? "").filter(Boolean);
+        const masked = seenNames.sort((a, b) => b.length - a.length).reduce((text, name) => text.split(name).join("\u0001"), line);
+        for (const id of poolIds) {
+          const name = result.state.definitions[id]?.name;
+          if (!name || name.length < 2 || seen.has(id) || seenNames.includes(name)) continue;
+          if (masked.includes(name)) problems.push(`step ${steps} ${viewer}: log shows the name ${name}: ${line}`);
         }
       }
     }

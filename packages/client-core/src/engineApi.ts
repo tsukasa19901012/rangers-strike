@@ -54,7 +54,8 @@ export interface EngineApi {
   isCpuTurn(state: GameState, cpuPlayer?: PlayerId): boolean;
   pickCpuAction(state: GameState, playerId?: PlayerId, level?: CpuLevel): GameAction | null;
   pickCpuFallbackAction(state: GameState, playerId: PlayerId): GameAction | null;
-  formatGameLog(entry: string, definitions: GameState["definitions"]): string;
+  /** `labels`: what each player is called (an engine bundle older than 対人戦 ignores it and writes 「あなた」「CPU」). */
+  formatGameLog(entry: string, definitions: GameState["definitions"], labels?: Readonly<Record<PlayerId, string>>): string;
   formatActionError(error: string): string;
   effectiveBp(state: GameState, playerId: PlayerId, instance: CardInstance): number;
   /** The player's power: power zone + the opponent's multi-category commands (+ effect bonuses). */

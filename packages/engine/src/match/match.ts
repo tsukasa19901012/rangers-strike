@@ -421,6 +421,8 @@ export type MatchView = {
   status: MatchStatus;
   version: number;
   timeouts: Record<PlayerId, number>;
+  /** このプレイヤーが最後に通した操作の通し番号（読み込み直した画面は、この次の番号から送る）。 */
+  lastSeq: number;
   result?: MatchResult;
   clock?: { actor: PlayerId; turnPlayer: PlayerId; deadline: number; turnRemainingMs: number; autoTurn: boolean };
   /** 対戦が始まっていれば、自分用の盤面・見えているカード・合法手（view/viewFor.ts）。 */
@@ -437,6 +439,7 @@ export function matchView(m: MatchState, player: PlayerId, deps: Pick<MatchDeps,
     status: m.status,
     version: m.version,
     timeouts: { ...m.timeouts },
+    lastSeq: m.lastSeq[player],
     ...(m.result ? { result: { ...m.result } } : {}),
     ...(clock && m.status === "playing"
       ? {

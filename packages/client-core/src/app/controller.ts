@@ -7,6 +7,7 @@ import { ListCursor, type LogicalInput } from "../input/actions";
 import type { Platform } from "../platform/interfaces";
 import { SettingsStore, type AutoplayRequest, type CustomDeck, type Settings } from "../platform/settings";
 import { GameSession } from "../session/session";
+import { RemoteSession } from "../session/remoteSession";
 import { PLAYER_LABELS } from "../text/labels";
 import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
 import { boardLines, buildBoardView, buildPendingView, pendingLines } from "../view/board";
@@ -505,6 +506,8 @@ export class AppController {
 
   /** The board of the match in progress, for the share button (null outside a match). */
   sharePayload(): SharePayload | null {
+    // A 対人戦 board is one player's view (the other side's cards hidden): it cannot be played on as a CPU match.
+    if (this.session instanceof RemoteSession) return null;
     return this.screen === "match" && this.session ? buildSharePayload(this.session) : null;
   }
 
@@ -514,6 +517,41 @@ export class AppController {
    */
   startSharedMatch(shared: SharePayload): void {
     this.startMatch(shared);
+  }
+
+  /**
+   * 対人戦: the deck chosen as 「あなたのデッキ」, as the room API takes it (a starter by id, a deck of one's own
+   * as its card ids, one per copy). The deck rules are not checked (仕様: 自作も可・検査なし).
+   */
+  onlineDeck(): { starter: string } | { cards: string[] } | { error: string } {
+    const id = this.settings.humanDeck;
+    if (!id.startsWith(CUSTOM_DECK_PREFIX)) return { starter: id };
+    const deck = this.settingsStore.customDecks().find((d) => `${CUSTOM_DECK_PREFIX}${d.id}` === id);
+    if (!deck) return { error: "デッキが見つかりません" };
+    const cards = deck.entries.flatMap((e) => Array.from({ length: e.count }, () => e.cardId));
+    if (cards.length === 0) return { error: `${deck.name}: カードがありません` };
+    return { cards };
+  }
+
+  /**
+   * Starts showing a 対人戦 match (the shell made the session from the server's first view). The engine is the
+   * session's: legal moves come from the server.
+   */
+  startRemoteMatch(session: RemoteSession): void {
+    this.session = session;
+    this.sharedMatch = false;
+    this.gui = this.guiEnabled ? new GuiMatch(session.engine, session, this.viewport, this.cardArt, this.layouts.match) : null;
+    if (this.gui) this.gui.assist = assistSettings(this.settings);
+    this.screen = "match";
+    this.tab = 1;
+    this.message = "対戦開始";
+    this.framesSinceCpu = 0;
+    this.afterStateChange();
+  }
+
+  /** The 対人戦 session in progress (null in a CPU match or outside a match). */
+  get remoteSession(): RemoteSession | null {
+    return this.session instanceof RemoteSession ? this.session : null;
   }
 
   startMatch(shared?: SharePayload): void {
@@ -584,11 +622,23 @@ export class AppController {
     }
     const session = this.session;
     if (this.screen !== "match" || !session) return false;
-    if (session.winner) {
+    let remoteChanged = false;
+    if (session instanceof RemoteSession) {
+      // 対人戦: take in what the server sent, send the next move, poll.
+      remoteChanged = session.frame();
+      const notice = session.takeNotice();
+      if (notice) {
+        this.message = notice;
+        if (this.gui) this.gui.message = notice;
+        remoteChanged = true;
+      }
+      if (remoteChanged) this.afterStateChange();
+    }
+    if (session.over) {
       this.finishMatch();
       return true;
     }
-    const toastChanged = this.gui?.frame() ?? false;
+    const toastChanged = (this.gui?.frame() ?? false) || remoteChanged;
     if (toastChanged) this.touch();
     // Cards an effect turned face up stay on screen until the human closes them.
     if (this.gui?.revealShown) return toastChanged;
@@ -615,6 +665,13 @@ export class AppController {
     const session = this.session;
     if (!session || this.screen !== "match") return;
     this.screen = "result";
+    if (session instanceof RemoteSession) {
+      // 対人戦の結果はサーバーが持つ（このデバイスの CPU 戦の記録には入れない）。
+      this.tab = 1;
+      this.resetCursor();
+      this.touch();
+      return;
+    }
     if (!this.sharedMatch) this.settingsStore.addRecord({
       humanDeck: session.options.humanDeck,
       cpuDeck: session.options.cpuDeck,
@@ -641,7 +698,7 @@ export class AppController {
   }
 
   private afterStateChange(): void {
-    if (this.session?.winner) {
+    if (this.session?.over) {
       this.finishMatch();
       return;
     }

@@ -372,3 +372,14 @@ describe("保存と読み込み", () => {
     expect(loaded.status).toBe("playing");
   });
 });
+
+describe("読み込み直した画面の通し番号", () => {
+  it("表示に、そのプレイヤーが最後に通した操作の通し番号が入る（次はその次の番号から送る）", () => {
+    const { m, deps } = started();
+    expect(matchView(m, "player1", deps).lastSeq).toBe(0);
+    const { actor, result } = actFirst(m, deps, 1);
+    expect(result.ok).toBe(true);
+    expect(matchView(m, actor, deps).lastSeq).toBe(1);
+    expect(matchView(m, actor === "player1" ? "player2" : "player1", deps).lastSeq).toBe(0);
+  });
+});

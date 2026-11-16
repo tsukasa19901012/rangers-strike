@@ -41,6 +41,10 @@ export type SessionOptions = {
   logLimit?: number;
   /** Sample memory every N CPU moves (sampling can be costly). */
   memoryEvery?: number;
+  /** What each player is called on screen (default 「あなた」「CPU」). */
+  labels?: Readonly<Record<PlayerId, string>>;
+  /** Start from this board instead of creating a match (対人戦: the board the server sent). */
+  initialState?: GameState;
 };
 
 export type StepResult = { ok: true; label: string } | { ok: false; error: string };
@@ -69,7 +73,7 @@ export class GameSession {
   };
   /** Bumped whenever the state changes, for renderers that diff by version. */
   version = 0;
-  private cachedOptions: { version: number; options: ActionOption[] } | null = null;
+  protected cachedOptions: { version: number; options: ActionOption[] } | null = null;
   lastError: string | null = null;
   /**
    * Every action applied since the match was created, in order: with the seed and the decks it replays
@@ -80,24 +84,43 @@ export class GameSession {
   constructor(options: SessionOptions) {
     this.engine = options.engine;
     this.options = options;
-    this.state = options.engine.createStarterGame({
-      player1Starter: options.humanDeck,
-      player2Starter: options.cpuDeck,
-      player1Deck: options.humanCards,
-      player2Deck: options.cpuCards,
-      seed: options.seed,
-    });
+    this.state =
+      options.initialState ??
+      options.engine.createStarterGame({
+        player1Starter: options.humanDeck,
+        player2Starter: options.cpuDeck,
+        player1Deck: options.humanCards,
+        player2Deck: options.cpuCards,
+        seed: options.seed,
+      });
     this.syncLog();
     this.sampleMemory();
-    options.log?.(`match start: ${options.humanDeck} vs ${options.cpuDeck} seed=${options.seed} cpu=Lv${options.cpuLevel}`);
+    if (!options.initialState) {
+      options.log?.(`match start: ${options.humanDeck} vs ${options.cpuDeck} seed=${options.seed} cpu=Lv${options.cpuLevel}`);
+    }
+  }
+
+  /** What each player is called on screen. */
+  get labels(): Readonly<Record<PlayerId, string>> {
+    return this.options.labels ?? PLAYER_LABELS;
   }
 
   get winner(): PlayerId | null {
     return this.state.winner;
   }
 
-  /** Whose input the match waits for. */
-  turnOwner(): "human" | "cpu" | "none" {
+  /** The match is over (a winner, or 対人戦 ended by a resignation or time-out). */
+  get over(): boolean {
+    return !!this.state.winner;
+  }
+
+  /** The footer while the person waits: 「CPU の手番」. */
+  waitingText(): string {
+    return `${this.labels.player2} の手番`;
+  }
+
+  /** Whose input the match waits for ("remote": the other person, or the server, in 対人戦). */
+  turnOwner(): "human" | "cpu" | "none" | "remote" {
     if (this.state.winner) return "none";
     if (this.engine.isCpuTurn(this.state, CPU)) return "cpu";
     if (this.options.humanLevel) return this.engine.getLegalActions(this.state).length > 0 ? "cpu" : "none";
@@ -130,6 +153,22 @@ export class GameSession {
     }
     this.commit(result.state, option.action);
     return { ok: true, label: option.label };
+  }
+
+  /**
+   * Makes several of the human's moves in order (the picks of a check window, then its button): each one must be
+   * among the human's options once the one before it is made. Stops at the first that is not.
+   */
+  chooseHumanActions(actions: readonly GameAction[]): StepResult | null {
+    let last: StepResult | null = null;
+    for (const action of actions) {
+      const key = JSON.stringify(action);
+      const index = this.humanOptions().findIndex((o) => JSON.stringify(o.action) === key);
+      if (index < 0) return { ok: false, error: "選択できませんでした" };
+      last = this.chooseHuman(index);
+      if (!last.ok) break;
+    }
+    return last;
   }
 
   private turnMoves = { turn: -1, count: 0 };
@@ -195,7 +234,7 @@ export class GameSession {
     if (actor === HUMAN && this.options.humanLevel) {
       // Autoplay: only the CPU side's thinking is measured.
       this.commit(result.state, action);
-      return { ok: true, label: `${PLAYER_LABELS[actor]}: ${label}` };
+      return { ok: true, label: `${this.labels[actor]}: ${label}` };
     }
     m.moves++;
     m.lastThinkMs = think;
@@ -209,7 +248,7 @@ export class GameSession {
       `cpu move=${m.moves} actor=${actor} think=${think.toFixed(1)}ms apply=${m.lastApplyMs.toFixed(1)}ms ` +
         `${m.memory ? `mem=${m.memory.label}` : ""} ${action.type}`,
     );
-    return { ok: true, label: `${PLAYER_LABELS[actor]}: ${label}` };
+    return { ok: true, label: `${this.labels[actor]}: ${label}` };
   }
 
   /**
@@ -230,8 +269,8 @@ export class GameSession {
     this.syncLog();
   }
 
-  private commit(next: GameState, action: GameAction): void {
-    this.actions?.push(action);
+  protected commit(next: GameState, action: GameAction | null): void {
+    if (action) this.actions?.push(action);
     this.state = next;
     this.lastError = null;
     this.version++;
@@ -251,12 +290,12 @@ export class GameSession {
     this.version++;
   }
 
-  private syncLog(): void {
+  protected syncLog(): void {
     const entries = this.state.log;
     for (let i = this.loggedEntries; i < entries.length; i++) {
       const entry = entries[i]!;
-      const formatted = this.engine.formatGameLog(entry, this.state.definitions);
-      const text = formatted ? humanizeLogEntry(formatted, this.state) : null;
+      const formatted = this.engine.formatGameLog(entry, this.state.definitions, this.labels);
+      const text = formatted ? humanizeLogEntry(formatted, this.state, this.labels) : null;
       // The engine logs the move to the next turn's start phase just before end_turn:
       // that heading goes after the turn banner, so it reads as the new turn's.
       if (entry === "phase:end->start" && entries[i + 1]?.endsWith("|end_turn")) {
@@ -265,11 +304,11 @@ export class GameSession {
       }
       if (text) this.log.push(text);
       // Who plays now stands out: a banner when the game starts and whenever the turn passes.
-      if (entry === "game_created") this.log.push(turnBanner(1, this.state.firstPlayer));
+      if (entry === "game_created") this.log.push(turnBanner(1, this.state.firstPlayer, this.labels));
       const ended = /^(player[12])\|end_turn$/.exec(entry);
       if (ended) {
         this.loggedTurnEnds++;
-        this.log.push(turnBanner(this.loggedTurnEnds + 1, this.nextTurnPlayer(entries, i, ended[1] as PlayerId)));
+        this.log.push(turnBanner(this.loggedTurnEnds + 1, this.nextTurnPlayer(entries, i, ended[1] as PlayerId), this.labels));
         if (this.heldStartPhase) this.log.push(this.heldStartPhase);
       }
       this.heldStartPhase = null;
@@ -308,6 +347,6 @@ export class GameSession {
 }
 
 /** 「━━ ターン5：CPUのターン ━━」, the line that marks a new turn player in the log. */
-export function turnBanner(turn: number, player: PlayerId): string {
-  return `━━ ターン${turn}：${PLAYER_LABELS[player] ?? player}のターン ━━`;
+export function turnBanner(turn: number, player: PlayerId, labels: Readonly<Record<PlayerId, string>> = PLAYER_LABELS): string {
+  return `━━ ターン${turn}：${labels[player] ?? player}のターン ━━`;
 }

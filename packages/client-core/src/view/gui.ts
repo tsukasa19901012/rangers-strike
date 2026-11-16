@@ -420,13 +420,19 @@ export function powerNotes(count: PowerCount): string {
  * The line above a player's rows. `spelled` (the web layouts, whose pile column already shows 山札・捨札・除外)
  * writes the rest out in words instead of one-letter abbreviations.
  */
-export function playerStrip(engine: EngineApi, state: GameState, player: PlayerId, spelled = false): string {
+export function playerStrip(
+  engine: EngineApi,
+  state: GameState,
+  player: PlayerId,
+  spelled = false,
+  labels: Readonly<Record<PlayerId, string>> = PLAYER_LABELS,
+): string {
   const p = state.players[player];
   const power = powerCount(engine, state, player);
   const notes = powerNotes(power);
   if (spelled) {
     return [
-      `${PLAYER_LABELS[player]} ダメージ${p.damage}/${engine.WIN_DAMAGE}`,
+      `${labels[player]} ダメージ${p.damage}/${engine.WIN_DAMAGE}`,
       player === HUMAN ? "" : `手札${p.hand.length}`,
       `パワー${power.total}${notes ? `(${notes})` : ""}`,
       player === HUMAN ? "" : `コマンド${p.command.length}`,
@@ -436,7 +442,7 @@ export function playerStrip(engine: EngineApi, state: GameState, player: PlayerI
       .join(" ");
   }
   const parts = [
-    `${PLAYER_LABELS[player]} ダメージ${p.damage}/${engine.WIN_DAMAGE}`,
+    `${labels[player]} ダメージ${p.damage}/${engine.WIN_DAMAGE}`,
     player === HUMAN ? "" : `手${p.hand.length}`,
     `山${p.deck.length}`,
     `捨${p.discard.length}`,
@@ -448,9 +454,9 @@ export function playerStrip(engine: EngineApi, state: GameState, player: PlayerI
   return parts.filter(Boolean).join(" ");
 }
 
-export function topBarText(state: GameState): string {
-  if (state.winner) return `決着: ${PLAYER_LABELS[state.winner]}の勝利`;
-  return `ターン${state.turn} ${PLAYER_LABELS[turnPlayer(state)]}の番`;
+export function topBarText(state: GameState, labels: Readonly<Record<PlayerId, string>> = PLAYER_LABELS): string {
+  if (state.winner) return `決着: ${labels[state.winner]}の勝利`;
+  return `ターン${state.turn} ${labels[turnPlayer(state)]}の番`;
 }
 
 /**

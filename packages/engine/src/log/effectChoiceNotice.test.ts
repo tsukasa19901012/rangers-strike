@@ -76,3 +76,12 @@ describe("effect choice notices", () => {
     expect(formatGameLog("player1|number_combo|RS-054|アバレッド|choice:kingusutonfurashu", defs)).toBe("あなたの「アバレッド」がNCでキングストーンフラッシュの対象選択");
   });
 });
+
+describe("プレイヤーの呼び名", () => {
+  it("呼び名を渡すと、その名前で書く（対人戦の「相手」）", () => {
+    const labels = { player1: "あなた", player2: "相手" } as const;
+    expect(formatGameLog("player2|draw", {}, labels)).toBe("相手が1枚ドローした");
+    expect(formatGameLog("player1|draw", {}, labels)).toBe("あなたが1枚ドローした");
+    expect(formatGameLog("player2|draw", {})).toBe("CPUが1枚ドローした");
+  });
+});

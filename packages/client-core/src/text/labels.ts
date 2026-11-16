@@ -240,10 +240,10 @@ const REVEAL_FROM: Record<string, string> = {
 type RevealNoticeLike = NonNullable<GameState["lastReveal"]>;
 
 /** 「CPUが山札の上から1枚オモテにした（潜行捜索）」: what a reveal notice (GameState.lastReveal) shows. */
-export function revealSummary(state: GameState, reveal: RevealNoticeLike): string {
-  const actor = PLAYER_LABELS[reveal.playerId] ?? reveal.playerId;
+export function revealSummary(state: GameState, reveal: RevealNoticeLike, labels: Readonly<Record<PlayerId, string>> = PLAYER_LABELS): string {
+  const actor = labels[reveal.playerId] ?? reveal.playerId;
   const mutual = reveal.cards.some((c) => c.ownerId !== undefined && c.ownerId !== reveal.ownerId);
-  const owner = mutual ? "お互いの" : reveal.ownerId === reveal.playerId ? "" : `${PLAYER_LABELS[reveal.ownerId] ?? reveal.ownerId}の`;
+  const owner = mutual ? "お互いの" : reveal.ownerId === reveal.playerId ? "" : `${labels[reveal.ownerId] ?? reveal.ownerId}の`;
   const source = reveal.sourceCardId ? cardName(state, reveal.sourceCardId) : "";
   const label = reveal.effectLabel || source;
   const declared = reveal.declaredNumber !== undefined ? ` 宣言:${reveal.declaredNumber}${reveal.matched === undefined ? "" : reveal.matched ? "（一致）" : "（不一致）"}` : "";
@@ -260,13 +260,15 @@ export function revealDestination(destination: string): string {
  * structured "player|action|..." / "phase:a->b" form. Returns null for purely
  * internal markers (e.g. "*_pending") that should not be shown.
  */
-export function humanizeLogEntry(entry: string, state: GameState): string | null {
+export function humanizeLogEntry(entry: string, state: GameState, labels: Readonly<Record<PlayerId, string>> = PLAYER_LABELS): string | null {
   const phase = /^phase:(\w+)->(\w+)$/.exec(entry);
   if (phase) return `── ${PHASE_LABELS[phase[2]!] ?? phase[2]}フェイズ ──`;
   if (!entry.includes("|")) return entry;
   const [player, action, ...rest] = entry.split("|");
   if (!action || /_pending(_|$)/.test(action)) return null;
-  const who = PLAYER_LABELS[player as PlayerId] ?? player;
+  const who = labels[player as PlayerId] ?? player;
+  // 対人戦: the server played on for a player whose time ran out (engine match.ts TIMEOUT_LOG_KIND); the 3rd loses.
+  if (action === "match_timeout_auto") return `${who}の時間切れ（${rest[0] ?? "?"}回目／3回で負け）。自動で進めました`;
   const label = LOG_LABELS[action] ?? ACTION_LABELS[action] ?? action;
   // Details name cards by card id or instance id; markers such as "done" say nothing to the player.
   let instances: Map<string, string> | undefined;

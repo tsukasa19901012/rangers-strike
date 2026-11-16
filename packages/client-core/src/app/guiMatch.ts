@@ -684,17 +684,7 @@ export class GuiMatch {
   /** Sends the checked picks and the pressed button's move to the session, one by one. */
   private commitChecks(steps: GameAction[]): StepResult | null {
     this.mode = { kind: "board" };
-    let last: StepResult | null = null;
-    for (const step of steps) {
-      const key = JSON.stringify(step);
-      const index = this.session.humanOptions().findIndex((o) => JSON.stringify(o.action) === key);
-      if (index < 0) {
-        last = { ok: false, error: "選択できませんでした" };
-        break;
-      }
-      last = this.session.chooseHuman(index);
-      if (!last.ok) break;
-    }
+    const last = this.session.chooseHumanActions(steps);
     if (last) this.message = last.ok ? `あなた: ${steps.length > 1 ? `${steps.length - 1}枚を選んで確定` : last.label}` : `エラー: ${last.error}`;
     return last;
   }
@@ -782,7 +772,7 @@ export class GuiMatch {
 
   private openPopup(title: string, anchor: Rect, verbs: Verb[], preferPass = false, cardId?: string): void {
     if (verbs.length === 0) {
-      this.message = this.humanActive() ? "できる操作はありません" : "CPU の手番です";
+      this.message = this.humanActive() ? "できる操作はありません" : `${this.session.waitingText()}です`;
       return;
     }
     const cursor = new ListCursor();
@@ -951,7 +941,9 @@ export class GuiMatch {
       const at = locateInstance(state, id);
       if (!at) return null;
       const zone = (state.players[at.player] as unknown as Record<string, { instanceId: string }[]>)[at.zone] ?? [];
-      return { place: `${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`, position: zone.findIndex((c) => c.instanceId === id) + 1 };
+      // The deck's order is not something the player knows (対人戦 does not even send it): no number there.
+      const position = at.zone === "deck" ? 0 : zone.findIndex((c) => c.instanceId === id) + 1;
+      return { place: `${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`, position };
     };
     return labels.map((label, i) => {
       const group = groups.get(label)!;
@@ -963,8 +955,8 @@ export class GuiMatch {
       if (places.length === 0) return shown[i]!;
       const samePlace = places.every((w) => w.place === places[0]!.place);
       const text = samePlace
-        ? `${places[0]!.place}${places.map((w) => w.position).join("・")}`
-        : places.map((w) => `${w.place}${w.position}`).join("・");
+        ? `${places[0]!.place}${places.map((w) => w.position || "").filter(Boolean).join("・")}`
+        : places.map((w) => `${w.place}${w.position || ""}`).join("・");
       return `${shown[i]}（${text}）`;
     });
   }
@@ -1765,7 +1757,7 @@ export class GuiMatch {
       const base = this.dialogRect();
       const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: base.w - 8 };
       let y = base.y + 4;
-      const titleLines: PanelLine[] = wrapText(revealSummary(state, reveal), { ...wrap, maxLines: 2 }).map((text, i) => {
+      const titleLines: PanelLine[] = wrapText(revealSummary(state, reveal, this.session.labels), { ...wrap, maxLines: 2 }).map((text, i) => {
         const line = { text, tone: (i === 0 ? "accent" : "dim") as PanelTone, rect: { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight } };
         y += g.lineHeight;
         return line;
@@ -1960,14 +1952,14 @@ export class GuiMatch {
             : this.dialogActive()
               ? "盤面を確認中（L / × / R で選択ウィンドウに戻る）"
               : !this.humanActive()
-                ? "CPU の手番"
+                ? this.session.waitingText()
                 : mustEnter.length > 0
                   ? `「可能なら出る」ユニットを出すまで終われません: ${mustEnter.join("・")}`
                   : "十字:カード ○:操作 R:フェイズ終了 ×:全体 L:ログ △:全操作";
 
     return {
       geometry: g,
-      topBar: fitLine(topBarText(state), { fontPx: g.fontPx, maxWidthPx: g.width * 0.4 }),
+      topBar: fitLine(topBarText(state, this.session.labels), { fontPx: g.fontPx, maxWidthPx: g.width * 0.4 }),
       toast: this.toastFrames > 0 ? fitLine(this.toastText, { fontPx: g.fontPx, maxWidthPx: g.width * 0.58 }) : "",
       phases: PHASE_ORDER.map((phase, i) => ({ label: PHASE_LABELS[phase] ?? phase, active: phase === state.phase, rect: g.phaseRects[i]! })),
       endButton: {
@@ -1976,7 +1968,7 @@ export class GuiMatch {
             ? [clipLine(phaseLabel, { fontPx: g.fontPx, maxWidthPx: g.endButton.w - 2 }), "終了", "R"]
             : [...wrapText(primary!.option.label, { fontPx: g.fontPx, maxWidthPx: g.endButton.w - 2 }).slice(0, 2), "R"]
           : state.activePlayer === CPU
-            ? ["CPU", "の番", ""]
+            ? [this.session.labels[CPU], "の番", ""]
             : mustEnter.length > 0
               ? ["出す", "ユニット", "R"]
               : ["", "×:操作", ""],
@@ -1984,8 +1976,8 @@ export class GuiMatch {
         rect: g.endButton,
       },
       strips: [
-        fitLine(playerStrip(this.engine, state, CPU, g.spelledStrip), { fontPx: g.fontPx, maxWidthPx: g.strips[0].w - 8 }),
-        fitLine(playerStrip(this.engine, state, HUMAN, g.spelledStrip), { fontPx: g.fontPx, maxWidthPx: g.strips[1].w - 8 }),
+        fitLine(playerStrip(this.engine, state, CPU, g.spelledStrip, this.session.labels), { fontPx: g.fontPx, maxWidthPx: g.strips[0].w - 8 }),
+        fitLine(playerStrip(this.engine, state, HUMAN, g.spelledStrip, this.session.labels), { fontPx: g.fontPx, maxWidthPx: g.strips[1].w - 8 }),
       ],
       rows,
       detailLines,
