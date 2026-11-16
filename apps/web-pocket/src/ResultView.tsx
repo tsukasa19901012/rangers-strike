@@ -75,11 +75,6 @@ export function ResultView(props: { controller: AppController; width: number; on
         <Show when={remote() && props.postGame ? props.postGame : null}>
           {(pg) => {
             const post = () => pg().state().post;
-            const rematchLabel = () => {
-              const r = post()?.rematch;
-              if (r?.you) return r.them ? "再戦を始めています…" : "相手の返事を待っています…";
-              return r?.them ? "相手が再戦を希望しています。再戦する" : "再戦を申し込む";
-            };
             const revealLabel = () => {
               const r = post()?.reveal;
               if (r?.you) return "公開に同意しました（相手の同意待ち）";
@@ -105,7 +100,7 @@ export function ResultView(props: { controller: AppController; width: number; on
             };
             return (
               <>
-                <ResultButton label={rematchLabel()} width={280} disabled={!!post()?.rematch.you || pg().state().busy} onPress={() => pg().rematch()} />
+                {/* 再戦（API の op:"rematch"、postGame.rematch）は初版では画面に出さない（2026-11-17 ユーザー判断）。 */}
                 <Show
                   when={deck()}
                   fallback={<ResultButton label={revealLabel()} width={280} disabled={!!post()?.reveal.you || pg().state().busy} onPress={() => pg().reveal()} />}
