@@ -848,14 +848,14 @@ export function MatchView(props: {
       <Show when={props.peek}>{(peek) => <PeekPanel g={g()} peek={peek()} />}</Show>
       <Show when={props.fullText && v().detailFull}>{(full) => <FullTextPanel area={g().board} full={full()} />}</Show>
 
-      {/* toast: over the top bar, or over the phase pills on a phone */}
+      {/* toast: over the top bar short of its buttons (they stay visible), or over the phase pills on a phone */}
       <Show when={v().toast}>
         <View
           class="absolute flex-row items-center px-[14] rounded-[16] bg-gradient-to-r from-amber-600 to-orange-700 shadow-md"
           style={at(
             portrait()
               ? { x: 8, y: g().phaseRects[0]!.y, w: g().width - 16, h: g().phaseRects[0]!.h }
-              : { x: Math.round(g().width * 0.3), y: 8, w: Math.round(g().width * 0.45), h: 28 },
+              : { x: Math.round(g().width * 0.3), y: 8, w: buttons().share.x - 12 - Math.round(g().width * 0.3), h: 28 },
           )}
         >
           <Text class="text-sm text-white font-bold">{v().toast}</Text>
