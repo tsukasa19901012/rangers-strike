@@ -146,11 +146,13 @@ describe("viewFor", () => {
     const deckCardIds = state.players.player1.deck.map((c) => c.cardId);
     expect(own.revealedCards.map((c) => c.cardId)).toEqual([...deckCardIds].sort());
     expect(own.state.players.player1.deck.every((c) => c.cardId === HIDDEN_CARD_ID)).toBe(true);
+    expect(own.revealedFrom).toEqual(own.revealedCards.map(() => ({ player: "player1", zone: "deck" })));
     expect(own.state.pendingEffectChoice?.deckLookInstanceIds).toEqual(own.revealedCards.map((c) => c.instanceId));
     expect(checkView(looking, "player1", own, tables.player1, getLegalActions(looking))).toEqual([]);
 
     const enemy = viewFor(looking, "player2", { aliases: tables.player2, newAliasBody: counter() });
     expect(enemy.revealedCards).toEqual([]);
+    expect(enemy.revealedFrom).toEqual([]);
     expect(enemy.legalActions).toEqual([]);
     expect(enemy.state.pendingEffectChoice?.deckLookInstanceIds?.every((id) => id === HIDDEN_INSTANCE_ID)).toBe(true);
     expect(checkView(looking, "player2", enemy, tables.player2)).toEqual([]);
@@ -267,5 +269,52 @@ describe("redactNewLogLines", () => {
       log: [...before.log, `player1|rush|${card.cardId}|${before.definitions[card.cardId]!.name}`],
     };
     expect(redactNewLogLines(before, after, "player2")).toEqual([`player1|rush|${card.cardId}|${before.definitions[card.cardId]!.name}`]);
+  });
+
+  it("詳しい部分では、相手が見えないまま動かしたカードの名前を、同じカードが自分に見えていても伏せる（未来予知など）", () => {
+    const before = createStarterGame({ player1Starter: "abarenoh", player2Starter: "abarenoh", seed: 7 });
+    const shown = before.players.player1.hand[0]!;
+    const drawnIndex = before.players.player2.deck.findIndex((c) => c.cardId === shown.cardId);
+    expect(drawnIndex).toBeGreaterThanOrEqual(0);
+    const drawn = before.players.player2.deck[drawnIndex]!;
+    const name = before.definitions[shown.cardId]!.name;
+    const line = `player2|number_combo|RS-059|マジブルー|future_sight:${name}`;
+    const after: GameState = {
+      ...before,
+      players: {
+        ...before.players,
+        player2: {
+          ...before.players.player2,
+          deck: before.players.player2.deck.filter((_, i) => i !== drawnIndex),
+          hand: [...before.players.player2.hand, drawn],
+        },
+      },
+      log: [...before.log, line],
+    };
+    const forViewer = redactNewLogLines(before, after, "player1")[0]!;
+    expect(forViewer).toBe("player2|number_combo|RS-059|マジブルー|future_sight:？");
+    // 引いた本人には見える
+    expect(redactNewLogLines(before, after, "player2")[0]).toBe(line);
+  });
+
+  it("見えるカードの名前の中に伏せる名前が含まれていても、見える名前は残す", () => {
+    const base = game();
+    const shown = base.players.player1.hand[0]!;
+    const hidden = base.players.player1.hand.find((c) => c.cardId !== shown.cardId)!;
+    const definitions = {
+      ...base.definitions,
+      [shown.cardId]: { ...base.definitions[shown.cardId]!, name: "マジピンク×マジブルー" },
+      [hidden.cardId]: { ...base.definitions[hidden.cardId]!, name: "マジブルー" },
+    };
+    const before: GameState = { ...base, definitions };
+    const after: GameState = {
+      ...before,
+      players: {
+        ...before.players,
+        player1: { ...before.players.player1, hand: before.players.player1.hand.filter((c) => c !== shown), rush: [shown] },
+      },
+      log: [...before.log, `player1|rush|${shown.cardId}|マジピンク×マジブルー|「マジブルー」を見た`],
+    };
+    expect(redactNewLogLines(before, after, "player2")).toEqual([`player1|rush|${shown.cardId}|マジピンク×マジブルー|「？」を見た`]);
   });
 });

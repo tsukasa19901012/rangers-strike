@@ -40,6 +40,13 @@ describe("describeAction", () => {
     expect(humanizeLogEntry("あなたが1枚ドローした", state)).toBe("あなたが1枚ドローした");
   });
 
+  it("対人戦では相手を「相手」と呼び、時間切れの自動進行を何回目か書く", () => {
+    const labels = { player1: "あなた", player2: "相手" } as const;
+    expect(humanizeLogEntry("player2|pass_battle_entry", state, labels)).toBe("相手: 進入を終える");
+    expect(humanizeLogEntry("player2|match_timeout_auto|2", state, labels)).toBe("相手の時間切れ（2回目／3回で負け）。自動で進めました");
+    expect(humanizeLogEntry("player1|match_timeout_auto|1", state, labels)).toBe("あなたの時間切れ（1回目／3回で負け）。自動で進めました");
+  });
+
   it("writes every engine log kind in Japanese, never its raw name (command_payment_cancel etc.)", () => {
     // Every kind the engine logs with buildSimpleLogEntry / buildLogEntry, read from its sources
     // (the first argument may be a call such as opponent(playerId); kinds may hold digits: xg7055_…).

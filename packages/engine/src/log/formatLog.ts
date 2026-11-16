@@ -83,15 +83,19 @@ function nameOfPart(part: string, definitions: Record<string, CardDefinition>): 
   return (card && definitions[card]?.name) || part;
 }
 
+/**
+ * `labels`: what each player is called (default 「あなた」「CPU」). 対人戦では「あなた」「相手」。
+ */
 export function formatGameLog(
   entry: string,
   definitions: Record<string, CardDefinition>,
+  labels: Readonly<Record<PlayerId, string>> = PLAYER_LABELS,
 ): string {
   if (entry.startsWith("game_created")) return "ゲーム開始";
 
   const parts = entry.split("|");
   const playerId = parts[0] as PlayerId;
-  const player = PLAYER_LABELS[playerId] ?? playerId;
+  const player = labels[playerId] ?? playerId;
 
   if (parts[1] === "draw") {
     return `${player}が1枚ドローした`;

@@ -17,6 +17,8 @@ DOM・Node・PocketJS には依存しません（`lib` は ES2022、`types` な�
 | `src/app/deckBuilder.ts` | デッキ構築画面の状態（一覧・絞り込み・保存）。`deckSharing` のシェルでは「共有する」「テキストから取り込む」も出す |
 | `src/app/deckShare.ts` | デッキの共有形式（URL 用の `{v, name, cards}` とテキストのカードリスト）の作成と読み取り |
 | `src/session/session.ts` | 1 試合: 合法手 → ラベル付き選択肢、CPU 1 手の実行と時間計測、ログ整形（ターン交代の「━━ ターンN：〜のターン ━━」行、新しい 1000 行まで）、適用した手の記録（`actions`） |
+| `src/session/remoteSession.ts` | 対人戦の 1 試合（`RemoteSession`）: サーバーの表示を受け取って描き、選んだ手を送る。通信は `MatchTransport` に任せる |
+| `src/session/remoteView.ts` | 対人戦の表示を画面用の盤面にする（見えている山札・手札のカードを戻す、player2 なら player1 と入れ替える） |
 | `src/app/gameRecord.ts` | 終わった対戦の記録（種・デッキ・手の全部）。`Platform.sendGameRecord` があるシェル（ブラウザ版）が終局時に送る |
 | `src/view/gui.ts` | GameState → カードタイルの表示モデルと、Vita 用の配置 |
 | `src/view/webGui.ts` | ブラウザ版の配置（`computeWebGuiGeometry` / `computeWebDeckGeometry`、縦持ちのスマホ配置を含む） |
@@ -28,6 +30,7 @@ DOM・Node・PocketJS には依存しません（`lib` は ES2022、`types` な�
 | `src/data/split.ts` | カードデータの分割（デッキ → カード ID、生成 JSON の刈り込み） |
 | `src/data/deckApi.ts` | cards のデッキルール関数から `DeckApi` を作る（`createDeckApi`） |
 | `src/testing/engine.ts` | テスト用に TypeScript ソースのエンジンを `EngineApi` として渡す |
+| `src/testing/matchTransport.ts` | テスト用の同じプロセスの対人戦サーバー（engine `match.ts`）と、届かない・返事が消える通信 |
 
 保存キーは `rs.settings.v1`（設定）・`rs.decks.v1`（自作デッキ）・`rs.records.v1`（戦績）・`rs.autoplay.v1`（計測用の CPU 同士の自動対戦）です。
 
@@ -37,6 +40,20 @@ DOM・Node・PocketJS には依存しません（`lib` は ES2022、`types` な�
 2. `Platform`（時計・ログ・メモリ・保存・アセット）を実装する（例: `apps/web-pocket/src/platform.ts`）
 3. `new AppController({ platform, viewport, gui: true, layouts?, ... })` を作り、入力を `controller.dispatch(...)` に渡す
 4. 毎フレーム `controller.tick()` を呼び、`controller.view()` の `ScreenView` を描く。サイズが変わったら `controller.setViewport()`
+
+## 対人戦の画面（RemoteSession）
+
+対人戦（オンライン、仕様: 対人戦（C案）仕様書）では、盤面はサーバーが持ち、画面は自分に見える表示（engine `matchView` / `viewFor`）だけを受け取ります。対戦画面（`GuiMatch`）は CPU 戦と同じものを使います。
+
+- 画面は「自分 = player1」で作られているので、自分がサーバーの player2 のときは表示の中の `player1` と `player2` を全部入れ替えて描き（`swapPlayers`。キー・値・ログの行。カード定義は入れ替えない）、選んだ手は入れ替え直して送ります。エンジンは左右対称なので、入れ替えた盤面でも合法手と結果が入れ替えたものと同じになります（`remoteView.test.ts` で CPU 同士の対戦の毎手に確かめる）。
+- 「山札を見て」などで見えている山札・相手の手札のカード（`revealedCards` / `revealedFrom`）は、その置き場の裏面のカードと置き換えて描きます（`materializeView`。山札の中の位置は分からないので上から）。
+- 合法手はサーバーから届いたものです（`RemoteSession` の `engine` は、画面の盤面の合法手を届いた手にし、チェックウィンドウやコールの下見は自分に見える盤面でエンジンを動かす。見えないカードで動かなければ「できない」扱い）。CPU の手は動かしません。呼び名は「あなた」「相手」（`REMOTE_LABELS`。ログ・帯・ターンの見出しも）。
+- 手は1つずつ送り、返事（とその後の表示）が届くまで次は送りません（`busy` の間は `turnOwner()` が `"remote"`、足元は「送信中…」）。チェックウィンドウの「N枚選んで確定」は `chooseHumanActions` で順に送ります（次の手は、前の手の後に届いた合法手の中から探す。無ければ残りは送らない）。
+- 手には通し番号 `seq` を付け、通信が切れたら同じ番号と同じ版番号で送り直します（サーバーは同じ番号を2回適用しない）。断られた手（盤面が変わった等）は短いお知らせ（`takeNotice`）になり、表示を取り直します。読み込み直した画面は表示の `lastSeq` の次から送ります。
+- 自分の番でなければ 1 秒ごと、自分の番でも 3 秒ごとに表示を取りに行きます（相手の手・時間切れの自動進行・投了を拾う）。前に送った問い合わせの古い表示が後から届いても、版番号が古ければ使いません。相手の手はログの最後の行をお知らせに出します。
+- 対戦が終わったか（投了・時間切れ・無効試合を含む）は `session.over`、勝者は画面の呼び方（自分 = `player1`）の `winner` です。対人戦の盤面は共有ボタンの対象外で、CPU 戦の戦績にも入れません。
+
+テストは `src/session/remoteView.test.ts`（入れ替えと、山札のカードを戻すこと）、`src/session/remoteSession.test.ts`（同じプロセスのサーバーとつないだ 2 つの画面で決着まで。毎手、自分の番の画面がサーバーの表示と同じか、通信が切れても手が2回適用されないか、放置して時間切れになっても止まらないか、投了。さらに `GuiMatch` を指の操作と同じ入力で player1 側・player2 側から決着まで）、`src/session/remoteGui.test.ts`（スターター・ブログ／大会デッキ同士の CPU 対戦の毎手に、本物の盤面から作った画面と自分に見える表示から作った画面を、盤面・全操作の一覧・カードごとの操作メニューで比べる。違えば、見えない情報で表示が変わっている）です。
 
 ## ビルドとテスト
 

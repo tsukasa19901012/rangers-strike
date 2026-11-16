@@ -48,6 +48,8 @@ export type PlayerView = {
   state: GameState;
   /** 山札・相手の手札にあるが、このプレイヤーに見えているカード（「山札を見て」の中身など）。カード番号順。 */
   revealedCards: CardInstance[];
+  /** revealedCards の各カードがどのプレイヤーの山札・手札にあるか（同じ順。山札の中の位置は渡さない）。 */
+  revealedFrom: Array<{ player: PlayerId; zone: "deck" | "hand" }>;
   /** 今の操作番のプレイヤー。 */
   actionPlayerId: PlayerId;
   /** このプレイヤーが今できる操作（別 ID）。操作番でなければ空。 */
@@ -274,26 +276,28 @@ export function viewFor(state: GameState, viewer: PlayerId, options: ViewOptions
     hiddenCount: 0,
   };
 
-  const revealed: CardInstance[] = [];
+  const revealed: Array<{ card: CardInstance; player: PlayerId; zone: "deck" | "hand" }> = [];
   const players = {} as Record<PlayerId, PlayerState>;
   for (const [pid, player] of Object.entries(state.players) as Array<[PlayerId, PlayerState]>) {
     const { deck, hand, ...rest } = player;
     const out = redact(ctx, rest) as PlayerState;
     // 山札と相手の手札は、見えているカードがあっても並びを見せない。
     out.deck = deck.map((card) => hiddenCard(ctx, card));
-    for (const card of deck) if (ctx.visible.has(card.instanceId)) revealed.push(card);
+    for (const card of deck) if (ctx.visible.has(card.instanceId)) revealed.push({ card, player: pid, zone: "deck" });
     if (pid === viewer) {
       out.hand = redact(ctx, hand) as CardInstance[];
     } else {
       out.hand = hand.map((card) => hiddenCard(ctx, card));
-      for (const card of hand) if (ctx.visible.has(card.instanceId)) revealed.push(card);
+      for (const card of hand) if (ctx.visible.has(card.instanceId)) revealed.push({ card, player: pid, zone: "hand" });
     }
     players[pid] = out;
   }
 
   const { players: _players, definitions, log: _log, rngState: _rng, ...rest } = state;
   const body = redact(ctx, rest) as Partial<GameState>;
-  const revealedCards = (redact(ctx, [...revealed].sort(byCardId)) as CardInstance[]) ?? [];
+  const sortedRevealed = [...revealed].sort((a, b) => byCardId(a.card, b.card));
+  const revealedCards = (redact(ctx, sortedRevealed.map((r) => r.card)) as CardInstance[]) ?? [];
+  const revealedFrom = sortedRevealed.map(({ player, zone }) => ({ player, zone }));
 
   const viewState = { ...body, players, definitions: {}, log: options.log ?? [] } as GameState;
   const usedCardIds = new Set<string>();
@@ -305,7 +309,7 @@ export function viewFor(state: GameState, viewer: PlayerId, options: ViewOptions
   for (const id of [...usedCardIds].sort()) viewDefinitions[id] = definitions[id]!;
   viewState.definitions = viewDefinitions;
 
-  return { viewer, state: viewState, revealedCards, actionPlayerId, legalActions };
+  return { viewer, state: viewState, revealedCards, revealedFrom, actionPlayerId, legalActions };
 }
 
 /** 別 ID で届いた操作を、本物の ID の操作に戻す。知らない別 ID や見えないカードを指していたら null。 */
@@ -350,29 +354,96 @@ const EMBEDDED_ALIAS = new RegExp(`${ALIAS_PREFIX}[0-9A-Za-z]+`, "g");
 
 const CARD_ID_IN_TEXT = /[A-Za-z]{1,4}\d?-\d{3}(?:-\d+)?/g;
 
+/** カードの置き場所（プレイヤー・ゾーン・何番目）。並びが変わったかも見る。 */
+function locations(state: GameState): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const [pid, player] of Object.entries(state.players) as Array<[PlayerId, PlayerState]>) {
+    for (const [zone, cards] of Object.entries(player as unknown as Record<string, unknown>)) {
+      if (!Array.isArray(cards)) continue;
+      cards.forEach((card, i) => {
+        if (isCardInstance(card)) out.set(card.instanceId, `${pid}:${zone}:${i}`);
+      });
+    }
+  }
+  return out;
+}
+
+/** 文字列の中の `names`（長い順）を「？」にする。`keep` の名前（見えるカードの名前）の中に含まれる部分は伏せない。 */
+function hideNames(text: string, names: Set<string>, keep: readonly string[]): string {
+  if (names.size === 0) return text;
+  const masks: string[] = [];
+  let out = text;
+  for (const name of keep) {
+    if (names.has(name) || !out.includes(name)) continue;
+    out = out.split(name).join(`\u0001${masks.length}\u0002`);
+    masks.push(name);
+  }
+  for (const name of [...names].sort((a, b) => b.length - a.length)) out = out.split(name).join("？");
+  return out.replace(/\u0001(\d+)\u0002/g, (_, i: string) => masks[Number(i)]!);
+}
+
 /**
  * 1回の applyAction で増えたログの行を、このプレイヤー向けに伏せる。
- * 行に出てくるカード番号（またはカードの ID）が、操作の前にも後にもこのプレイヤーに見えていなかったら、
- * そのカード番号と名前を「？」にする。見えるカードの本物の ID（RS-024-17）は、通し番号を外してカード番号にする。
+ *  - 行に出てくるカード番号（またはカードの ID）が、操作の前にも後にもこのプレイヤーに見えていなかったら、
+ *    そのカード番号と名前を「？」にする。見えるカードの本物の ID（RS-024-17）は、通し番号を外してカード番号にする。
+ *  - 行の後ろの詳しい部分（`player|種類|カード番号|名前|…` の5つ目から。「未来予知で引いたカード」「山札の上の並び」など）は、
+ *    このプレイヤーに見えないカードのうち、この操作で動いたか相手には見えているカードの名前と番号も伏せる。同じ名前の
+ *    カードが場にあっても伏せる（場の1枚を見て、引いたカードの名前が分からないように）。
+ *  - 見えるカードの名前の一部に伏せる名前が含まれていても（「マジピンク×マジブルー」の「マジブルー」）、見える名前は残す。
  */
 export function redactNewLogLines(before: GameState, after: GameState, viewer: PlayerId, newLines?: string[]): string[] {
   const lines = newLines ?? after.log.slice(before.log.length);
   if (lines.length === 0) return [];
-  const seen = new Set<string>([...visibleCardIds(before, viewer), ...visibleCardIds(after, viewer)]);
   const definitions = after.definitions;
-  return lines.map((line) => {
-    let out = line;
-    const hiddenNames = new Set<string>();
-    out = out.replace(CARD_ID_IN_TEXT, (token) => {
-      const cardId = token.replace(/-\d+$/, "").length < token.length && definitions[token.replace(/-\d+$/, "")] ? token.replace(/-\d+$/, "") : token;
+  const seen = new Set<string>([...visibleCardIds(before, viewer), ...visibleCardIds(after, viewer)]);
+  const opponent: PlayerId = viewer === "player1" ? "player2" : "player1";
+  const mine = new Set<string>([...visibleInstanceIds(before, viewer), ...visibleInstanceIds(after, viewer)]);
+  const theirs = new Set<string>([...visibleInstanceIds(before, opponent), ...visibleInstanceIds(after, opponent)]);
+  const from = locations(before);
+  const to = locations(after);
+  const cards = new Map<string, CardInstance>([...collectInstances(before), ...collectInstances(after)]);
+  // この操作で、このプレイヤーに見えないまま動いた・相手だけが見ているカード（詳しい部分では同名のカードが見えていても伏せる）。
+  // ただし相手が持っているだけ（動いていない）のカードは、自分が同じカードを動かしたとき（自分で引いた・見た）は伏せない。
+  const sensitive = new Set<string>();
+  const heldByThem = new Set<string>();
+  const movedByMe = new Set<string>();
+  const unseenNames = new Set<string>();
+  for (const [id, card] of cards) {
+    if (!definitions[card.cardId]) continue;
+    const moved = from.get(id) !== to.get(id);
+    if (mine.has(id)) {
+      if (moved) movedByMe.add(card.cardId);
+      continue;
+    }
+    const name = definitions[card.cardId]!.name;
+    if (!seen.has(card.cardId) && name && name.length >= 2) unseenNames.add(name);
+    if (moved) sensitive.add(card.cardId);
+    else if (theirs.has(id)) heldByThem.add(card.cardId);
+  }
+  for (const cardId of heldByThem) if (!movedByMe.has(cardId)) sensitive.add(cardId);
+  const sensitiveNames = new Set<string>([...sensitive].map((id) => definitions[id]?.name ?? "").filter((n) => n.length >= 2));
+  const visibleNames = [...new Set([...seen].map((id) => definitions[id]?.name ?? "").filter(Boolean))].sort((a, b) => b.length - a.length);
+
+  const redactIds = (text: string, strict: boolean, hidden: Set<string>) =>
+    text.replace(CARD_ID_IN_TEXT, (token) => {
+      const base = token.replace(/-\d+$/, "");
+      const cardId = base.length < token.length && definitions[base] ? base : token;
       if (!definitions[cardId]) return token;
       // 見えるカードでも、本物の ID（後ろの通し番号）は出さずカード番号にする。
-      if (seen.has(cardId)) return cardId;
+      if (seen.has(cardId) && !(strict && sensitive.has(cardId))) return cardId;
       const name = definitions[cardId]?.name;
-      if (name) hiddenNames.add(name);
+      if (name) hidden.add(name);
       return HIDDEN_CARD_ID;
     });
-    for (const name of hiddenNames) out = out.split(name).join("？");
-    return out;
+
+  return lines.map((line) => {
+    const parts = line.split("|");
+    const hidden = new Set<string>(unseenNames);
+    const head = redactIds(parts.slice(0, 4).join("|"), false, hidden);
+    if (parts.length <= 4) return hideNames(head, hidden, visibleNames);
+    const detailHidden = new Set<string>([...hidden, ...sensitiveNames]);
+    const detail = redactIds(parts.slice(4).join("|"), true, detailHidden);
+    for (const name of hidden) detailHidden.add(name);
+    return `${hideNames(head, hidden, visibleNames)}|${hideNames(detail, detailHidden, visibleNames)}`;
   });
 }
