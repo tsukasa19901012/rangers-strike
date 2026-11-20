@@ -23,7 +23,7 @@ import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKey
 import { patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { applyDamageToPlayer } from "../damagePayment";
-import { recordReveal } from "../revealNotice";
+import { recordReveal, revealedCards } from "../revealNotice";
 import { openEffectChoice } from "../pendingChoices";
 import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
@@ -198,7 +198,7 @@ export function openXg6OnHandRush(state: GameState, playerId: PlayerId, instance
   if (!self || !isCard(self.cardId, "XG6-046")) return state;
   const shown = state.players[playerId].deck.slice(0, 8);
   if (shown.length === 0) return state;
-  let next = recordReveal(state, { playerId, ownerId: playerId, sourceCardId: "XG6-046", effectLabel: "ゲキジョウバン", cards: shown.map(stripForZone) } as never);
+  let next = recordReveal(state, { playerId, ownerId: playerId, sourceCardId: "XG6-046", effectLabel: "ゲキジョウバン", from: "deck_top", cards: revealedCards(shown, "stay") });
   const shownIds = shown.map((c) => c.instanceId);
   const ids = gekijoubanCandidates(next, playerId, shownIds, []);
   if (ids.length === 0) return shuffleDeck(next, playerId);
@@ -450,7 +450,7 @@ function finishTryPick(state: GameState, pending: PendingEffectChoice, ids: stri
   const owner = pending.xg6Meta?.targetPlayerId ?? chooser;
   const shown = state.players[chooser].hand.filter((c) => ids.includes(c.instanceId));
   const sum = shown.reduce((n, c) => n + costNumber(state, c.cardId), 0);
-  let next = recordReveal(close(state, pending), { playerId: chooser, ownerId: chooser, sourceCardId: "XG6-050", effectLabel: "試させてもらいますよ", cards: shown.map(stripForZone) } as never);
+  let next = recordReveal(close(state, pending), { playerId: chooser, ownerId: chooser, sourceCardId: "XG6-050", effectLabel: "試させてもらいますよ", from: "hand", cards: revealedCards(shown, "stay") });
   const log = logFor(state, chooser, "XG6-050", `${TRY_PICK}:sum:${sum}`);
   if (pending.xg6Meta?.step === "owner") {
     return { state: openNext(next, pending, { ...tryPick(next, pending, opponent(owner), sum), playerId: opponent(owner) }), log };

@@ -20,6 +20,7 @@ import { rk1IsSmallNow } from "../rk/rk1Features";
 import { base, close, ctxBase, destroyAll, fieldUnits, isUnitCard, logFor, moveFieldUnit, openAfter, openNext, pendingBase, proceed, selectableEnemy, shuffleDeck, stripForZone, zoneOfField } from "../rm/rm1Effects";
 import { AFTER_ACTION_HOOKS, BATTLE_DESTROY_HOOKS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, ENTER_BATTLE_HOOKS, FIELD_ABILITIES, KEYWORDS, LEAVE_STAY_HOOKS, ZONE_ACTIVATIONS } from "./xg3Registry";
 import { nameIs, printedFeatures, skipThen } from "./xg3Common";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 /** 継続効果・別の入口で処理するカードのキーワード（DSL の grant_keyword から呼ばれても何もしない）。 */
 for (const key of ["XG3-043::pluton", "XG3-051::matsuri", "XG3-052::kaiwan", "XG3-054::uketomeru", "XG3-057::ongekiko", "XG3-058::zanki_note", "XG3-058::yomigaeru"]) {
@@ -80,8 +81,13 @@ FIELD_ABILITIES.push({
   canActivate: (state, playerId) => state.phase === "rush" && isOwnTurn(state, playerId) && !state.pendingEffectChoice && !state.pendingEffectRush,
   resolve: (state, playerId, card) => {
     const enemyId = opponent(playerId);
-    const next = moveFieldUnit(state, playerId, card.instanceId, playerId, "discard");
-    const ids = plutonIds(next, enemyId);
+    const moved = moveFieldUnit(state, playerId, card.instanceId, playerId, "discard");
+    const ids = plutonIds(moved, enemyId);
+    // オモテにした5枚は公開情報（選べるオペレーションが無いとそのままシャッフルして、何をオモテにしたか見えなかった）。
+    const shown = moved.players[enemyId].deck.slice(0, 5);
+    const next = shown.length > 0
+      ? recordReveal(moved, { playerId, ownerId: enemyId, sourceCardId: "XG3-043", effectLabel: "プルトンロケット阻止", from: "deck_top", cards: revealedCards(shown, ids.length > 0 ? "stay" : "deck_shuffle") })
+      : moved;
     if (ids.length === 0) return shuffleDeck(next, enemyId);
     return openAfter(next, { ...base({ playerId, phasePlayerId: playerId, sourceInstanceId: card.instanceId }, "XG3-043"), effectId: PLUTON_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: false });
   },
@@ -421,15 +427,18 @@ KEYWORDS["XG3-053::bunretsu"] = (state, ctx) => {
 CHOICE_SKIPPERS[BUNRETSU_EFFECT_ID] = skipThen();
 CHOICE_RESOLVERS[BUNRETSU_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
-  const next = patchPlayer(close(state, pending), playerId, (p) => {
+  const isUwan = (c: CardInstance) => nameIs(state, c.cardId, "港区のウワン") && isUnitCard(state, c.cardId);
+  const revealed = state.players[playerId].deck.slice(0, 2);
+  const moved = patchPlayer(close(state, pending), playerId, (p) => {
     const top = p.deck.slice(0, 2);
     let pl = { ...p, deck: p.deck.slice(2) };
     for (const c of top) {
-      if (nameIs(state, c.cardId, "港区のウワン") && isUnitCard(state, c.cardId)) pl = markBattleBlocked({ ...pl, rush: [...pl.rush, stripForZone(c)] }, c.instanceId);
+      if (isUwan(c)) pl = markBattleBlocked({ ...pl, rush: [...pl.rush, stripForZone(c)] }, c.instanceId);
       else pl = { ...pl, discard: [...pl.discard, stripForZone(c)] };
     }
     return pl;
   });
+  const next = recordReveal(moved, { playerId, ownerId: playerId, sourceCardId: "XG3-053", effectLabel: "分裂", from: "deck_top", cards: revealedCards(revealed, (c) => (isUwan(c as CardInstance) ? "rush" : "discard")) });
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG3-053", `${BUNRETSU_EFFECT_ID}:reveal`) };
 };
 

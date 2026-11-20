@@ -54,6 +54,7 @@ import {
   xg2Hook,
 } from "./xg2Core";
 import { gateReveal } from "../revealGate";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -534,6 +535,7 @@ xg2Hook("comboEnter", (state, playerId, card) => {
   if (!top) return state;
   let next = patchPlayer(state, playerId, (p) => ({ ...p, deck: [...p.deck.slice(1), top] }));
   if (isUnit(state, top.cardId)) next = addTurnEntry(next, XG2_ZENTOAKU_KEY, playerId, card.instanceId);
+  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG2-100", effectLabel: "善と悪", from: "deck_top", matched: isUnit(state, top.cardId), cards: revealedCards([top], "deck_bottom") });
   return { ...next, log: [...next.log, logFor(state, playerId, "XG2-100", `xg2_100_reveal:${top.cardId}`)] };
 });
 

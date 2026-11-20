@@ -227,7 +227,14 @@ export class GuiMatch {
   private dialogButtonRows = DIALOG_BUTTONS;
   /** Seq of the last reveal notice (GameState.lastReveal) shown; a newer one opens the reveal window. */
   private revealSeen: number;
-  private revealOpen: NonNullable<GameState["lastReveal"]> | null = null;
+  /**
+   * Reveal notices still to show, oldest first: the window shows the first. One move can turn up cards more than once
+   * (both decks, or one effect after another; engine lastReveal.earlier), so each gets its own window in turn.
+   */
+  private revealQueue: Array<NonNullable<GameState["lastReveal"]>> = [];
+  private get revealOpen(): NonNullable<GameState["lastReveal"]> | null {
+    return this.revealQueue[0] ?? null;
+  }
   /** A card the shell points at outside the board rows (a discard or power zone card): shown in the detail panel. */
   inspectCardId: string | null = null;
   private showLog = false;
@@ -354,8 +361,9 @@ export class GuiMatch {
     this.mode = { kind: "board" };
     const reveal = this.state().lastReveal;
     if (reveal && reveal.seq > this.revealSeen) {
+      const notices = [...(reveal.earlier ?? []), reveal].filter((n) => n.seq > this.revealSeen);
       this.revealSeen = reveal.seq;
-      this.revealOpen = reveal;
+      this.revealQueue.push(...notices);
     }
     if (this.dialogVersion !== this.session.version) {
       this.dialogVersion = this.session.version;
@@ -1229,7 +1237,8 @@ export class GuiMatch {
   /** The reveal window closes on a tap, ○ or ×; other input waits until it does. */
   private dispatchReveal(event: LogicalInput): StepResult | null {
     if (event.type === "confirm" || event.type === "cancel" || event.type === "select") {
-      this.revealOpen = null;
+      this.revealQueue.shift();
+      if (this.revealOpen) return null;
       this.askBattleEntry();
       this.askStartPhase();
     }

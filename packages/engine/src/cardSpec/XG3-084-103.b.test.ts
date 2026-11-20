@@ -42,6 +42,7 @@ import {
   zordDownTests,
   zoneOf,
 } from "./XG3-084-103.helpers";
+import { revealedBy } from "./revealNotice.helpers";
 
 const INS = sUnit("SPEC-INS", { category: "MA", bp: 1000, features: ["昆虫"] });
 const BP5 = sUnit("SPEC-BP5", { bp: 5000 });
@@ -291,6 +292,8 @@ describe("XG3-097 キャプテントンボーグ", () => {
     expect(zoneOf(s, "player2", "SPEC-ROU-D:d")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-ROU-A:a")).toBe("battle");
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("SPEC-C3:top");
+    // オモテにしたカードは「オモテにしたカード」の窓で見せる（ユーザー報告 2026-11-20）。
+    expect(revealedBy(s, "XG3-097")).toEqual(["SPEC-C3:top"]);
   });
 
   it("XG3-097:【キャプテンルーレット】— 山札の上が必要パワー2のカードなら特徴の数（2 対 1）でバトルし、アタック側が勝つ（出典: atwiki/page-1949「「2」か「4」か「6」なら特徴の数」）", () => {

@@ -61,6 +61,7 @@ import {
   simpleSkipXg2,
   xg2Hook,
 } from "./xg2Core";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -379,7 +380,11 @@ const DECK_BOTTOM = "deck_bottom";
 function radarStep(state: GameState, ctx: BaseCtx, deckOwners: PlayerId[]): PendingEffectChoice | null {
   const [owner, ...rest] = deckOwners.filter((pid) => state.players[pid].deck.length > 0);
   if (!owner) return null;
-  return selectOne(ctx, "XG2-048", RADAR_PLACE_EFFECT_ID, [DECK_TOP, DECK_BOTTOM], false, { xg2Meta: { owner, rest } });
+  // 選択肢は言葉（山札の上／下）なので、オモテにしたカードは viewedInstanceIds で見せる。
+  return selectOne(ctx, "XG2-048", RADAR_PLACE_EFFECT_ID, [DECK_TOP, DECK_BOTTOM], false, {
+    xg2Meta: { owner, rest },
+    viewedInstanceIds: [state.players[owner].deck[0]!.instanceId],
+  });
 }
 
 /** XG2-048【レーダーアイ】を持つカード（rules/startPhase.ts collectBattleToRushEffectQueue でキューに積む）。 */
@@ -397,8 +402,11 @@ registerXg2Choice(RADAR_EFFECT_ID, {
   skip: simpleSkipXg2(),
   confirm: (state, playerId) => {
     const pending = state.pendingEffectChoice!;
-    const next = close(state, pending);
-    const step = radarStep(next, pendingBase(pending), [playerId, opponent(playerId)]);
+    const owners = [playerId, opponent(playerId)];
+    // お互いの山札の上をオモテにした（公開情報）。行き先はこの後で選ぶ。
+    const shown = owners.flatMap((ownerId) => state.players[ownerId].deck.slice(0, 1).map((c) => ({ ...revealedCards([c], "stay")[0]!, ownerId })));
+    const next = recordReveal(close(state, pending), { playerId, ownerId: playerId, sourceCardId: "XG2-048", effectLabel: "レーダーアイ", from: "deck_top", cards: shown });
+    const step = radarStep(next, pendingBase(pending), owners);
     const log = logFor(state, playerId, "XG2-048", `${RADAR_EFFECT_ID}:reveal`);
     return { state: step ? openNext(next, pending, step) : proceed(next, pending), log };
   },
@@ -428,8 +436,11 @@ function applyFang(state: GameState, ctx: GrantKeywordContext): GrantKeywordResu
   const top = state.players[enemyId].deck[0];
   if (!top) return { state, detail: "xg2_049:no_deck" };
   const def = defOf(state, top.cardId);
-  if (def?.type !== "unit" || def.size !== "S") return { state, detail: `xg2_049:revealed:${top.cardId}` };
-  return { state: openAfter(state, selectOne(ctxBase(ctx), "XG2-049", FANG_EFFECT_ID, [top.instanceId], true)), detail: FANG_EFFECT_ID };
+  const sUnit = def?.type === "unit" && def.size === "S";
+  // オモテにしたカードは公開情報（S ユニットなら、出すかをこの後で選ぶ）。
+  const shown = recordReveal(state, { playerId: ctx.playerId, ownerId: enemyId, sourceCardId: "XG2-049", effectLabel: "デモンズファングクラッシャー", from: "deck_top", matched: sUnit, cards: revealedCards([top], sUnit ? "stay" : "deck_top") });
+  if (!sUnit) return { state: shown, detail: `xg2_049:revealed:${top.cardId}` };
+  return { state: openAfter(shown, selectOne(ctxBase(ctx), "XG2-049", FANG_EFFECT_ID, [top.instanceId], true)), detail: FANG_EFFECT_ID };
 }
 
 registerXg2Choice(FANG_EFFECT_ID, {

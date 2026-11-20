@@ -16,6 +16,7 @@
 import { getActionPlayerId, getLegalActions } from "../core/legalActions";
 import { isDenjiRevealAudience } from "../rules/denjiMachine";
 import { isShironRevealAudience } from "../rules/shironLight";
+import { revealNotices } from "../rules/revealNotice";
 import type { GameAction } from "../types/actions";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../types/game";
 
@@ -148,7 +149,7 @@ export function visibleInstanceIds(state: GameState, viewer: PlayerId, legal?: G
     for (const stacked of card.stackedCards ?? []) visible.add(stacked.instanceId);
   }
   for (const entry of state.resolvingOperations ?? []) addPublicCard(entry.card, visible);
-  for (const card of state.lastReveal?.cards ?? []) visible.add(card.instanceId);
+  for (const notice of revealNotices(state)) for (const card of notice.cards) visible.add(card.instanceId);
   addChoiceIds(state.pendingEffectChoice, viewer, visible);
   if (getActionPlayerId(state) === viewer) {
     const known = collectInstances(state);
@@ -165,7 +166,7 @@ export function visibleCardIds(state: GameState, viewer: PlayerId): Set<string> 
     const card = known.get(id);
     if (card) cardIds.add(card.cardId);
   }
-  for (const card of state.lastReveal?.cards ?? []) cardIds.add(card.cardId);
+  for (const notice of revealNotices(state)) for (const card of notice.cards) cardIds.add(card.cardId);
   return cardIds;
 }
 

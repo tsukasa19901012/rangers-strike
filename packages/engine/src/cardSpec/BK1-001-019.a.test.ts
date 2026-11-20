@@ -132,6 +132,8 @@ describe("BK-002 ダブルタイフーン", () => {
     expectChoiceFrom(s, "player1", "BK-002");
     expect(choiceIds(s)).toEqual(["deck_bottom", "deck_top"]);
     expect(canSkip(s)).toBe(false);
+    // 選択肢は言葉（山札の上／下）なので、見ているカードを選択の窓に出す（ユーザー報告 2026-11-20「見たカードが何か確認できずに処理が進む」）。
+    expect(s.pendingEffectChoice?.viewedInstanceIds).toEqual([s.players.player1.deck[0]!.instanceId]);
   });
 
   it("BK-002: ◎2つ目 — 下を選べば、見たカードは山札の一番下に移る（出典: atwiki/page-716）", () => {

@@ -521,6 +521,11 @@ export type RevealNotice = {
   /** 条件に一致したか（一致で行き先が変わる効果のみ）。 */
   matched?: boolean;
   cards: RevealedCardNotice[];
+  /**
+   * この公開の直前の公開（古い順、最大 REVEAL_EARLIER_MAX 件。それぞれ earlier は持たない）。1 つの操作で公開が 2 回以上あっても
+   * （お互いの山札・続けて発動する効果）、UI が seq で新しいものを全部見せられるように残す。
+   */
+  earlier?: RevealNotice[];
 };
 
 export type EffectChoiceKind =

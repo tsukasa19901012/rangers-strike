@@ -53,6 +53,7 @@ import {
   targetsOf,
   zoneOf,
 } from "./XG1-041-060.helpers";
+import { revealedBy } from "./revealNotice.helpers";
 
 const MAN = sUnit("SPEC-MAN", { bp: 1000, features: ["男"] });
 const THING = sUnit("SPEC-THING", { bp: 1000, features: ["メカ"] });
@@ -243,6 +244,8 @@ describe("XG1-045 イカファイア", () => {
     expect(zoneOf(s, "player1", "XG1-045:ik")).toBe("battle");
     expect(zoneOf(s, "player2", "TST-UNIT-0:a")).toBe("battle");
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("TST-OP:top");
+    // オモテにしたカードは「オモテにしたカード」の窓で見せる（ユーザー報告 2026-11-20「見たカードが何か確認できずに処理が進む」）。
+    expect(revealedBy(s, "XG1-045")).toEqual(["TST-OP:top"]);
   });
 
   it("XG1-045: 山札の上が必要パワー6 のカードなら、バトルは行われる（出典: atwiki/page-1614「3以下なら」）", () => {

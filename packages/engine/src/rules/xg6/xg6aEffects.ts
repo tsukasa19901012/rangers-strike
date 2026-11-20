@@ -27,7 +27,7 @@ import { patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { planEffectRush, startEffectRush } from "../effectRush";
 import { applyDamageToPlayer } from "../damagePayment";
-import { recordReveal } from "../revealNotice";
+import { recordReveal, revealedCards } from "../revealNotice";
 import { placeForDeckOrder, returnToDeckInOrder } from "../deckOrder";
 import { isValidFusionMaterial, requiresAllFusionPartners } from "../zord";
 import { rm1ResidentActive } from "../rm/rm1Fields";
@@ -268,7 +268,7 @@ CHOICE_CONFIRMERS[FIRE_MOUNTAIN_CONFIRM] = (state, playerId) => {
   const revealed = p.deck.slice(0, Math.max(0, dmg));
   let next = close(state, pending);
   if (revealed.length > 0) {
-    next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG6-001", effectLabel: "火の山、吠える", cards: revealed.map(stripForZone) } as never);
+    next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG6-001", effectLabel: "火の山、吠える", from: "deck_top", cards: revealedCards(revealed, "stay") });
   }
   const cats = pending.xg6Meta?.tags ?? [];
   const power = countAvailablePower(next, playerId);
@@ -354,7 +354,7 @@ CHOICE_RESOLVERS[TRINITY_SHOW] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
   const shown = state.players[playerId].hand.find((c) => c.instanceId === instanceId)!;
   let next = close(state, pending);
-  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG6-002", effectLabel: "銀河超越・三神合体", cards: [stripForZone(shown)] } as never);
+  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG6-002", effectLabel: "銀河超越・三神合体", from: "hand", cards: revealedCards([shown], "stay") });
   const ids = trinityCandidates(next, playerId, shown, []);
   return {
     state: openNext(next, pending, { ...choice(pendingBase(pending), "XG6-002", TRINITY_DISCARD, "select_hand", ids, false), xg6Meta: { ids: [instanceId] } }),
@@ -402,7 +402,7 @@ CHOICE_RESOLVERS[MULTI_COMBINE] = (state, playerId, instanceId) => {
   const shown = state.players[playerId].hand.find((c) => c.instanceId === instanceId)!;
   const self = pending.sourceInstanceId ? findField(state, playerId, pending.sourceInstanceId) : undefined;
   let next = close(state, pending);
-  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG6-003", effectLabel: "爆竜マルチコンバイン", cards: [stripForZone(shown)] } as never);
+  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG6-003", effectLabel: "爆竜マルチコンバイン", from: "hand", cards: revealedCards([shown], "stay") });
   const log = logFor(state, playerId, "XG6-003", `${MULTI_COMBINE}:${instanceId}`);
   const shownDef = def(next, shown.cardId);
   const selfDef = self ? def(next, self.cardId) : undefined;
@@ -738,9 +738,11 @@ function runSword(state: GameState, ctx: BaseCtx): GameState {
     else if (a < b) losses++;
   }
   const orders: PendingEffectChoice[] = [];
+  // お互いのオモテにしたカードを 1 つの公開にまとめる（2 回に分けると、後の 1 回しか見えなかった）。
+  const mutual = ([me, enemyId] as const).flatMap((pid) => revealedCards(shown[pid], "deck_bottom").map((c) => ({ ...c, ownerId: pid })));
+  if (mutual.length > 0) next = recordReveal(next, { playerId: me, ownerId: me, sourceCardId: "XG6-008", effectLabel: "炎神剣", from: "deck_top", cards: mutual });
   for (const pid of [me, enemyId] as const) {
     if (shown[pid].length === 0) continue;
-    next = recordReveal(next, { playerId: me, ownerId: pid, sourceCardId: "XG6-008", effectLabel: "炎神剣", cards: shown[pid].map(stripForZone) } as never);
     const placed = placeForDeckOrder(next, { playerId: me, phasePlayerId: ctx.phasePlayerId, sourceCardId: "XG6-008", sourceInstanceId: ctx.sourceInstanceId }, shown[pid].map((c) => c.instanceId), "bottom");
     next = placed.state;
     if (placed.order) orders.push(placed.order);
@@ -949,7 +951,7 @@ CHOICE_RESOLVERS[FLASH_FLIP] = (state, playerId, instanceId) => {
       damage: Math.max(0, p.damage - 1),
     }));
   }
-  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG6-012", effectLabel: "フラッシュターン", cards: [stripForZone(card)] } as never);
+  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG6-012", effectLabel: "フラッシュターン", from: "power", cards: revealedCards([card], "stay") });
   return { state: openFlashRush(next, pendingBase(pending), pending), log: logFor(state, playerId, "XG6-012", `${FLASH_FLIP}:${instanceId}:${boy ? "keep" : "back"}`) };
 };
 CHOICE_SKIPPERS[FLASH_FLIP] = (state, playerId) => {

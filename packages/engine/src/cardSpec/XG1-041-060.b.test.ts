@@ -54,6 +54,7 @@ import {
   zordDownTests,
   bpOf,
 } from "./XG1-041-060.helpers";
+import { revealedBy } from "./revealNotice.helpers";
 
 const S1 = sUnit("SPEC-S1", { bp: 2000 });
 const B6 = sUnit("SPEC-B6", { bp: 6000 });
@@ -153,6 +154,8 @@ describe("XG1-049 スカイライダー", () => {
   it("XG1-049: オモテにしたカードが S ユニット以外（オペレーション）なら山札の上に戻る（出典: atwiki/page-1540「それ以外なら上に戻す」）", () => {
     const s = resolveAll(rc("TST-OP"), ["accept", "reveal"]);
     expect(s.players.player2.deck[0]?.instanceId).toBe("TST-OP:top");
+    // 選択が無くても、オモテにしたカードは「オモテにしたカード」の窓で見せる（ユーザー報告 2026-11-20）。
+    expect(revealedBy(s, "XG1-049")).toEqual(["TST-OP:top"]);
   });
 });
 

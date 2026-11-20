@@ -49,6 +49,7 @@ import {
 import { XG1_085_LADY_RULE, XG1_092_KERBEROS_RULE, XG1_092_RECOVER_RULE, XG1_099_SAITEN_RULE } from "./xg1Fields";
 import { XG1_CONFIRMERS, XG1_KEYWORDS, XG1_RESOLVERS, XG1_SKIPPERS, noop } from "./xg1Core";
 import { addTurnMark, commandHasRoom, costNumber, hasTurnMark, holdCommands, holdThen, isUnitDef, printedFeatures, registerHold, releasedCommands, unitCatsNow } from "./xg1Shared";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 function pickOne(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], optional: boolean, extra: Partial<PendingEffectChoice> = {}): PendingEffectChoice {
   return { ...base(ctx, sourceCardId), effectId, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional, ...extra };
@@ -513,8 +514,11 @@ XG1_KEYWORDS["XG1-094::tentou_spear"] = (state, ctx) => {
 XG1_RESOLVERS[TENTOU_SPEAR_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
   const enemyId = opponent(playerId);
-  const next = close(state, pending);
-  const top = next.players[enemyId].deck[0];
+  const top = state.players[enemyId].deck[0];
+  // オモテにしたカードは公開情報（敵軍コマンドゾーンに空きが無いと置き場所の選択が開かず、何をオモテにしたか見えなかった）。
+  const room = commandHasRoom(state, enemyId);
+  const closed = close(state, pending);
+  const next = top ? recordReveal(closed, { playerId, ownerId: enemyId, sourceCardId: "XG1-094", effectLabel: "テントウスピアー", from: "deck_top", cards: revealedCards([top], room ? "stay" : "deck_top") }) : closed;
   const log = logFor(state, playerId, "XG1-094", `${TENTOU_SPEAR_EFFECT_ID}:reveal:${top?.instanceId ?? "none"}`);
   if (!top || !commandHasRoom(next, enemyId)) return { state: proceed(next, pending), log };
   return { state: openNext(next, pending, confirmOptions(pendingBase(pending), "XG1-094", TENTOU_SPEAR_PLACE_EFFECT_ID, ["deck_top", "command"], false, { xg1Meta: { target: top.instanceId } })), log };

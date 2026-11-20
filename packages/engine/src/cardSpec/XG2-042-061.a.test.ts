@@ -64,6 +64,7 @@ import {
   sUnit,
   zoneOf,
 } from "./XG2-042-061.helpers";
+import { revealedBy } from "./revealNotice.helpers";
 
 const DRIVER_S = sUnit("SPEC-DRIVER-S", { bp: 1000, features: ["ディケイドライバー"], category: "OT" });
 const BP5000_M = sUnit("SPEC-BP5000-M", { bp: 5000, size: "M" });
@@ -411,7 +412,11 @@ describe("XG2-048 仮面ライダースーパー1・RH", () => {
   it("XG2-048: 【レーダーアイ】オモテにしたカードを、それぞれ持ち主の山札の上か下に戻す（自分の山札の上のカードを下に戻せる）（出典: atwiki/page-1744「それぞれ持ち主の山札の上に戻すか下に戻すか選択する」）", () => {
     let s = returning();
     expectChoiceFrom(s, "player1", "XG2-048");
-    s = resolveAll(accept(s), ["bottom", "deck_bottom", "top", "deck_top"]);
+    s = accept(s);
+    // お互いのオモテにしたカードを「オモテにしたカード」の窓で見せ、上か下かを選ぶ窓でもそのカードを見せる（ユーザー報告 2026-11-20）。
+    expect(revealedBy(s, "XG2-048").sort()).toEqual(["TST-OP:en0", "TST-OP:my0"]);
+    expect(s.pendingEffectChoice?.viewedInstanceIds).toEqual(["TST-OP:my0"]);
+    s = resolveAll(s, ["bottom", "deck_bottom", "top", "deck_top"]);
     const decks = [s.players.player1.deck.map((c) => c.instanceId), s.players.player2.deck.map((c) => c.instanceId)];
     expect(decks[0]!.at(-1) === "TST-OP:my0" || decks[1]!.at(-1) === "TST-OP:en0").toBe(true);
   });

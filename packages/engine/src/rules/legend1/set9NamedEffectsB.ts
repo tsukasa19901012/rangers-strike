@@ -22,6 +22,7 @@ import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
 import { parseEnemyTargetZone, parseEnemyUnitFilter, startGenericEnemyUnitChoice } from "../rs/rsCatchallChoices";
 import { isSmallUnitNow, turnPlayerOf } from "./set6NamedEffectsB";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -453,6 +454,7 @@ CHOICE_RESOLVERS[SCRAMBLE_EFFECT_ID] = (state, playerId) => {
       deck: [...p.deck.filter((c) => c.instanceId !== top.instanceId), stripForZone(top)],
     }));
   }
+  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "RS-641", effectLabel: "スクランブル", from: "deck_top", matched: placed, cards: revealedCards([top], placed ? "rush" : "deck_bottom") });
   const log = logFor(state, playerId, "RS-641", `${SCRAMBLE_EFFECT_ID}:${cardName(state.definitions, top.cardId)}:${placed ? "rush" : "deck_bottom"}`);
   if (next.pendingEffectChoice || next.pendingEffectRush) return { state: next, log };
   return { state: proceed(next, pending), log };

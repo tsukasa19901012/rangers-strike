@@ -31,6 +31,7 @@ import {
   UNIT_RUSHED_HOOKS,
 } from "./xg3Registry";
 import { holdCommands, holdThen, nameIs, printedCategories, printedFeatures, releasedCommandIds, skipThen } from "./xg3Common";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 /** 継続効果・別の入口で処理するカードのキーワード（DSL の grant_keyword から呼ばれても何もしない）。 */
 for (const key of [
@@ -539,6 +540,7 @@ BEFORE_BATTLE_HOOKS.push((state, pending) => {
     values = { attacker: unitFeatures(state, attackerId, attacker).length, defender: unitFeatures(state, defenderOwner, defender).length };
   }
   let next = patchPlayer(state, attackerId, (p) => ({ ...p, deck: [...p.deck.slice(1), p.deck[0]!] }));
+  next = recordReveal(next, { playerId: attackerId, ownerId: attackerId, sourceCardId: "XG3-097", effectLabel: "キャプテンルーレット", from: "deck_top", cards: revealedCards([top], "deck_bottom") });
   next = { ...next, log: [...next.log, logFor(state, attackerId, "XG3-097", `xg3097_roulette:${top.instanceId}:${values ? `${values.attacker}-${values.defender}` : "bp"}`)] };
   return resolveBattleLogged(next, { ...pending, xg3RouletteDone: true, ...(values ? { xg3Values: values } : {}) });
 });

@@ -70,6 +70,7 @@ import {
   zordDownTests,
   zoneOf,
 } from "./XG2-042-061.helpers";
+import { revealedBy } from "./revealNotice.helpers";
 
 const C2 = sUnit("SPEC-C2", { bp: 1000, powerCost: 2 });
 const C3 = sUnit("SPEC-C3", { bp: 1000, powerCost: 3 });
@@ -113,6 +114,8 @@ describe("XG2-049 仮面ライダーギルス", () => {
     if (s.pendingEffectChoice?.sourceCardId === "XG2-049") s = skip(s);
     s = settle(s);
     expect(s.players.player2.deck[0]?.instanceId).toBe("TST-OP:top");
+    // 「オモテにしたカード」の窓で見せる（ユーザー報告 2026-11-20「見たカードが何か確認できずに処理が進む」）。
+    expect(revealedBy(s, "XG2-049")).toEqual(["TST-OP:top"]);
   });
 });
 

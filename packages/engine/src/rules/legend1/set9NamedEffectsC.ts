@@ -27,6 +27,7 @@ import { turnPlayerOf } from "./set6NamedEffectsB";
 import { newlyEnteredRushUnitIds } from "../rushAreaEntries";
 import { continueBattleToRushEffectQueue } from "../startPhase";
 import type { ComboOutcome } from "../comboTypes";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -910,6 +911,7 @@ CHOICE_RESOLVERS[KYOURETSU_EXPRESS_EFFECT_ID] = (state, playerId) => {
   const hit = features.includes("炎神") || features.includes("恐竜");
   if (hit && next.players[playerId].battle.some((c) => c.instanceId === self)) next = grantSp1ToBattleUnit(next, playerId, self);
   next = patchPlayer(next, playerId, (p) => ({ ...p, deck: [...p.deck.slice(1), top] }));
+  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "RS-665", effectLabel: "キョウレツエクスプレス", from: "deck_top", matched: hit, cards: revealedCards([top], "deck_bottom") });
   return {
     state: proceed(next, pending),
     log: logFor(state, playerId, "RS-665", `${pending.effectId}:${cardName(state.definitions, top.cardId)}:${hit ? "sp1" : "miss"}`),
