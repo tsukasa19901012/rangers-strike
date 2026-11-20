@@ -34,8 +34,10 @@ import {
   type PlayerId,
   RemoteSession,
   type RemoteMatchView,
+  type ReplayView,
 } from "@rangers-strike/client-core";
 import { engine } from "./engine";
+import { replayHoldsInput } from "./ReplayLayer";
 import { Lobby } from "./lobby";
 import { fetchTransport, inviteFromLocation, isOutdated, saveRoom, savedRoom, serverNow, type SavedRoom } from "./online";
 import { PostGameRoom } from "./postGame";
@@ -176,7 +178,10 @@ export default function App() {
     cardArt: true,
     layouts: { match: computeWebGuiGeometry, deck: computeWebDeckGeometry },
     deckSharing: true,
+    replay: true,
   });
+  // The other side's move being played back over the board (a new value every frame while one plays).
+  const [replay, setReplay] = createSignal<ReplayView | null>(null);
   const [view, setView] = createSignal<ScreenView>(controller.view(), { equals: false });
   const [size, setSize] = createSignal(viewport);
   const [hot, setHot] = createSignal<string | null>(null);
@@ -921,6 +926,8 @@ export default function App() {
     if (deckPanel()) {
       // Keys belong to the panel: Esc / × closes it (a deck from a URL is then not taken).
       for (const event of repeater.frame(buttons)) if (event.type === "cancel") runPanelAction(deckPanel()?.kind === "open" ? "skip" : "close");
+    } else if (current.gui && replayHoldsInput(controller.replayView())) {
+      repeater.frame(buttons);
     } else if (current.gui || current.deck) {
       for (const event of repeater.frame(buttons)) {
         controller.dispatch(event);
@@ -943,6 +950,8 @@ export default function App() {
       const screen = controller.view();
       if (deckPanel()) changed = onPanelPointer(event) || changed;
       else if (settingsOpen()) changed = onSettingsPointer(event) || changed;
+      // The other side's move is being shown: the board waits (a selection window opens once it has been seen).
+      else if (screen.gui && replayHoldsInput(controller.replayView())) continue;
       else if (screen.gui) changed = onMatchPointer(event, screen.gui) || changed;
       else if (screen.deck) changed = onDeckPointer(event, screen.deck) || changed;
       else if (event.kind === "move") setCursor(false);
@@ -1011,6 +1020,11 @@ export default function App() {
     }
     setOpponentName(controller.remoteSession ? "相手" : "CPU");
     if (controller.tick()) changed = true;
+    const step = controller.replayView();
+    const replayShown = replay();
+    if (step?.event || step?.waiting || replayShown?.event || replayShown?.waiting) {
+      if (!step || step.event !== replayShown?.event || step.frame !== replayShown?.frame || step.waiting !== replayShown?.waiting) setReplay(step);
+    }
     const nextClock = clockText();
     if (nextClock !== clock()) setClock(nextClock);
     pollCardArt();
@@ -1046,6 +1060,7 @@ export default function App() {
             sharing={sharing()}
             notice={notice()}
             clock={controller.remoteSession ? clock() : undefined}
+            replay={replay()}
           />
         )}
       </Match>

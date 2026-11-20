@@ -18,6 +18,7 @@ DOM・Node・PocketJS には依存しません（`lib` は ES2022、`types` な�
 | `src/app/deckShare.ts` | デッキの共有形式（URL 用の `{v, name, cards}` とテキストのカードリスト）の作成と読み取り |
 | `src/session/session.ts` | 1 試合: 合法手 → ラベル付き選択肢、CPU 1 手の実行と時間計測、ログ整形（ターン交代の「━━ ターンN：〜のターン ━━」行、新しい 1000 行まで）、適用した手の記録（`actions`） |
 | `src/session/remoteSession.ts` | 対人戦の 1 試合（`RemoteSession`）: サーバーの表示を受け取って描き、選んだ手を送る。通信は `MatchTransport` に任せる |
+| `src/session/replay.ts` | 相手の手を1手ずつ見せるための手順（`replayEvents`: ログの新しい行と前後の盤面から、ラッシュ・NC・アタック・ストライク・カウンター・オペレーション・効果・ダメージで裏返したパワーを作る）と、それを順に再生する `ReplayPlayer` |
 | `src/session/remoteView.ts` | 対人戦の表示を画面用の盤面にする（見えている山札・手札のカードを戻す、player2 なら player1 と入れ替える） |
 | `src/app/gameRecord.ts` | 終わった対戦の記録（種・デッキ・手の全部）。`Platform.sendGameRecord` があるシェル（ブラウザ版）が終局時に送る |
 | `src/view/gui.ts` | GameState → カードタイルの表示モデルと、Vita 用の配置 |
@@ -40,6 +41,15 @@ DOM・Node・PocketJS には依存しません（`lib` は ES2022、`types` な�
 2. `Platform`（時計・ログ・メモリ・保存・アセット）を実装する（例: `apps/web-pocket/src/platform.ts`）
 3. `new AppController({ platform, viewport, gui: true, layouts?, ... })` を作り、入力を `controller.dispatch(...)` に渡す
 4. 毎フレーム `controller.tick()` を呼び、`controller.view()` の `ScreenView` を描く。サイズが変わったら `controller.setViewport()`
+
+## 相手の手の再生（replay）
+
+相手（CPU・対人戦の相手）の手は盤面が一度に変わるので、何が起きたかを1手ずつ見せます。`new AppController({ ..., replay: true })` のシェル（ブラウザ版）だけが使い、Vita は使いません。
+
+- `GameSession` は手を適用するたびに、増えたログの行と前後の盤面から `ReplayEvent` を作ってためます（`takeReplay()`）。対人戦では届いた表示ごとに作るので、相手が何手も進めていてもまとめて並びます。材料は画面に届いたログと盤面だけなので、自分に見えないカードは出てきません（相手の裏向きのパワーは新しい隠し ID で届くので、表から消えた枚数で裏返したカードを決める）。
+- 拾うのは相手の手（ラッシュ・NC・アタック・ストライク・カウンター・オペレーション・効果・ダメージで裏返したパワー）と、自分のアタック・ストライク（`own: true`。動きだけで、お知らせは出さない）。バトルで場を離れたユニットも描けるように、手の前にいた列と位置（`from` / `to`）を持ちます。
+- `AppController` は `ReplayPlayer` で1手ずつ流し（長さは `REPLAY_FRAMES`、3手以上たまると倍速、8手を超えたら古い手から捨てる）、`replayView()` で今の手を渡します。CPU 戦では見せ終わるまで CPU の次の手を待ちます。自分のストライクの後、相手がダメージで裏返すパワーを選んでいる間は `waiting`（「相手が裏返すパワーを選んでいます…」）を出します。
+- テストは `src/session/replay.test.ts`（CPU 同士の対戦で全種類が拾えること、隠し ID のパワー、ストライクの「unknown」、カウンター、`ReplayPlayer` の順番と早送り、CPU が待つこと）と `remoteSession.test.ts`（対人戦で両方の画面に見えたカードだけで届くこと）です。
 
 ## 対人戦の画面（RemoteSession）
 

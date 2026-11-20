@@ -3,6 +3,7 @@
 import type { CpuLevel, EngineApi, GameAction, GameState, PlayerId } from "../engineApi";
 import { CPU, HUMAN } from "../engineApi";
 import { describeAction, humanizeLogEntry, indexInstances, isDuplicateSelfHoldPayment, PLAYER_LABELS } from "../text/labels";
+import { replayEvents, type ReplayEvent } from "./replay";
 import type { Clock, LogSink, MemoryProbe, MemorySample } from "../platform/interfaces";
 
 /** A normal turn takes well under 100 CPU moves; far more means the CPU is looping. */
@@ -57,6 +58,8 @@ export class GameSession {
   readonly log: string[] = [];
   /** How many lines have been dropped from the front of `log` (it keeps the newest logLimit lines). */
   logDropped = 0;
+  /** Replay steps not taken yet (takeReplay). */
+  private readonly replayBuffer: ReplayEvent[] = [];
   private loggedEntries = 0;
   /** Turns ended in the logged entries (the next turn banner's number is this + 1). */
   private loggedTurnEnds = 0;
@@ -271,7 +274,14 @@ export class GameSession {
 
   protected commit(next: GameState, action: GameAction | null): void {
     if (action) this.actions?.push(action);
+    const prev = this.state;
+    const added = next.log.slice(this.loggedEntries);
     this.state = next;
+    if (added.length) {
+      this.replayBuffer.push(...replayEvents(this.engine, prev, next, added, this.labels));
+      // Nobody takes them on a screen without the replay (Vita, tests): keep only the newest.
+      if (this.replayBuffer.length > 16) this.replayBuffer.splice(0, this.replayBuffer.length - 16);
+    }
     this.lastError = null;
     this.version++;
     this.syncLog();
@@ -281,6 +291,11 @@ export class GameSession {
           `avgThink=${this.metrics.avgThinkMs.toFixed(1)}ms maxThink=${this.metrics.maxThinkMs.toFixed(1)}ms`,
       );
     }
+  }
+
+  /** The steps to replay for the moves since the last call (the screen plays them one by one). */
+  takeReplay(): ReplayEvent[] {
+    return this.replayBuffer.splice(0);
   }
 
   /** Adds a line of the client's own to the match log (not part of the game state, so a shared board does not carry it). */

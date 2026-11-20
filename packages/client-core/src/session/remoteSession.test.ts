@@ -12,6 +12,7 @@ import { testEngine, testPlatform } from "../testing/engine";
 import { flush, localServer, type Fault, type LocalServer } from "../testing/matchTransport";
 import { RemoteSession, type RemoteMatchView } from "./remoteSession";
 import { screenState } from "./remoteView";
+import type { ReplayEvent } from "./replay";
 
 const PLAYERS: PlayerId[] = ["player1", "player2"];
 const STEP_MS = 100;
@@ -71,7 +72,10 @@ function cpuOption(server: LocalServer, session: RemoteSession): number {
 }
 
 /** Plays a whole match through two RemoteSessions. `idle` makes a player sit out now and then (time-outs). */
-async function playRemote(g: number, options: { faults?: (player: PlayerId, kind: string) => Fault; idle?: () => boolean; roundTrip?: boolean }) {
+async function playRemote(
+  g: number,
+  options: { faults?: (player: PlayerId, kind: string) => Fault; idle?: () => boolean; roundTrip?: boolean; replays?: ReplayEvent[][] },
+) {
   const rand = mulberry32(900 + g);
   const [host, guest] = decks(g);
   const server = localServer({ seed: g, host, guest, faults: options.faults, roundTrip: options.roundTrip });
@@ -82,8 +86,9 @@ async function playRemote(g: number, options: { faults?: (player: PlayerId, kind
   for (; frames < 60_000 && !sessions.every((s) => s.over); frames++) {
     if (frames % 200 === 0) await yieldToWorker();
     server.deps.now += STEP_MS;
-    for (const s of sessions) {
+    for (const [i, s] of sessions.entries()) {
       s.frame();
+      options.replays?.[i]!.push(...s.takeReplay());
       if (s.turnOwner() !== "human") continue;
       // On the person's turn with nothing on its way, the screen shows exactly the server's board (unless the
       // server has moved on since: a time-out the session has not polled yet).
@@ -121,6 +126,24 @@ describe("RemoteSession: 同じプロセスのサーバーと最後まで", () =
     }
     // The person who is player2 on the server is player1 on their own screen.
     expect(sessions[1]!.state.players.player1.damage).toBe(server.match.game!.players.player2.damage);
+  }, 180_000);
+
+  it("相手の操作の再生: 自分の画面に見えたカードだけで、ラッシュ・アタック・ストライク・裏返したパワーが届く", async () => {
+    const replays: ReplayEvent[][] = [[], []];
+    const { sessions, problems } = await playRemote(1, { replays });
+    expect(problems).toEqual([]);
+    for (const [i, s] of sessions.entries()) {
+      const events = replays[i]!;
+      const kinds = new Set(events.map((e) => e.kind));
+      for (const kind of ["rush", "attack", "strike"] as const) expect(kinds, `${s.you} ${kind}`).toContain(kind);
+      for (const e of events) {
+        // Nothing the person could not see: every card is one their screen has the card data of.
+        expect(e.cardId).not.toBe("?");
+        expect(s.state.definitions[e.cardId], JSON.stringify(e)).toBeDefined();
+        if (e.actor === "player1") expect(e.own).toBe(true);
+      }
+    }
+    expect(replays.flat().some((e) => e.kind === "flip")).toBe(true);
   }, 180_000);
 
   it.each([4, 5])("試合 %i: 通信が切れても同じ通し番号で送り直し、操作が2回適用されない", async (g) => {

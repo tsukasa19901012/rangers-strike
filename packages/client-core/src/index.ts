@@ -7,6 +7,7 @@ export * from "./input/actions";
 export * from "./session/session";
 export * from "./session/remoteSession";
 export * from "./session/remoteView";
+export * from "./session/replay";
 export * from "./platform/interfaces";
 export * from "./platform/memory";
 export * from "./platform/settings";
