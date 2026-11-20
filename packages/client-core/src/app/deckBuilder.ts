@@ -15,11 +15,11 @@
 import type { CardDefinition, DeckApi, DeckEntry, EngineApi } from "../engineApi";
 import { ListCursor, type LogicalInput } from "../input/actions";
 import type { CustomDeck } from "../platform/settings";
-import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
+import { fitLine, measureText, wrapText, type WrapOptions } from "../text/wrap";
 import { cardFieldLines, effectParagraphs } from "../view/cardFields";
 import { detailArtWidth, isWideDetail } from "../view/gui";
 import type { Rect, Viewport } from "../view/layout";
-import { TYPE_LABELS, type GuiBox, type MenuRowView, type PanelLine, type PanelTone } from "./guiMatch";
+import { TYPE_LABELS, boxMarks, type GuiBox, type MenuRowView, type PanelLine, type PanelTone } from "./guiMatch";
 import { cardFilters, cardSearchText, matchesTerms, searchTerms, type CardFilter, type FilterKey } from "./cardSearch";
 
 const FONT_PX = 12;
@@ -514,6 +514,10 @@ export class DeckBuilder {
         case "pageNext":
           menu.cursor.page(1);
           return;
+        case "scroll":
+          // ▲前へ / ▼次へ under the rows, or a swipe over the menu (a phone has no wheel or d-pad).
+          menu.cursor.turnPage(event.direction);
+          return;
         case "select": {
           const index = menu.cursor.rowToIndex(event.row);
           if (index < 0) return;
@@ -738,9 +742,12 @@ export class DeckBuilder {
     let menu: GuiBox | undefined;
     if (this.menu) {
       const m = this.menu;
-      const w = Math.min(g.width - 40, 300);
+      // Wide enough on a phone for the starter names (their 「（type A）」 tails stay, see below).
+      const w = Math.min(g.width - 32, 340);
       const rowsShown = Math.min(m.items.length, m.cursor.rows);
-      const h = (rowsShown + 1) * g.lineHeight + 6;
+      // One more line for the ▲前へ / ▼次へ marks when some rows are out of view.
+      const markLine = m.items.length > rowsShown ? 1 : 0;
+      const h = (rowsShown + 1 + markLine) * g.lineHeight + 6;
       const x = Math.round((g.width - w) / 2);
       const top = Math.max(g.topBar.h + 2, Math.round((g.height - h) / 2));
       const rowWrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: w - 8 };
@@ -749,7 +756,7 @@ export class DeckBuilder {
         const index = m.cursor.rowToIndex(r);
         if (index < 0) break;
         rows.push({
-          text: fitLine(m.items[index]!.label, rowWrap),
+          text: fitMenuLabel(m.items[index]!.label, rowWrap),
           selected: index === m.cursor.index,
           rect: { x: x + 4, y: top + 3 + (r + 1) * g.lineHeight, w: w - 8, h: g.lineHeight },
         });
@@ -759,6 +766,7 @@ export class DeckBuilder {
         title: fitLine(`${m.title}${m.items.length > rowsShown ? ` ${m.cursor.index + 1}/${m.items.length}` : ""}`, rowWrap),
         titleRect: { x: x + 4, y: top + 3, w: w - 8, h: g.lineHeight },
         rows,
+        marks: markLine ? boxMarks(m.cursor, { x: x + 4, y: top + 3 + (rowsShown + 1) * g.lineHeight, w: w - 8, h: g.lineHeight }) : [],
       };
     }
 
@@ -808,4 +816,18 @@ export class DeckBuilder {
         : "○:1枚入れる □:1枚抜く L:一覧/デッキ △:種類 R:カテゴリ ×:メニュー",
     };
   }
+}
+
+/**
+ * One menu row. Starters of one product differ only in their 「（type A：…）」 part, so a label too
+ * long for the row is cut before that part and inside it, never at its start:
+ * 「元にする: ザ・Wインパクト…（type A：仮面ライ…」.
+ */
+export function fitMenuLabel(label: string, wrap: WrapOptions): string {
+  if (measureText(label, wrap.fontPx, wrap.charWidth) <= wrap.maxWidthPx) return label;
+  const open = label.indexOf("（");
+  if (open <= 0) return fitLine(label, wrap);
+  const tailPx = measureText(label.slice(open), wrap.fontPx, wrap.charWidth);
+  const head = fitLine(label.slice(0, open), { ...wrap, maxWidthPx: Math.max(wrap.maxWidthPx * 0.45, wrap.maxWidthPx - tailPx) });
+  return head + fitLine(label.slice(open), { ...wrap, maxWidthPx: wrap.maxWidthPx - measureText(head, wrap.fontPx, wrap.charWidth) });
 }
