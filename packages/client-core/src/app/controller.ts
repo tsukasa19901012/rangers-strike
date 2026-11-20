@@ -672,6 +672,9 @@ export class AppController {
     const result = session.cpuStep();
     this.message = result.ok ? result.label : `CPUエラー: ${result.error}`;
     if (this.gui) this.gui.message = this.message;
+    // Its replay starts in this same frame, so a choice it opens for the human (power to flip after a strike) is
+    // never drawn before the move itself.
+    this.collectReplay(session);
     this.afterStateChange();
     return true;
   }
@@ -682,13 +685,17 @@ export class AppController {
   }
 
   /** Takes in the session's new replay steps and advances the one playing. Returns true while one plays. */
+  /** Moves the session's new replay steps into the queue (autoplay, which never waits for the screen, drops them). */
+  private collectReplay(session: GameSession): void {
+    const events = session.takeReplay();
+    if (this.replay && !session.options.humanLevel) this.replay.push(events);
+  }
+
   private stepReplay(session: GameSession): boolean {
     const replay = this.replay;
     if (!replay) return false;
-    const events = session.takeReplay();
-    // Autoplay (measurement) never waits for the screen.
+    this.collectReplay(session);
     if (session.options.humanLevel) return false;
-    replay.push(events);
     replay.waiting = session instanceof RemoteSession && opponentPayingDamage(session.state) ? `${session.labels.player2}が裏返すパワーを選んでいます…` : null;
     replay.frame();
     return replay.busy;

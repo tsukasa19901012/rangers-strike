@@ -7,6 +7,8 @@
 // nothing the person's view does not carry.
 import type { CardInstance, EngineApi, GameState, PlayerId } from "../engineApi";
 
+type PendingStrikeView = { strikerPlayerId: PlayerId; strikerInstanceId: string; damage: number };
+
 export type ReplayKind = "rush" | "nc" | "attack" | "strike" | "counter" | "operation" | "effect" | "flip";
 
 export type ReplayEvent = {
@@ -139,6 +141,18 @@ export function replayEvents(
   const defs = { ...prev.definitions, ...next.definitions };
   const name = (cardId: string, fallback?: string) => defs[cardId]?.name ?? fallback ?? cardId;
   const line = (entry: string) => stripActor(engine.formatGameLog(entry, defs, labels), labels);
+  const strikeEvent = (actor: PlayerId, cardId: string, striker: string | undefined, damage: number, fallback?: string): ReplayEvent => ({
+    kind: "strike",
+    actor,
+    cardId,
+    instanceId: striker,
+    from: slotOf(prev, actor, striker),
+    targetPlayer: other(actor),
+    damage,
+    title: `${name(cardId, fallback)} でストライク`,
+    detail: damage > 0 ? `→ ${labels[other(actor)]}に ${damage}点ダメージ` : `→ ${labels[other(actor)]}へのダメージは無効になった`,
+    ...(actor === "player1" ? { own: true } : {}),
+  });
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i]!;
     const parts = entry.split("|");
@@ -148,6 +162,16 @@ export function replayEvents(
     const cardId = parts[2] ?? "";
     const detail = parts[4];
     const own = actor === "player1";
+    if (action === "strike_pending_damage") {
+      // The strike hit and the other side now turns power face down: show the strike before that choice (the
+      // 「strike」 line itself is only written once the damage is paid).
+      const pending = strikeAwaitingDamage(next);
+      if (pending?.strikerPlayerId === actor) {
+        const known = cardOf(prev, pending.strikerInstanceId) ?? cardOf(next, pending.strikerInstanceId);
+        if (known && defs[known]) events.push(strikeEvent(actor, known, pending.strikerInstanceId, damageOf(next, pending)));
+      }
+      continue;
+    }
     if (own && action !== "battle" && action !== "strike") continue;
     if (!cardId || (parts.length < 4 && action !== "strike")) continue;
     if (detail?.startsWith("choice:")) continue;
@@ -191,6 +215,8 @@ export function replayEvents(
         break;
       }
       case "strike": {
+        // Already shown when its damage payment opened.
+        if (strikeAwaitingDamage(prev)?.strikerPlayerId === actor) break;
         const damage = Number(detail ?? "1") || 0;
         // The log can name the striker 「unknown」 (it left the battle area before the line was written): the strike
         // waiting before the move still says which unit it was.
@@ -198,18 +224,7 @@ export function replayEvents(
         const known = defs[cardId] ? cardId : pending ? cardOf(prev, pending) : undefined;
         if (!known) break;
         const striker = (defs[cardId] ? findOnBoard(prev, actor, cardId, ["battle"]) ?? at() : undefined) ?? pending;
-        events.push({
-          kind: "strike",
-          actor,
-          cardId: known,
-          instanceId: striker,
-          from: slotOf(prev, actor, striker),
-          targetPlayer: other(actor),
-          damage,
-          title: `${name(known, parts[3])} でストライク`,
-          detail: damage > 0 ? `→ ${labels[other(actor)]}に ${damage}点ダメージ` : `→ ${labels[other(actor)]}へのダメージは無効になった`,
-          ...(own ? { own } : {}),
-        });
+        events.push(strikeEvent(actor, known, striker, damage, parts[3]));
         break;
       }
       case "play_counter":
@@ -257,6 +272,16 @@ export function replayEvents(
   return events;
 }
 
+/** The strike whose damage is being paid (power being picked, or a 「ウラ返すとき」 effect resolving first). */
+function strikeAwaitingDamage(state: GameState): PendingStrikeView | undefined {
+  const resume = state.pendingDamagePayment?.resume ?? state.deferredPowerFlip?.resume;
+  return resume?.kind === "strike" ? resume.pending : undefined;
+}
+
+function damageOf(state: GameState, pending: PendingStrikeView): number {
+  return state.pendingDamagePayment?.totalDamage ?? state.deferredPowerFlip?.totalDamage ?? pending.damage;
+}
+
 /** The other side must pick power cards to turn face down (the person's strike hit): 「相手が裏返すパワーを選んでいます」. */
 export function opponentPayingDamage(state: GameState): boolean {
   const pay = state.pendingDamagePayment;
@@ -289,6 +314,17 @@ export class ReplayPlayer {
   push(events: readonly ReplayEvent[]): void {
     this.queue.push(...events);
     if (this.queue.length > MAX_QUEUED) this.queue.splice(0, this.queue.length - MAX_QUEUED);
+    // Shown from this frame on, so whatever the move opened next (a choice for the person) waits behind it.
+    if (!this.current) this.start();
+  }
+
+  private start(): boolean {
+    const next = this.queue.shift();
+    if (!next) return false;
+    this.current = next;
+    this.frameNo = 0;
+    this.total = (next.own ? OWN_REPLAY_FRAMES[next.kind] : undefined) ?? REPLAY_FRAMES[next.kind];
+    return true;
   }
 
   /** A step is playing or waiting. */
@@ -305,14 +341,7 @@ export class ReplayPlayer {
 
   /** Advances one frame. Returns true when something on screen moves. */
   frame(): boolean {
-    if (!this.current) {
-      const next = this.queue.shift();
-      if (!next) return false;
-      this.current = next;
-      this.frameNo = 0;
-      this.total = (next.own ? OWN_REPLAY_FRAMES[next.kind] : undefined) ?? REPLAY_FRAMES[next.kind];
-      return true;
-    }
+    if (!this.current) return this.start();
     this.frameNo++;
     // With more waiting, each step plays faster (up to twice as fast) so the screen catches up.
     if (this.queue.length >= 3) this.frameNo++;

@@ -86,6 +86,29 @@ describe("replayEvents: 相手の操作を1手ずつ", () => {
     expect(cancelled[0]).toMatchObject({ damage: 0, detail: expect.stringContaining("無効") });
   });
 
+  it("ストライクは、ダメージで裏返すパワーを選ぶ前に見せる（あとで重ねて出さない）", () => {
+    const ids = engine.ALL_STARTER_DECK_IDS as readonly string[];
+    let t = 0;
+    const session = new GameSession({ engine: testEngine, humanDeck: ids[0]!, cpuDeck: ids[3]!, seed: 100, cpuLevel: 2, humanLevel: 2, clock: () => t++ });
+    let opened = 0;
+    for (let i = 0; i < 3000 && !session.over; i++) {
+      const wasPaying = session.state.pendingDamagePayment;
+      if (!session.cpuStep().ok) break;
+      const events = session.takeReplay();
+      const pay = session.state.pendingDamagePayment;
+      if (pay && !wasPaying && pay.resume.kind === "strike") {
+        // The strike is in the same step that asks for the power cards.
+        const striker = pay.resume.pending.strikerPlayerId;
+        expect(events.filter((e) => e.kind === "strike" && e.actor === striker)).toHaveLength(1);
+        opened++;
+      }
+      if (wasPaying?.resume.kind === "strike" && !pay) {
+        expect(events.filter((e) => e.kind === "strike")).toHaveLength(0);
+      }
+    }
+    expect(opened).toBeGreaterThan(0);
+  });
+
   it("カウンターは使ったカードを大きく見せる手になる", () => {
     const { session } = runs[0]!;
     const card = Object.values(session.state.definitions).find((d) => /アタックされたとき発動できる/.test(d.text ?? ""))!;
