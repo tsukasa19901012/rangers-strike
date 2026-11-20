@@ -421,6 +421,21 @@ describe("XG2-048 仮面ライダースーパー1・RH", () => {
     expect(decks[0]!.at(-1) === "TST-OP:my0" || decks[1]!.at(-1) === "TST-OP:en0").toBe(true);
   });
 
+  it("XG2-048: 【レーダーアイ】上か下かは、相手の山札のカードの分もこれを使ったプレイヤーが選ぶ（対人戦でも相手には選ばせない）（出典: atwiki/page-1744 カード評価「自軍デッキ、敵軍デッキの双方を操作できる」・コメント「このカードの効果なんだから主体は使ってる側」／ユーザー判断 2026-11-20）", () => {
+    let s = accept(returning());
+    // 1つ目: 自分の山札の上のカード。
+    expectChoiceFrom(s, "player1", "XG2-048");
+    expect(s.pendingEffectChoice?.viewedInstanceIds).toEqual(["TST-OP:my0"]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "deck_top" });
+    // 2つ目: 相手の山札の上のカード。選ぶのは相手（player2）ではなく player1。
+    expectChoiceFrom(s, "player1", "XG2-048");
+    expect(s.pendingEffectChoice?.viewedInstanceIds).toEqual(["TST-OP:en0"]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "deck_bottom" });
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG2-048");
+    expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(["TST-OP:my0", "TST-OP:my1"]);
+    expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(["TST-OP:en1", "TST-OP:en0"]);
+  });
+
   it("XG2-048: 【レーダーアイ】オモテにしなければ、どちらの山札も変わらない（出典: atwiki/page-1744「オモテにしてもよい」）", () => {
     let s = returning();
     if (s.pendingEffectChoice?.sourceCardId === "XG2-048") s = skip(s);
