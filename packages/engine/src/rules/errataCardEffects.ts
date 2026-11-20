@@ -34,6 +34,7 @@ import {
   openEffectChoice,
   type ChoiceOutcome,
 } from "./pendingChoices";
+import { recordReveal, revealedCards } from "./revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -697,6 +698,7 @@ function resolveCounterStrike(state: GameState, playerId: PlayerId, _instanceId:
       deck: [...after.deck.filter((c) => c.instanceId !== top.instanceId), top],
     }),
   };
+  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: pending.sourceCardId, effectLabel: "カウンターストライク", from: "deck_top", matched: valid, cards: revealedCards([top], "deck_bottom") });
   return {
     state: next,
     log: logFor(

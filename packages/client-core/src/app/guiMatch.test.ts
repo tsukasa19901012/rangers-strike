@@ -493,6 +493,40 @@ describe("cards an effect shows", () => {
     expect(app.view().gui!.dialog?.buttons.map((b) => b.text)).not.toEqual(["閉じる"]);
   });
 
+  it("shows each reveal one move made in turn (both decks: engine lastReveal.earlier), then the board", () => {
+    // ユーザー報告 2026-11-20「山札の上を見る効果で、見たカードが何か確認できずに処理が進んでしまう」: 公開が 2 回あった操作で、
+    // 最後の 1 回しか窓が開かなかった。
+    const app = startGui(5);
+    const session = app.session!;
+    const mine = session.state.players.player1.deck[0]!;
+    const theirs = session.state.players.player2.deck[0]!;
+    const notice = (seq: number, playerId: "player1" | "player2", card: typeof mine, label: string) => ({
+      seq,
+      playerId,
+      ownerId: playerId,
+      effectLabel: label,
+      from: "deck_top" as const,
+      cards: [{ instanceId: card.instanceId, cardId: card.cardId, destination: "deck_bottom" as const }],
+    });
+    session.state = { ...session.state, lastReveal: { ...notice(2, "player2", theirs, "墨攻撃"), earlier: [notice(1, "player1", mine, "炎神剣")] } };
+    session.version++;
+    let dialog = app.view().gui!.dialog!;
+    expect(dialog.titleLines.map((l) => l.text).join("")).toContain("あなたが山札の上から1枚オモテにした（炎神剣）");
+    expect(dialog.cards.map((c) => c.note)).toEqual(["山札の下へ"]);
+    app.dispatch(input.confirm);
+    dialog = app.view().gui!.dialog!;
+    expect(dialog.titleLines.map((l) => l.text).join("")).toContain("CPUが山札の上から1枚オモテにした（墨攻撃）");
+    app.dispatch(input.confirm);
+    expect(app.view().gui!.dialog?.buttons.map((b) => b.text)).not.toEqual(["閉じる"]);
+    // 見せた公開は、次の操作で earlier に残っていても、もう開かない。
+    session.state = { ...session.state, lastReveal: { ...notice(3, "player1", mine, "スクランブル"), earlier: [notice(1, "player1", mine, "炎神剣"), notice(2, "player2", theirs, "墨攻撃")] } };
+    session.version++;
+    app.dispatch(input.next); // a board move redraws (the controller caches its view between inputs)
+    expect(app.view().gui!.dialog!.titleLines.map((l) => l.text).join("")).toContain("（スクランブル）");
+    app.dispatch(input.confirm);
+    expect(app.view().gui!.dialog?.buttons.map((b) => b.text)).not.toEqual(["閉じる"]);
+  });
+
   it("captions pickable deck cards 「選択可能」 and the look-only ones next to them 「対象外」 (RS-186 プロバイダーベース)", () => {
     const app = startGui(5);
     const session = app.session!;

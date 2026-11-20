@@ -70,6 +70,7 @@ import {
   unitCatsNow,
 } from "./xg1Shared";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 function pickOne(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], optional: boolean, extra: Partial<PendingEffectChoice> = {}): PendingEffectChoice {
   return { ...base(ctx, sourceCardId), effectId, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional, ...extra };
@@ -215,7 +216,8 @@ export function xg1cOnAttackDeclared(state: GameState, attackerPlayerId: PlayerI
   const top = state.players[attackerPlayerId].deck[0];
   if (!top) return { state, cancel: false };
   const cancel = costNumber(state, top.cardId) <= 3;
-  const next = patchPlayer(state, attackerPlayerId, (p) => ({ ...p, deck: [...p.deck.slice(1), top] }));
+  const moved = patchPlayer(state, attackerPlayerId, (p) => ({ ...p, deck: [...p.deck.slice(1), top] }));
+  const next = recordReveal(moved, { playerId: attackerPlayerId, ownerId: attackerPlayerId, sourceCardId: "XG1-045", effectLabel: "墨攻撃", from: "deck_top", matched: cancel, cards: revealedCards([top], "deck_bottom") });
   return { state: { ...next, log: [...next.log, logFor(next, opponent(attackerPlayerId), "XG1-045", `xg1_045_sumi:${top.cardId}:${cancel ? "no_battle" : "battle"}`)] }, cancel };
 }
 
@@ -308,6 +310,7 @@ XG1_RESOLVERS[SAILING_JUMP_EFFECT_ID] = (state, playerId) => {
   let next = close(state, pending);
   const bottom = !!top && isSUnitCard(state, top.cardId);
   if (top && bottom) next = patchPlayer(next, enemyId, (p) => ({ ...p, deck: [...p.deck.slice(1), top] }));
+  if (top) next = recordReveal(next, { playerId, ownerId: enemyId, sourceCardId: "XG1-049", effectLabel: "セイリングジャンプ", from: "deck_top", cards: revealedCards([top], bottom ? "deck_bottom" : "deck_top") });
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG1-049", `${SAILING_JUMP_EFFECT_ID}:${top?.cardId ?? "none"}:${bottom ? "bottom" : "top"}`) };
 };
 XG1_SKIPPERS[SAILING_JUMP_EFFECT_ID] = simpleSkip();

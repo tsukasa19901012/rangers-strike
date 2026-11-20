@@ -44,6 +44,7 @@ import { unitFeatures } from "../addedFeatures";
 import { rs603BlocksVehicle } from "../rs/rsCatchallField";
 import { namedTextNegated } from "./set6NamedEffects348";
 import { cardNotSelectableByOpponent } from "../../keywords/effectTargetability";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -600,6 +601,7 @@ CHOICE_RESOLVERS[FLAME_SWORD_EFFECT_ID] = (state, playerId, instanceId) => {
     next = spBecomesInZone(next, playerId, "battle", instanceId, 2);
   }
   next = patchPlayer(next, playerId, (p) => ({ ...p, deck: [...p.deck.slice(1), stripForZone(top)] }));
+  next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "RS-596", effectLabel: "炎神剣", from: "deck_top", matched: hit, cards: revealedCards([top], "deck_bottom") });
   return {
     state: finish(next, pending),
     log: logFor(state, playerId, "RS-596", `${FLAME_SWORD_EFFECT_ID}:${cardName(state.definitions, top.cardId)}:${hit ? "sp2" : "miss"}`),

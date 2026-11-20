@@ -19,7 +19,7 @@ import { advancePhase, loseDamageThreshold } from "../../core/createGame";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { patchPlayer } from "../playerPatches";
 import { applyDamageToPlayer } from "../damagePayment";
-import { recordReveal } from "../revealNotice";
+import { recordReveal, revealedCards } from "../revealNotice";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { finalizeLeaveReaction, resolveBattlePending, tryLeaveField } from "../operationCounters";
 import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
@@ -224,9 +224,18 @@ function applyLion(from: "top" | "bottom", sourceCardId: string, label: string, 
     const deck = state.players[ctx.playerId].deck;
     const shown = from === "top" ? deck[0] : deck[deck.length - 1];
     if (!shown) return { state, detail: `${sourceCardId}:empty_deck` };
-    let next = recordReveal(state, { playerId: ctx.playerId, ownerId: ctx.playerId, sourceCardId, effectLabel: label, cards: [stripForZone(shown)] } as never);
-    const d = def(next, shown.cardId);
-    const take = isUnitDef(next, shown.cardId) && (d?.features ?? []).includes("獣") && d?.name !== excludedName;
+    const d = def(state, shown.cardId);
+    const take = isUnitDef(state, shown.cardId) && (d?.features ?? []).includes("獣") && d?.name !== excludedName;
+    // 行き先（手札／山札に戻してシャッフル）と、どこからオモテにしたかも記録する（無いと公開の窓の見出し・行き先が空になった）。
+    let next = recordReveal(state, {
+      playerId: ctx.playerId,
+      ownerId: ctx.playerId,
+      sourceCardId,
+      effectLabel: label,
+      from: from === "top" ? "deck_top" : "deck_bottom",
+      matched: take,
+      cards: revealedCards([shown], take ? "hand" : "deck_shuffle"),
+    });
     if (take) {
       next = patchPlayer(next, ctx.playerId, (p) => ({ ...p, deck: p.deck.filter((c) => c.instanceId !== shown.instanceId), hand: [...p.hand, stripForZone(shown)] }));
       return { state: next, detail: `${sourceCardId}:to_hand:${shown.instanceId}` };

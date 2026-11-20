@@ -58,6 +58,7 @@ import {
   zoneOf,
 } from "./XG2-082-103.helpers";
 import type { GameState } from "../types/game";
+import { revealedBy } from "./revealNotice.helpers";
 
 const RIDER = sUnit("SPEC-RIDER", { bp: 2000, comboNumber: "RC" });
 const EXTRA = [RIDER];
@@ -167,6 +168,8 @@ describe("XG2-100 善と悪", () => {
     const s = entered(inst("TST-UNIT-0", "top"));
     expect(attackTargets(s, "XG2-089:jb")).toEqual(["XG2-098:mecha"]);
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("TST-UNIT-0:top");
+    // 「オモテにしたカード」の窓で見せる（ユーザー報告 2026-11-20「見たカードが何か確認できずに処理が進む」）。
+    expect(revealedBy(s, "XG2-100")).toEqual(["TST-UNIT-0:top"]);
   });
 
   it("XG2-100: オモテにしたカードがユニットカードでなければ（オペレーション）、アタックの制限はない（出典: atwiki/page-52「オモテにしたカードがユニットカードなら」）", () => {

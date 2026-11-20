@@ -21,6 +21,7 @@ import { rk1IsSmallNow } from "../rk/rk1Features";
 import { base, close, ctxBase, destroyAll, fieldUnits, findField, isUnitCard, logFor, moveFieldUnit, openAfter, openNext, pendingBase, proceed, selectableEnemy, shuffleDeck, stripForZone, zoneOfField } from "../rm/rm1Effects";
 import { AFTER_ACTION_HOOKS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, FIELD_ABILITIES, KEYWORDS, LEAVE_STAY_HOOKS, ZONE_ACTIVATIONS } from "./xg3Registry";
 import { holdCommands, nameIs, printedFeatures, skipThen } from "./xg3Common";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 /** 継続効果・別の入口で処理するカードのキーワード（DSL の grant_keyword から呼ばれても何もしない）。 */
 for (const key of [
@@ -227,11 +228,12 @@ KEYWORDS["XG3-071::kapu"] = (state, ctx) => {
   const top = state.players[ctx.playerId].deck[0];
   if (!top) return { state, detail: "xg3071:no_deck" };
   const unit = isUnitCard(state, top.cardId);
-  const next = patchPlayer(state, ctx.playerId, (p) => ({
+  const moved = patchPlayer(state, ctx.playerId, (p) => ({
     ...p,
     deck: p.deck.slice(1),
     ...(unit ? { discard: [...p.discard, stripForZone(top)] } : { hand: [...p.hand, stripForZone(top)] }),
   }));
+  const next = recordReveal(moved, { playerId: ctx.playerId, ownerId: ctx.playerId, sourceCardId: "XG3-071", effectLabel: "カプッ", from: "deck_top", cards: revealedCards([top], unit ? "discard" : "hand") });
   return { state: { ...next, log: [...next.log, logFor(state, ctx.playerId, "XG3-071", `xg3071_kapu:${unit ? "discard" : "hand"}:${top.instanceId}`)] }, detail: "xg3071_kapu" };
 };
 

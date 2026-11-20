@@ -39,6 +39,7 @@ import {
   targetsOf,
   zoneOf,
 } from "./XG1-081-100.helpers";
+import { revealedBy } from "./revealNotice.helpers";
 
 const POL = sUnit("SPEC-POL", { features: ["警察"] });
 const INS = sUnit("SPEC-INS", { features: ["昆虫"] });
@@ -277,6 +278,8 @@ describe("XG1-094 ビーファイターテントウ", () => {
     const t = resolveAll(s, ["accept", "command"]);
     expect(t.players.player2.deck[0]?.instanceId).toBe("TST-UNIT-0:top");
     expect(zoneOf(t, "player2", "TST-UNIT-0:top")).toBe("deck");
+    // 置き場所の選択が開かなくても、オモテにしたカードは「オモテにしたカード」の窓で見せる（ユーザー報告 2026-11-20）。
+    expect(revealedBy(t, "XG1-094")).toEqual(["TST-UNIT-0:top"]);
   });
 
   it("XG1-094: 特徴「昆虫」を持つユニットからコンビネーションするときは、ライドオフしなくても発動する（既知の不具合: CARD-XG1-094 発動しない）（出典: atwiki/page-1645「（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）」）", () => {

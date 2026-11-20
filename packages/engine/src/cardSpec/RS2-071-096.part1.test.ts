@@ -43,6 +43,7 @@ import {
   zoneOf,
 } from "./RS2-071-096.helpers";
 import type { GameState, PlayerId } from "../types/game";
+import { revealedBy } from "./revealNotice.helpers";
 
 /** 印刷スペック。 */
 function expectStats(
@@ -130,6 +131,7 @@ describe("RS-071 ヒドラー兵の卵", () => {
     s = settle(act(s, { type: "hidora_egg", playerId: "player1" }));
     expect(zoneOf(s, "player1", "RS-080:h1")).toBe("rush");
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:d2"]);
+    expect(revealedBy(s, "RS-071")).toEqual(["RS-080:h1"]);
   });
 
   // 「それ以外なら山札の下に戻す」
@@ -138,6 +140,8 @@ describe("RS-071 ヒドラー兵の卵", () => {
     s = settle(act(s, { type: "hidora_egg", playerId: "player1" }));
     expect(zoneIds(s, "player1", "deck")).toEqual(["RS-080:h2", "TST-OP:d1"]);
     expect(zoneIds(s, "player1", "rush")).toEqual([]);
+    // 「オモテにしたカード」の窓で見せる（ユーザー報告 2026-11-20「見たカードが何か確認できずに処理が進む」）。
+    expect(revealedBy(s, "RS-071")).toEqual(["TST-OP:d1"]);
   });
 
   // 「自分のラッシュフェイズごとに1度だけ発動できる」

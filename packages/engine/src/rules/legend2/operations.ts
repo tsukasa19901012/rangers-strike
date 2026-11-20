@@ -4,6 +4,7 @@ import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers
 import { buildLogEntry } from "../../log/formatLog";
 import { addTurnRuleModifier } from "../../core/scopedModifiers";
 import { TURN_RULE_IDS } from "../../types/scopedModifiers";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 export type OperationOutcome = {
   state: GameState;
@@ -39,10 +40,11 @@ export function resolveHidoraEgg(
     };
   }
 
-  const nextState = {
-    ...state,
-    ...updatePlayer(state, playerId, nextPlayer),
-  };
+  // オモテにしたカードは公開情報。両プレイヤーの UI が見られるよう記録する。
+  const nextState = recordReveal(
+    { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    { playerId, ownerId: playerId, sourceCardId: "RS-071", effectLabel: "ヒドラー兵の卵", from: "deck_top", matched: isHidora, cards: revealedCards([top], isHidora ? "rush" : "deck_bottom") },
+  );
 
   return {
     state: nextState,

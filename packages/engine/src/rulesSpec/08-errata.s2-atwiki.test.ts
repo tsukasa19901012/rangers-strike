@@ -26,6 +26,7 @@ import {
   specState,
   zoneIds,
 } from "./08-helpers";
+import { revealedBy } from "../cardSpec/revealNotice.helpers";
 
 const J = (a: GameAction) => JSON.stringify(a);
 
@@ -499,6 +500,8 @@ describe("R-ERR-XG6-044 仮面ライダーNEW電王SF（XG6）", () => {
     s = resolveChoices(s);
     const deck = zoneIds(s, "player1", "deck");
     expect(deck[deck.length - 1]).toBe("TOP3:top");
+    // 「オモテにしたカード」の窓で見せる（ユーザー報告 2026-11-20「見たカードが何か確認できずに処理が進む」）。
+    expect(revealedBy(s, "XG6-044")).toEqual(["TOP3:top"]);
   });
 });
 

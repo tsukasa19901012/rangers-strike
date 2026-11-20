@@ -257,7 +257,17 @@ CHOICE_RESOLVERS[BELT_MODE_EFFECT_ID] = (state, playerId, mode) => {
     case "sp_1_2":
       return { state: next(cleared, pending, { effectId: SP_EFFECT_ID, kind: "select_unit", validInstanceIds: ownSmallUnits(cleared, playerId).map((c) => c.instanceId), optional: false }), log };
     case "scry":
-      return { state: next(cleared, pending, { effectId: SCRY_EFFECT_ID, kind: "confirm", validInstanceIds: p.deck.length > 0 ? ["deck_top", "deck_bottom"] : [], optional: false }), log };
+      // 「山札の上から1枚を見て」: 選択肢は言葉（山札の上／下）なので、見ているカードは viewedInstanceIds で見せる。
+      return {
+        state: next(cleared, pending, {
+          effectId: SCRY_EFFECT_ID,
+          kind: "confirm",
+          validInstanceIds: p.deck.length > 0 ? ["deck_top", "deck_bottom"] : [],
+          viewedInstanceIds: p.deck.slice(0, 1).map((c) => c.instanceId),
+          optional: false,
+        }),
+        log,
+      };
     case "discard_to_deck_bottom":
       return {
         state: next(cleared, pending, { effectId: DECK_BOTTOM_EFFECT_ID, kind: "select_unit", validInstanceIds: p.discard.filter((c) => isPrintedSmallUnit(cleared, c.cardId)).map((c) => c.instanceId), optional: false }),

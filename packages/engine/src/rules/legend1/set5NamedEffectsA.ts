@@ -559,6 +559,8 @@ registerOptionalEffect(ROAR_CONFIRM_EFFECT_ID, {
         buildLogEntry(pending.playerId, "named_effect", "RS-293", state.definitions, `daihoukou:${revealed.map((c) => cardName(state.definitions, c.cardId)).join(",")}`),
       ],
     };
+    // オモテにした3枚は公開情報（DA は捨札、残りは山札の上。残りが1枚以下だと順の窓が開かず、何をオモテにしたか見えなかった）。
+    next = recordReveal(next, { playerId: pending.playerId, ownerId: enemyId, sourceCardId: "RS-293", effectLabel: "吼新星・大咆哮", from: "deck_top", cards: revealedCards(revealed, (c) => (da.some((d) => d.instanceId === c.instanceId) ? "discard" : "deck_top")) });
     if (rest.length < 2) return promoteDeferredBattleEntry(next);
     // 残りを山札の上に好きな順で戻す: 番号を付けて順を選ぶ（rules/deckOrder.ts。1番が一番上）。
     const order = deckOrderChoice(
