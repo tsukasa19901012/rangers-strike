@@ -2005,7 +2005,8 @@ function scrollMarks(area: ScrollMark["area"], above: number, below: number, uni
   return marks;
 }
 
-function boxMarks(cursor: ListCursor, line: Rect): ScrollMark[] {
+/** The ▲▼ marks under a menu's rows, for the rows its cursor keeps out of view (tapped, they page it). */
+export function boxMarks(cursor: ListCursor, line: Rect): ScrollMark[] {
   return scrollMarks("rows", cursor.offset, Math.max(0, cursor.count - cursor.offset - cursor.rows), "件", line);
 }
 

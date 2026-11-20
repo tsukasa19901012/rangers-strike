@@ -144,6 +144,8 @@ export function hitTestDeck(view: DeckBuilderView, point: Point): LogicalInput |
   const inside = (r: { x: number; y: number; w: number; h: number }) =>
     point.x >= r.x && point.x < r.x + r.w && point.y >= r.y && point.y < r.y + r.h;
   if (view.menu) {
+    const mark = view.menu.marks?.find((m) => inside(m.rect));
+    if (mark) return { type: "scroll", area: mark.area, direction: mark.direction };
     const row = view.menu.rows.findIndex((r) => inside(r.rect));
     if (row >= 0) return { type: "select", row, confirm: true };
     return inside(view.menu.rect) ? null : { type: "cancel" };

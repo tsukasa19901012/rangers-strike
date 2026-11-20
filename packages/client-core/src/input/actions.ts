@@ -85,6 +85,14 @@ export class ListCursor {
     this.clampOffset();
   }
 
+  /** Shows the next (previous) screenful of rows, its first row under the cursor (▲▼ marks, swipes). */
+  turnPage(direction: 1 | -1): void {
+    if (this.count === 0) return;
+    const last = Math.max(0, this.count - this.rows);
+    this.offset = Math.max(0, Math.min(last, this.offset + direction * this.rows));
+    this.index = this.offset;
+  }
+
   /** Visible row -> absolute index (or -1). */
   rowToIndex(row: number): number {
     const index = this.offset + row;

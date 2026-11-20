@@ -866,6 +866,10 @@ export default function App() {
     }
     const down = pressed;
     pressed = null;
+    // A vertical swipe over a long menu (the start menu's starter decks) pages it: a phone has no wheel.
+    if (down && deck.menu && inside(deck.menu.rect, down) && Math.abs(down.y - e.y) > 30 && Math.abs(down.y - e.y) > Math.abs(down.x - e.x)) {
+      return dispatch(input.scroll("rows", down.y > e.y ? 1 : -1));
+    }
     if (!down || Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) return false;
     hoverKey = "";
     if (deck.menu) return dispatch(e.button === 2 ? input.cancel : hitTestDeck(deck, p));

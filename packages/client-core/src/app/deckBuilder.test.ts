@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { AppController } from "./controller";
 import { input } from "../input/actions";
+import { hitTestDeck } from "../input/devices";
+import { starterDecks } from "@rangers-strike/cards";
 import { testPlatform } from "../testing/engine";
 import { computeWebDeckGeometry } from "../view/webGui";
 
@@ -214,6 +216,39 @@ describe("DeckBuilder", () => {
     expect(app.view().deck!.detailButtons.find((b) => b.id === "remove")!.enabled).toBe(true);
     app.dispatch(input.alt);
     expect(app.view().deck!.tiles[1]!.count).toBe(0);
+  });
+
+  it("reaches every starter deck in the start menu by tapping ▼次へ (a phone has no wheel)", () => {
+    const app = new AppController({ platform: testPlatform(), viewport: { width: 360, height: 640 }, cpuDelayFrames: 0, seed: () => 5, gui: true, cardArt: true, layouts: { deck: computeWebDeckGeometry } });
+    app.openDeckBuilder();
+    const center = (r: { x: number; y: number; w: number; h: number }) => ({ x: r.x + r.w / 2, y: r.y + r.h / 2 });
+    const menu = () => app.view().deck!.menu!;
+    const g = app.view().deck!.geometry;
+    const inScreen = (r: { x: number; y: number; w: number; h: number }) => r.x >= 0 && r.y >= 0 && r.x + r.w <= g.width && r.y + r.h <= g.height;
+    expect(menu().marks!.map((m) => m.text)).toEqual([expect.stringMatching(/^▼ 次へ（\d+件）$/)]);
+    const seen = new Set<string>();
+    for (let guard = 0; guard < 50; guard++) {
+      expect(inScreen(menu().rect)).toBe(true);
+      for (const row of menu().rows) seen.add(row.text);
+      const next = menu().marks!.find((m) => m.direction > 0);
+      if (!next) break;
+      expect(inScreen(next.rect)).toBe(true);
+      app.dispatch(hitTestDeck(app.view().deck!, center(next.rect)));
+    }
+    const starters = Object.values(starterDecks).length;
+    // Every starter has its own row, and rows of one product stay apart when cut (「（type A：…」 kept).
+    expect([...seen].filter((t) => t.startsWith("元にする")).length).toBe(starters);
+    expect(menu().marks!.map((m) => m.text)).toEqual([expect.stringMatching(/^▲ 前へ/)]);
+    // The last starter row opens that deck; ▲前へ goes back.
+    const lastStarter = [...menu().rows].reverse().find((r) => r.text.startsWith("元にする"))!;
+    app.dispatch(hitTestDeck(app.view().deck!, center(menu().marks![0]!.rect)));
+    expect(menu().marks!.some((m) => m.direction > 0)).toBe(true);
+    for (let guard = 0; guard < 50 && menu().marks!.some((m) => m.direction > 0); guard++) app.dispatch(input.scroll("rows", 1));
+    app.dispatch(hitTestDeck(app.view().deck!, center(lastStarter.rect)));
+    const deck = app.view().deck!;
+    expect(deck.menu).toBeUndefined();
+    const lastName = Object.values(starterDecks).map((d) => d.name).sort((a, b) => a.localeCompare(b, "ja")).at(-1)!;
+    expect(deck.textFields.find((f) => f.id === "name")!.text).toBe(`${lastName}改`);
   });
 
   it("shares and imports decks when the shell can (web), and hides the rows on Vita", () => {
