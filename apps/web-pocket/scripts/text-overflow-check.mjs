@@ -193,6 +193,25 @@ async function checkViewport(tag) {
     if (n % 12 !== 0) continue;
     await settle(200);
     await check("board");
+    if (n % 24 === 0) {
+      // The pile column's zones (power, 除外, 常駐), tapped open as a phone does: the enlarged cards and their menu.
+      for (const player of ["player1", "player2"]) {
+        const spots = await ctl((player) => {
+          const layout = globalThis.__rsApp.pile(player);
+          const scale = document.querySelector("canvas").getBoundingClientRect().width / globalThis.__rsApp.controller.view().gui.geometry.width;
+          return (layout?.sections ?? [])
+            .filter((s) => s.count > 0)
+            .map((s) => ({ x: (s.labelRect.x + s.labelRect.w / 2) * scale, y: (s.labelRect.y + s.labelRect.h / 2) * scale }));
+        }, player);
+        for (const spot of spots) {
+          await tapAt(spot.x, spot.y);
+          await check("pile-zone");
+          await page.keyboard.press("Escape");
+          await page.waitForTimeout(300);
+          await tapAt(4, 4);
+        }
+      }
+    }
     if (state === "human") {
       await page.keyboard.press("Tab");
       await page.waitForTimeout(400);
