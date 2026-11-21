@@ -149,6 +149,7 @@ import { openXg1bSakanamaru, xg1bOnAttackDeclared } from "../rules/xg1/xg1bEffec
 import { xg1cBlackFangOnRide, xg1cOnAttackDeclared } from "../rules/xg1/xg1cEffects";
 import { applyXg3AfterAction } from "../rules/xg3/xg3Effects";
 import { gatedAfterAction } from "../rules/setHookGates";
+import { revealDeckSearchPicks } from "../rules/deckSearchReveal";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -1191,6 +1192,8 @@ function applyActionWithRng(
   next = trackZenibombEntries(state, next);
   // RK-240・RK-247: このターン、ユニットがホールドされたかを記録する（rules/rk/rk12UnitEffects.ts）。
   next = trackRk12UnitHolds(state, next);
+  // 「山札から…を1枚選び、相手に見せてから手札に加える」: 選んだカードを両プレイヤーに公開する（rules/deckSearchReveal.ts）。
+  next = revealDeckSearchPicks(state, next, action);
   // XG1-063【トルネードチェイサー】: 手札のカードが捨札に置かれたか（いちばん外側のアクションの前後で見る。rules/xg1/xg1dEffects.ts）。
   if (applyActionDepth === 0) { const n0 = next; next = gatedAfterAction(state, n0, "XG1", () => xg1dTrackHandDiscards(state, n0, action)); }
   // XG1-082【戦士シャイダーの遺産】（捨札になったとき）・XG1-092 の数え上げ（rules/xg1/xg1eEffects.ts）。

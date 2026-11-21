@@ -347,6 +347,14 @@ export function formatGameLog(
         }
         return `${player}が「${cardName}」の維持コストを支払った`;
       }
+      case "deck_search_reveal": {
+        // 「山札から…を1枚選び、相手に見せてから手札に加える」（rules/deckSearchReveal.ts）: 詳しい部分は「効果名:カード番号,…」。
+        const [rawLabel, ids] = (detail ?? "").split(":");
+        // 効果名は日本語のときだけ（内部の印は出さない）。カードは定義があるものだけ名前で出す。
+        const label = rawLabel && !/^[\x00-\x7f]*$/.test(rawLabel) ? rawLabel : "";
+        const names = (ids ?? "").split(",").filter((id) => definitions[id]?.name).map((id) => `「${definitions[id]!.name}」`).join("・");
+        return `${player}が「${cardName}」${label ? `（${label}）` : ""}で山札から${names || "カード"}を見せて手札に加えた`;
+      }
       case "play_counter": {
         if (detail?.startsWith("dino_guts:")) {
           const count = detail.split(":")[1] ?? "0";

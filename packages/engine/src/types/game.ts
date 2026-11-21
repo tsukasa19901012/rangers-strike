@@ -514,8 +514,8 @@ export type RevealNotice = {
   sourceCardId?: string;
   /** 効果名（例: 潜行捜索）。 */
   effectLabel: string;
-  /** どこから公開したか。 */
-  from: "deck_top" | "deck_bottom" | "hand" | "power" | "discard";
+  /** どこから公開したか（deck: 山札の中から選んで見せた。「自軍山札から…を1枚選び、相手に見せてから手札に加える」）。 */
+  from: "deck_top" | "deck_bottom" | "deck" | "hand" | "power" | "discard";
   /** 数字を宣言した効果なら宣言した数字。 */
   declaredNumber?: number;
   /** 条件に一致したか（一致で行き先が変わる効果のみ）。 */

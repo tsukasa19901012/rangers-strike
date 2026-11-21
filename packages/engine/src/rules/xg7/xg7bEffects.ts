@@ -993,7 +993,7 @@ CHOICE_RESOLVERS[LOST_SEARCH_EFFECT_ID] = (state, playerId, instanceId) => {
   let next = close(state, pending);
   if (card) {
     next = patchPlayer(next, playerId, (p) => ({ ...p, deck: p.deck.filter((c) => c.instanceId !== instanceId), hand: [...p.hand, stripForZone(card)] }));
-    next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG7-045", effectLabel: "ロストドライバー", from: "deck_top", cards: revealedCards([card], "hand") });
+    next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG7-045", effectLabel: "ロストドライバー", from: "deck", cards: revealedCards([card], "hand") });
   }
   return { state: proceed(shuffleDeck(next, playerId), pending), log: logFor(state, playerId, "XG7-045", `${LOST_SEARCH_EFFECT_ID}:${card ? cardName(state.definitions, card.cardId) : "-"}`) };
 };
