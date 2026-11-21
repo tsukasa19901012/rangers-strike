@@ -361,7 +361,13 @@ export class GuiMatch {
     this.mode = { kind: "board" };
     const reveal = this.state().lastReveal;
     if (reveal && reveal.seq > this.revealSeen) {
-      const notices = [...(reveal.earlier ?? []), reveal].filter((n) => n.seq > this.revealSeen);
+      // 自分が選んでいる窓にもう出ているカードだけの公開（山札の上をオモテにしてから選ぶ窓。engine rules/deckSearchReveal.ts
+      // の revealOpenedDeckCards）は、窓で見えているので重ねて出さない。相手の画面には公開の窓として出る。
+      const pending = this.state().pendingEffectChoice;
+      const inMyWindow = new Set(pending && pending.playerId === HUMAN ? [...pending.validInstanceIds, ...(pending.viewedInstanceIds ?? [])] : []);
+      const notices = [...(reveal.earlier ?? []), reveal].filter(
+        (n) => n.seq > this.revealSeen && !(n.cards.length > 0 && n.cards.every((c) => c.destination === "stay" && inMyWindow.has(c.instanceId))),
+      );
       this.revealSeen = reveal.seq;
       this.revealQueue.push(...notices);
     }

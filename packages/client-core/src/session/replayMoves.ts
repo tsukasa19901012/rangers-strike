@@ -211,6 +211,17 @@ export function moveLine(move: ReplayMove, name: (cardId: string) => string, lab
   return `${who}の${where ? `${where} ` : " "}${name(move.cardId)} を${move.verb}`;
 }
 
+/** The other side's cards an effect showed from its deck and put into its hand (GameState.lastReveal, newer than prev). */
+function shownToHand(prev: GameState, next: GameState): Array<{ cardId: string }> {
+  const last = next.lastReveal;
+  const seen = prev.lastReveal?.seq ?? 0;
+  if (!last || last.seq <= seen) return [];
+  const { earlier, ...only } = last;
+  return [...(earlier ?? []), only]
+    .filter((n) => n.seq > seen && n.from === "deck")
+    .flatMap((n) => n.cards.filter((c) => c.destination === "hand" && (c.ownerId ?? n.ownerId) === "player2"));
+}
+
 /**
  * The other side's own resources an effect moved: cards it added to its hand from the deck (only how many: the
  * person does not see them) or from the discard pile, its commands released or sent back, its power turned face
@@ -228,6 +239,10 @@ function resourceMoves(prev: GameState, next: GameState, before: Map<string, Pla
       ? Math.min(count(prev, "deck") - count(next, "deck"), count(next, "hand") - count(prev, "hand"))
       : 0;
   fromDeck -= filter.draws ?? 0;
+  // 「相手に見せてから手札に加える」（RK-146 デネブキャンディー等）: 公開されたカードは名前を出す（対人戦でも公開の記録は見える）。
+  const shown = shownToHand(prev, next).filter((c) => known(next, c.cardId));
+  for (const c of shown.slice(0, Math.max(0, fromDeck))) moves.push({ owner: "player2", cardId: c.cardId, dest: "hand", verb: "山札から手札に加えた" });
+  fromDeck -= shown.length;
   if (fromDeck > 0) moves.push({ owner: "player2", cardId: "?", dest: "hand", verb: `山札から手札に${fromDeck}枚加えた`, fromZone: "deck", count: fromDeck, hidden: true });
   for (const [id, was] of before) {
     if (was.player !== "player2" || !known(prev, was.card.cardId)) continue;

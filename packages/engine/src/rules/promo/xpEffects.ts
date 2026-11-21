@@ -234,7 +234,7 @@ registerPromoChoice(
       ownerId: playerId,
       sourceCardId: pending.sourceCardId,
       effectLabel: "ダブルドライバー",
-      from: "deck_top",
+      from: "deck",
       cards: revealedCards([card], "hand"),
     });
     next = shuffleDeck(next, playerId);

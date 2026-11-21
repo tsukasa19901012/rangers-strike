@@ -16,6 +16,9 @@
  */
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
+import { formatGameLog } from "../log/formatLog";
+import { revealNotices } from "../rules/revealNotice";
+import { createIdAliasTable, redactNewLogLines, viewFor } from "../view/viewFor";
 import {
   act,
   bpOf,
@@ -417,6 +420,41 @@ describe("RK-146 デネブ", () => {
     expect(canSkip(s)).toBe(true);
     s = settle(skip(s));
     expect(s.players.player2.hand).toHaveLength(0);
+  });
+
+  it("RK-146: 選んだオペレーションカードは相手に見せてから手札に加える（相手・自分それぞれの公開を記録し、対人戦でも相手の画面に出る）（出典: atwiki/page-672 Q2 の読み替え「相手に見せてから手札に加える」・2026-11-21 報告）", () => {
+    let s = rushOpen(
+      st({ phase: "rush", player1: { hand: [inst("RK-146", "dn")], command: releasedCat("OT", 1), power: powerCards(2), deck: [inst("TST-OP", "o1"), ...deckCards(3)] }, player2: { deck: [inst("TST-OP", "eo"), ...deckCards(3, "e")] } }, EXTRA),
+      "player1",
+      "RK-146:dn",
+    );
+    s = settle(s);
+    // 相手（player2）: 山札を見て選ぶ。
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    s = confirm(s);
+    const beforePick = s;
+    s = pick(s, "TST-OP:eo");
+    const first = s.lastReveal!;
+    expect(first).toMatchObject({ playerId: "player2", ownerId: "player2", sourceCardId: "RK-146", effectLabel: "デネブキャンディー", from: "deck" });
+    expect(first.cards).toEqual([{ instanceId: "TST-OP:eo", cardId: "TST-OP", destination: "hand" }]);
+    // ログにも何を見せたかが残る（「CPUが「デネブ」（デネブキャンディー）で山札から「…」を見せて手札に加えた」）。
+    const shownLine = s.log.find((l) => l.startsWith("player2|deck_search_reveal|RK-146|"))!;
+    // 対人戦の player1 のログでも伏せない（公開したカードなので）。
+    expect(redactNewLogLines(beforePick, s, "player1")).toContain(shownLine);
+    expect(formatGameLog(shownLine, s.definitions)).toBe(`CPUが「デネブ」（デネブキャンディー）で山札から「${s.definitions["TST-OP"]!.name}」を見せて手札に加えた`);
+    // 対人戦: player1 の画面（viewFor）に、相手の手札に加わったカードが公開カードとして出る。
+    const p1View = viewFor(s, "player1", { aliases: createIdAliasTable(), newAliasBody: (() => { let n = 0; return () => `a${(n += 1)}`; })() });
+    expect(p1View.revealedCards.map((c) => c.cardId)).toContain("TST-OP");
+    expect(p1View.revealedFrom).toContainEqual({ player: "player2", zone: "hand" });
+    // 自分（player1）: 続けて山札を見て選ぶ。公開は player2 の分に続けて記録する（UI は順に見せる）。
+    s = settle(s);
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    s = confirm(s);
+    s = pick(s, "TST-OP:o1");
+    expect(s.lastReveal).toMatchObject({ playerId: "player1", from: "deck", seq: first.seq + 1 });
+    expect(s.lastReveal!.cards).toEqual([{ instanceId: "TST-OP:o1", cardId: "TST-OP", destination: "hand" }]);
+    expect(revealNotices(s).map((n) => n.playerId)).toEqual(["player2", "player1"]);
+    expect(zoneOf(s, "player1", "TST-OP:o1")).toBe("hand");
   });
 });
 

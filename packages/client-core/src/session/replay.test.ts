@@ -4,6 +4,7 @@ import type { GameState } from "../engineApi";
 import { AppController } from "../app/controller";
 import { testEngine, testPlatform } from "../testing/engine";
 import { GameSession } from "./session";
+import { moveLine } from "./replayMoves";
 import { REPLAY_FRAMES, ReplayPlayer, replayEvents, opponentPayingDamage, type ReplayEvent } from "./replay";
 
 const LABELS = { player1: "あなた", player2: "CPU" } as const;
@@ -230,6 +231,21 @@ describe("replayEvents: 相手の操作を1手ずつ", () => {
     const routineMoves = routine.flatMap((e) => e.moves ?? []);
     expect(routineMoves.some((m) => m.fromZone === "command")).toBe(false);
     expect(routineMoves.some((m) => m.hidden)).toBe(false);
+    // 「相手に見せてから手札に加える」（RK-146 デネブキャンディー等）: 公開されたカードは名前を出し、残りは枚数だけ。
+    const shownCard = searched[0]!;
+    const withReveal = {
+      ...next,
+      lastReveal: { seq: (prev.lastReveal?.seq ?? 0) + 1, playerId: "player2", ownerId: "player2", sourceCardId: "RK-146", effectLabel: "デネブキャンディー", from: "deck", cards: [{ instanceId: shownCard.instanceId, cardId: shownCard.cardId, destination: "hand" }] },
+    } as GameState;
+    const revealedMoves = replayEvents(testEngine, prev, withReveal, [`player2|resolve_effect_choice|${source}|x|y`], LABELS, "player2")[0]!.moves ?? [];
+    expect(revealedMoves).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ cardId: shownCard.cardId, dest: "hand", verb: "山札から手札に加えた" }),
+        expect.objectContaining({ hidden: true, cardId: "?", count: 1, verb: "山札から手札に1枚加えた" }),
+      ]),
+    );
+    const named = revealedMoves.find((m) => m.cardId === shownCard.cardId && !m.hidden)!;
+    expect(moveLine(named, (id) => `<${id}>`, LABELS)).toBe(`${LABELS.player2}の <${shownCard.cardId}> を山札から手札に加えた`);
     // 追加ドロー is a step of its own, face down.
     const bonus = replayEvents(testEngine, prev, prev, ["player2|bonus_draw"], LABELS, "player2");
     expect(bonus).toEqual([expect.objectContaining({ kind: "draw", hidden: true, cardId: "?", title: "追加ドロー" })]);
