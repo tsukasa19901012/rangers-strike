@@ -894,7 +894,12 @@ registerXg2Choice(POWER_SHOW_EFFECT_ID, {
   skip: simpleSkipXg2(),
   confirm: (state, playerId) => {
     const pending = state.pendingEffectChoice!;
-    const next = close(state, pending);
+    // 「自分の手札をすべて相手に見せる」: 見せた手札を公開として記録する（2026-11-22 総点検）。
+    const hand = state.players[playerId].hand;
+    const closed = close(state, pending);
+    const next = hand.length > 0
+      ? recordReveal(closed, { playerId, ownerId: playerId, sourceCardId: "XG2-059", effectLabel: "力の誇示", from: "hand", cards: revealedCards(hand, "stay") })
+      : closed;
     const shown = next.players[playerId].hand.length;
     const enemyId = opponent(playerId);
     const ids = sortedIds(

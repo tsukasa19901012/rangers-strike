@@ -2,6 +2,7 @@ import type { GameState, PlayerId } from "../types/game";
 import { cardName, getDefinition } from "../core/catalog";
 import { opponent, updatePlayer } from "../core/helpers";
 import { tryLeaveField } from "./operationCounters";
+import { recordReveal, revealedCards } from "./revealNotice";
 
 /** RS-365 帝国の掌握: 手札公開→同名敵ユニット撃破→手札全捨→撃破数SP+1。 */
 export function applyEmpireDominionEnterBattle(
@@ -19,7 +20,8 @@ export function applyEmpireDominionEnterBattle(
   }
 
   const enemyId = opponent(playerId);
-  let next = state;
+  // 「自分の手札をすべて相手に見せる」: 見せた手札を公開として記録する（このあと手札はすべて捨札になる。2026-11-22 総点検）。
+  let next = recordReveal(state, { playerId, ownerId: playerId, sourceCardId: "RS-365", effectLabel: "帝国の掌握", from: "hand", cards: revealedCards(player.hand, "discard") });
   let destroyCount = 0;
 
   for (const zone of ["rush", "battle"] as const) {

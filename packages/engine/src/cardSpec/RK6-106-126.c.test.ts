@@ -15,6 +15,7 @@
  */
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
+import { visibleInstanceIds } from "../view/viewFor";
 import {
   NOSP_ATTACKER,
   PLAIN_VEHICLE,
@@ -379,6 +380,20 @@ describe("RK-125 仮面ライダーブレイド", () => {
     const s = shown([inst("SPEC-MULTI", "m"), inst("SPEC-WB", "w1"), inst("SPEC-WB", "w2")]);
     expectChoiceFrom(s, "player1", "RK-125");
     expect(choiceIds(s)).toEqual(["SPEC-E1:b"]);
+  });
+
+  it("RK-125: 見せた手札3枚は相手にも公開される（公開の記録・対人戦の相手の画面）（出典: atwiki/page-646「自分の手札を3枚選び、相手に見せてもよい」・2026-11-22 総点検）", () => {
+    const hand = [inst("SPEC-WB", "w1"), inst("SPEC-WB", "w2"), inst("SPEC-MA", "a")];
+    let s = blade(hand, {}, enemy);
+    s = pick(s, "SPEC-WB:w1");
+    s = pick(s, "SPEC-WB:w2");
+    // 選び終える前は公開しない。
+    expect(s.lastReveal?.sourceCardId).not.toBe("RK-125");
+    s = pick(s, "SPEC-MA:a");
+    expect(s.lastReveal).toMatchObject({ playerId: "player1", sourceCardId: "RK-125", effectLabel: "ブレイラウザー", from: "hand" });
+    expect(s.lastReveal!.cards.map((c) => [c.instanceId, c.destination]).sort()).toEqual([["SPEC-MA:a", "stay"], ["SPEC-WB:w1", "stay"], ["SPEC-WB:w2", "stay"]]);
+    const seen = visibleInstanceIds(s, "player2", []);
+    for (const c of hand) expect(seen.has(c.instanceId)).toBe(true);
   });
 
   it("RK-125: カテゴリが揃わない手札（WB・WB・MA）ならホールドだけで終わる（出典: atwiki/page-646「見せたカードの持つカテゴリがすべて同じなら」）", () => {
