@@ -41,7 +41,9 @@ describe("replayEvents: 相手の操作を1手ずつ", () => {
   it("どの手もカードと文が付き、自分の手はアタックとストライクだけ（トーストなし）", () => {
     for (const { session, events } of runs) {
       for (const e of events) {
-        expect(session.state.definitions[e.cardId], JSON.stringify(e)).toBeDefined();
+        // A card the person may not see (drawn, deck top turned into damage) is drawn face down and named by nothing.
+        if (e.hidden) expect(e.cardId).toBe("?");
+        else expect(session.state.definitions[e.cardId], JSON.stringify(e)).toBeDefined();
         expect(e.title).not.toBe("");
         if (e.actor === "player1") {
           expect(e.own).toBe(true);
@@ -183,6 +185,63 @@ describe("replayEvents: 相手の操作を1手ずつ", () => {
       expect(m.verb).not.toBe("");
       if (m.owner === "player1") expect(m.fromZone === "hand" ? m.dest : "discard").toBe("discard");
     }
+  });
+
+  it("相手の資源: 追加ドロー、山札からのサーチ（枚数だけ）、捨札からの回収、コマンドのリリース、裏のパワーをオモテに", () => {
+    const { session } = runs.find((r) => {
+      const p = r.session.state.players.player2;
+      return p.discard.length > 0 && p.command.some((c) => c.commandHeld) && p.power.some((c) => c.faceDown) && p.deck.length > 2;
+    })!;
+    const prev = session.state;
+    const them = prev.players.player2;
+    const recovered = them.discard[0]!;
+    const held = them.command.find((c) => c.commandHeld)!;
+    const down = them.power.find((c) => c.faceDown)!;
+    const searched = them.deck.slice(0, 2);
+    const next = {
+      ...prev,
+      players: {
+        ...prev.players,
+        player2: {
+          ...them,
+          deck: them.deck.slice(2),
+          discard: them.discard.slice(1),
+          hand: [...them.hand, ...searched, recovered],
+          command: them.command.map((c) => (c === held ? { ...c, commandHeld: false } : c)),
+          power: them.power.map((c) => (c === down ? { ...c, faceDown: false } : c)),
+        },
+      },
+    } as GameState;
+    const source = Object.keys(prev.definitions).find((id) => prev.definitions[id]?.type === "unit")!;
+    const events = replayEvents(testEngine, prev, next, [`player2|resolve_effect_choice|${source}|x|y`], LABELS, "player2");
+    const moves = events[0]!.moves ?? [];
+    expect(moves).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ hidden: true, cardId: "?", count: 2, verb: "山札から手札に2枚加えた" }),
+        expect.objectContaining({ cardId: recovered.cardId, fromZone: "discard", dest: "hand" }),
+        expect.objectContaining({ cardId: held.cardId, fromZone: "command", verb: "リリースした" }),
+        expect.objectContaining({ cardId: down.cardId, fromZone: "power", verb: "オモテにした" }),
+      ]),
+    );
+    // The searched cards are never named.
+    for (const card of searched) expect(moves.some((m) => m.cardId === card.cardId && m.dest === "hand" && m.fromZone === "deck" && !m.hidden)).toBe(false);
+    // The release at the start of the turn and the draw phase's draw are every turn's: not shown.
+    const routine = replayEvents(testEngine, prev, next, ["player2|release_start_commands", "player2|draw", "player2|draw"], LABELS, "player2");
+    const routineMoves = routine.flatMap((e) => e.moves ?? []);
+    expect(routineMoves.some((m) => m.fromZone === "command")).toBe(false);
+    expect(routineMoves.some((m) => m.hidden)).toBe(false);
+    // 追加ドロー is a step of its own, face down.
+    const bonus = replayEvents(testEngine, prev, prev, ["player2|bonus_draw"], LABELS, "player2");
+    expect(bonus).toEqual([expect.objectContaining({ kind: "draw", hidden: true, cardId: "?", title: "追加ドロー" })]);
+  });
+
+  it("自分のストライクで、相手の山札の上がダメージになった（表のパワーが無い）とき、枚数だけの手になる", () => {
+    const { session } = runs.find((r) => r.session.state.players.player2.deck.length > 1)!;
+    const prev = session.state;
+    const them = prev.players.player2;
+    const next = { ...prev, players: { ...prev.players, player2: { ...them, deck: them.deck.slice(1), power: [...them.power, { instanceId: "?91", cardId: "?", faceDown: true }] } } } as GameState;
+    const events = replayEvents(testEngine, prev, next, ["player1|strike|unknown|unknown|1"], LABELS, "player1");
+    expect(events.filter((e) => e.kind === "flip")).toEqual([expect.objectContaining({ hidden: true, cardId: "?", title: "山札から1枚がダメージに" })]);
   });
 
   it("カウンターは使ったカードを大きく見せる手になる", () => {

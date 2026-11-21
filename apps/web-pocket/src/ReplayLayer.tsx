@@ -23,6 +23,7 @@ const GLOW: Record<ReplayKind | "own", string> = {
   effect: "absolute rounded-[8] border-[3] border-sky-300 shadow-lg",
   flip: "absolute rounded-[8] border-[3] border-rose-300 shadow-lg",
   morph: "absolute rounded-[8] border-[3] border-fuchsia-400 shadow-lg",
+  draw: "absolute rounded-[8] border-[3] border-teal-300 shadow-lg",
   own: "absolute rounded-[8] border-[3] border-sky-300 shadow-lg",
 };
 const CHIP: Record<ReplayKind, string> = {
@@ -35,6 +36,7 @@ const CHIP: Record<ReplayKind, string> = {
   effect: "flex-row items-center px-[6] rounded-[6] bg-sky-300",
   flip: "flex-row items-center px-[6] rounded-[6] bg-rose-300",
   morph: "flex-row items-center px-[6] rounded-[6] bg-fuchsia-400",
+  draw: "flex-row items-center px-[6] rounded-[6] bg-teal-300",
 };
 const EDGE: Record<ReplayKind, string> = {
   rush: "absolute rounded-[3] bg-amber-300",
@@ -46,6 +48,7 @@ const EDGE: Record<ReplayKind, string> = {
   effect: "absolute rounded-[3] bg-sky-300",
   flip: "absolute rounded-[3] bg-rose-300",
   morph: "absolute rounded-[3] bg-fuchsia-400",
+  draw: "absolute rounded-[3] bg-teal-300",
 };
 const LABEL: Record<ReplayKind, string> = {
   rush: "ラッシュ",
@@ -57,6 +60,7 @@ const LABEL: Record<ReplayKind, string> = {
   effect: "効果",
   flip: "ダメージ",
   morph: "モーフ",
+  draw: "手札",
 };
 
 /** The short tag on a card an effect moved. */
@@ -274,7 +278,7 @@ function Toast(props: { view: GuiView; replay: ReplayView; event: ReplayEvent | 
         {(event) => (
           <>
             <View class={EDGE[event().kind]} style={place({ x: 0, y: 6, w: 5, h: box().h - 12 })} />
-            <CardFace cardId={event().cardId} rect={{ x: 12, y: 8, w: 43, h: 60 }} />
+            <CardFace cardId={event().cardId} hidden={event().hidden} rect={{ x: 12, y: 8, w: 43, h: 60 }} />
             <View class="absolute flex-row items-center" style={place({ x: 66, y: 7, w: textW(), h: 16 })}>
               <View class={CHIP[event().kind]}>
                 <Text class="text-xs text-slate-950 font-bold">{LABEL[event().kind]}</Text>
@@ -326,7 +330,7 @@ function BigCard(props: { view: GuiView; event: ReplayEvent; t: number; banner: 
   return (
     <Show when={out() < 1}>
       <View class="absolute" style={{ ...place(rect()), opacity: 1 - out() }}>
-        <CardFace cardId={props.event.cardId} hidden={props.flip && flipQ() >= 0.5} rect={{ x: 0, y: 0, w: rect().w, h: rect().h }} />
+        <CardFace cardId={props.event.cardId} hidden={props.event.hidden || (props.flip && flipQ() >= 0.5)} rect={{ x: 0, y: 0, w: rect().w, h: rect().h }} />
         <View class={GLOW[props.event.kind]} style={place({ x: -4, y: -4, w: rect().w + 8, h: rect().h + 8 })} />
       </View>
       <Show when={props.banner}>

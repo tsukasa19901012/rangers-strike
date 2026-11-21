@@ -12,7 +12,7 @@ export type { MoveDest, ReplayMove } from "./replayMoves";
 
 type PendingStrikeView = { strikerPlayerId: PlayerId; strikerInstanceId: string; damage: number };
 
-export type ReplayKind = "rush" | "nc" | "attack" | "strike" | "counter" | "operation" | "effect" | "flip" | "morph";
+export type ReplayKind = "rush" | "nc" | "attack" | "strike" | "counter" | "operation" | "effect" | "flip" | "morph" | "draw";
 
 export type ReplayEvent = {
   kind: ReplayKind;
@@ -41,6 +41,8 @@ export type ReplayEvent = {
   own?: boolean;
   /** Cards the move moved besides its own card (the person's units it destroyed, a unit it put on the field …). */
   moves?: ReplayMove[];
+  /** The card is one the person may not see (a card drawn, the top of the deck that became damage): drawn face down. */
+  hidden?: boolean;
 };
 
 /** A card's place on a board row: the row (「player2:battle」) and its index among that zone's cards. */
@@ -67,6 +69,7 @@ export const REPLAY_FRAMES: Readonly<Record<ReplayKind, number>> = {
   effect: 96,
   flip: 96,
   morph: 120,
+  draw: 84,
 };
 /** The person's own attack / strike (no toast to read). */
 export const OWN_REPLAY_FRAMES: Readonly<Partial<Record<ReplayKind, number>>> = { attack: 42, strike: 54 };
@@ -303,6 +306,15 @@ export function replayEvents(
     for (const card of flipped) {
       events.push({ kind: "flip", actor: "player2", cardId: card.cardId, title: `${name(card.cardId)} を裏返した`, detail: "ダメージでパワーが1枚裏になった" });
     }
+    // The rest came from the top of its deck (no face-up power left to turn over): damage too, card unseen.
+    const fromDeck = grew - flipped.length;
+    const damaged =
+      prev.pendingDamagePayment?.playerId === "player2" ||
+      prev.deferredPowerFlip?.playerId === "player2" ||
+      entries.some((e) => e.startsWith("player1|strike|") || e.startsWith("player2|damage_payment"));
+    if (fromDeck > 0 && damaged && zoneCards(next, "player2", "deck").length < zoneCards(prev, "player2", "deck").length) {
+      events.push({ kind: "flip", actor: "player2", cardId: "?", hidden: true, title: `山札から${fromDeck}枚がダメージに`, detail: "山札の上のカードが裏向きのパワーになった" });
+    }
   }
   return events;
 }
@@ -324,7 +336,14 @@ function attachMoves(
   }
   const rushed = new Set(events.filter((e) => e.kind === "rush").map((e) => e.cardId));
   const struck = events.some((e) => e.kind === "strike" && e.targetPlayer === "player1");
-  let moves = boardMoves(prev, next, { skip, rushed, rushMade: rushed.size > 0, struck });
+  const logged = (action: string) => entries.filter((e) => e.split("|")[0] === "player2" && e.split("|")[1] === action).length;
+  const draws = logged("draw") + logged("bonus_draw");
+  let moves = boardMoves(prev, next, { skip, rushed, rushMade: rushed.size > 0, struck, draws, startRelease: logged("release_start_commands") > 0 });
+  // 追加ドロー (more cards in hand than damage taken… the rules let it draw): a step of its own.
+  const bonus = logged("bonus_draw");
+  if (bonus > 0) {
+    events.push({ kind: "draw", actor: "player2", cardId: "?", hidden: true, title: "追加ドロー", detail: `${labels.player2}が山札から${bonus}枚引いた（手札＜ダメージ）` });
+  }
   const morph = [...events].reverse().find((e) => e.kind === "morph");
   if (morph) {
     // The swap itself is the morph step: the unit that came in and the card that went out are not moves of their own.
@@ -343,7 +362,12 @@ function attachMoves(
     return;
   }
   // No step of its own in the log (a choice resolved, a cost paid): the card named by the move's log, if any.
-  const source = entries.map((e) => e.split("|")).find((p) => p[0] === "player2" && p[2] && next.definitions[p[2]])?.[2] ?? moves[0]!.cardId;
+  const source =
+    entries.map((e) => e.split("|")).find((p) => p[0] === "player2" && p[2] && next.definitions[p[2]])?.[2] ?? moves.find((m) => !m.hidden)?.cardId;
+  if (!source) {
+    events.push({ kind: "draw", actor: "player2", cardId: "?", hidden: true, title: "手札が増えた", detail: text, moves });
+    return;
+  }
   events.push({ kind: "effect", actor: "player2", cardId: source, instanceId: findOnBoard(next, "player2", source), title: `${name(source)} の効果`, detail: text, moves });
 }
 

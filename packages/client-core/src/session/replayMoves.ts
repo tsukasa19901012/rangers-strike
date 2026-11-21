@@ -22,6 +22,8 @@ export type ReplayMove = {
   fromZone?: string;
   /** Several cards moved the same way at once (「山札の上から3枚を捨札にした」). */
   count?: number;
+  /** A card the person may not see (into the other side's hand): only how many is said, `cardId` is 「?」. */
+  hidden?: boolean;
 };
 
 type Place = { player: PlayerId; zone: string; flag: "" | "up" | "down" | "held" | "free"; index: number; card: CardInstance };
@@ -110,6 +112,10 @@ export type MoveFilter = {
   rushMade?: boolean;
   /** The move's strike hit the person: their power turned face down is its damage (the strike step shows it). */
   struck?: boolean;
+  /** Cards the other side drew in the move by the rules (its draw phase, 追加ドロー): not a search. */
+  draws?: number;
+  /** The other side released its held commands at the start of its turn (every turn: not shown). */
+  startRelease?: boolean;
 };
 
 /**
@@ -185,6 +191,7 @@ export function boardMoves(prev: GameState, next: GameState, filter: MoveFilter 
     const source = fromZone === "deck" ? "山札から" : fromZone === "discard" ? "捨札から" : fromZone === "power" ? "パワーから" : fromZone === "command" ? "コマンドから" : "";
     moves.push({ owner: "player2", cardId: now.card.cardId, dest: now.zone as MoveDest, verb: `${source}${now.zone === "battle" ? "バトルエリア" : "ラッシュエリア"}に出した`, fromZone, instanceId: id });
   }
+  moves.push(...resourceMoves(prev, next, before, after, filter));
   // The person's units the other side moved onto the field (from their own power, deck …) are theirs to see too.
   for (const [id, now] of after) {
     if (now.player !== "player1" || !FIELD.has(now.zone) || before.has(id)) continue;
@@ -197,8 +204,60 @@ export function boardMoves(prev: GameState, next: GameState, filter: MoveFilter 
 /** 「あなたの マジレッド を撃破した」「あなたのコマンド ○○ をホールドした」 */
 export function moveLine(move: ReplayMove, name: (cardId: string) => string, labels: Readonly<Record<PlayerId, string>>): string {
   const who = labels[move.owner];
+  if (move.hidden) return `${who}が${move.verb}`;
   if (move.count !== undefined) return `${who}の${move.verb}`;
   if (move.dest === "gone") return `${who}の ${name(move.cardId)} が${move.verb}`;
   const where = move.fromZone === "power" ? "パワー" : move.fromZone === "command" ? "コマンド" : move.fromZone === "hand" ? "手札" : move.fromZone === "discard" ? "捨札" : "";
   return `${who}の${where ? `${where} ` : " "}${name(move.cardId)} を${move.verb}`;
+}
+
+/**
+ * The other side's own resources an effect moved: cards it added to its hand from the deck (only how many: the
+ * person does not see them) or from the discard pile, its commands released or sent back, its power turned face
+ * up or used. Its draw, charge, payment holds and the release at the start of its turn happen every turn: not shown.
+ */
+function resourceMoves(prev: GameState, next: GameState, before: Map<string, Place>, after: Map<string, Place>, filter: MoveFilter): ReplayMove[] {
+  const moves: ReplayMove[] = [];
+  const count = (s: GameState, zone: string, down?: boolean) => cards(s, "player2", zone).filter((c) => down === undefined || !!c.faceDown === down).length;
+  const handGrew = count(next, "hand") > count(prev, "hand");
+  // 山札 → 手札: by id where the screen has them (CPU 戦), by how many otherwise (対人戦 hides both).
+  const deckIds = cards(prev, "player2", "deck").filter((c) => c.cardId !== "?");
+  let fromDeck = deckIds.length
+    ? deckIds.filter((c) => after.get(c.instanceId)?.zone === "hand" && after.get(c.instanceId)?.player === "player2").length
+    : handGrew
+      ? Math.min(count(prev, "deck") - count(next, "deck"), count(next, "hand") - count(prev, "hand"))
+      : 0;
+  fromDeck -= filter.draws ?? 0;
+  if (fromDeck > 0) moves.push({ owner: "player2", cardId: "?", dest: "hand", verb: `山札から手札に${fromDeck}枚加えた`, fromZone: "deck", count: fromDeck, hidden: true });
+  for (const [id, was] of before) {
+    if (was.player !== "player2" || !known(prev, was.card.cardId)) continue;
+    const now = after.get(id);
+    if (now && now.zone === was.zone && now.flag === was.flag) continue;
+    const dest: MoveDest = now ? destOf(now) : grownPile(prev, next, "player2");
+    const cardId = was.card.cardId;
+    if (was.zone === "discard") {
+      if (dest !== "hand" || (!now && !handGrew)) continue;
+      moves.push({ owner: "player2", cardId, dest, verb: "手札に加えた", fromZone: "discard" });
+    } else if (was.zone === "command") {
+      // Holding to pay for a rush is every turn's cost; the release at the start of the turn too.
+      if (dest === "held" || (dest === "command" && filter.startRelease)) continue;
+      moves.push({ owner: "player2", cardId, dest, verb: verbOf("command", dest, was.flag), fromZone: "command" });
+    } else if (was.zone === "power" && was.flag === "up") {
+      // Turned face down is damage (the flip step shows it); a unit put onto the field is shown as an arrival.
+      if (dest === "powerDown" || dest === "battle" || dest === "rush" || dest === "gone") continue;
+      moves.push({ owner: "player2", cardId, dest, verb: verbOf("power", dest, was.flag), fromZone: "power" });
+    }
+  }
+  // 裏のパワー → オモテ: the card is seen once it is face up (in 対人戦 it comes with a new id).
+  const downBefore = count(prev, "power", true);
+  const downAfter = count(next, "power", true);
+  if (downAfter < downBefore) {
+    const turned = cards(next, "player2", "power").filter((c) => {
+      if (c.faceDown || !known(next, c.cardId)) return false;
+      const was = before.get(c.instanceId);
+      return was ? was.zone === "power" && was.flag === "down" : true;
+    });
+    for (const c of turned.slice(0, downBefore - downAfter)) moves.push({ owner: "player2", cardId: c.cardId, dest: "power", verb: "オモテにした", fromZone: "power" });
+  }
+  return moves;
 }
