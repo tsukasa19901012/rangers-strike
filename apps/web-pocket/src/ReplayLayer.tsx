@@ -193,17 +193,19 @@ const CHARGE_HIT = 0.36;
 const grow = (r: Box, by: number): Box => ({ x: r.x - by, y: r.y - by, w: r.w + by * 2, h: r.h + by * 2 });
 const place = (r: Box) => ({ insetL: r.x, insetT: r.y, width: r.w, height: r.h });
 
-/** Where the toast goes: over the hand on a phone, between the two sides on a wider screen. */
+/** Where the toast goes: near the middle (over the person's rush area on a phone, right of centre between the sides on a wider screen). */
 function toastBox(view: GuiView): Box {
   const g = view.geometry;
   const rowOf = (key: string) => view.rows.find((row) => row.key === key)?.rect;
-  if (isPortrait(g)) {
-    const hand = rowOf("player1:hand") ?? g.board;
-    const w = Math.min(g.width - 12, 380);
-    return { x: Math.round((g.width - w) / 2), y: Math.round(hand.y + hand.h / 2 - 38), w, h: 76 };
-  }
   const top = rowOf("player2:battle") ?? g.board;
   const bottom = rowOf("player1:battle") ?? g.board;
+  if (isPortrait(g)) {
+    // Near the middle of the screen, over the person's rush area: below where attacks and strikes land (the
+    // battle areas), so the toast does not hide them.
+    const w = Math.min(g.width - 12, 380);
+    const rush = rowOf("player1:rush") ?? bottom;
+    return { x: Math.round((g.width - w) / 2), y: Math.round(rush.y + rush.h / 2 - 38), w, h: 76 };
+  }
   const w = Math.min(460, g.board.w - 40);
   const mid = (top.y + top.h + bottom.y) / 2;
   return { x: Math.round(g.board.x + g.board.w - w - 20), y: Math.round(mid - 38), w, h: 76 };
@@ -305,8 +307,12 @@ function centre(view: GuiView): { x: number; y: number } {
 }
 
 function BigCard(props: { view: GuiView; event: ReplayEvent; t: number; banner: string | null; flip?: boolean }) {
-  const c = () => centre(props.view);
-  const baseW = () => (isPortrait(props.view.geometry) ? 120 : 150);
+  // On a phone the toast sits just below the middle: the card shows a little higher.
+  const c = () => {
+    const m = centre(props.view);
+    return isPortrait(props.view.geometry) ? { x: m.x, y: m.y - 10 } : m;
+  };
+  const baseW = () => (isPortrait(props.view.geometry) ? 100 : 150);
   // Pops in, stays, then shrinks away (a flip turns it over halfway instead).
   const pop = () => easeOut(props.t / 0.3);
   const out = () => clamp((props.t - 1.2) / 0.3);
