@@ -224,6 +224,7 @@ registerPicks(
       kind: "select_unit",
       validInstanceIds: enemyIds,
       selectCount: 1,
+      multiPick: { limit: selected.length },
       optional: false,
       xg7Meta: { limit: selected.length, owner: playerId },
     });

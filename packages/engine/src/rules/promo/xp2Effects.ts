@@ -691,7 +691,7 @@ registerPromoChoice(DINO, (state, playerId, instanceId) => {
   const ids = dinoDiscardIds(next, playerId);
   if (ids.length === 0) return { state: dinoFinish(next, meta, playerId), log };
   return {
-    state: openNext(next, pending, { ...meta, effectId: DINO_DISCARD, kind: "select_unit", validInstanceIds: ids, selectedInstanceIds: [], selectCount: 1, optional: true }),
+    state: openNext(next, pending, { ...meta, effectId: DINO_DISCARD, kind: "select_unit", validInstanceIds: ids, selectedInstanceIds: [], selectCount: 1, multiPick: {}, optional: true }),
     log,
   };
 });

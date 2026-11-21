@@ -338,6 +338,7 @@ export function openXg6StayOnLeave(state: GameState, intent: PendingLeave): Game
     validInstanceIds: discard.map((c) => c.instanceId),
     selectedInstanceIds: [],
     selectCount: 1,
+    multiPick: { limit: 3 },
     optional: true,
     leaveIntentMeta: intent,
   });

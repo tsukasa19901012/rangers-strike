@@ -357,7 +357,7 @@ CHOICE_RESOLVERS[TRINITY_SHOW] = (state, playerId, instanceId) => {
   next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG6-002", effectLabel: "銀河超越・三神合体", from: "hand", cards: revealedCards([shown], "stay") });
   const ids = trinityCandidates(next, playerId, shown, []);
   return {
-    state: openNext(next, pending, { ...choice(pendingBase(pending), "XG6-002", TRINITY_DISCARD, "select_hand", ids, false), xg6Meta: { ids: [instanceId] } }),
+    state: openNext(next, pending, { ...choice(pendingBase(pending), "XG6-002", TRINITY_DISCARD, "select_hand", ids, false, { multiPick: { limit: 3 } }), xg6Meta: { ids: [instanceId] } }),
     log: logFor(state, playerId, "XG6-002", `${TRINITY_SHOW}:${instanceId}`),
   };
 };

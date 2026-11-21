@@ -675,7 +675,7 @@ function fullBlastTargets(state: GameState, playerId: PlayerId): string[] {
 function openFullBlastTarget(state: GameState, pending: PendingEffectChoice, rest: number): GameState {
   const ids = fullBlastTargets(state, pending.playerId);
   if (rest <= 0 || ids.length === 0) return proceed(state, pending);
-  return openNext(state, pending, selectOne(pendingBase(pending), "XG2-035", FBL_TARGET_EFFECT_ID, ids, false, { xg2Meta: { rest } }));
+  return openNext(state, pending, selectOne(pendingBase(pending), "XG2-035", FBL_TARGET_EFFECT_ID, ids, false, { xg2Meta: { rest }, multiPick: { limit: rest } }));
 }
 
 multiPick(FBL_POWER_EFFECT_ID, (state, playerId, pending, selected) => {

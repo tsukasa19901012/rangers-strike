@@ -44,6 +44,7 @@ function openAssaultVectorChoice(
       validInstanceIds: valid,
       selectedInstanceIds: [],
       selectCount: 1,
+      multiPick: {},
       optional: false,
     },
     activePlayer: enemyId,

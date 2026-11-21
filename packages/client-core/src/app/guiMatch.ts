@@ -612,11 +612,14 @@ export class GuiMatch {
     const state = this.state();
     const pending = state.pendingEffectChoice;
     if (!pending || pending.playerId !== HUMAN || pending.deckOrderMeta || pending.mayConfirm || pending.revealGate) return false;
-    if (pending.selectCount !== undefined && pending.selectCount < 2) return false;
+    if (pending.selectCount !== undefined && pending.selectCount < 2 && !pending.multiPick) return false;
     const picks = this.cardPicks(state);
     if (picks.length < 2) return false;
-    const tried = this.engine.applyAction(state, picks[0]!);
-    return tried.ok && !!tried.state && sameChoice(tried.state.pendingEffectChoice, pending);
+    // 最初の候補だけでは決まらない選択もある（RS-439 バトルシャーク: Lユニットを選ぶと1枚で終わり、L・Rナンバーなら2枚まで）。
+    return picks.slice(0, 4).some((pick) => {
+      const tried = this.engine.applyAction(state, pick);
+      return tried.ok && !!tried.state && sameChoice(tried.state.pendingEffectChoice, pending);
+    });
   }
 
   /** The card picks the human can make in a state (the window's cards). */

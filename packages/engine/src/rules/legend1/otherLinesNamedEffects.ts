@@ -706,6 +706,7 @@ function applyUniteVent(state: GameState, ctx: GrantKeywordContext): GrantKeywor
       validInstanceIds: candidates,
       selectedInstanceIds: [],
       selectCount: 1,
+      multiPick: {},
       optional: true,
     }),
     detail: UNITE_VENT_EFFECT_ID,

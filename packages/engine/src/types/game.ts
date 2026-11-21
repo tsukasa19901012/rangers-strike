@@ -904,6 +904,11 @@ export type PendingEffectChoice = {
    * 1体目と2体目）。GUI のチェック式の窓は、チェックのかわりに選んだ順の番号を付ける（山札に戻す順番の窓と同じ見た目。2026-11-21）。
    */
   orderedPicks?: boolean;
+  /**
+   * 1枚（体）ずつ選んで同じ選択が開いたままになる「N枚まで」「好きな数」の選択で、selectCount を 1 のままにしているもの
+   * （ルール側の処理が selectCount を読むので変えない）。GUI はチェック式の窓にする。limit は選べる上限（分かるとき。見出しの「N/上限」）。
+   */
+  multiPick?: { limit?: number };
   selectedInstanceIds?: string[];
   step?: "own" | "enemy";
   viewedInstanceIds?: string[];

@@ -428,7 +428,7 @@ function applyDimension(state: GameState, ctx: GrantKeywordContext): GrantKeywor
   if (!self) return { state, detail: "xg2_071:no_source" };
   const ids = dimensionRiders(state, ctx.playerId, self.instanceId, []);
   if (ids.length < 2) return { state, detail: "xg2_071:no_riders" };
-  return { state: openAfter(state, selectOne(ctxBase(ctx), "XG2-071", DIMENSION_EFFECT_ID, ids, true, { xg2Meta: { picked: [] } })), detail: DIMENSION_EFFECT_ID };
+  return { state: openAfter(state, selectOne(ctxBase(ctx), "XG2-071", DIMENSION_EFFECT_ID, ids, true, { xg2Meta: { picked: [] }, multiPick: { limit: 2 } })), detail: DIMENSION_EFFECT_ID };
 }
 
 registerXg2Choice(DIMENSION_EFFECT_ID, {

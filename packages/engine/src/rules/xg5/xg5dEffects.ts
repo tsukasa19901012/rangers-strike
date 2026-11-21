@@ -124,7 +124,7 @@ CHOICE_CONFIRMERS[INSTEAD] = (state, playerId) => {
   }
   const ids = magnetTargets(next, playerId);
   if (ids.length === 0) return { state: proceed(next, pending), log };
-  return { state: openNext(next, pending, selectOne(pendingBase(pending), "XG5-061", MAGNET, ids, true)), log };
+  return { state: openNext(next, pending, { ...selectOne(pendingBase(pending), "XG5-061", MAGNET, ids, true), multiPick: { limit: ids.length }, orderedPicks: true }), log };
 };
 function magnetTargets(state: GameState, playerId: PlayerId): string[] {
   return state.players[opp(playerId)].rush.filter((c) => isSUnit(state, c) && printedFeatures(state, c.cardId).includes("メカ")).map((c) => c.instanceId);
@@ -138,7 +138,7 @@ CHOICE_RESOLVERS[MAGNET] = (state, playerId, instanceId) => {
   const log = logFor(state, playerId, "XG5-061", `${MAGNET}:${instanceId}`);
   const rest = magnetTargets(next, playerId);
   if (rest.length === 0) return { state: proceed(next, pending), log };
-  return { state: openNext(next, pending, selectOne(pendingBase(pending), "XG5-061", MAGNET, rest, false)), log };
+  return { state: openNext(next, pending, { ...selectOne(pendingBase(pending), "XG5-061", MAGNET, rest, false), multiPick: { limit: rest.length }, orderedPicks: true }), log };
 };
 CHOICE_SKIPPERS[MAGNET] = simpleSkip();
 

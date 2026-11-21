@@ -73,6 +73,7 @@ export function beginDinoSlasherDiscard(
     kind: "select_command",
     validInstanceIds: sorted.map((c) => c.instanceId),
     selectCount: 1,
+    multiPick: {},
     commandFilter: "any",
     commandAction: "discard",
     optional: false,

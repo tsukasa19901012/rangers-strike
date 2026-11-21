@@ -1204,6 +1204,35 @@ describe("choose any number of cards (check window)", () => {
     expect(state.players.player1.hand.length).toBe(handBefore); // 2 placed, 2 drawn
   });
 
+  it("a choice that keeps selectCount 1 but is marked multiPick also checks cards in place (RS-444 etc., 2026-11-21)", () => {
+    const app = startGui(5);
+    const ids = superHenshinBoard(app);
+    const session = app.session!;
+    const state = structuredClone(session.state);
+    // The same board, declared the way the engine opens 「N体まで」 choices whose rules read selectCount 1.
+    state.pendingEffectChoice = { ...state.pendingEffectChoice!, selectCount: 1, multiPick: { limit: 3 } };
+    session.state = state;
+    session.version++;
+    app.dispatch(input.confirm);
+    const gui = app.view().gui!;
+    expect(app.session!.state.pendingEffectChoice!.selectedInstanceIds ?? []).toEqual([]);
+    expect(gui.dialog!.cards.map((c) => !!c.checked)).toEqual([true, false, false]);
+    expect(gui.dialog!.titleLines[0]!.text).toContain("1/3");
+    expect(ids.length).toBe(3);
+  });
+
+  it("without multiPick, a selectCount 1 choice still sends each pick at once", () => {
+    const app = startGui(5);
+    superHenshinBoard(app);
+    const session = app.session!;
+    const state = structuredClone(session.state);
+    state.pendingEffectChoice = { ...state.pendingEffectChoice!, selectCount: 1 };
+    session.state = state;
+    session.version++;
+    app.dispatch(input.confirm);
+    expect(app.view().gui!.dialog?.cards.some((c) => c.checked) ?? false).toBe(false);
+  });
+
   it("clears every check with 選び直す", () => {
     const app = startGui(5);
     superHenshinBoard(app);
