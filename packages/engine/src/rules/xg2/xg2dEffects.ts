@@ -325,7 +325,7 @@ xg2Hook("residentPlaced", (state, ownerId, opInstanceId, cardId) => {
   if (!isSameCardIdentity(cardId, "XG2-070")) return null;
   const ids = bookSearchIds(state, ownerId);
   if (ids.length === 0) return patchPlayer(state, ownerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
-  return openAfter(state, selectOne({ playerId: ownerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: opInstanceId }, "XG2-070", BOOK_EFFECT_ID, ids, true));
+  return openAfter(state, selectOne({ playerId: ownerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: opInstanceId }, "XG2-070", BOOK_EFFECT_ID, ids, true, { selectCount: BOOK_MAX }));
 });
 
 registerXg2Choice(BOOK_EFFECT_ID, {

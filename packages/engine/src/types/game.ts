@@ -899,6 +899,11 @@ export type PendingEffectChoice = {
   phasePlayerId: PlayerId;
   validInstanceIds: string[];
   selectCount?: number;
+  /**
+   * 選んだ順で結果が変わる「N枚（体）まで選ぶ」選択（RS-108 出す順番・RK-087 出す順番と並べ替え・SK-004 重ねる順・XG1-078
+   * 1体目と2体目）。GUI のチェック式の窓は、チェックのかわりに選んだ順の番号を付ける（山札に戻す順番の窓と同じ見た目。2026-11-21）。
+   */
+  orderedPicks?: boolean;
   selectedInstanceIds?: string[];
   step?: "own" | "enemy";
   viewedInstanceIds?: string[];
