@@ -26,9 +26,11 @@ import {
   type GuiView,
   type PanelTone,
   type PlayerId,
+  type ReplayView,
 } from "@rangers-strike/client-core";
 import { engine } from "./engine";
 import { at, CardFace, inside, type Box } from "./ui";
+import { ReplayLayer, replayHoldsInput, replayShake } from "./ReplayLayer";
 
 /** What the other side is called on the board: 「CPU」, or 「相手」 in 対人戦 (app sets it every frame). */
 let opponentName = "CPU";
@@ -720,6 +722,8 @@ export function MatchView(props: {
   notice: string | null;
   /** 対人戦: the time left of whoever must act (「あなた 残り2:41」); null in a CPU match. */
   clock?: string | null;
+  /** The other side's move being played back (ReplayLayer). */
+  replay?: ReplayView | null;
 }) {
   const v = () => props.view;
   // Where a selection-window card is ("自コマンド"), unclipped: the 12px caption fits the tile.
@@ -746,7 +750,7 @@ export function MatchView(props: {
   const topBarFit = () => fitTopBar(topBarText(), portrait() ? buttons().share.x - 10 - 8 : g().width);
   const turnTwoLines = () => portrait() && measureText("ターン終了", 14) > buttons().turn.w - 8;
   return (
-    <View class="w-full h-full bg-gradient-to-b from-[#0b1426] to-[#04070d]">
+    <View class="w-full h-full bg-gradient-to-b from-[#0b1426] to-[#04070d]" style={{ translateX: replayShake(props.replay ?? null), translateY: replayShake(props.replay ?? null) * 0.5 }}>
       {/* top bar: turn */}
       <View class={portrait() ? "absolute flex-row items-center px-[10] bg-[#0f172acc] border border-[#1e293b]" : "absolute flex-row items-center px-[16] bg-[#0f172acc] border border-[#1e293b]"} style={at(g().topBar)}>
         <Text class={topBarFit().px === 16 ? "text-base text-sky-300 font-bold" : "text-sm text-sky-300 font-bold"}>{topBarFit().text}</Text>
@@ -985,6 +989,8 @@ export function MatchView(props: {
       <Show when={props.peek}>{(peek) => <PeekPanel g={g()} peek={peek()} />}</Show>
       <Show when={props.fullText && v().detailFull}>{(full) => <FullTextPanel area={g().board} full={full()} />}</Show>
 
+      {/* the other side's moves, one by one */}
+      <ReplayLayer view={v()} replay={props.replay ?? null} />
       {/* toast: over the top bar short of its buttons (they stay visible), or over the phase pills on a phone */}
       <Show when={v().toast}>
         <View
@@ -1000,7 +1006,7 @@ export function MatchView(props: {
       </Show>
 
       {/* selection window */}
-      <Show when={v().dialog}>
+      <Show when={!replayHoldsInput(props.replay ?? null) && v().dialog}>
         {(dialog) => (
           <>
             <View class="absolute rounded-[10] bg-[#020617a0]" style={at(g().board)} />
@@ -1070,8 +1076,8 @@ export function MatchView(props: {
 
       <Show when={props.press}>{(press) => <PressRing press={press()} />}</Show>
 
-      <Show when={v().popup}>{(box) => <MenuBox box={box()} accent={false} />}</Show>
-      <Show when={v().list}>{(box) => <MenuBox box={box()} accent />}</Show>
+      <Show when={!replayHoldsInput(props.replay ?? null) && v().popup}>{(box) => <MenuBox box={box()} accent={false} />}</Show>
+      <Show when={!replayHoldsInput(props.replay ?? null) && v().list}>{(box) => <MenuBox box={box()} accent />}</Show>
 
       <View class={v().footerAccent ? "absolute flex-row items-center px-[16] bg-[#451a03e0]" : "absolute flex-row items-center px-[16] bg-[#0f172acc]"} style={at(g().footer)}>
         <Text

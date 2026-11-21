@@ -378,7 +378,8 @@ export class RemoteSession extends GameSession {
     }
     const before = this.log.length + this.logDropped;
     const wasOwn = this.screenActorBefore === "player1";
-    this.commit(next, null);
+    // A poll after the person's own move carries that move; otherwise it is the other side's.
+    this.commit(next, null, wasOwn ? "player1" : "player2");
     // The other side's moves show as a notice, like the CPU's moves (the last line they added to the log).
     if (!wasOwn && this.log.length + this.logDropped > before) {
       const line = this.log[this.log.length - 1];

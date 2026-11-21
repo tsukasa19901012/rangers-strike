@@ -8,6 +8,7 @@ import type { Platform } from "../platform/interfaces";
 import { SettingsStore, type AutoplayRequest, type CustomDeck, type Settings } from "../platform/settings";
 import { GameSession } from "../session/session";
 import { RemoteSession } from "../session/remoteSession";
+import { opponentPayingDamage, ReplayPlayer, type ReplayView } from "../session/replay";
 import { PLAYER_LABELS } from "../text/labels";
 import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
 import { boardLines, buildBoardView, buildPendingView, pendingLines } from "../view/board";
@@ -59,6 +60,11 @@ export type ControllerOptions = {
   cardArt?: boolean;
   /** The shell shares decks, reads pasted card lists and draws a deck as card images (adds the deck builder's 共有する / テキストから取り込む / デッキ一覧 rows). */
   deckSharing?: boolean;
+  /**
+   * The shell plays the other side's moves back one by one (replayView): ラッシュ, NC, アタック, ストライク, カウンター…
+   * A CPU match then waits for each step to finish before the CPU's next move.
+   */
+  replay?: boolean;
   /** Shell-specific screen geometry for the match and the deck builder (defaults: the Vita layout). */
   layouts?: {
     match?: (viewport: Viewport) => GuiGeometry;
@@ -112,6 +118,8 @@ export class AppController {
   private autoplayWait = 0;
   /** The match continues a shared board: it is not added to the records. */
   private sharedMatch = false;
+  /** The other side's moves played back one by one (only with options.replay). */
+  private readonly replay: ReplayPlayer | null;
 
   constructor(options: ControllerOptions) {
     this.platform = options.platform;
@@ -123,6 +131,7 @@ export class AppController {
     this.fontPx = options.fontPx;
     this.layout = computeLayout(options.viewport, options.fontPx);
     this.cpuDelayFrames = options.cpuDelayFrames ?? 8;
+    this.replay = options.replay ? new ReplayPlayer() : null;
     this.seed = options.seed ?? (() => Math.floor(options.platform.clock()) % 1_000_000);
     this.settingsStore = new SettingsStore(options.platform.storage);
     this.settings = this.settingsStore.load({
@@ -621,7 +630,10 @@ export class AppController {
       return changed;
     }
     const session = this.session;
-    if (this.screen !== "match" || !session) return false;
+    if (this.screen !== "match" || !session) {
+      this.replay?.clear();
+      return false;
+    }
     let remoteChanged = false;
     if (session instanceof RemoteSession) {
       // 対人戦: take in what the server sent, send the next move, poll.
@@ -638,6 +650,7 @@ export class AppController {
       this.finishMatch();
       return true;
     }
+    const replaying = this.stepReplay(session);
     const toastChanged = (this.gui?.frame() ?? false) || remoteChanged;
     if (toastChanged) this.touch();
     // Cards an effect turned face up stay on screen until the human closes them.
@@ -651,14 +664,41 @@ export class AppController {
       return true;
     }
     if (session.turnOwner() !== "cpu") return toastChanged;
+    // The CPU's next move waits until the last one has been shown.
+    if (replaying) return toastChanged;
     this.framesSinceCpu++;
     if (this.framesSinceCpu < this.cpuDelayFrames) return false;
     this.framesSinceCpu = 0;
     const result = session.cpuStep();
     this.message = result.ok ? result.label : `CPUエラー: ${result.error}`;
     if (this.gui) this.gui.message = this.message;
+    // Its replay starts in this same frame, so a choice it opens for the human (power to flip after a strike) is
+    // never drawn before the move itself.
+    this.collectReplay(session);
     this.afterStateChange();
     return true;
+  }
+
+  /** The step of the other side's moves being played back (null without options.replay or outside a match). */
+  replayView(): ReplayView | null {
+    return this.replay && this.screen === "match" ? this.replay.view() : null;
+  }
+
+  /** Takes in the session's new replay steps and advances the one playing. Returns true while one plays. */
+  /** Moves the session's new replay steps into the queue (autoplay, which never waits for the screen, drops them). */
+  private collectReplay(session: GameSession): void {
+    const events = session.takeReplay();
+    if (this.replay && !session.options.humanLevel) this.replay.push(events);
+  }
+
+  private stepReplay(session: GameSession): boolean {
+    const replay = this.replay;
+    if (!replay) return false;
+    this.collectReplay(session);
+    if (session.options.humanLevel) return false;
+    replay.waiting = session instanceof RemoteSession && opponentPayingDamage(session.state) ? `${session.labels.player2}が裏返すパワーを選んでいます…` : null;
+    replay.frame();
+    return replay.busy;
   }
 
   private finishMatch(): void {
