@@ -6,10 +6,13 @@
 // Built only from what the screen already has (the log lines and the board before and after), so 対人戦 shows
 // nothing the person's view does not carry.
 import type { CardInstance, EngineApi, GameState, PlayerId } from "../engineApi";
+import { boardMoves, moveLine, type ReplayMove } from "./replayMoves";
+
+export type { MoveDest, ReplayMove } from "./replayMoves";
 
 type PendingStrikeView = { strikerPlayerId: PlayerId; strikerInstanceId: string; damage: number };
 
-export type ReplayKind = "rush" | "nc" | "attack" | "strike" | "counter" | "operation" | "effect" | "flip";
+export type ReplayKind = "rush" | "nc" | "attack" | "strike" | "counter" | "operation" | "effect" | "flip" | "morph";
 
 export type ReplayEvent = {
   kind: ReplayKind;
@@ -36,6 +39,8 @@ export type ReplayEvent = {
   detail: string;
   /** The person's own move: animation only, no toast. */
   own?: boolean;
+  /** Cards the move moved besides its own card (the person's units it destroyed, a unit it put on the field …). */
+  moves?: ReplayMove[];
 };
 
 /** A card's place on a board row: the row (「player2:battle」) and its index among that zone's cards. */
@@ -61,6 +66,7 @@ export const REPLAY_FRAMES: Readonly<Record<ReplayKind, number>> = {
   operation: 108,
   effect: 96,
   flip: 96,
+  morph: 120,
 };
 /** The person's own attack / strike (no toast to read). */
 export const OWN_REPLAY_FRAMES: Readonly<Partial<Record<ReplayKind, number>>> = { attack: 42, strike: 54 };
@@ -124,7 +130,18 @@ function namedIn(line: string): string | undefined {
 }
 
 const NC_ACTIONS = new Set(["number_combo", "riding_combo", "joint_combo_l", "joint_combo_r", "xg2_042_number_two"]);
-const EFFECT_ACTIONS = new Set(["named_effect", "enter_battle", "destroy_effect", "activate_field_unit_ability", "activate_resident_operation", "strike_effect", "operation_effect"]);
+const EFFECT_ACTIONS = new Set([
+  "named_effect",
+  "enter_battle",
+  "destroy_effect",
+  "activate_field_unit_ability",
+  "activate_resident_operation",
+  "strike_effect",
+  "operation_effect",
+  "resolve_effect_choice",
+]);
+/** Steps that the cards moved by the same move belong to (the last of them in the move). */
+const MOVE_OWNERS = new Set<ReplayKind>(["effect", "nc", "operation", "counter", "rush", "morph"]);
 
 /**
  * The events behind the log lines `entries` (added between `prev` and `next`). Moves of player2 (the other side),
@@ -136,6 +153,8 @@ export function replayEvents(
   next: GameState,
   entries: readonly string[],
   labels: Readonly<Record<PlayerId, string>>,
+  /** Who made the move (when known): the cards it moved are looked for only in a move of player2. */
+  mover?: PlayerId,
 ): ReplayEvent[] {
   const events: ReplayEvent[] = [];
   const defs = { ...prev.definitions, ...next.definitions };
@@ -247,15 +266,31 @@ export function replayEvents(
             title: `${name(cardId, parts[3])} のNC${effect && !/^(SP\d|NC)$/.test(effect) ? `【${effect}】` : ""}`,
             detail: (effect && effectSnippet(defs[cardId]?.text, effect)) || text,
           });
+        } else if (action === "morph_swap") {
+          // 「player2|morph_swap|<one>|<name>|<other>」: the one now on the field came in, the other went.
+          const otherId = detail ?? "";
+          const inId = findOnBoard(next, actor, cardId) ? cardId : findOnBoard(next, actor, otherId) ? otherId : cardId;
+          const outId = inId === cardId ? otherId : cardId;
+          events.push({
+            kind: "morph",
+            actor,
+            cardId: inId,
+            instanceId: findOnBoard(next, actor, inId),
+            title: `モーフ：${name(inId)}`,
+            detail: defs[outId] ? `${name(outId)} と入れ替わった` : line(entry),
+          });
         } else if (EFFECT_ACTIONS.has(action)) {
           // Markers that only say an effect found nothing to do (「rk039:no_targets」) are not worth a step of their own.
           if (detail && /(^|:)(no_targets?|not_enough|skipped|command_full|own_turn)$/.test(detail)) break;
+          // One step for one card's effect (its line and the choice it resolved).
+          if (events.some((e) => e.kind === "effect" && e.actor === actor && e.cardId === cardId)) break;
           const text = line(entry);
           events.push({ kind: "effect", actor, cardId, instanceId: at(), title: `${name(cardId, parts[3])} の効果`, detail: text });
         }
       }
     }
   }
+  if (mover === "player2") attachMoves(events, prev, next, entries, labels, name);
   // Damage: power cards of player2 that were face up and now lie face down (the person's own are their own pick).
   // In 対人戦 a face-down card of the other side comes with a new hidden id, so the cards are matched by what is
   // gone from the face-up ones, as many as the face-down ones grew by.
@@ -270,6 +305,46 @@ export function replayEvents(
     }
   }
   return events;
+}
+
+/** The cards player2's move moved, put on the step they belong to (or a step of their own). */
+function attachMoves(
+  events: ReplayEvent[],
+  prev: GameState,
+  next: GameState,
+  entries: readonly string[],
+  labels: Readonly<Record<PlayerId, string>>,
+  name: (cardId: string) => string,
+): void {
+  const skip = new Set<string>();
+  for (const e of events) {
+    if (e.kind !== "attack" && e.kind !== "strike") continue;
+    if (e.instanceId) skip.add(e.instanceId);
+    if (e.targetId) skip.add(e.targetId);
+  }
+  const rushed = new Set(events.filter((e) => e.kind === "rush").map((e) => e.cardId));
+  const struck = events.some((e) => e.kind === "strike" && e.targetPlayer === "player1");
+  let moves = boardMoves(prev, next, { skip, rushed, rushMade: rushed.size > 0, struck });
+  const morph = [...events].reverse().find((e) => e.kind === "morph");
+  if (morph) {
+    // The swap itself is the morph step: the unit that came in and the card that went out are not moves of their own.
+    const out = moves.find((m) => m.owner === "player2" && m.cardId !== morph.cardId && m.from);
+    moves = moves.filter((m) => !(m.owner === "player2" && (m.cardId === morph.cardId || m === out)));
+    if (out) morph.moves = [{ ...out, verb: "モーフで入れ替わった" }];
+  }
+  if (!moves.length) return;
+  // The person's own cards first: they matter most.
+  moves.sort((a, b) => (a.owner === b.owner ? 0 : a.owner === "player1" ? -1 : 1));
+  const text = moves.slice(0, 4).map((m) => moveLine(m, name, labels)).join("、") + (moves.length > 4 ? ` ほか${moves.length - 4}件` : "");
+  const owner = [...events].reverse().find((e) => e.actor === "player2" && MOVE_OWNERS.has(e.kind));
+  if (owner) {
+    owner.moves = [...(owner.moves ?? []), ...moves];
+    owner.detail = owner.detail ? `${text} ／ ${owner.detail}` : text;
+    return;
+  }
+  // No step of its own in the log (a choice resolved, a cost paid): the card named by the move's log, if any.
+  const source = entries.map((e) => e.split("|")).find((p) => p[0] === "player2" && p[2] && next.definitions[p[2]])?.[2] ?? moves[0]!.cardId;
+  events.push({ kind: "effect", actor: "player2", cardId: source, instanceId: findOnBoard(next, "player2", source), title: `${name(source)} の効果`, detail: text, moves });
 }
 
 /** The strike whose damage is being paid (power being picked, or a 「ウラ返すとき」 effect resolving first). */
@@ -323,7 +398,9 @@ export class ReplayPlayer {
     if (!next) return false;
     this.current = next;
     this.frameNo = 0;
-    this.total = (next.own ? OWN_REPLAY_FRAMES[next.kind] : undefined) ?? REPLAY_FRAMES[next.kind];
+    // Cards the step moved are shown one after another: a little longer for each.
+    const moved = Math.min(next.moves?.length ?? 0, 6);
+    this.total = ((next.own ? OWN_REPLAY_FRAMES[next.kind] : undefined) ?? REPLAY_FRAMES[next.kind]) + (moved ? 24 + moved * 6 : 0);
     return true;
   }
 

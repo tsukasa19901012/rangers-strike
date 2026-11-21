@@ -141,6 +141,10 @@ describe("RemoteSession: 同じプロセスのサーバーと最後まで", () =
         expect(e.cardId).not.toBe("?");
         expect(s.state.definitions[e.cardId], JSON.stringify(e)).toBeDefined();
         if (e.actor === "player1") expect(e.own).toBe(true);
+        for (const m of e.moves ?? []) {
+          expect(m.cardId, JSON.stringify(m)).not.toBe("?");
+          expect(s.state.definitions[m.cardId], JSON.stringify(m)).toBeDefined();
+        }
       }
     }
     expect(replays.flat().some((e) => e.kind === "flip")).toBe(true);

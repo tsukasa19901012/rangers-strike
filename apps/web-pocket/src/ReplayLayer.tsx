@@ -4,7 +4,7 @@
 // A toast says what happened (not for the person's own attack and strike). Drawn only: input never stops for it.
 import { Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
-import { fitLine, isPortrait, tileRect, wrapText, type GuiView, type ReplayEvent, type ReplayKind, type ReplaySlot, type ReplayView } from "@rangers-strike/client-core";
+import { fitLine, isPortrait, tileRect, wrapText, type GuiView, type ReplayEvent, type ReplayKind, type ReplayMove, type ReplaySlot, type ReplayView } from "@rangers-strike/client-core";
 import { CardFace, type Box } from "./ui";
 
 /** Seconds since the step started (the core counts frames at 60 a second). */
@@ -22,6 +22,7 @@ const GLOW: Record<ReplayKind | "own", string> = {
   operation: "absolute rounded-[8] border-[3] border-emerald-300 shadow-lg",
   effect: "absolute rounded-[8] border-[3] border-sky-300 shadow-lg",
   flip: "absolute rounded-[8] border-[3] border-rose-300 shadow-lg",
+  morph: "absolute rounded-[8] border-[3] border-fuchsia-400 shadow-lg",
   own: "absolute rounded-[8] border-[3] border-sky-300 shadow-lg",
 };
 const CHIP: Record<ReplayKind, string> = {
@@ -33,6 +34,7 @@ const CHIP: Record<ReplayKind, string> = {
   operation: "flex-row items-center px-[6] rounded-[6] bg-emerald-300",
   effect: "flex-row items-center px-[6] rounded-[6] bg-sky-300",
   flip: "flex-row items-center px-[6] rounded-[6] bg-rose-300",
+  morph: "flex-row items-center px-[6] rounded-[6] bg-fuchsia-400",
 };
 const EDGE: Record<ReplayKind, string> = {
   rush: "absolute rounded-[3] bg-amber-300",
@@ -43,6 +45,7 @@ const EDGE: Record<ReplayKind, string> = {
   operation: "absolute rounded-[3] bg-emerald-300",
   effect: "absolute rounded-[3] bg-sky-300",
   flip: "absolute rounded-[3] bg-rose-300",
+  morph: "absolute rounded-[3] bg-fuchsia-400",
 };
 const LABEL: Record<ReplayKind, string> = {
   rush: "ラッシュ",
@@ -53,7 +56,103 @@ const LABEL: Record<ReplayKind, string> = {
   operation: "オペレーション",
   effect: "効果",
   flip: "ダメージ",
+  morph: "モーフ",
 };
+
+/** The short tag on a card an effect moved. */
+function moveTag(m: ReplayMove): string {
+  const field = m.fromZone === "battle" || m.fromZone === "rush";
+  switch (m.dest) {
+    case "discard":
+      return m.verb === "合体の素材にした" ? "素材" : field ? "撃破" : "捨札へ";
+    case "hand":
+      return "手札へ";
+    case "deck":
+      return "山札へ";
+    case "power":
+      return m.fromZone === "power" ? "オモテに" : "パワーへ";
+    case "powerDown":
+      return m.fromZone === "power" ? "裏に" : "パワーへ";
+    case "held":
+      return "ホールド";
+    case "command":
+      return m.fromZone === "command" ? "リリース" : "コマンドへ";
+    case "exile":
+      return "除外";
+    case "battle":
+    case "rush":
+      return field ? "移動" : "登場";
+    case "stack":
+      return m.verb === "モーフで入れ替わった" ? "入れ替え" : "素材";
+    default:
+      return "退場";
+  }
+}
+
+/** A tag in red for what was done to the person's cards, in the step's colour for the other side's own. */
+function MoveTag(props: { rect: Box; text: string; mine: boolean; opacity: number }) {
+  const w = () => Math.max(props.rect.w, props.text.length * 11 + 12);
+  return (
+    <View
+      class={props.mine ? "absolute flex-row items-center justify-center rounded-[6] bg-rose-600 border border-white" : "absolute flex-row items-center justify-center rounded-[6] bg-sky-600 border border-white"}
+      style={{ ...place({ x: props.rect.x + props.rect.w / 2 - w() / 2, y: props.rect.y + props.rect.h / 2 - 10, w: w(), h: 20 }), opacity: props.opacity }}
+    >
+      <Text class="text-xs text-white font-bold">{props.text}</Text>
+    </View>
+  );
+}
+
+/**
+ * A card an effect moved. One that left a row is drawn where it stood, tagged (「撃破」「手札へ」…), then slides off
+ * toward where it went and fades; one that stays on or came onto a row glows with its tag.
+ */
+function MoveMark(props: { view: GuiView; move: ReplayMove; t: number; index: number }) {
+  const delay = () => props.index * 0.12;
+  const s = () => props.t - delay();
+  const now = () => tileOf(props.view, props.move.instanceId);
+  const was = () => (now() ? null : slotRect(props.view, props.move.from));
+  const mine = () => props.move.owner === "player1";
+  const away = () => clamp((s() - 0.55) / 0.5);
+  const drift = () => {
+    const r = was();
+    if (!r) return { dx: 0, dy: 0, scale: 1 };
+    const d = props.move.dest;
+    // Into the owner's hand: toward their side of the screen. Into a pile or the power: shrink. Destroyed: shrink harder.
+    if (d === "hand") return { dx: 0, dy: (props.move.owner === "player1" ? 1 : -1) * r.h * 0.9 * easeOut(away()), scale: 1 };
+    if (d === "exile") return { dx: 0, dy: -r.h * 0.4 * away(), scale: 1 + 0.3 * away() };
+    return { dx: 0, dy: (props.move.owner === "player1" ? 1 : -1) * r.h * 0.3 * away(), scale: 1 - 0.55 * away() };
+  };
+  const fade = () => clamp(easeOut(s() / 0.15)) * (1 - away());
+  return (
+    <Show when={s() > 0}>
+      <Show when={was()}>
+        {(r) => (
+          <Show when={away() < 1}>
+            <View class="absolute" style={{ ...place(r()), translateX: drift().dx, translateY: drift().dy, scale: drift().scale, opacity: fade() }}>
+              <CardFace cardId={props.move.cardId} rect={{ x: 0, y: 0, w: r().w, h: r().h }} />
+              <View
+                class={mine() ? "absolute rounded-[6] border-[3] border-rose-500 bg-[#ff3b3030]" : "absolute rounded-[6] border-[3] border-sky-300"}
+                style={place({ x: -2, y: -2, w: r().w + 4, h: r().h + 4 })}
+              />
+            </View>
+            <MoveTag rect={r()} text={moveTag(props.move)} mine={mine()} opacity={clamp(easeOut(s() / 0.15)) * clamp(1.2 - away())} />
+          </Show>
+        )}
+      </Show>
+      <Show when={now()}>
+        {(r) => (
+          <>
+            <View class={mine() ? "absolute rounded-[8] border-[3] border-rose-500 shadow-lg" : "absolute rounded-[8] border-[3] border-sky-300 shadow-lg"} style={place(grow(r(), 3 + Math.abs(Math.sin(props.t * 4)) * 2))} />
+            <Show when={(props.move.dest === "battle" || props.move.dest === "rush") && s() < 0.5}>
+              <Flying cardId={props.move.cardId} rect={r()} dy={-(1 - easeOut(s() / 0.45)) * 40} scale={1.4 - 0.4 * easeOut(s() / 0.45)} opacity={clamp(1.2 - s() / 0.45)} kind="effect" />
+            </Show>
+            <MoveTag rect={{ x: r().x, y: r().y + r().h / 2 - 4, w: r().w, h: r().h / 2 }} text={moveTag(props.move)} mine={mine()} opacity={clamp(easeOut(s() / 0.15))} />
+          </>
+        )}
+      </Show>
+    </Show>
+  );
+}
 
 /** Where a card instance is drawn on the board now (null when it is not on a visible tile). */
 export function tileOf(view: GuiView, instanceId: string | undefined): Box | null {
@@ -274,6 +373,22 @@ export function ReplayLayer(props: { view: GuiView; replay: ReplayView | null })
                 </>
               )}
             </Show>
+            {/* モーフ: the unit that came in turns over into its slot. */}
+            <Show when={e().kind === "morph" && source()}>
+              {(r) => (
+                <>
+                  <Glow rect={r()} kind="morph" t={t()} />
+                  <Show when={t() < 0.6}>
+                    <View class="absolute" style={{ ...place(r()), scale: 0.6 + 0.4 * easeOut(t() / 0.5), opacity: clamp(1.3 - t() / 0.6) }}>
+                      <CardFace cardId={e().cardId} rect={{ x: 0, y: 0, w: r().w, h: r().h }} />
+                    </View>
+                  </Show>
+                  <Rings x={r().x + r().w / 2} y={r().y + r().h / 2} q={t() / 0.8} size={r().w} tone="nc" />
+                </>
+              )}
+            </Show>
+            {/* Cards the step moved: the person's units destroyed or sent back, a unit put onto the field … */}
+            <Index each={(e().moves ?? []).slice(0, 6)}>{(m, i) => <MoveMark view={props.view} move={m()} t={t()} index={i} />}</Index>
             {/* NC / 効果: the card glows (NC: a ring spreads from it). */}
             <Show when={(e().kind === "nc" || e().kind === "effect") && source()}>
               {(r) => (
@@ -353,7 +468,7 @@ export function ReplayLayer(props: { view: GuiView; replay: ReplayView | null })
               {(player) => <DamageText view={props.view} player={player()} t={t()} text={e().damage ? `＋${e().damage} ダメージ` : "ダメージ無効"} />}
             </Show>
             {/* カウンター / オペレーション / a card no longer on the board: big in the middle. */}
-            <Show when={e().kind === "counter" || e().kind === "operation" || (e().kind === "effect" && !source())}>
+            <Show when={e().kind === "counter" || e().kind === "operation" || ((e().kind === "effect" || e().kind === "morph") && !source())}>
               <BigCard view={props.view} event={e()} t={t()} banner={e().kind === "counter" ? "カウンター！" : e().kind === "operation" ? "オペレーション" : null} />
             </Show>
             {/* ダメージ: the power card the other side picked turns face down. */}

@@ -272,13 +272,14 @@ export class GameSession {
     this.syncLog();
   }
 
-  protected commit(next: GameState, action: GameAction | null): void {
+  /** `mover`: who made the move, when `action` does not say (a poll in 対人戦). */
+  protected commit(next: GameState, action: GameAction | null, mover?: PlayerId): void {
     if (action) this.actions?.push(action);
     const prev = this.state;
     const added = next.log.slice(this.loggedEntries);
     this.state = next;
     if (added.length) {
-      this.replayBuffer.push(...replayEvents(this.engine, prev, next, added, this.labels));
+      this.replayBuffer.push(...replayEvents(this.engine, prev, next, added, this.labels, action?.playerId ?? mover));
       // Nobody takes them on a screen without the replay (Vita, tests): keep only the newest.
       if (this.replayBuffer.length > 16) this.replayBuffer.splice(0, this.replayBuffer.length - 16);
     }

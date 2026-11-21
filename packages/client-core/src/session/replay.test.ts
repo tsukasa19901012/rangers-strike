@@ -109,6 +109,82 @@ describe("replayEvents: 相手の操作を1手ずつ", () => {
     expect(opened).toBeGreaterThan(0);
   });
 
+  it("相手の効果で動いた自分のカード（撃破・ホールド）と、相手の場に出たユニットを拾う", () => {
+    const { session } = runs.find((r) => r.session.state.players.player1.battle.length + r.session.state.players.player1.rush.length > 0 && r.session.state.players.player1.command.some((c) => !c.commandHeld)) ?? runs[0]!;
+    const prev = session.state;
+    const me = prev.players.player1;
+    const unit = me.battle[0] ?? me.rush[0]!;
+    const zone = me.battle[0] ? "battle" : "rush";
+    const command = me.command.find((c) => !c.commandHeld)!;
+    const extra = prev.players.player2.deck[0]!;
+    const next = {
+      ...prev,
+      players: {
+        ...prev.players,
+        player1: {
+          ...me,
+          [zone]: me[zone].filter((c) => c.instanceId !== unit.instanceId),
+          discard: [...me.discard, unit],
+          command: me.command.map((c) => (c === command ? { ...c, commandHeld: true } : c)),
+        },
+        player2: { ...prev.players.player2, deck: prev.players.player2.deck.slice(1), rush: [...prev.players.player2.rush, extra] },
+      },
+    } as GameState;
+    const source = Object.keys(prev.definitions).find((id) => prev.definitions[id]?.type === "unit")!;
+    const events = replayEvents(testEngine, prev, next, [`player2|resolve_effect_choice|${source}|${prev.definitions[source]!.name}|x`], LABELS, "player2");
+    expect(events).toHaveLength(1);
+    const moves = events[0]!.moves ?? [];
+    expect(moves).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ owner: "player1", cardId: unit.cardId, dest: "discard", verb: "撃破した", from: { row: `player1:${zone}`, slot: me[zone].indexOf(unit) } }),
+        expect.objectContaining({ owner: "player1", cardId: command.cardId, dest: "held", verb: "ホールドした", instanceId: command.instanceId }),
+        expect.objectContaining({ owner: "player2", cardId: extra.cardId, dest: "rush", verb: "山札からラッシュエリアに出した", instanceId: extra.instanceId }),
+      ]),
+    );
+    expect(events[0]!.detail).toContain("を撃破した");
+    // The person's own move, or a move whose maker is unknown, moves nothing.
+    expect(replayEvents(testEngine, prev, next, [`player2|resolve_effect_choice|${source}|x|x`], LABELS, "player1")[0]?.moves).toBeUndefined();
+  });
+
+  it("対人戦: 相手のユニットが手札に戻って隠れても、増えた手札から「手札に戻した」と分かる", () => {
+    const { session } = runs.find((r) => r.session.state.players.player2.rush.length > 0) ?? runs[0]!;
+    const prev = session.state;
+    const them = prev.players.player2;
+    const unit = them.rush[0]!;
+    const next = {
+      ...prev,
+      players: { ...prev.players, player2: { ...them, rush: them.rush.slice(1), hand: [...them.hand, { instanceId: "?77", cardId: "?" }] } },
+    } as GameState;
+    const events = replayEvents(testEngine, prev, next, [], LABELS, "player2");
+    expect(events[0]?.moves).toEqual([expect.objectContaining({ owner: "player2", cardId: unit.cardId, dest: "hand", verb: "手札に戻した" })]);
+  });
+
+  it("モーフは入れ替わったユニットの手になる", () => {
+    const { session } = runs.find((r) => r.session.state.players.player2.battle.length > 0) ?? runs[0]!;
+    const prev = session.state;
+    const them = prev.players.player2;
+    const out = them.battle[0]!;
+    const card = them.power.find((c) => !c.faceDown && prev.definitions[c.cardId]?.type === "unit") ?? them.power.find((c) => !c.faceDown)!;
+    const next = {
+      ...prev,
+      players: { ...prev.players, player2: { ...them, battle: [card, ...them.battle.slice(1)], power: [...them.power.filter((c) => c !== card), { ...out }] } },
+    } as GameState;
+    const events = replayEvents(testEngine, prev, next, [`player2|morph_swap|${out.cardId}|x|${card.cardId}`], LABELS, "player2");
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({ kind: "morph", cardId: card.cardId, instanceId: card.instanceId, detail: expect.stringContaining("入れ替わった") });
+    expect(events[0]!.moves).toEqual([expect.objectContaining({ cardId: out.cardId, verb: "モーフで入れ替わった" })]);
+  });
+
+  it("CPU 戦の効果で動いたカードは、相手の手番のものだけ（自分のドロー・チャージは出さない）", () => {
+    const moves = all.flatMap((e) => (e.moves ?? []).map((m) => ({ ...m, actor: e.actor })));
+    expect(moves.length).toBeGreaterThan(0);
+    for (const m of moves) {
+      expect(m.actor).toBe("player2");
+      expect(m.verb).not.toBe("");
+      if (m.owner === "player1") expect(m.fromZone === "hand" ? m.dest : "discard").toBe("discard");
+    }
+  });
+
   it("カウンターは使ったカードを大きく見せる手になる", () => {
     const { session } = runs[0]!;
     const card = Object.values(session.state.definitions).find((d) => /アタックされたとき発動できる/.test(d.text ?? ""))!;
