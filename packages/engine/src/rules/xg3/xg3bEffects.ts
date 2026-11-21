@@ -201,7 +201,7 @@ KEYWORDS["XG3-027::fireball"] = (state, ctx) => {
   const ids = fireballIds(state, ctx.playerId, []);
   if (ids.length === 0) return { state, detail: "xg3027:no_targets" };
   return {
-    state: openAfter(state, { ...base(ctxBase(ctx), "XG3-027"), effectId: FIREBALL_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true, xg3Meta: { picked: [] } }),
+    state: openAfter(state, { ...base(ctxBase(ctx), "XG3-027"), effectId: FIREBALL_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 3, optional: true, xg3Meta: { picked: [] } }),
     detail: FIREBALL_EFFECT_ID,
   };
 };

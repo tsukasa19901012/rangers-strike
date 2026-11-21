@@ -198,7 +198,8 @@ export function applyRk2ResidentPlaced(state: GameState, ownerId: PlayerId, opIn
     effectId: RIDER_PASS_SEARCH_EFFECT_ID,
     kind: "select_unit",
     validInstanceIds: ids,
-    selectCount: 1,
+    // 「4枚まで」: 選択窓はチェック式（client-core guiMatch の check window。2026-11-21 報告）。
+    selectCount: RIDER_PASS_MAX,
     optional: true,
   });
 }

@@ -154,6 +154,23 @@ function sameChoice(next: GameState["pendingEffectChoice"], base: NonNullable<Ga
   );
 }
 
+/** Where every card is (zone, held / face-down, stacked cards), ignoring order (a deck shuffle). */
+function zonesPrint(state: GameState): string {
+  const card = (c: unknown): string => {
+    if (!c || typeof c !== "object") return String(c);
+    const x = c as { instanceId?: string; commandHeld?: boolean; faceDown?: boolean; stackedCards?: Array<{ instanceId: string }> };
+    return `${x.instanceId}${x.commandHeld ? "H" : ""}${x.faceDown ? "F" : ""}[${(x.stackedCards ?? []).map((s) => s.instanceId).sort().join(",")}]`;
+  };
+  return Object.entries(state.players)
+    .map(([pid, p]) =>
+      Object.entries(p as unknown as Record<string, unknown>)
+        .filter(([, v]) => Array.isArray(v))
+        .map(([zone, v]) => `${pid}.${zone}:${(v as unknown[]).map(card).sort().join(",")}`)
+        .join("|"),
+    )
+    .join("#");
+}
+
 const ALL_LIST_TITLE = "すべての操作（カードごと）";
 const CHECK_RESET = "選び直す（チェックをすべて外す）";
 /** `callPick`: the verb opens the selection window to pick the card a コール unit pays the rush of. */
@@ -676,17 +693,36 @@ export class GuiMatch {
     } else {
       // The moves the choice offers after the picks (確定, 選ばない…), each sent after the picks.
       const index = indexInstances(draft.state);
-      for (const action of this.engine.getLegalActions(draft.state)) {
-        if ((action as { playerId?: string }).playerId !== HUMAN) continue;
+      const legal = this.engine.getLegalActions(draft.state).filter((a) => (a as { playerId?: string }).playerId === HUMAN);
+      const hasConfirm = legal.some((a) => a.type === "confirm_effect_choice");
+      for (const action of legal) {
         if (action.type === "resolve_effect_choice" && locateInstance(draft.state, action.instanceId)) continue;
         let label = describeAction(draft.state, action, index);
         if (action.type === "confirm_effect_choice" && draft.picks.length > 0) label = `${label}（${draft.picks.length}枚）`;
+        let pressLike = PASS_LIKE.test(action.type);
+        // 「N枚まで」の選択の多くは、確定のかわりに「選ばない」で選び終える（RK-022 ライダーパス・XG2-070・XG3-027…）。チェックした
+        // カードが残るなら、それは「選択を確定」（確定があればそちらだけ）。残らない選択（RS-042 ジャスティスフラッシャーなど
+        // ちょうどN枚）の「選ばない」はそのまま（2026-11-21）。
+        if (action.type === "skip_effect_choice" && draft.picks.length > 0 && this.skipKeepsPicks(draft, action)) {
+          if (hasConfirm) continue;
+          label = `${ACTION_LABELS.confirm_effect_choice}（${draft.picks.length}枚）`;
+          pressLike = false;
+        }
         const item: DialogItem = { kind: "button", items: [{ option: { label, action }, index: -1, commit: [...picks, action] }] };
-        (PASS_LIKE.test(action.type) ? pass : buttons).push(item);
+        (pressLike ? pass : buttons).push(item);
       }
     }
     if (draft.picks.length > 0) buttons.push({ kind: "button", items: [reset] });
     return [...cards, ...viewed, ...buttons, ...pass];
+  }
+
+  /** Whether 「選ばない」 after the checked picks keeps them (the board differs from 「選ばない」 with nothing checked). */
+  private skipKeepsPicks(draft: CheckDraft, skip: GameAction): boolean {
+    const after = this.engine.applyAction(draft.state, skip);
+    const none = this.engine.applyAction(this.state(), skip);
+    if (!after.ok || !after.state) return false;
+    if (!none.ok || !none.state) return true;
+    return zonesPrint(after.state) !== zonesPrint(none.state);
   }
 
   /** Sends the checked picks and the pressed button's move to the session, one by one. */

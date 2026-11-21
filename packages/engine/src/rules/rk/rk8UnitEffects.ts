@@ -323,7 +323,8 @@ function openDrillPick(state: GameState, pending: PendingEffectChoice, remaining
     effectId: DRILL_PICK_EFFECT_ID,
     kind: "select_unit",
     validInstanceIds: ids,
-    selectCount: 1,
+    // 残りの枚数（選択窓はチェック式。client-core guiMatch の check window）。
+    selectCount: remaining,
     optional: false,
     rk8Meta: { remaining },
   });
