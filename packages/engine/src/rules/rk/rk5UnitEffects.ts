@@ -313,7 +313,8 @@ function openZectOrder(state: GameState, pending: PendingEffectChoice): GameStat
     kind: "select_unit",
     validInstanceIds: ids,
     selectedInstanceIds: [],
-    selectCount: 1,
+    selectCount: ids.length,
+    orderedPicks: true,
     optional: false,
     mayConfirm: undefined,
   });
@@ -336,7 +337,8 @@ function continueZectEnter(state: GameState, pending: PendingEffectChoice): Game
       kind: "select_unit",
       validInstanceIds: ids,
       selectedInstanceIds: [],
-      selectCount: 1,
+      selectCount: ids.length,
+      orderedPicks: true,
       optional: false,
       mayConfirm: undefined,
     });

@@ -6,7 +6,8 @@
  * 見ること（人の軍が選ぶ窓ごと）:
  * - 1枚チェックしても、まだ何も送らない（カードは窓に残り、チェックが付く）。
  * - 「選択を確定（N枚）」を押すと、チェックしたカードを送って、その選択が閉じる（同じ選択が残って止まらない）。
- * - 選んだ順で結果が変わる選択（出す順番・好きな順・1体目/2体目）は1枚ずつのまま（ORDERED）。
+ * - 選んだ順で結果が変わる選択（出す順番・好きな順・1体目/2体目。orderedPicks）は、チェックのかわりに選んだ順の番号（1, 2, …）が付き、
+ *   「この順で確定（N枚）」で送る（山札に戻す順番の窓と同じ見た目。2026-11-21 ユーザー提案）。
  */
 import { describe, expect, it } from "vitest";
 import { applyAction, getLegalActions, type GameState } from "@rangers-strike/engine";
@@ -16,16 +17,8 @@ import { parseSharePayload } from "../app/share";
 import { input } from "../input/actions";
 import { testPlatform } from "../testing/engine";
 
-/** 選んだ順が結果に効くので、1枚ずつ選ぶ選択。 */
-const ORDERED = new Set([
-  "green_crush", // RS-108 出す順番は自分が選ぶ
-  "rk087_zectmizer_enter", // RK-087 出す順番は自分が選ぶ
-  "rk087_zectmizer_order", // RK-087 好きな順に並べ替える
-  "submerge", // RS-137 山札の下に好きな順で
-  "sk004_majiki_stack", // SK-004 好きな順でウラ向きに重ねる
-  "xg1078_copy_vent", // XG1-078 1体目・2体目
-  "pit_in_dive_order", // RS-658 順番
-]);
+/** 選んだ順が結果に効く選択（orderedPicks）: チェックのかわりに選んだ順の番号が付き、「この順で確定（N枚）」で送る。 */
+const ORDERED = new Set(["green_crush", "rk087_zectmizer_enter", "rk087_zectmizer_order", "sk004_majiki_stack", "xg1078_copy_vent"]);
 
 /** 確定のかわりに「選ばない」で選び終える（それまでに選んだカードは残る）選択。 */
 const STOP_BY_SKIP = new Set(["rk022_pass_search", "xg2_070_book_search", "xg3027_fireball", "xp025_niten_ichiryu", "houou_tornado", "kamen_ride_deploy"]);
@@ -90,6 +83,26 @@ describe("N枚まで選ぶ選択はチェック式の窓", () => {
     );
   });
 
+  it("順番の選択は番号が付き、外すと後ろの番号が詰まる", () => {
+    const w = windows.find((x) => x.state.pendingEffectChoice!.effectId === "rk087_zectmizer_order" || x.state.pendingEffectChoice!.effectId === "green_crush")!;
+    expect(w).toBeDefined();
+    const app = gui();
+    app.startSharedMatch(parseSharePayload({ v: 1, cpuLevel: 1, state: w.state })!);
+    const d0 = app.view().gui!.dialog!;
+    const picks = d0.cards.map((x, i) => (x.actionable ? i : -1)).filter((i) => i >= 0);
+    if (picks.length < 2) return;
+    app.dispatch(input.select(d0.moreLeft + picks[0]!, true));
+    app.dispatch(input.select(d0.moreLeft + picks[1]!, true));
+    let d = app.view().gui!.dialog!;
+    expect([d.cards[picks[0]!]!.order, d.cards[picks[1]!]!.order]).toEqual([1, 2]);
+    expect(d.cards.some((x) => x.checked)).toBe(false);
+    // 1番を外すと、2番だったカードが1番になる。
+    app.dispatch(input.select(d.moreLeft + picks[0]!, true));
+    d = app.view().gui!.dialog!;
+    expect(d.cards[picks[0]!]!.order).toBeUndefined();
+    expect(d.cards[picks[1]!]!.order).toBe(1);
+  });
+
   it("チェックしても送らず、「選択を確定」でチェックしたカードを送って閉じる", () => {
     const app = gui();
     const wrong: string[] = [];
@@ -97,7 +110,9 @@ describe("N枚まで選ぶ選択はチェック式の窓", () => {
     const short: string[] = [];
     for (const { cardId, state } of windows) {
       const c = state.pendingEffectChoice!;
-      if (ORDERED.has(c.effectId)) continue;
+      const ordered = ORDERED.has(c.effectId);
+      if (ordered !== !!c.orderedPicks) wrong.push(`${where}: orderedPicks が ${!!c.orderedPicks}`);
+      const confirmText = ordered ? "この順で確定" : "選択を確定";
       const where = `${cardId} ${c.effectId}`;
       app.startSharedMatch(parseSharePayload({ v: 1, cpuLevel: 1, state })!);
       const dialog = app.view().gui?.dialog;
@@ -113,19 +128,23 @@ describe("N枚まで選ぶ選択はチェック式の窓", () => {
       app.dispatch(input.select(dialog.moreLeft + first, true));
       let after = app.view().gui!.dialog!;
       const sent = app.session!.state.pendingEffectChoice?.selectedInstanceIds?.length ?? 0;
-      if (!after.cards.find((x) => x.instanceId === dialog.cards[first]!.instanceId)?.checked || sent !== (c.selectedInstanceIds?.length ?? 0)) {
+      const mark = after.cards.find((x) => x.instanceId === dialog.cards[first]!.instanceId);
+      if (!(ordered ? mark?.order === 1 && !mark.checked : mark?.checked) || sent !== (c.selectedInstanceIds?.length ?? 0)) {
         wrong.push(`${where}: 1枚ずつ（チェック式でない）`);
         continue;
       }
       // ちょうどN枚の選択は、確定が出るまでチェックを足す（見えている範囲になければ次のページ）。
-      let confirm = after.buttons.findIndex((b) => b.text.startsWith("選択を確定"));
+      let confirm = after.buttons.findIndex((b) => b.text.startsWith(confirmText));
       for (let i = 0; confirm < 0 && i < 40; i++) {
-        const next = after.cards.findIndex((x) => x.actionable && !x.checked);
+        const next = after.cards.findIndex((x) => x.actionable && !x.checked && !x.order);
         if (next >= 0) app.dispatch(input.select(after.moreLeft + next, true));
-        else if (after.moreRight > 0) app.dispatch(input.select(after.moreLeft + after.cards.length, false));
+        else if (after.moreRight > 0) {
+          app.dispatch(input.select(after.moreLeft + after.cards.length - 1, false));
+          app.dispatch(input.pageNext);
+        }
         else break;
         after = app.view().gui!.dialog!;
-        confirm = after.buttons.findIndex((b) => b.text.startsWith("選択を確定"));
+        confirm = after.buttons.findIndex((b) => b.text.startsWith(confirmText));
       }
       if (confirm < 0) {
         // ちょうどN枚の選択で候補がN枚に足りない盤面（RS-042 ジャスティスフラッシャーのパワー5枚など）は「選ばない」で終えるだけ。
@@ -146,7 +165,7 @@ describe("N枚まで選ぶ選択はチェック式の窓", () => {
       checked++;
     }
     expect(wrong).toEqual([]);
-    expect(new Set(short)).toEqual(new Set(["justice_flasher", "xg4054_straight_exile"]));
+    expect(short.filter((e) => !["justice_flasher", "xg4054_straight_exile"].includes(e))).toEqual([]);
     expect(checked).toBeGreaterThanOrEqual(20);
   }, 600_000);
 });

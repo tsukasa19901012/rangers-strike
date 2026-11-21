@@ -688,7 +688,7 @@ export class GuiMatch {
     const reset: MenuItem = { option: { label: CHECK_RESET, action: { type: "check_reset" } as unknown as GameAction }, index: -1, checkToggle: "" };
     if (!draft.open) {
       // The last pick ended the choice (the most cards it takes): 確定 sends the picks.
-      const label = `${ACTION_LABELS.confirm_effect_choice}（${draft.picks.length}枚）`;
+      const label = this.checkConfirmLabel(draft.picks.length);
       buttons.push({ kind: "button", items: [{ option: { label, action: { type: "confirm_effect_choice" } as unknown as GameAction }, index: -1, commit: picks }] });
     } else {
       // The moves the choice offers after the picks (確定, 選ばない…), each sent after the picks.
@@ -698,14 +698,14 @@ export class GuiMatch {
       for (const action of legal) {
         if (action.type === "resolve_effect_choice" && locateInstance(draft.state, action.instanceId)) continue;
         let label = describeAction(draft.state, action, index);
-        if (action.type === "confirm_effect_choice" && draft.picks.length > 0) label = `${label}（${draft.picks.length}枚）`;
+        if (action.type === "confirm_effect_choice" && draft.picks.length > 0) label = this.checkConfirmLabel(draft.picks.length);
         let pressLike = PASS_LIKE.test(action.type);
         // 「N枚まで」の選択の多くは、確定のかわりに「選ばない」で選び終える（RK-022 ライダーパス・XG2-070・XG3-027…）。チェックした
         // カードが残るなら、それは「選択を確定」（確定があればそちらだけ）。残らない選択（RS-042 ジャスティスフラッシャーなど
         // ちょうどN枚）の「選ばない」はそのまま（2026-11-21）。
         if (action.type === "skip_effect_choice" && draft.picks.length > 0 && this.skipKeepsPicks(draft, action)) {
           if (hasConfirm) continue;
-          label = `${ACTION_LABELS.confirm_effect_choice}（${draft.picks.length}枚）`;
+          label = this.checkConfirmLabel(draft.picks.length);
           pressLike = false;
         }
         const item: DialogItem = { kind: "button", items: [{ option: { label, action }, index: -1, commit: [...picks, action] }] };
@@ -714,6 +714,11 @@ export class GuiMatch {
     }
     if (draft.picks.length > 0) buttons.push({ kind: "button", items: [reset] });
     return [...cards, ...viewed, ...buttons, ...pass];
+  }
+
+  /** 「選択を確定（N枚）」, or 「この順で確定（N枚）」 when the order of the picks matters (orderedPicks). */
+  private checkConfirmLabel(count: number): string {
+    return `${this.state().pendingEffectChoice?.orderedPicks ? "この順で確定" : ACTION_LABELS.confirm_effect_choice}（${count}枚）`;
   }
 
   /** Whether 「選ばない」 after the checked picks keeps them (the board differs from 「選ばない」 with nothing checked). */
@@ -1710,8 +1715,10 @@ export class GuiMatch {
       const marks: ScrollMark[] = [];
       const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
       const orderChoice = state.pendingEffectChoice?.deckOrderMeta ? state.pendingEffectChoice : undefined;
-      const orderOf = (id: string) => (orderChoice?.selectedInstanceIds ?? []).indexOf(id) + 1;
-      const checked = new Set(this.checkMode() ? this.checkDraft().picks : []);
+      // 選んだ順で結果が変わる選択（orderedPicks: RS-108 出す順番など）のチェックは、チェックのかわりに選んだ順の番号（2026-11-21）。
+      const orderedChecks = this.checkMode() && state.pendingEffectChoice?.orderedPicks ? this.checkDraft().picks : null;
+      const orderOf = (id: string) => (orderedChecks ?? orderChoice?.selectedInstanceIds ?? []).indexOf(id) + 1;
+      const checked = new Set(this.checkMode() && !orderedChecks ? this.checkDraft().picks : []);
       // 選べるカードと一緒に出る、見るだけのカード（「自軍山札を見て…」の山札の残りなど）は「対象外」。選べるカードが
       // ない窓のうち、山札の上の1枚を見て上か下かを選ぶ窓では、見ているカードが「選択対象」。「自軍山札を見て…を選び」で
       // 選べるカードがない窓（engine rules/deckLook.ts、XG3-063 ドレイクMF【キャストオフ】でドレイクRFがない）は山札が
