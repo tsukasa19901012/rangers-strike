@@ -21,6 +21,7 @@ const DESTINATION_LABELS: Record<RevealDestination, string> = {
 const FROM_LABELS: Record<RevealNotice["from"], string> = {
   deck_top: "山札の上",
   deck_bottom: "山札の下",
+  deck: "山札",
   hand: "手札",
   power: "パワーゾーン",
   discard: "捨札",

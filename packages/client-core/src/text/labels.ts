@@ -232,6 +232,7 @@ const REVEAL_DESTINATIONS: Record<string, string> = {
 const REVEAL_FROM: Record<string, string> = {
   deck_top: "山札の上",
   deck_bottom: "山札の下",
+  deck: "山札",
   hand: "手札",
   power: "パワーゾーン",
   discard: "捨札",
@@ -247,7 +248,9 @@ export function revealSummary(state: GameState, reveal: RevealNoticeLike, labels
   const source = reveal.sourceCardId ? cardName(state, reveal.sourceCardId) : "";
   const label = reveal.effectLabel || source;
   const declared = reveal.declaredNumber !== undefined ? ` 宣言:${reveal.declaredNumber}${reveal.matched === undefined ? "" : reveal.matched ? "（一致）" : "（不一致）"}` : "";
-  return `${actor}が${owner}${REVEAL_FROM[reveal.from] ?? reveal.from}から${reveal.cards.length}枚オモテにした${label ? `（${label}）` : ""}${declared}`;
+  // 山札の中から選んで見せた（「…を1枚選び、相手に見せてから手札に加える」）: 「CPUが山札から1枚選んで見せた（デネブキャンディー）」。
+  const verb = reveal.from === "deck" ? "選んで見せた" : "オモテにした";
+  return `${actor}が${owner}${REVEAL_FROM[reveal.from] ?? reveal.from}から${reveal.cards.length}枚${verb}${label ? `（${label}）` : ""}${declared}`;
 }
 
 /** Where a revealed card went: 「手札へ」. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { describeAction, humanizeLogEntry, isPantherClawLoopStop } from "./labels";
+import { describeAction, humanizeLogEntry, isPantherClawLoopStop, revealSummary } from "./labels";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -201,3 +201,16 @@ describe("log lines of real games", () => {
 });
 
 type GameStateLike = { winner?: string; log: string[]; definitions: Record<string, { name: string }> };
+
+describe("revealSummary", () => {
+  const state = { definitions: {} } as unknown as Parameters<typeof revealSummary>[0];
+  const base = { seq: 1, playerId: "player2", ownerId: "player2", sourceCardId: "RK-146", effectLabel: "デネブキャンディー", cards: [{ instanceId: "x", cardId: "TST-OP", destination: "hand" }] } as const;
+
+  it("山札から選んで見せた（「相手に見せてから手札に加える」、2026-11-21）", () => {
+    expect(revealSummary(state, { ...base, from: "deck" }, { player1: "あなた", player2: "相手" })).toBe("相手が山札から1枚選んで見せた（デネブキャンディー）");
+  });
+
+  it("山札の上からオモテにした", () => {
+    expect(revealSummary(state, { ...base, from: "deck_top" }, { player1: "あなた", player2: "相手" })).toBe("相手が山札の上から1枚オモテにした（デネブキャンディー）");
+  });
+});

@@ -456,7 +456,7 @@ CHOICE_RESOLVERS[V_COMMANDER_EFFECT_ID] = (state, playerId, instanceId) => {
   let next = close(state, pending);
   if (card) {
     next = patchPlayer(next, playerId, (p) => ({ ...p, deck: p.deck.filter((c) => c.instanceId !== instanceId), hand: [...p.hand, stripForZone(card)] }));
-    next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG7-009", effectLabel: "タイムレッド", from: "deck_top", cards: revealedCards([card], "hand") });
+    next = recordReveal(next, { playerId, ownerId: playerId, sourceCardId: "XG7-009", effectLabel: "タイムレッド", from: "deck", cards: revealedCards([card], "hand") });
   }
   next = shuffleDeck(next, playerId);
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG7-009", `${V_COMMANDER_EFFECT_ID}:reveal:${card ? cardName(state.definitions, card.cardId) : "-"}`) };
