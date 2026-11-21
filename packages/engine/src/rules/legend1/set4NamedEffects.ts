@@ -477,6 +477,7 @@ function openFlowerCarnival(state: GameState, endingPlayerId: PlayerId): GameSta
     phasePlayerId: endingPlayerId,
     validInstanceIds: ids,
     selectCount: 1,
+    multiPick: {},
     optional: true,
   });
 }

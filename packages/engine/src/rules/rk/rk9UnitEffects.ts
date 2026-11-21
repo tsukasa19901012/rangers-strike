@@ -767,6 +767,7 @@ function openJCrosser(state: GameState, playerId: PlayerId, vehicleId: string, r
     kind: "select_command",
     validInstanceIds: ids,
     selectCount: 1,
+    multiPick: { limit: remaining },
     optional: true,
     rk9Meta: { remaining },
     resumeChoice: resume,

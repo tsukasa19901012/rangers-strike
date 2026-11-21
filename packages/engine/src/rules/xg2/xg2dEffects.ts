@@ -325,7 +325,7 @@ xg2Hook("residentPlaced", (state, ownerId, opInstanceId, cardId) => {
   if (!isSameCardIdentity(cardId, "XG2-070")) return null;
   const ids = bookSearchIds(state, ownerId);
   if (ids.length === 0) return patchPlayer(state, ownerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
-  return openAfter(state, selectOne({ playerId: ownerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: opInstanceId }, "XG2-070", BOOK_EFFECT_ID, ids, true));
+  return openAfter(state, selectOne({ playerId: ownerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: opInstanceId }, "XG2-070", BOOK_EFFECT_ID, ids, true, { selectCount: BOOK_MAX }));
 });
 
 registerXg2Choice(BOOK_EFFECT_ID, {
@@ -428,7 +428,7 @@ function applyDimension(state: GameState, ctx: GrantKeywordContext): GrantKeywor
   if (!self) return { state, detail: "xg2_071:no_source" };
   const ids = dimensionRiders(state, ctx.playerId, self.instanceId, []);
   if (ids.length < 2) return { state, detail: "xg2_071:no_riders" };
-  return { state: openAfter(state, selectOne(ctxBase(ctx), "XG2-071", DIMENSION_EFFECT_ID, ids, true, { xg2Meta: { picked: [] } })), detail: DIMENSION_EFFECT_ID };
+  return { state: openAfter(state, selectOne(ctxBase(ctx), "XG2-071", DIMENSION_EFFECT_ID, ids, true, { xg2Meta: { picked: [] }, multiPick: { limit: 2 } })), detail: DIMENSION_EFFECT_ID };
 }
 
 registerXg2Choice(DIMENSION_EFFECT_ID, {

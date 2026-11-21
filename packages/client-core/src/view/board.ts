@@ -271,7 +271,9 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
   }
   if (choice) {
     const selected = choice.selectedInstanceIds?.length ?? 0;
-    const count = choice.selectCount ? ` ${selected}/${choice.selectCount}` : "";
+    // multiPick（selectCount は 1 のままの「N枚まで」「好きな数」）は上限があれば「N/上限」、なければ選んだ数。
+    const limit = choice.multiPick ? choice.multiPick.limit : choice.selectCount;
+    const count = limit ? ` ${selected}/${limit}` : choice.multiPick && selected > 0 ? ` ${selected}枚` : "";
     return {
       actor: who(choice.playerId),
       title: `効果の選択「${effectLabel(engine, state, choice.effectId, choice.sourceCardId)}」${count}${choice.optional ? "（任意）" : ""}`,

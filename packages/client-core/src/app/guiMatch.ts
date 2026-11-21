@@ -154,6 +154,23 @@ function sameChoice(next: GameState["pendingEffectChoice"], base: NonNullable<Ga
   );
 }
 
+/** Where every card is (zone, held / face-down, stacked cards), ignoring order (a deck shuffle). */
+function zonesPrint(state: GameState): string {
+  const card = (c: unknown): string => {
+    if (!c || typeof c !== "object") return String(c);
+    const x = c as { instanceId?: string; commandHeld?: boolean; faceDown?: boolean; stackedCards?: Array<{ instanceId: string }> };
+    return `${x.instanceId}${x.commandHeld ? "H" : ""}${x.faceDown ? "F" : ""}[${(x.stackedCards ?? []).map((s) => s.instanceId).sort().join(",")}]`;
+  };
+  return Object.entries(state.players)
+    .map(([pid, p]) =>
+      Object.entries(p as unknown as Record<string, unknown>)
+        .filter(([, v]) => Array.isArray(v))
+        .map(([zone, v]) => `${pid}.${zone}:${(v as unknown[]).map(card).sort().join(",")}`)
+        .join("|"),
+    )
+    .join("#");
+}
+
 const ALL_LIST_TITLE = "すべての操作（カードごと）";
 const CHECK_RESET = "選び直す（チェックをすべて外す）";
 /** `callPick`: the verb opens the selection window to pick the card a コール unit pays the rush of. */
@@ -601,11 +618,14 @@ export class GuiMatch {
     const state = this.state();
     const pending = state.pendingEffectChoice;
     if (!pending || pending.playerId !== HUMAN || pending.deckOrderMeta || pending.mayConfirm || pending.revealGate) return false;
-    if (pending.selectCount !== undefined && pending.selectCount < 2) return false;
+    if (pending.selectCount !== undefined && pending.selectCount < 2 && !pending.multiPick) return false;
     const picks = this.cardPicks(state);
     if (picks.length < 2) return false;
-    const tried = this.engine.applyAction(state, picks[0]!);
-    return tried.ok && !!tried.state && sameChoice(tried.state.pendingEffectChoice, pending);
+    // 最初の候補だけでは決まらない選択もある（RS-439 バトルシャーク: Lユニットを選ぶと1枚で終わり、L・Rナンバーなら2枚まで）。
+    return picks.slice(0, 4).some((pick) => {
+      const tried = this.engine.applyAction(state, pick);
+      return tried.ok && !!tried.state && sameChoice(tried.state.pendingEffectChoice, pending);
+    });
   }
 
   /** The card picks the human can make in a state (the window's cards). */
@@ -677,22 +697,46 @@ export class GuiMatch {
     const reset: MenuItem = { option: { label: CHECK_RESET, action: { type: "check_reset" } as unknown as GameAction }, index: -1, checkToggle: "" };
     if (!draft.open) {
       // The last pick ended the choice (the most cards it takes): 確定 sends the picks.
-      const label = `${ACTION_LABELS.confirm_effect_choice}（${draft.picks.length}枚）`;
+      const label = this.checkConfirmLabel(draft.picks.length);
       buttons.push({ kind: "button", items: [{ option: { label, action: { type: "confirm_effect_choice" } as unknown as GameAction }, index: -1, commit: picks }] });
     } else {
       // The moves the choice offers after the picks (確定, 選ばない…), each sent after the picks.
       const index = indexInstances(draft.state);
-      for (const action of this.engine.getLegalActions(draft.state)) {
-        if ((action as { playerId?: string }).playerId !== HUMAN) continue;
+      const legal = this.engine.getLegalActions(draft.state).filter((a) => (a as { playerId?: string }).playerId === HUMAN);
+      const hasConfirm = legal.some((a) => a.type === "confirm_effect_choice");
+      for (const action of legal) {
         if (action.type === "resolve_effect_choice" && locateInstance(draft.state, action.instanceId)) continue;
         let label = describeAction(draft.state, action, index);
-        if (action.type === "confirm_effect_choice" && draft.picks.length > 0) label = `${label}（${draft.picks.length}枚）`;
+        if (action.type === "confirm_effect_choice" && draft.picks.length > 0) label = this.checkConfirmLabel(draft.picks.length);
+        let pressLike = PASS_LIKE.test(action.type);
+        // 「N枚まで」の選択の多くは、確定のかわりに「選ばない」で選び終える（RK-022 ライダーパス・XG2-070・XG3-027…）。チェックした
+        // カードが残るなら、それは「選択を確定」（確定があればそちらだけ）。残らない選択（RS-042 ジャスティスフラッシャーなど
+        // ちょうどN枚）の「選ばない」はそのまま（2026-11-21）。
+        if (action.type === "skip_effect_choice" && draft.picks.length > 0 && this.skipKeepsPicks(draft, action)) {
+          if (hasConfirm) continue;
+          label = this.checkConfirmLabel(draft.picks.length);
+          pressLike = false;
+        }
         const item: DialogItem = { kind: "button", items: [{ option: { label, action }, index: -1, commit: [...picks, action] }] };
-        (PASS_LIKE.test(action.type) ? pass : buttons).push(item);
+        (pressLike ? pass : buttons).push(item);
       }
     }
     if (draft.picks.length > 0) buttons.push({ kind: "button", items: [reset] });
     return [...cards, ...viewed, ...buttons, ...pass];
+  }
+
+  /** 「選択を確定（N枚）」, or 「この順で確定（N枚）」 when the order of the picks matters (orderedPicks). */
+  private checkConfirmLabel(count: number): string {
+    return `${this.state().pendingEffectChoice?.orderedPicks ? "この順で確定" : ACTION_LABELS.confirm_effect_choice}（${count}枚）`;
+  }
+
+  /** Whether 「選ばない」 after the checked picks keeps them (the board differs from 「選ばない」 with nothing checked). */
+  private skipKeepsPicks(draft: CheckDraft, skip: GameAction): boolean {
+    const after = this.engine.applyAction(draft.state, skip);
+    const none = this.engine.applyAction(this.state(), skip);
+    if (!after.ok || !after.state) return false;
+    if (!none.ok || !none.state) return true;
+    return zonesPrint(after.state) !== zonesPrint(none.state);
   }
 
   /** Sends the checked picks and the pressed button's move to the session, one by one. */
@@ -1680,8 +1724,10 @@ export class GuiMatch {
       const marks: ScrollMark[] = [];
       const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
       const orderChoice = state.pendingEffectChoice?.deckOrderMeta ? state.pendingEffectChoice : undefined;
-      const orderOf = (id: string) => (orderChoice?.selectedInstanceIds ?? []).indexOf(id) + 1;
-      const checked = new Set(this.checkMode() ? this.checkDraft().picks : []);
+      // 選んだ順で結果が変わる選択（orderedPicks: RS-108 出す順番など）のチェックは、チェックのかわりに選んだ順の番号（2026-11-21）。
+      const orderedChecks = this.checkMode() && state.pendingEffectChoice?.orderedPicks ? this.checkDraft().picks : null;
+      const orderOf = (id: string) => (orderedChecks ?? orderChoice?.selectedInstanceIds ?? []).indexOf(id) + 1;
+      const checked = new Set(this.checkMode() && !orderedChecks ? this.checkDraft().picks : []);
       // 選べるカードと一緒に出る、見るだけのカード（「自軍山札を見て…」の山札の残りなど）は「対象外」。選べるカードが
       // ない窓のうち、山札の上の1枚を見て上か下かを選ぶ窓では、見ているカードが「選択対象」。「自軍山札を見て…を選び」で
       // 選べるカードがない窓（engine rules/deckLook.ts、XG3-063 ドレイクMF【キャストオフ】でドレイクRFがない）は山札が

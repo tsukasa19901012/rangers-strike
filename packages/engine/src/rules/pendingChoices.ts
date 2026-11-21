@@ -941,13 +941,15 @@ export function startSelectUnitChoice(
     validInstanceIds: string[];
     unitDestination: PendingEffectChoice["unitDestination"];
     optional?: boolean;
+    selectCount?: number;
+    orderedPicks?: boolean;
   },
 ): GameState | null {
   if (params.validInstanceIds.length === 0) return null;
   return openEffectChoice(state, {
+    selectCount: 1,
     ...params,
     kind: "select_unit",
-    selectCount: 1,
   });
 }
 
@@ -4195,7 +4197,8 @@ export function applyEffectChoiceSelect(
         );
       }
       const dest = pending.unitDestination ?? "discard";
-      const requiredCount = pending.selectCount ?? 1;
+      // RS-108【グリーンクラッシュ】は1体ずつ出す（selectCount 2 は「2体まで」の表示用。continueGreenCrush）。
+      const requiredCount = pending.effectId === GREEN_CRUSH_EFFECT_ID ? 1 : pending.selectCount ?? 1;
       if (requiredCount > 1) {
         const prev = pending.selectedInstanceIds ?? [];
         if (prev.includes(instanceId)) return { error: "already_selected" };

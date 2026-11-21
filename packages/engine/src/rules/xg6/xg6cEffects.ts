@@ -879,7 +879,7 @@ function applyFullFire(state: GameState, ctx: GrantKeywordContext): GrantKeyword
   if (turnPlayer(state) !== ctx.playerId || !ctx.triggerSourceInstanceId) return { state, detail: "xg6063:not_own_turn" };
   const ids = state.players[ctx.playerId].command.filter((c) => !c.commandHeld).map((c) => c.instanceId);
   if (ids.length < 2) return { state, detail: "xg6063:not_enough_command" };
-  return { state: openAfter(state, choice(ctxBase(ctx), "XG6-063", FULL_FIRE, "select_command", ids, true)), detail: FULL_FIRE };
+  return { state: openAfter(state, choice(ctxBase(ctx), "XG6-063", FULL_FIRE, "select_command", ids, true, { selectCount: 2 })), detail: FULL_FIRE };
 }
 
 CHOICE_RESOLVERS[FULL_FIRE] = (state, playerId, instanceId) => {

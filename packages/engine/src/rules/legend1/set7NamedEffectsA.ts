@@ -419,6 +419,7 @@ function openKungFuDance(state: GameState, playerId: PlayerId, card: CardInstanc
     phasePlayerId: base?.phasePlayerId ?? playerId,
     validInstanceIds: ids,
     selectCount: 1,
+    multiPick: { limit: remaining },
     optional: true,
     set7aMeta: { remaining },
   };
@@ -464,6 +465,7 @@ function openTropicalDance(state: GameState, playerId: PlayerId, card: CardInsta
     phasePlayerId: base?.phasePlayerId ?? playerId,
     validInstanceIds: ids,
     selectCount: 1,
+    multiPick: { limit: remaining },
     optional: true,
     set7aMeta: { remaining, queue: base?.set7aMeta?.queue ?? [] },
   };
@@ -913,6 +915,7 @@ function openAllPurposeShip(state: GameState, ctx: GrantKeywordContext): GrantKe
       validInstanceIds: ids,
       viewedInstanceIds: ids,
       selectCount: 1,
+      multiPick: { limit: 2 },
       optional: true,
       set7aMeta: { remaining: 2 },
     }),

@@ -1270,6 +1270,7 @@ function applyDoubleKick(state: GameState, ctx: GrantKeywordContext): GrantKeywo
       kind: "select_unit",
       validInstanceIds: ids,
       selectCount: 1,
+      multiPick: { limit: 2 },
       optional: false,
     }),
     detail: DOUBLE_KICK_PICK_EFFECT_ID,

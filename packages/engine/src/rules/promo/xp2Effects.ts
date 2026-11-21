@@ -233,7 +233,7 @@ function applyNiten(state: GameState, ctx: GrantKeywordContext): GrantKeywordRes
   const ids = nitenCandidates(state, ctx.playerId, []);
   if (ids.length === 0) return { state, detail: `${NITEN}:no_targets` };
   return {
-    state: openAfter(state, { ...base(ctxBase(ctx), ctx.sourceCardId), effectId: NITEN, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true }),
+    state: openAfter(state, { ...base(ctxBase(ctx), ctx.sourceCardId), effectId: NITEN, kind: "select_unit", validInstanceIds: ids, selectCount: 2, optional: true }),
     detail: NITEN,
   };
 }
@@ -248,7 +248,7 @@ registerPromoChoice(
     const remaining = count < 2 ? nitenCandidates(next, playerId, []) : [];
     if (remaining.length === 0) return { state: proceed(next, pending), log };
     // 2体目（任意。見送れば1体で終わる）。
-    return { state: openNext(next, pending, { ...pending, validInstanceIds: remaining, selectedInstanceIds: [], selectCount: 1, mayConfirm: undefined, promoMeta: { count } }), log };
+    return { state: openNext(next, pending, { ...pending, validInstanceIds: remaining, selectedInstanceIds: [...(pending.selectedInstanceIds ?? []), instanceId], selectCount: 2, mayConfirm: undefined, promoMeta: { count } }), log };
   },
   simpleSkip(),
 );
@@ -691,7 +691,7 @@ registerPromoChoice(DINO, (state, playerId, instanceId) => {
   const ids = dinoDiscardIds(next, playerId);
   if (ids.length === 0) return { state: dinoFinish(next, meta, playerId), log };
   return {
-    state: openNext(next, pending, { ...meta, effectId: DINO_DISCARD, kind: "select_unit", validInstanceIds: ids, selectedInstanceIds: [], selectCount: 1, optional: true }),
+    state: openNext(next, pending, { ...meta, effectId: DINO_DISCARD, kind: "select_unit", validInstanceIds: ids, selectedInstanceIds: [], selectCount: 1, multiPick: {}, optional: true }),
     log,
   };
 });

@@ -295,6 +295,8 @@ export function applyLegend2NcEffect(
         validInstanceIds: targets,
         unitDestination: "enemy_battle",
         optional: true,
+        selectCount: 2,
+        orderedPicks: true,
       });
       return {
         state: withChoice ?? state,

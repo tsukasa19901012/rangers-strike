@@ -283,7 +283,8 @@ export function resolveLegend3OnRushEffects(
           kind: "select_unit",
           phasePlayerId,
           validInstanceIds: units,
-          selectCount: 1,
+          // 「3枚まで」: 選ぶ窓はチェック式、順番はその後の番号の窓で選ぶ（rules/deckOrder.ts）。
+          selectCount: 3,
           processedInstanceIds: [],
           optional: true,
           pickThenDeckOrder: "bottom",
