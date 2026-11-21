@@ -13,7 +13,8 @@
     "pocket:check": "node scripts/pocket-check.mjs",
     "web:exile-test": "node scripts/exile-test.mjs",
     "test": "node scripts/build-server.mjs && node --test scripts/match-api-test.mjs",
-    "web:online-test": "node scripts/online-test.mjs"
+    "web:online-test": "node scripts/online-test.mjs",
+    "web:overflow-check": "node scripts/text-overflow-check.mjs"
   },
   "dependencies": {
     "@rangers-strike/client-core": "*",

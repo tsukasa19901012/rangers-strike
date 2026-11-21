@@ -11,6 +11,16 @@ describe("wrapText", () => {
     expect(measureText("AB", 10)).toBeCloseTo(12.4);
   });
 
+  it("counts the symbols the baked Noto Sans JP draws one em wide (…, ―, ×, Ⅱ, ①, ≪) and M/W/% wider than other latin", () => {
+    // 2026-11-21: "…" measured as narrow let an ellipsized toast line run 2 px past its box.
+    for (const ch of Array.from("…‥―—×Ⅱ①≪")) expect(isWide(ch), ch).toBe(true);
+    for (const ch of Array.from("‘’“”-:/()")) expect(isWide(ch), ch).toBe(false);
+    expect(measureText("M%", 10)).toBeCloseTo(18.4);
+    const cut = fitLine("あいうえおかきくけこ", { fontPx: 12, maxWidthPx: 60 });
+    expect(cut).toBe("あいうえ…");
+    expect(measureText(cut, 12)).toBeLessThanOrEqual(60);
+  });
+
   it("breaks Japanese text at any character to fit the width", () => {
     const lines = wrapText("あいうえおかきくけこ", opts(4));
     expect(lines).toEqual(["あいうえ", "おかきく", "けこ"]);

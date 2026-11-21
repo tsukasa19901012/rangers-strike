@@ -263,13 +263,9 @@ function Toast(props: { view: GuiView; replay: ReplayView; event: ReplayEvent | 
     return Math.min(easeOut(s / 0.2), clamp((end - s) / 0.2));
   };
   const textW = () => box().w - (props.event ? 78 : 24);
-  const title = () => fitLine(props.event?.title ?? props.text ?? "", { fontPx: 15, maxWidthPx: textW() });
-  const detail = () => (props.event?.detail ? wrapText(props.event.detail, { fontPx: 11, maxWidthPx: textW() }).slice(0, 2) : []);
-  const detailLines = () => {
-    const lines = detail();
-    if (lines.length === 2 && wrapText(props.event!.detail, { fontPx: 11, maxWidthPx: textW() }).length > 2) lines[1] = fitLine(`${lines[1]}…`, { fontPx: 11, maxWidthPx: textW() });
-    return lines;
-  };
+  // text-sm bold = 14 px, text-xs = 12 px (the sizes the font is baked at).
+  const title = () => fitLine(props.event?.title ?? props.text ?? "", { fontPx: 14, maxWidthPx: textW() });
+  const detailLines = () => (props.event?.detail ? wrapText(props.event.detail, { fontPx: 12, maxWidthPx: textW(), maxLines: 2 }) : []);
   const who = () => (props.event?.actor === "player1" ? "あなた" : props.view.topBar.includes("CPU") ? "CPU" : "相手");
   return (
     <View class="absolute" style={{ ...place(box()), opacity: fade(), translateY: (1 - fade()) * 16 }}>

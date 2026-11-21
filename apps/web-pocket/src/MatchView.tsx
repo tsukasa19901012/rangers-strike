@@ -13,6 +13,7 @@ import {
   powerCount,
   powerNotes,
   webPileRect,
+  clipLine,
   fitLine,
   measureText,
   wrapText,
@@ -740,6 +741,19 @@ export function MatchView(props: {
   const choose = () =>
     !v().endButton.enabled && !v().dialog && v().endButton.lines.includes("×:操作") && !v().rows.some((row) => row.tiles.some((tile) => tile.actionable));
   const endLines = () => (choose() ? ["操作を選ぶ"] : v().endButton.lines.filter((line) => line && line !== "R" && line !== "×:操作"));
+  // The PC button: the core wraps at 14 px, the button draws 16 px, so a line that would run out is wrapped again.
+  const pcEndLines = () => {
+    const room = v().endButton.rect.w - 12;
+    const lines = endLines();
+    return lines.every((line) => measureText(line, 16) <= room) ? lines : wrapText(lines.join(""), { fontPx: 16, maxWidthPx: room, maxLines: 2 });
+  };
+  // A phone's wide button: one 16 px line when the move fits (「チャージ終了」), else two 14 px lines
+  // (「バトルエリアへ進入:アバレッド」 ran past both ends on one line).
+  const phoneEndLines = () => {
+    const text = endLines().join("");
+    const room = v().endButton.rect.w - 16;
+    return measureText(text, 16) <= room ? [text] : wrapText(text, { fontPx: 14, maxWidthPx: room, maxLines: 2 });
+  };
   const endLive = () => v().endButton.enabled || choose();
   const buttons = () => matchButtons(g());
   const activePhase = () => v().phases.findIndex((phase) => phase.active);
@@ -904,7 +918,7 @@ export function MatchView(props: {
           when={portrait()}
           fallback={
             <>
-              <Index each={endLines()}>
+              <Index each={pcEndLines()}>
                 {(text) => <Text class={endLive() ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{text()}</Text>}
               </Index>
               <Show when={endLive()}>
@@ -913,7 +927,9 @@ export function MatchView(props: {
             </>
           }
         >
-          <Text class={endLive() ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{endLines().join("")}</Text>
+          <Index each={phoneEndLines()}>
+            {(text) => <Text class={endLive() ? (phoneEndLines().length > 1 ? "text-sm text-white font-bold" : "text-base text-white font-bold") : "text-sm text-slate-500"}>{text()}</Text>}
+          </Index>
         </Show>
       </View>
       <Show when={props.turnWarning}>
@@ -1046,7 +1062,10 @@ export function MatchView(props: {
                     </View>
                   </Show>
                   <View class="absolute flex-row justify-center overflow-hidden" style={at(card().captionRect)}>
-                    <Text class={card().note ? "text-xs text-amber-200" : "text-xs text-slate-400"}>{card().note ?? card().label ?? caption(card().instanceId) ?? card().caption}</Text>
+                    <Text class={card().note ? "text-xs text-amber-200" : "text-xs text-slate-400"}>
+                      {/* text-xs = 12 px; a small tile (phone landscape) gets the caption cut, not run into the next one */}
+                      {clipLine(card().note ?? card().label ?? caption(card().instanceId) ?? card().caption ?? "", { fontPx: 12, maxWidthPx: card().captionRect.w })}
+                    </Text>
                   </View>
                 </>
               )}

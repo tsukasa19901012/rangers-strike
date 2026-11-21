@@ -7,6 +7,7 @@ import { testEngine, testPlatform } from "../testing/engine";
 import { measureText } from "../text/wrap";
 import { dropCardName, dropSharedEnd, popupCardInfo, variantLabels, type GuiView } from "./guiMatch";
 import { parseSharePayload } from "./share";
+import { computeWebDeckGeometry, computeWebGuiGeometry } from "../view/webGui";
 
 const VITA = { width: 480, height: 272 };
 
@@ -962,6 +963,49 @@ describe("windows that keep cards or rows out of view", () => {
     app.dispatch(hitTestGui(app.view().gui!, { x: target.rect.x + 2, y: target.rect.y + 2 })!);
     expect(app.view().gui!.list).toBeUndefined();
     expect(app.session!.state).not.toBe(before);
+  });
+
+  it("keeps the every-action list's card names and card popups inside the screen on a narrow phone", () => {
+    // 2026-11-21: 「爆竜プテラノドン（種類:バトル進入）」 ran under its verb button on a 390 px phone.
+    for (const seed of [1, 2, 3, 4]) {
+      const app = new AppController({
+        platform: testPlatform(),
+        viewport: { width: 375, height: 667 },
+        fontPx: 14,
+        cpuDelayFrames: 0,
+        seed: () => seed,
+        gui: true,
+        layouts: { match: computeWebGuiGeometry, deck: computeWebDeckGeometry },
+      });
+      app.dispatch(input.select(3, true));
+      let checked = 0;
+      for (let i = 0; i < 400 && checked < 12 && !app.session?.over; i++) {
+        if (humanTurn(app) && !app.view().gui!.dialog && i % 3 === 0) {
+          app.dispatch(input.allActions);
+          const gui = app.view().gui!;
+          for (const group of gui.list?.groups ?? []) {
+            expect(measureText(group.text, gui.geometry.fontPx), group.text).toBeLessThanOrEqual(group.nameRect.w);
+          }
+          for (const row of gui.list?.rows ?? []) expect(measureText(row.text, gui.geometry.fontPx), row.text).toBeLessThanOrEqual(row.rect.w);
+          checked++;
+          app.dispatch(input.cancel);
+          // The rightmost card's popup stays on the screen (2026-11-21: it ran past a 375 px phone's edge).
+          const tile = app.view().gui!.rows.flatMap((r) => r.tiles).filter((t) => t.actionable).sort((a, b) => b.rect.x - a.rect.x)[0];
+          if (tile) {
+            app.dispatch(hitTestGui(app.view().gui!, { x: tile.rect.x + tile.rect.w / 2, y: tile.rect.y + tile.rect.h / 2 })!);
+            const popup = app.view().gui!.popup;
+            if (popup) {
+              expect(popup.rect.x + popup.rect.w + 14).toBeLessThanOrEqual(375);
+              for (const line of popup.info ?? []) expect(measureText(line.text, 14), line.text).toBeLessThanOrEqual(line.rect.w);
+            }
+            app.dispatch(input.cancel);
+          }
+        }
+        if (humanTurn(app)) playOneStep(app, i);
+        else app.tick();
+      }
+      expect(checked).toBeGreaterThan(0);
+    }
   });
 
   it("shows a card's stats and first effect line under the name in its popup", () => {

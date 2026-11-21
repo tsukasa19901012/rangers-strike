@@ -26,12 +26,27 @@ export function isWide(ch: string): boolean {
     (cp >= 0x2190 && cp <= 0x21ff) ||
     (cp >= 0x25a0 && cp <= 0x25ff) ||
     (cp >= 0x2600 && cp <= 0x26ff) ||
-    cp === 0x203b
+    cp === 0x203b ||
+    // Measured in the baked Noto Sans JP (2026-11-21): … ‥ ― — × ÷, Roman numerals, ① and math signs (≪ ≫) are
+    // one em too; "…" counted as narrow let ellipsized lines run 2 px past their box.
+    cp === 0x2014 ||
+    cp === 0x2015 ||
+    cp === 0x2025 ||
+    cp === 0x2026 ||
+    cp === 0x00d7 ||
+    cp === 0x00f7 ||
+    (cp >= 0x2160 && cp <= 0x217f) ||
+    (cp >= 0x2200 && cp <= 0x22ff) ||
+    (cp >= 0x2460 && cp <= 0x24ff) ||
+    (cp >= 0x2500 && cp <= 0x257f)
   );
 }
 
-/** Default metric: wide = 1 em, everything else ≈ 0.62 em (Inter digits/latin). */
-export const defaultCharWidth: CharWidth = (ch, fontPx) => (isWide(ch) ? fontPx : fontPx * 0.62);
+/** Latin glyphs wider than the 0.62 em average (M W m w % @ ≈ 0.85–0.92 em in Noto Sans JP). */
+const WIDE_LATIN = new Set(Array.from("MWmw%@"));
+
+/** Default metric: wide = 1 em, M/W/m/w/%/@ 0.92 em, everything else ≈ 0.62 em (digits 0.58, most letters 0.5–0.6). */
+export const defaultCharWidth: CharWidth = (ch, fontPx) => (isWide(ch) ? fontPx : WIDE_LATIN.has(ch) ? fontPx * 0.92 : fontPx * 0.62);
 
 export function measureText(text: string, fontPx: number, width: CharWidth = defaultCharWidth): number {
   let total = 0;

@@ -130,6 +130,7 @@ scripts/            ビルド・開発用静的サーバ・フォント取得・
 - カード画像（`apps/web/public/cards` のコピー）はブラウザでデコードしてテクスチャにします
 - ルールエンジン（`dist/engine.js`）は UI と別ファイルの ESM として読み込みます
 - 入力欄は文字 16px 以上、viewport は `maximum-scale=1`、ページ全体を `touch-action: manipulation` にして、iPhone で入力欄に触れたときの自動ズーム・ダブルタップズームを止めています（入力を終えたらキーボードでずれたページ位置を戻します）
+- 文字は Noto Sans JP を焼いたアトラスで描き、ブラウザの折り返しや省略はありません。`text-xs` = 12px・`text-sm` = 14px・`text-base` = 16px・`text-lg` = 18px（全角 1 字 = 1em、英数字は約 0.5〜0.6em）なので、`wrapText` / `fitLine` には描くクラスと同じ `fontPx` を渡します（小さく渡すとはみ出す。2026-11-21 の相手の手のお知らせ・スマホの決定ボタン・選択ウィンドウのカード下の文字）
 - テスト用に `window.__rsApp`（`controller`・`lobby`・`postGame`・`buttons()`・`pile(player)`・`peek()`（拡大表示中のゾーン）など）を公開しています
 
 ## 操作
@@ -167,6 +168,7 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 | `npm run web:serve` | `dist/` を http://127.0.0.1:8140/ で配信（`node scripts/serve.mjs --port=…` で変更可。開発用。`/api/share` と `/api/match` はメモリに保存） |
 | `npm run web:exile-test` | ブラウザ（Playwright）で除外の表示を確認（PC・スマホ。除外 0 枚で何も出ない／「除外 N」行（帯には出さない）／乗せる・タップで新しい順に全部並ぶ）。先に `web:build` |
 | `npm run web:online-test` | 2 つのブラウザ（PC のホスト・スマホのゲスト）で対人戦を確認（部屋を作る → 招待 URL で参加 → 両方が自分の選べる手を 60 手送る → 相手の手札が「?」で本当のカード ID が届かない → ゲストの再読み込みで同じ対戦に戻る → 投了ボタン 2 回で両方に結果 → デッキ公開の同意（片方では届かない））。`-- --shots=<dir>` で画面写真、`-- --base=https://…` で公開中のサイトに対して。先に `web:build` |
+| `npm run web:overflow-check` | 枠からはみ出した文字を探す（スマホ 390×844・SE 375×667・横向き 844×390・PC 1280×800 で、タイトル・自動進行・デッキ構築・ロビー・CPU 戦（盤面・すべての操作・カードのポップアップ・ログ・長いお知らせ・設定・結果）を回る）。PocketJS は canvas に描くので、`ui` の操作を包んでノードの木を持ち、コアの DevTools 操作 `debugInspect` で各 `<Text>` の描いた矩形（＝文字の実際の幅）と親の矩形を比べる。見つかったら終了コード 1。`-- --secs=<秒>`（CPU 戦の長さ、既定 120）・`-- --viewports=phone,pc`・`-- --shots=<dir>`。先に `web:build` |
 | `npm test` | `api/match.js` のテスト（node:test、メモリの保存先。部屋・トークン・API だけで決着まで・再送・「変わりなし」・同時書き込みのやり直し・投了・取り消し・対戦の記録・再戦・デッキ公開） |
 | `npm run pocket:check` | `pocket.json` を PocketJS の web-app プロファイルで検査し、型検査 |
 

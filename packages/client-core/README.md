@@ -13,7 +13,7 @@ DOM・Node・PocketJS には依存しません（`lib` は ES2022、`types` な�
 |---|---|
 | `src/engineApi.ts` | クライアントが使うエンジンの最小 API（型のみ import） |
 | `src/app/controller.ts` | `AppController`: タイトル → 対戦 → 結果の状態機械。毎フレーム `tick()` で CPU を 1 手ずつ進める |
-| `src/app/guiMatch.ts` | 対戦画面の GUI 状態（カードのフォーカス・操作メニュー）。合法手をカードごとに振り分ける |
+| `src/app/guiMatch.ts` | 対戦画面の GUI 状態（カードのフォーカス・操作メニュー）。合法手をカードごとに振り分ける。「すべての操作」はカードごとの行で、名前の列は幅の 42%（各カードの最初のボタンが横に入るなら 60% まで）、入らない名前は「…」で切る。カードのポップアップは画面の内側に置く |
 | `src/app/deckBuilder.ts` | デッキ構築画面の状態（一覧・絞り込み・保存）。`deckSharing` のシェルでは「共有する」「テキストから取り込む」も出す |
 | `src/app/deckShare.ts` | デッキの共有形式（URL 用の `{v, name, cards}` とテキストのカードリスト）の作成と読み取り |
 | `src/session/session.ts` | 1 試合: 合法手 → ラベル付き選択肢、CPU 1 手の実行と時間計測、ログ整形（ターン交代の「━━ ターンN：〜のターン ━━」行、新しい 1000 行まで）、適用した手の記録（`actions`） |
@@ -27,7 +27,7 @@ DOM・Node・PocketJS には依存しません（`lib` は ES2022、`types` な�
 | `src/view/board.ts`, `src/view/layout.ts` | テキスト画面（タイトル・結果）の表示モデルと配置 |
 | `src/input/actions.ts` | 論理入力（`prev` / `next` / `confirm` / `cancel` / `menu` / `allActions` 等） |
 | `src/input/devices.ts` | ボタン → 論理入力（`ButtonRepeater`、オートリピート）、座標の当たり判定（`hitTestGui` / `hitTestDeck`） |
-| `src/text/` | 日本語の折り返し（禁則）と、フェイズ・行動・ログの日本語ラベル |
+| `src/text/` | 日本語の折り返し（禁則。`wrapText` / `fitLine` / `fitLineKeepTail` / `clipLine` は全角 1em・ほか 0.62em で見積もる。描くフォントの大きさを `fontPx` に渡す）と、フェイズ・行動・ログの日本語ラベル |
 | `src/platform/` | `Clock` / `LogSink` / `MemoryProbe` / `KeyValueStore` / `AssetLoader` のインターフェースと、設定・デッキ・戦績・自動対戦の保存（`settings.ts`） |
 | `src/data/split.ts` | カードデータの分割（デッキ → カード ID、生成 JSON の刈り込み） |
 | `src/data/deckApi.ts` | cards のデッキルール関数から `DeckApi` を作る（`createDeckApi`） |
