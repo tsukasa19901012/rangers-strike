@@ -163,7 +163,8 @@ type PileStack = { count: number; hidden: number; topId: string };
 export type PileCard = { cardId: string; hidden: boolean; rect: Box; stack?: PileStack; peek?: { title: string; cards: PeekCard[]; ids: string[] } };
 /** A card in the enlarged view; a caption says what is stacked on what. */
 export type PeekCard = { cardId: string; hidden: boolean; caption?: string };
-type PileSection = { title: string; label: string; tone: string; labelRect: Box; cards: PileCard[]; all: PeekCard[]; count: number; ids: string[] };
+/** `counted`: the title already says how many cards there are (the power zone), so the peek adds no （N枚）. */
+type PileSection = { title: string; label: string; tone: string; labelRect: Box; cards: PileCard[]; all: PeekCard[]; count: number; ids: string[]; counted?: boolean };
 export type PileLayout = { narrow: boolean; deck: Box | null; discard: PileCard | null; discardAll: { title: string; cards: PeekCard[] }; discardIds: string[]; discardTap: { rect: Box } | null; counts: { text: string; rect: Box }[]; sections: PileSection[] };
 /** Cards shown enlarged together: a whole zone, so both cards of a tag operation are side by side. `ids`: the cards a tap can act on. */
 export type PilePeek = { key: string; title: string; cards: PeekCard[]; anchor: Box; ids: string[] };
@@ -252,7 +253,7 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
       sections.push(exileSection({ x: rect.x, y, w: rect.w, h: 18 }));
       y += 18;
     }
-    sections.push({ title: powerTitle, label: `パワー ${power.total}`, tone: "text-xs text-amber-300 font-bold", labelRect: { x: rect.x, y, w: rect.w, h: 18 }, cards: [], all: all(p.power), count: p.power.length, ids: p.power.map((c) => c.instanceId) });
+    sections.push({ title: powerTitle, label: `パワー ${power.total}`, tone: "text-xs text-amber-300 font-bold", labelRect: { x: rect.x, y, w: rect.w, h: 18 }, cards: [], all: all(p.power), count: p.power.length, ids: p.power.map((c) => c.instanceId), counted: true });
     y += 22;
     if (p.operation.length) {
       const labelRect = { x: rect.x, y, w: rect.w, h: 18 };
@@ -278,8 +279,8 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
     y += 18;
   }
   const zones = [
-    { title: powerTitle, label: `パワー ${power.total}${notes ? `(${notes})` : ""}`, tone: "text-xs text-amber-300 font-bold", cards: p.power, operation: false },
-    ...(p.operation.length ? [{ title: `${who}の常駐`, label: `常駐 ${p.operation.length}`, tone: "text-xs text-violet-300 font-bold", cards: p.operation, operation: true }] : []),
+    { title: powerTitle, label: `パワー ${power.total}${notes ? `(${notes})` : ""}`, tone: "text-xs text-amber-300 font-bold", cards: p.power, operation: false, counted: true },
+    ...(p.operation.length ? [{ title: `${who}の常駐`, label: `常駐 ${p.operation.length}`, tone: "text-xs text-violet-300 font-bold", cards: p.operation, operation: true, counted: false }] : []),
   ];
   const share = Math.floor((bottom - y) / zones.length);
   zones.forEach((zone, zi) => {
@@ -296,7 +297,7 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
       const step = n > 1 ? Math.min(w + 4, Math.floor((availW - w) / (n - 1))) : 0;
       zone.cards.forEach((c, i) => cards.push({ cardId: c.cardId, hidden: !!c.faceDown, rect: { x: x0 + i * step, y: fanTop, w, h }, stack: pileStack(c), peek: zone.operation ? operationPeek(state, who, c) : undefined }));
     }
-    sections.push({ title: zone.title, label: zone.label, tone: zone.tone, labelRect, cards, all: all(zone.cards), count: n, ids: zone.cards.map((c) => c.instanceId) });
+    sections.push({ title: zone.title, label: zone.label, tone: zone.tone, labelRect, cards, all: all(zone.cards), count: n, ids: zone.cards.map((c) => c.instanceId), counted: zone.counted });
   });
   return {
     narrow,
@@ -327,7 +328,7 @@ export function pileHit(layouts: PileLayout[], point: { x: number; y: number }):
       }
       const hit = inside(section.labelRect, point) ? section.labelRect : card?.rect;
       if (hit && section.all.length > 0) {
-        return { key: `${section.title}:${section.all.map((c) => c.caption ?? c.cardId).join(",")}`, title: `${section.title}（${section.count}枚）`, cards: section.all, anchor: hit, ids: section.ids };
+        return { key: `${section.title}:${section.all.map((c) => c.caption ?? c.cardId).join(",")}`, title: section.counted ? section.title : `${section.title}（${section.count}枚）`, cards: section.all, anchor: hit, ids: section.ids };
       }
     }
   }
@@ -549,31 +550,43 @@ export function peekLayout(g: GuiGeometry, peek: PilePeek) {
   const pile = webPileRect(g, HUMAN);
   const captionH = peek.cards.some((c) => c.caption) ? 18 : 0;
   const maxH = g.board.h - 8;
+  const narrowW = portrait ? g.board.w - 16 : 420;
+  const wideW = portrait ? g.board.w - 16 : Math.max(narrowW, pile.x - g.board.x - 20);
+  // The title (「自分のパワー 3（パワーゾーン2枚＋相手のマルチカテゴリ1）」) widens the panel up to narrowW,
+  // and wraps past that: one card's width is far too narrow for it on a phone.
+  const titleLines = wrapText(peek.title, { fontPx: PEEK_TITLE_PX, maxWidthPx: narrowW - 20 });
+  const headH = 12 + titleLines.length * PEEK_TITLE_LINE_H;
   // A few cards stay large; many (a long discard pile) take a wider panel and smaller cards so all fit.
   const fit = (maxW: number, cols: number) => {
     const gap = cols > 6 ? 4 : 8;
     const cardW = Math.min(portrait ? 130 : 150, Math.floor((maxW - 16 - gap * (cols - 1)) / cols));
     const rows = Math.ceil(n / cols);
     const rowH = Math.round(cardW * CARD_RATIO) + captionH + gap;
-    return { cols, gap, cardW, rowH, fits: 30 + rows * rowH + 4 <= maxH };
+    return { cols, gap, cardW, rowH, fits: headH + rows * rowH + 4 <= maxH };
   };
-  const narrowW = portrait ? g.board.w - 16 : 420;
-  const wideW = portrait ? g.board.w - 16 : Math.max(narrowW, pile.x - g.board.x - 20);
   let best = fit(narrowW, Math.min(n, portrait ? 3 : 4));
   for (let cols = best.cols + 1; !best.fits && cols <= n; cols++) best = fit(cols > 4 ? wideW : narrowW, cols);
   const { cols, gap, cardW, rowH } = best;
   const cardH = Math.round(cardW * CARD_RATIO);
   const rows = Math.ceil(n / cols);
-  const w = cols * cardW + gap * (cols - 1) + 16;
-  const h = 30 + rows * rowH + 4;
+  const cardsW = cols * cardW + gap * (cols - 1) + 16;
+  const titleW = Math.max(...titleLines.map((line) => measureText(line, PEEK_TITLE_PX))) + 20;
+  const w = Math.max(cardsW, Math.min(narrowW, Math.ceil(titleW)));
+  const h = headH + rows * rowH + 4;
   const x = portrait ? Math.round((g.width - w) / 2) : pile.x - w - 12;
   const y = portrait ? g.board.y + 8 : Math.max(g.board.y, Math.min(peek.anchor.y - 40, g.board.y + g.board.h - h));
+  const left = x + Math.round((w - cardsW) / 2) + 8;
   const cards = peek.cards.map((card, i) => ({
     ...card,
-    rect: { x: x + 8 + (i % cols) * (cardW + gap), y: y + 30 + Math.floor(i / cols) * rowH, w: cardW, h: cardH },
+    rect: { x: left + (i % cols) * (cardW + gap), y: y + headH + Math.floor(i / cols) * rowH, w: cardW, h: cardH },
   }));
-  return { panel: { x, y, w, h }, cards };
+  const title = titleLines.map((text, i) => ({ text, rect: { x: x + 10, y: y + 6 + i * PEEK_TITLE_LINE_H, w: w - 20, h: PEEK_TITLE_LINE_H } }));
+  return { panel: { x, y, w, h }, title, cards };
 }
+
+/** The enlarged zone's title: text-sm, bold. */
+const PEEK_TITLE_PX = 14;
+const PEEK_TITLE_LINE_H = 18;
 
 /** A zone's cards enlarged in a row (wrapping): beside the pile column, or over the board on a phone. */
 function PeekPanel(props: { g: GuiGeometry; peek: PilePeek }) {
@@ -581,9 +594,13 @@ function PeekPanel(props: { g: GuiGeometry; peek: PilePeek }) {
   return (
     <>
       <View class="absolute rounded-[12] bg-[#0b1220f5] border-[2] border-amber-300 shadow-lg" style={at(layout().panel)} />
-      <View class="absolute flex-row items-center px-[10]" style={at({ ...layout().panel, h: 28 })}>
-        <Text class="text-sm text-amber-200 font-bold">{props.peek.title}</Text>
-      </View>
+      <Index each={layout().title}>
+        {(line) => (
+          <View class="absolute flex-row items-center" style={at(line().rect)}>
+            <Text class="text-sm text-amber-200 font-bold">{line().text}</Text>
+          </View>
+        )}
+      </Index>
       <Index each={layout().cards}>
         {(card) => (
           <>
