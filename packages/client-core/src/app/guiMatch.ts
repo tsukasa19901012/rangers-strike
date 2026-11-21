@@ -857,8 +857,11 @@ export class GuiMatch {
       }
       i = j;
     }
-    const nameW = Math.min(Math.floor(w * 0.42), Math.ceil(Math.max(0, ...visible.map((v) => measureText(v.name, g.fontPx)))) + 16);
     const natural = (verb: string) => Math.max(64, Math.ceil(measureText(verb, g.fontPx)) + 24);
+    // The name column takes up to 42% of the menu, or more when every card's first verb still fits beside it.
+    const firstVerbs = visible.filter((v, i) => v.key !== null && visible[i - 1]?.key !== v.key).map((v) => natural(v.verb));
+    const nameCap = Math.max(Math.floor(w * 0.42), Math.min(Math.floor(w * 0.6), w - pad - Math.max(0, ...firstVerbs)));
+    const nameW = Math.min(nameCap, Math.ceil(Math.max(0, ...visible.map((v) => measureText(v.name, g.fontPx)))) + 16);
     // A card whose verbs would wrap onto a second line gets them shortened to what differs (dropSharedEnd).
     for (let i = 0; i < visible.length; ) {
       let j = i;
@@ -878,7 +881,8 @@ export class GuiMatch {
     const newLine = (text: string) => {
       line++;
       const rect = { x, y: line * rowH + 1, w, h: rowH - 2 };
-      groups.push({ text, rect, nameRect: { x: x + 8, y: rect.y, w: nameW - 8, h: rect.h } });
+      // A name longer than its column is cut to it, keeping a short 「（…）」 tail.
+      groups.push({ text: fitLineKeepTail(text, { fontPx: g.fontPx, maxWidthPx: nameW - 12 }), rect, nameRect: { x: x + 8, y: rect.y, w: nameW - 8, h: rect.h } });
       cx = x + nameW;
     };
     for (const v of visible) {
@@ -1891,7 +1895,8 @@ export class GuiMatch {
       const below = a.y + a.h + 2;
       const above = a.y - h - 2;
       const y = a.y < g.board.y + g.board.h / 2 || mode.entry ? Math.min(below, g.footer.y - h) : Math.max(g.board.y, above);
-      const x = Math.max(g.board.x, Math.min(a.x, g.side.x + g.side.w - w - 2));
+      // Inside the screen too (the web frame reaches 14 px past the rect): a phone's side column can reach past its right edge.
+      const x = Math.max(g.board.x, Math.min(a.x, g.side.x + g.side.w - w - 2, g.width - w - 16));
       const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: w - 8 };
       popup = {
         rect: { x, y, w, h },

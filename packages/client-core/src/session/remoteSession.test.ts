@@ -138,10 +138,17 @@ describe("RemoteSession: 同じプロセスのサーバーと最後まで", () =
       for (const kind of ["rush", "attack", "strike"] as const) expect(kinds, `${s.you} ${kind}`).toContain(kind);
       for (const e of events) {
         // Nothing the person could not see: every card is one their screen has the card data of.
-        expect(e.cardId).not.toBe("?");
-        expect(s.state.definitions[e.cardId], JSON.stringify(e)).toBeDefined();
+        if (e.hidden) expect(e.cardId).toBe("?");
+        else {
+          expect(e.cardId).not.toBe("?");
+          expect(s.state.definitions[e.cardId], JSON.stringify(e)).toBeDefined();
+        }
         if (e.actor === "player1") expect(e.own).toBe(true);
         for (const m of e.moves ?? []) {
+          if (m.hidden) {
+            expect(m.cardId).toBe("?");
+            continue;
+          }
           expect(m.cardId, JSON.stringify(m)).not.toBe("?");
           expect(s.state.definitions[m.cardId], JSON.stringify(m)).toBeDefined();
         }
