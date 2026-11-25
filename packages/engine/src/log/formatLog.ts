@@ -114,7 +114,7 @@ export function formatGameLog(
   }
 
   if (parts[1] === "return_all_battle_to_rush") {
-    return `${player}がバトルエリアのユニットをすべてラッシュに戻した`;
+    return `${player}がバトルエリアのユニットをすべてラッシュエリアに戻した`;
   }
 
   if (parts[1] === "end_phase") {
@@ -207,15 +207,15 @@ export function formatGameLog(
       case "enter_battle": {
         if (detail?.startsWith("destroy:")) {
           const target = detail.replace("destroy:", "");
-          return `${player}の「${cardName}」登場効果で「${target}」を撃破`;
+          return `${player}の「${cardName}」のバトルエリアに出たときの効果で「${target}」を撃破`;
         }
         if (detail === "destroy_choice") {
-          return `${player}の「${cardName}」の登場効果の対象選択`;
+          return `${player}の「${cardName}」のバトルエリアに出たときの効果の対象選択`;
         }
         if (detail === "sky_magic_slash") {
           return `${player}の「${cardName}」が天空魔法斬りを発動（敵コマンドをホールド）`;
         }
-        return `${player}の「${cardName}」の登場効果`;
+        return `${player}の「${cardName}」のバトルエリアに出たときの効果`;
       }
       case "named_effect": {
         if (detail === "super_shield") {

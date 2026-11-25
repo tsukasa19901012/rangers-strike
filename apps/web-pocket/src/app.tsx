@@ -148,7 +148,7 @@ function matchFooter(v: GuiView): string {
   if (v.footerAccent) return `${v.footer.replace(/（[^）]*）$/, "")}（クリック: 決定 / 右クリック・Esc: やめる）`;
   if (v.footer.startsWith("盤面を確認中")) return "盤面を確認中（L・Esc・Space で選択ウィンドウに戻る）";
   if (v.footer.endsWith(" の手番")) return `${v.footer}です…`;
-  return "マウスを乗せると詳細 / クリック: 操作 / ドラッグ: 登場・移動・アタック / Space: フェイズ終了 / Tab: すべての操作 / L: ログ";
+  return "マウスを乗せると詳細 / クリック: 操作 / ドラッグ: ラッシュ・移動・アタック / Space: フェイズ終了 / Tab: すべての操作 / L: ログ";
 }
 
 /** Phone (portrait) hints: no mouse, no keyboard. */
