@@ -4,7 +4,7 @@
 // A toast says what happened (not for the person's own attack and strike). Drawn only: input never stops for it.
 import { Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
-import { fitLine, isPortrait, tileRect, wrapText, type GuiView, type ReplayEvent, type ReplayKind, type ReplayMove, type ReplaySlot, type ReplayView } from "@rangers-strike/client-core";
+import { fitLine, isPortrait, moveTag, tileRect, wrapText, type GuiView, type ReplayEvent, type ReplayKind, type ReplayMove, type ReplaySlot, type ReplayView } from "@rangers-strike/client-core";
 import { CardFace, type Box } from "./ui";
 
 /** Seconds since the step started (the core counts frames at 60 a second). */
@@ -62,36 +62,6 @@ const LABEL: Record<ReplayKind, string> = {
   morph: "モーフ",
   draw: "手札",
 };
-
-/** The short tag on a card an effect moved. */
-function moveTag(m: ReplayMove): string {
-  const field = m.fromZone === "battle" || m.fromZone === "rush";
-  switch (m.dest) {
-    case "discard":
-      return m.verb === "合体の素材にした" ? "素材" : field ? "撃破" : "捨札へ";
-    case "hand":
-      return "手札へ";
-    case "deck":
-      return "山札へ";
-    case "power":
-      return m.fromZone === "power" ? "オモテに" : "パワーへ";
-    case "powerDown":
-      return m.fromZone === "power" ? "裏に" : "パワーへ";
-    case "held":
-      return "ホールド";
-    case "command":
-      return m.fromZone === "command" ? "リリース" : "コマンドへ";
-    case "exile":
-      return "除外";
-    case "battle":
-    case "rush":
-      return field ? "移動" : "登場";
-    case "stack":
-      return m.verb === "モーフで入れ替わった" ? "入れ替え" : "素材";
-    default:
-      return "退場";
-  }
-}
 
 /** A tag in red for what was done to the person's cards, in the step's colour for the other side's own. */
 function MoveTag(props: { rect: Box; text: string; mine: boolean; opacity: number }) {

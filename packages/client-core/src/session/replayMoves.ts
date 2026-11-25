@@ -211,6 +211,40 @@ export function moveLine(move: ReplayMove, name: (cardId: string) => string, lab
   return `${who}の${where ? `${where} ` : " "}${name(move.cardId)} を${move.verb}`;
 }
 
+/**
+ * The short tag on a card an effect moved (「撃破」「手札へ」…). A card put onto the rush area from elsewhere is
+ * 「ラッシュ」 as in the rules; one put onto the battle area is 「登場」; one moved between the two rows is 「移動」.
+ */
+export function moveTag(m: ReplayMove): string {
+  const field = m.fromZone === "battle" || m.fromZone === "rush";
+  switch (m.dest) {
+    case "discard":
+      return m.verb === "合体の素材にした" ? "素材" : field ? "撃破" : "捨札へ";
+    case "hand":
+      return "手札へ";
+    case "deck":
+      return "山札へ";
+    case "power":
+      return m.fromZone === "power" ? "オモテに" : "パワーへ";
+    case "powerDown":
+      return m.fromZone === "power" ? "裏に" : "パワーへ";
+    case "held":
+      return "ホールド";
+    case "command":
+      return m.fromZone === "command" ? "リリース" : "コマンドへ";
+    case "exile":
+      return "除外";
+    case "battle":
+      return field ? "移動" : "登場";
+    case "rush":
+      return field ? "移動" : "ラッシュ";
+    case "stack":
+      return m.verb === "モーフで入れ替わった" ? "入れ替え" : "素材";
+    default:
+      return "退場";
+  }
+}
+
 /** The other side's cards an effect showed from its deck and put into its hand (GameState.lastReveal, newer than prev). */
 function shownToHand(prev: GameState, next: GameState): Array<{ cardId: string }> {
   const last = next.lastReveal;

@@ -4,7 +4,7 @@ import type { GameState } from "../engineApi";
 import { AppController } from "../app/controller";
 import { testEngine, testPlatform } from "../testing/engine";
 import { GameSession } from "./session";
-import { moveLine } from "./replayMoves";
+import { moveLine, moveTag, type ReplayMove } from "./replayMoves";
 import { REPLAY_FRAMES, ReplayPlayer, replayEvents, opponentPayingDamage, type ReplayEvent } from "./replay";
 
 const LABELS = { player1: "あなた", player2: "CPU" } as const;
@@ -347,5 +347,19 @@ describe("AppController (replay)", () => {
     const app = new AppController({ platform: testPlatform(), viewport: { width: 960, height: 544 }, cpuDelayFrames: 0, seed: () => 11, gui: true });
     app.startMatch();
     expect(app.replayView()).toBeNull();
+  });
+});
+
+describe("moveTag", () => {
+  const move = (dest: ReplayMove["dest"], fromZone?: string): ReplayMove => ({ owner: "player2", cardId: "X", dest, verb: "", fromZone });
+
+  it("tags a card put onto the rush area from elsewhere 「ラッシュ」, as the rules call it", () => {
+    for (const from of ["hand", "deck", "power", "discard", "command", undefined]) expect(moveTag(move("rush", from))).toBe("ラッシュ");
+  });
+
+  it("keeps 「登場」 for the battle area and 「移動」 between the two rows", () => {
+    expect(moveTag(move("battle", "hand"))).toBe("登場");
+    expect(moveTag(move("battle", "rush"))).toBe("移動");
+    expect(moveTag(move("rush", "battle"))).toBe("移動");
   });
 });

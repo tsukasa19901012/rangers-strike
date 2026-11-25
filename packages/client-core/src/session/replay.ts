@@ -9,6 +9,7 @@ import type { CardInstance, EngineApi, GameState, PlayerId } from "../engineApi"
 import { boardMoves, moveLine, type ReplayMove } from "./replayMoves";
 
 export type { MoveDest, ReplayMove } from "./replayMoves";
+export { moveTag } from "./replayMoves";
 
 type PendingStrikeView = { strikerPlayerId: PlayerId; strikerInstanceId: string; damage: number };
 
