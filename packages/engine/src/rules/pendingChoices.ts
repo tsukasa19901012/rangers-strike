@@ -811,6 +811,68 @@ export function isValidEffectChoiceTarget(
   return true;
 }
 
+/** 敵軍のユニット・コマンドを選ぶ選択（「相手に選ばれない」を候補から外す）。 */
+const PROTECTED_TARGET_KINDS = new Set<PendingEffectChoice["kind"]>([
+  "select_unit",
+  "select_unit_step",
+  "select_units_bp_budget",
+  "select_command",
+  "select_commands",
+]);
+
+/**
+ * 敵軍のユニットを「選んで」いない効果（「すべて」「好きな順に並べ替える」）。候補は出す順・並べる順を決めるだけ。
+ * RK-087 ゼクトマイザー、RS-049 ピットインダイブ、RS-284 スワンウィング、RK-286【戦いのリセット】（atwiki/page-2355 Q6）、
+ * RK-305【俺の必殺技特別編】の「…敵軍Sユニットをすべて撃破する」。
+ */
+const NOT_CHOOSING_EFFECT_IDS = new Set([
+  "rk087_zectmizer_enter",
+  "rk087_zectmizer_order",
+  "pit_in_dive",
+  "swan_wing_order",
+  "rk286_battle_reset",
+  "rk305_special_destroy",
+]);
+
+/**
+ * 「※これは（アタックされる以外では）相手に選ばれない。」等の敵軍のカードを、選ぶ人の効果の候補から外す。
+ * ユーザー報告（2026-11-25）「パトアーマーの効果で選ばれないサソードRFを選ぶことができる」（RS-046【アーマーアタック】の
+ * 候補に XG3-066 が入っていた）。効果ごとの候補づくりで外し忘れても、選択を開くここで外す。
+ * ブレイカー（R-KW-BREAKER-03）は発生源がユニットかどうかで変わるので、ここでは見ない（各効果の候補づくりで見る）。
+ * 外した結果、候補が無くなったら null（選択を開かない）。
+ */
+function withoutOpponentProtectedTargets(state: GameState, choice: PendingEffectChoice): PendingEffectChoice | null {
+  if (!PROTECTED_TARGET_KINDS.has(choice.kind)) return choice;
+  if (NOT_CHOOSING_EFFECT_IDS.has(choice.effectId)) return choice;
+  const ids = choice.validInstanceIds ?? [];
+  const enemy = state.players[opponent(choice.playerId)];
+  if (!enemy) return choice;
+  const enemyIds = new Set([...enemy.rush, ...enemy.battle, ...enemy.command].map((c) => c.instanceId));
+  const kept = ids.filter(
+    (id) =>
+      !enemyIds.has(id) ||
+      isSelectableByOpponentEffect(state, choice.playerId, id, choice.sourceCardId, undefined, { sourceNotUnit: true }),
+  );
+  if (kept.length === ids.length) return choice;
+  if (kept.length === 0) return null;
+  return { ...choice, validInstanceIds: kept };
+}
+
+/**
+ * 選択を openEffectChoice を通さずに直接置く効果（RS-141【紐拳】・RS-221【グラップファイター】・RS-545/RS-498 の
+ * 合計BP撃破・RS-592・RS-621 等）もあるので、アクションの後にも同じように外す（core/applyAction.ts）。
+ */
+export function guardOpponentProtectedTargets(state: GameState): GameState {
+  const choice = state.pendingEffectChoice;
+  if (!choice) return state;
+  const guarded = withoutOpponentProtectedTargets(state, choice);
+  if (guarded === choice) return state;
+  if (guarded) return { ...state, pendingEffectChoice: guarded };
+  const closed = { ...state, pendingEffectChoice: undefined, activePlayer: choice.phasePlayerId };
+  if (choice.resumeChoice) return openEffectChoice(closed, choice.resumeChoice);
+  return promoteDeferredBattleEntry(closed);
+}
+
 export function openEffectChoice(
   state: GameState,
   choice: PendingEffectChoice,
@@ -825,6 +887,12 @@ export function openEffectChoice(
     }
     choice = { ...refreshed, refreshOnOpen: undefined };
   }
+  const guarded = withoutOpponentProtectedTargets(state, choice);
+  if (!guarded) {
+    if (choice.resumeChoice) return openEffectChoice(state, choice.resumeChoice);
+    return promoteDeferredBattleEntry({ ...state, pendingEffectChoice: undefined, activePlayer: choice.phasePlayerId });
+  }
+  choice = guarded;
   const intercepted = maybeInterceptDeckRevealForShuriken(state, choice);
   if (intercepted) return intercepted;
   return {

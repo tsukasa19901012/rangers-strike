@@ -3,6 +3,7 @@ import { getDefinition } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { findCardInField } from "../rules/fieldLookup";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
+import { getCardDslDocument } from "../dsl/effectLookup";
 import {
   breakerBlocksEffectTarget,
   cardHasNotSelectableExceptAttack,
@@ -25,7 +26,22 @@ import { xg2CommandZoneProtected } from "../rules/xg2/xg2Fields";
  * docs/rules/README.md §5.7 j。
  */
 export function cardNotSelectableByOpponent(cardId: string): boolean {
-  return cardHasGrantKeyword(cardId, "not_selectable") || cardHasNotSelectableExceptAttack(cardId);
+  return cardHasPlainNotSelectable(cardId) || cardHasNotSelectableExceptAttack(cardId);
+}
+
+/**
+ * RS-129 バイオジェット2号【ステルス】「相手がオペレーションの効果でユニットを選ぶとき、このユニットを選ぶことはできない。」は
+ * DSL では not_selectable になっているが、防ぐのはオペレーションの効果だけ（ユニットの効果では選べる。atwiki/page-361）。
+ * オペレーションの効果のときは effects/resolveOperation.ts の isStealthUnit が別に外す。
+ */
+function notSelectableIsStealthOnly(cardId: string): boolean {
+  const text = (getCardDslDocument(cardId)?.text ?? "").normalize("NFKC");
+  return /【ステルス】/.test(text) && !/相手に選ばれない/.test(text);
+}
+
+/** 「※これは相手に選ばれない。」（ステルスのようにオペレーションだけを防ぐものは除く）。 */
+function cardHasPlainNotSelectable(cardId: string): boolean {
+  return cardHasGrantKeyword(cardId, "not_selectable") && !notSelectableIsStealthOnly(cardId);
 }
 
 /**
@@ -62,7 +78,7 @@ export function isSelectableByOpponentEffect(
   // XG2-093 ソルドーザー【道路封鎖】（rules/xg2/xg2Fields.ts）。
   if (found.zone === "command" && xg2CommandZoneProtected(state, found.playerId)) return false;
 
-  if (cardHasGrantKeyword(found.card.cardId, "not_selectable")) return false;
+  if (cardHasPlainNotSelectable(found.card.cardId)) return false;
   if (cardHasNotSelectableExceptAttack(found.card.cardId)) return false;
   if (rs627NotSelectable(state, found.playerId, targetInstanceId)) return false;
   // RS-464 花忍者ユリ【斬撃の回避】「次の相手ターン、相手はこのユニットを選べない。」（rules/legend1/set7NamedEffectsB.ts）。
