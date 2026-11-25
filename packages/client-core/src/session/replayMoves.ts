@@ -213,7 +213,8 @@ export function moveLine(move: ReplayMove, name: (cardId: string) => string, lab
 
 /**
  * The short tag on a card an effect moved (「撃破」「手札へ」…). A card put onto the rush area from elsewhere is
- * 「ラッシュ」 as in the rules; one put onto the battle area is 「登場」; one moved between the two rows is 「移動」.
+ * 「ラッシュ」 as in the rules; one put straight onto the battle area is 「バトルへ」 (the rules and card text never say
+ * 「登場」); one moved between the two rows is 「移動」, as the official rules put it.
  */
 export function moveTag(m: ReplayMove): string {
   const field = m.fromZone === "battle" || m.fromZone === "rush";
@@ -235,7 +236,7 @@ export function moveTag(m: ReplayMove): string {
     case "exile":
       return "除外";
     case "battle":
-      return field ? "移動" : "登場";
+      return field ? "移動" : "バトルへ";
     case "rush":
       return field ? "移動" : "ラッシュ";
     case "stack":

@@ -266,7 +266,7 @@ describe("start phase steps", () => {
       "あなたがホールド中のコマンドをリリースした",
     );
     expect(formatGameLog("player2|return_all_battle_to_rush", {})).toBe(
-      "CPUがバトルエリアのユニットをすべてラッシュに戻した",
+      "CPUがバトルエリアのユニットをすべてラッシュエリアに戻した",
     );
   });
 });

@@ -357,8 +357,8 @@ describe("moveTag", () => {
     for (const from of ["hand", "deck", "power", "discard", "command", undefined]) expect(moveTag(move("rush", from))).toBe("ラッシュ");
   });
 
-  it("keeps 「登場」 for the battle area and 「移動」 between the two rows", () => {
-    expect(moveTag(move("battle", "hand"))).toBe("登場");
+  it("tags the battle area 「バトルへ」 (never 「登場」) and a move between the two rows 「移動」", () => {
+    expect(moveTag(move("battle", "hand"))).toBe("バトルへ");
     expect(moveTag(move("battle", "rush"))).toBe("移動");
     expect(moveTag(move("rush", "battle"))).toBe("移動");
   });
