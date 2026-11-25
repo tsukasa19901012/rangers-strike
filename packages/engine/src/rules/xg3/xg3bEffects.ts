@@ -6,7 +6,7 @@
 import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
-import { getDefinition, parsePowerCost, unitSizeOf, effectiveBp } from "../../core/catalog";
+import { getDefinition, parsePowerCost, unitOnlySize, unitSizeOf, effectiveBp } from "../../core/catalog";
 import { drawOne, opponent, turnPlayerOf } from "../../core/helpers";
 import { tryResolveDslNcEffects } from "../../dsl/triggerResolver";
 import { patchPlayer } from "../playerPatches";
@@ -99,12 +99,12 @@ const CREATIONS: CreationSpec[] = [
   {
     cardId: "XG3-024",
     effectId: "xg3024_torinoid",
-    fits: (state, c) => unitSizeOf(state.definitions, c) === "S" && printedCategories(state, c.cardId).includes("DA") && printedFeatures(state, c.cardId).length >= 3,
+    fits: (state, c) => unitOnlySize(state.definitions, c) === "S" && printedCategories(state, c.cardId).includes("DA") && printedFeatures(state, c.cardId).length >= 3,
   },
   {
     cardId: "XG3-025",
     effectId: "xg3025_giganoid",
-    fits: (state, c) => unitSizeOf(state.definitions, c) === "L" && printedCategories(state, c.cardId).includes("DA"),
+    fits: (state, c) => unitOnlySize(state.definitions, c) === "L" && printedCategories(state, c.cardId).includes("DA"),
   },
 ];
 

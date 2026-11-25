@@ -6,7 +6,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { GrantKeywordContext } from "../../dsl/grantKeyword";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
-import { effectiveBp, getDefinition, isVehicle, parsePowerCost, unitBp, unitSizeOf } from "../../core/catalog";
+import { effectiveBp, getDefinition, isVehicle, parsePowerCost, unitBp, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent, turnPlayerOf } from "../../core/helpers";
 import { addTurnRestrictionModifier } from "../../core/scopedModifiers";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
@@ -216,7 +216,7 @@ const HARDOCK_HOLD_EFFECT_ID = "xg3088_hardock_shocker_hold";
 
 UNIT_RUSHED_HOOKS.push((state, rusherPlayerId, rushedInstanceId, phasePlayerId) => {
   const rushed = fieldUnits(state, rusherPlayerId).find((c) => c.instanceId === rushedInstanceId);
-  if (!rushed || unitSizeOf(state.definitions, rushed) !== "S") return state;
+  if (!rushed || unitOnlySize(state.definitions, rushed) !== "S") return state;
   const ctx = { state, playerId: rusherPlayerId };
   if (!cardHasKeyword(state.definitions, rushed.cardId, "register", ctx) && !cardHasKeyword(state.definitions, rushed.cardId, "wing", ctx)) return state;
   const ownerId = opponent(rusherPlayerId);

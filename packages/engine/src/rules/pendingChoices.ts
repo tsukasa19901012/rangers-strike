@@ -83,7 +83,7 @@ import type {
   SeabedDrawMeta,
 } from "../types/game";
 import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
-import { cardName, cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp, unitEffectiveCategories, unitSizeOf } from "../core/catalog";
+import { unitOnlySize, cardName, cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp, unitEffectiveCategories, unitSizeOf } from "../core/catalog";
 import { withSpBecomes } from "./fractionalSp";
 import {
   applyDiscoDanceReturnFemaleSToRush,
@@ -3409,7 +3409,7 @@ export function adjacentPairCandidates(
   const sizeOk = (c: CardInstance) =>
     constraint.size === "S"
       ? isSmallUnit(state.definitions, c)
-      : unitSizeOf(state.definitions, c) === constraint.size;
+      : unitOnlySize(state.definitions, c) === constraint.size;
   const ok = (c: CardInstance) => sizeOk(c) && isSelectableByOpponentEffect(state, actorId, c.instanceId, sourceCardId);
   const result = new Set<string>();
   for (let i = 0; i + 1 < row.length; i++) {

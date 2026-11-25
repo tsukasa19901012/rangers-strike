@@ -154,7 +154,7 @@ export function shouldMedicalRescueToPower(
     return false;
   }
   const def = getDefinition(state.definitions, cardId);
-  if (!def || def.size !== "M") return false;
+  if (!def || def.type !== "unit" || def.size !== "M") return false;
   return categoriesInclude(def.category, "WB");
 }
 

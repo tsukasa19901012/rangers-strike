@@ -14,7 +14,7 @@
  */
 import { getCardById, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingLeave, PlayerId } from "../../types/game";
-import { effectiveBp, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { effectiveBp, getDefinition, unitEffectiveCategories, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { hasNameOrAlias, sameCardName } from "../../core/cardNames";
 import { unitFeatures } from "../addedFeatures";
@@ -87,7 +87,7 @@ export function xg7FieldBpBonus(state: GameState, playerId: PlayerId, instance: 
   }
   if (role === "attacking") {
     const copies = state.players[playerId].discard.filter((c) => isId(c.cardId, "XG7-007")).length;
-    if (copies > 0 && unitSizeOf(state.definitions, instance) === "M" && unitFeatures(state, playerId, instance).includes("恐竜")) {
+    if (copies > 0 && unitOnlySize(state.definitions, instance) === "M" && unitFeatures(state, playerId, instance).includes("恐竜")) {
       bonus += 1000 * copies;
     }
   }
@@ -146,7 +146,7 @@ export function xg7EffectiveSp(state: GameState, playerId: PlayerId, instance: C
 /** XG7-009【受け継いだもの】「これは自軍Lユニットがあれば、敵軍ユニットにアタックされない。」 */
 export function xg7DefenderBlocksAttack(state: GameState, attackerPlayerId: PlayerId, _attacker: CardInstance, defenderPlayerId: PlayerId, defender: CardInstance): boolean {
   if (attackerPlayerId === defenderPlayerId) return false;
-  if (isId(defender.cardId, "XG7-009") && areaUnits(state, defenderPlayerId).some((c) => unitSizeOf(state.definitions, c) === "L")) return true;
+  if (isId(defender.cardId, "XG7-009") && areaUnits(state, defenderPlayerId).some((c) => unitOnlySize(state.definitions, c) === "L")) return true;
   return false;
 }
 
@@ -158,7 +158,7 @@ export function xg7NotSelectable(state: GameState, selectorPlayerId: PlayerId, o
   if (selectorPlayerId === ownerId) return false;
   const battle = state.players[ownerId].battle;
   const index = battle.findIndex((c) => c.instanceId === card.instanceId);
-  if (index >= 0 && unitSizeOf(state.definitions, card) === "L" && unitEffectiveCategories(state, ownerId, card, "battle").includes("OT")) {
+  if (index >= 0 && unitOnlySize(state.definitions, card) === "L" && unitEffectiveCategories(state, ownerId, card, "battle").includes("OT")) {
     const neighbors = [battle[index - 1], battle[index + 1]].filter((c): c is CardInstance => !!c);
     if (neighbors.some((c) => isId(c.cardId, "XG7-009"))) return true;
   }
@@ -242,7 +242,7 @@ export function xg7CrossBonus(card: Pick<CardInstance, "xg7Turn">): number {
  */
 export function xg7UsableAsName(state: GameState, ownerId: PlayerId, cardId: string, name: string): boolean {
   if (isId(cardId, "XG7-016") && (sameCardName(name, "ゲキレッド") || sameCardName(name, "黒獅子リオ"))) {
-    return !areaUnits(state, ownerId).some((c) => unitSizeOf(state.definitions, c) === "L");
+    return !areaUnits(state, ownerId).some((c) => unitOnlySize(state.definitions, c) === "L");
   }
   return false;
 }

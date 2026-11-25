@@ -7,7 +7,7 @@ import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { unitOnlySize, cardName, effectiveBp, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { shuffleCards } from "../../core/deckShuffle";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -549,7 +549,7 @@ function applyHakaider(state: GameState, ctx: GrantKeywordContext): GrantKeyword
   const enemyId = opponent(ctx.playerId);
   const ids = sortedIds(
     enemyUnits(state, ctx.playerId, "XG2-101", (c) => {
-      const size = unitSizeOf(state.definitions, c);
+      const size = unitOnlySize(state.definitions, c);
       return (size === "S" || size === "M") && featuresNow(state, enemyId, c).includes("メカ");
     }, "battle"),
   );

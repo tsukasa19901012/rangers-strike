@@ -48,7 +48,7 @@ export function flowerBombPowerCostOverride(
   cardId: string,
 ): number | null {
   const def = getDefinition(state.definitions, cardId);
-  if (!def || def.size !== "S") return null;
+  if (!def || def.type !== "unit" || def.size !== "S") return null;
   const ownerId = opponent(rusherPlayerId);
   return getFlowerBombDeclaredCost(state, ownerId);
 }

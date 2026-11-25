@@ -16,7 +16,7 @@
 import { openDeckLook } from "../deckLook";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardCategories, effectiveBp, effectiveCommandCategories, unitSizeOf } from "../../core/catalog";
+import { cardCategories, effectiveBp, effectiveCommandCategories, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent, turnPlayerOf } from "../../core/helpers";
 import { countAvailablePower } from "../../core/power";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -72,7 +72,7 @@ import { choice, def, isUnitDef, relocateFieldUnit, turnPlayer } from "./xg6aEff
 type Outcome = { state: GameState; log?: string };
 
 function isSmall(state: GameState, card: CardInstance): boolean {
-  return unitSizeOf(state.definitions, card) === "S";
+  return unitOnlySize(state.definitions, card) === "S";
 }
 
 function features(state: GameState, cardId: string): string[] {

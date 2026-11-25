@@ -8,7 +8,7 @@ import { lookCtx, openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { effectiveBp, getDefinition } from "../../core/catalog";
+import { unitOnlySize, effectiveBp, getDefinition } from "../../core/catalog";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { listDslEffectsForTrigger } from "../../dsl/effectLookup";
 import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
@@ -178,7 +178,7 @@ AFTER_ACTION_HOOKS.push((before, after) => {
   for (const pid of PLAYERS) {
     const pinks = after.players[pid].battle.filter((c) => isSameCardIdentity(c.cardId, "XG5-005") && before.players[pid].battle.some((b) => b.instanceId === c.instanceId));
     if (pinks.length === 0) continue;
-    const entered = newBattleUnits(before, after, opp(pid)).filter((c) => sizeOf(after, c) === "S");
+    const entered = newBattleUnits(before, after, opp(pid)).filter((c) => unitOnlySize(after.definitions, c) === "S");
     if (entered.length === 0) continue;
     for (const pink of pinks) {
       next = openAfter(next, confirmChoice({ playerId: pid, phasePlayerId: turnPlayerOf(after), sourceInstanceId: pink.instanceId }, "XG5-005", PINK));
@@ -341,7 +341,7 @@ const COMMAND_OP_CONFIRM = "xg5_command_op";
 AFTER_ACTION_HOOKS.push((before, after) => {
   let next = after;
   for (const pid of PLAYERS) {
-    const entered = newBattleUnits(before, after, pid).filter((c) => sizeOf(after, c) === "L");
+    const entered = newBattleUnits(before, after, pid).filter((c) => unitOnlySize(after.definitions, c) === "L");
     if (entered.length === 0) continue;
     for (const op of COMMAND_OPS) {
       if (!entered.some((u) => fieldCategories(after, pid, u).includes(op.category) && (!op.extra || op.extra(after, pid, u)))) continue;
@@ -464,7 +464,7 @@ CHOICE_RESOLVERS[REGEN] = (state, playerId, instanceId) => {
 
 const STYRIZER = "xg5_015_styrizer";
 XG5_KEYWORDS["XG5-015::styrizer"] = (state, ctx) => {
-  const ids = fieldUnits(state, ctx.playerId).filter((c) => sizeOf(state, c) === "S").map((c) => c.instanceId);
+  const ids = fieldUnits(state, ctx.playerId).filter((c) => unitOnlySize(state.definitions, c) === "S").map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "xg5_015:no_targets" };
   return { state: openAfter(state, selectOne(ctxBase(ctx), "XG5-015", STYRIZER, ids, false)), detail: STYRIZER };
 };

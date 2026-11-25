@@ -7,7 +7,7 @@ import {
   effectiveBp,
   getDefinition,
   isSmallUnit,
-  unitSizeOf,
+  unitOnlySize, unitSizeOf,
 } from "../core/catalog";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { listZordFusionPartnerIds, resolveRushAdditionalCondition } from "@rangers-strike/cards";
@@ -316,7 +316,7 @@ export function tryZubazubanOnAllyRush(
   const found = findInZone(rusher, "rush", rushedInstanceId);
   if (!found) return state;
   const def = getDefinition(state.definitions, found.card.cardId);
-  if (unitSizeOf(state.definitions, found.card) !== "L" || !(def?.features ?? []).includes("メカ")) return state;
+  if (unitOnlySize(state.definitions, found.card) !== "L" || !(def?.features ?? []).includes("メカ")) return state;
   // 「その追加条件を満たすために捨札にした合体ユニット」— 追加条件が「自軍合体ユニットを捨札にする」のユニットだけ
   // （faq-card-6 RS-420 Q1: トラベリオンエクスプレスを捨札にしたトラベリオンでは発動しない）。
   if (resolveRushAdditionalCondition(found.card.cardId, def)?.conditionId !== "discard_fusion_unit") return state;
@@ -437,7 +437,7 @@ export function applyShinobiBallRequiredDefender(
   );
   if (!unit) return entry;
   const def = getDefinition(state.definitions, unit.cardId);
-  if (unitSizeOf(state.definitions, unit) !== "S") return entry;
+  if (unitOnlySize(state.definitions, unit) !== "S") return entry;
   if (
     !canAttackDefender(
       state,

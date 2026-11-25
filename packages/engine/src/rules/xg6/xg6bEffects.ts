@@ -13,7 +13,7 @@
  * 継続効果（BP・SP・アタック・ラッシュ・進入・ストライクの制限・レジスト・カテゴリ）は rules/xg6/xg6Fields.ts。
  */
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
-import { effectiveBp, unitSizeOf } from "../../core/catalog";
+import { effectiveBp, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { drawOne, opponent, turnPlayerOf } from "../../core/helpers";
 import { advancePhase, loseDamageThreshold } from "../../core/createGame";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -55,7 +55,7 @@ import { choice, currentCats, def, isUnitDef, relocateFieldUnit, turnPlayer } fr
 type Outcome = { state: GameState; log?: string };
 
 function isSmall(state: GameState, card: CardInstance): boolean {
-  return unitSizeOf(state.definitions, card) === "S";
+  return unitOnlySize(state.definitions, card) === "S";
 }
 
 function selfOf(state: GameState, pending: PendingEffectChoice): CardInstance | undefined {

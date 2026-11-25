@@ -21,7 +21,7 @@ import {
   effectiveComboNumber,
   getDefinition,
   unitEffectiveCategories,
-  unitSizeOf,
+  unitOnlySize, unitSizeOf,
 } from "../core/catalog";
 import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
 import { attackerPodNumber } from "./legend1/set6NamedEffectsB";
@@ -119,7 +119,7 @@ function tankCommandBlocksNc(
   card: CardInstance,
   definition: CardDefinition,
 ): boolean {
-  if (unitSizeOf(state.definitions, card) !== "S" || typeof definition.comboNumber !== "number") return false;
+  if (unitOnlySize(state.definitions, card) !== "S" || typeof definition.comboNumber !== "number") return false;
   for (const pid of ["player1", "player2"] as const) {
     const player = state.players[pid];
     if (!player.rush.some((c) => c.cardId === "RS-263")) continue;

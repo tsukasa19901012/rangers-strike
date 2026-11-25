@@ -2,7 +2,7 @@
  * クロスギャザー XG5 の各バッチで使う小さな部品（rules/rm/rm1Effects.ts の共通の部品の上に足したもの）。
  */
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardCategories, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { unitOnlySize, cardCategories, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { sameCardName } from "../../core/cardNames";
 import { base, type BaseCtx, fieldUnits, stripForZone, zoneOfField } from "../rm/rm1Effects";
 import { patchPlayer } from "../playerPatches";

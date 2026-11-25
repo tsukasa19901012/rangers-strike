@@ -741,7 +741,8 @@ export function emergencyRequestEnemyCommandIds(
 ): string[] {
   if (!rushingCardId) return [];
   if (state.phase !== "rush" || state.activePlayer !== playerId) return [];
-  if (getDefinition(state.definitions, rushingCardId)?.size !== "M") return [];
+  const rushing = getDefinition(state.definitions, rushingCardId);
+  if (rushing?.type !== "unit" || rushing.size !== "M") return [];
   if (!state.players[playerId].rush.some((c) => isTuckCard(state, c.cardId))) return [];
   return state.players[opponent(playerId)].command.filter((c) => c.commandHeld).map((c) => c.instanceId);
 }

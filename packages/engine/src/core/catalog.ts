@@ -191,6 +191,7 @@ export function isMediumUnit(
   definitions: Record<string, CardDefinition>,
   card: SizedCard,
 ): boolean {
+  if (isVehicleCard(definitions, card)) return false;
   return resolveUnitSize(definitions, card) === "M";
 }
 
@@ -273,6 +274,7 @@ export function isSmallUnit(
   definitions: Record<string, CardDefinition>,
   card: SizedCard,
 ): boolean {
+  if (isVehicleCard(definitions, card)) return false;
   return unitSizeOf(definitions, card) === "S";
 }
 
@@ -280,7 +282,22 @@ export function isLargeUnit(
   definitions: Record<string, CardDefinition>,
   card: SizedCard,
 ): boolean {
+  if (isVehicleCard(definitions, card)) return false;
   return unitSizeOf(definitions, card) === "L";
+}
+
+/**
+ * ユニットとしての大きさ（ビークルなら undefined）。カードの「Sユニット」「Mユニット」「Lユニット」の判定に使う。
+ * Sビークル等も含めるときは unitSizeOf（SX-006 の「SユニットとSビークル」など）。
+ */
+export function unitOnlySize(definitions: Record<string, CardDefinition>, card: SizedCard): UnitSize | undefined {
+  return isVehicleCard(definitions, card) ? undefined : unitSizeOf(definitions, card);
+}
+
+/** ビークルのカードか（「S/M/Lユニット」の判定から外す。RK-147 デンライナーイスルギと RK-058 マシンゼクトロン）。 */
+export function isVehicleCard(definitions: Record<string, CardDefinition>, card: SizedCard): boolean {
+  const cardId = sizedCardId(card);
+  return (getDefinition(definitions, cardId) ?? getCardById(cardId))?.type === "vehicle";
 }
 
 /** RS-015 減少 + RS-140 データ解析（敵場のコロンで自軍SのCN+1）。 */

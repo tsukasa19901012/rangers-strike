@@ -5,7 +5,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardWorks, effectiveBp } from "../../core/catalog";
+import { unitOnlySize, cardWorks, effectiveBp } from "../../core/catalog";
 import { patchPlayer } from "../playerPatches";
 import { finalizeEffectRush, markFieldEntryHandled } from "../../events/emitUnitRushed";
 import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
@@ -370,7 +370,7 @@ AFTER_ACTION_HOOKS.push((before, after) => {
     const battle = after.players[pid].battle;
     battle.forEach((u, i) => {
       if (i === 0 || !entered.has(u.instanceId) || !isSameCardIdentity(battle[i - 1]!.cardId, "XG5-031")) return;
-      if (sizeOf(after, u) !== "M" || printedFeatures(after, u.cardId).includes("メカ")) return;
+      if (unitOnlySize(after.definitions, u) !== "M" || printedFeatures(after, u.cardId).includes("メカ")) return;
       next = addBp(next, pid, u.instanceId, 3000);
       if (i === 1) next = grantSp1ToBattleUnit(next, pid, u.instanceId);
       next = addFlag(next, { kind: "xg5-031", playerId: pid, turn: after.turn, target: u.instanceId });

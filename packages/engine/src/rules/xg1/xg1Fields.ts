@@ -197,7 +197,7 @@ export function xg1HoldSubstituteAvailable(
   rushingCardId: string,
 ): boolean {
   const d = definitions[rushingCardId];
-  if (!d || (d.size !== "M" && d.size !== "L")) return false;
+  if (!d || d.type !== "unit" || (d.size !== "M" && d.size !== "L")) return false;
   const condition = resolveRushAdditionalCondition(rushingCardId, d);
   if (!condition || condition.conditionId !== "send_s_unit_to_discard" || !xg1IsPlainSDiscardCondition(condition.text)) return false;
   return player.rush.some((c) => isSameCardIdentity(c.cardId, "XG1-013"));
