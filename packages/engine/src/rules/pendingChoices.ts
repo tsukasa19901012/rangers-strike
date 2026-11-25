@@ -121,7 +121,7 @@ import {
   openMurphyChaseDeckChoice,
 } from "./murphyChase";
 import { continueDslAfterChoice } from "../dsl/cardInterpreter";
-import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
+import { cardNotSelectableByOpponent, isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { isHoldActivateChoice, resolveHoldActivateChoice, shifuSubstituteCommandId } from "./holdToActivate";
 import { getDslEffectById } from "../dsl/effectLookup";
 import {
@@ -811,13 +811,16 @@ export function isValidEffectChoiceTarget(
   return true;
 }
 
-/** 敵軍のユニット・コマンドを選ぶ選択（「相手に選ばれない」を候補から外す）。 */
+/** 敵軍のユニット・コマンド・オモテ向きのパワー・捨札を選ぶ選択（「相手に選ばれない」を候補から外す）。 */
 const PROTECTED_TARGET_KINDS = new Set<PendingEffectChoice["kind"]>([
   "select_unit",
   "select_unit_step",
   "select_units_bp_budget",
   "select_command",
   "select_commands",
+  "select_power",
+  "pick",
+  "pick_effect_branch",
 ]);
 
 /**
@@ -838,24 +841,62 @@ const NOT_CHOOSING_EFFECT_IDS = new Set([
  * 「※これは（アタックされる以外では）相手に選ばれない。」等の敵軍のカードを、選ぶ人の効果の候補から外す。
  * ユーザー報告（2026-11-25）「パトアーマーの効果で選ばれないサソードRFを選ぶことができる」（RS-046【アーマーアタック】の
  * 候補に XG3-066 が入っていた）。効果ごとの候補づくりで外し忘れても、選択を開くここで外す。
- * ブレイカー（R-KW-BREAKER-03）は発生源がユニットかどうかで変わるので、ここでは見ない（各効果の候補づくりで見る）。
+ * ブレイカー（R-KW-BREAKER-03）は、発生源が場のユニット・ビークルのときだけ外す（sourceIsFieldUnit）。
  * 外した結果、候補が無くなったら null（選択を開かない）。
  */
 function withoutOpponentProtectedTargets(state: GameState, choice: PendingEffectChoice): PendingEffectChoice | null {
   if (!PROTECTED_TARGET_KINDS.has(choice.kind)) return choice;
   if (NOT_CHOOSING_EFFECT_IDS.has(choice.effectId)) return choice;
   const ids = choice.validInstanceIds ?? [];
+  // 候補を全部選んだ状態で開く選択は「…をすべて撃破する」等の確定処理の共用（RS-319【ディーソードベガ】等）。選んでいないので外さない。
+  const preselected = new Set(choice.selectedInstanceIds ?? []);
+  if (ids.length > 0 && ids.every((id) => preselected.has(id))) return choice;
   const enemy = state.players[opponent(choice.playerId)];
   if (!enemy) return choice;
-  const enemyIds = new Set([...enemy.rush, ...enemy.battle, ...enemy.command].map((c) => c.instanceId));
-  const kept = ids.filter(
-    (id) =>
-      !enemyIds.has(id) ||
-      isSelectableByOpponentEffect(state, choice.playerId, id, choice.sourceCardId, undefined, { sourceNotUnit: true }),
+  const fieldIds = new Set([...enemy.rush, ...enemy.battle, ...enemy.command].map((c) => c.instanceId));
+  // オモテ向きのパワー・捨札のカードも、相手が見て選ぶなら「相手に選ばれない」が効く（docs/rules/README.md §5.7 j）。
+  const shownCards = new Map(
+    [...enemy.power.filter((c) => !c.faceDown), ...enemy.discard].map((c) => [c.instanceId, c.cardId] as const),
   );
+  // ブレイカーは「ブレイカーを持たない敵軍ユニット・ビークルの効果」に選ばれない（R-KW-BREAKER-01/03）。発生源が場のユニット・ビークルの
+  // 効果のときだけ見る。パワーゾーンのカードの効果（RK-143）、手札から見せたカードの効果（XG6-003 → RS-168）はユニットの効果ではない。
+  // 「相手は自分自身のユニットを1体選び」（PR-026・RS-209・RS-679 等）のように持ち主が選ぶときも、敵軍ユニットの効果なら選べない。
+  const sourceOwnerId = fieldUnitSourceOwner(state, choice);
+  const sourceNotUnit = sourceOwnerId === null;
+  const own = state.players[choice.playerId];
+  const ownFieldIds =
+    sourceOwnerId !== null && sourceOwnerId !== choice.playerId
+      ? new Set([...own.rush, ...own.battle].map((c) => c.instanceId))
+      : new Set<string>();
+  const kept = ids.filter((id) => {
+    if (fieldIds.has(id)) {
+      return isSelectableByOpponentEffect(state, choice.playerId, id, choice.sourceCardId, sourceOwnerId ?? undefined, { sourceNotUnit });
+    }
+    if (ownFieldIds.has(id)) {
+      return isSelectableByOpponentEffect(state, choice.playerId, id, choice.sourceCardId, sourceOwnerId ?? undefined);
+    }
+    const cardId = shownCards.get(id);
+    return cardId === undefined || !cardNotSelectableByOpponent(cardId);
+  });
   if (kept.length === ids.length) return choice;
   if (kept.length === 0) return null;
   return { ...choice, validInstanceIds: kept };
+}
+
+/** 選択の発生源が場（ラッシュエリア・バトルエリア）にあるユニット・ビークルなら、その持ち主。違えば null。 */
+function fieldUnitSourceOwner(state: GameState, choice: PendingEffectChoice): PlayerId | null {
+  if (choice.sourceNotUnit) return null;
+  const type = getDefinition(state.definitions, choice.sourceCardId)?.type;
+  if (type !== "unit" && type !== "vehicle") return null;
+  const owners: PlayerId[] = [];
+  for (const pid of ["player1", "player2"] as const) {
+    for (const c of [...state.players[pid].rush, ...state.players[pid].battle]) {
+      if (choice.sourceInstanceId ? c.instanceId === choice.sourceInstanceId : c.cardId === choice.sourceCardId) {
+        if (!owners.includes(pid)) owners.push(pid);
+      }
+    }
+  }
+  return owners.length === 1 ? owners[0]! : null;
 }
 
 /**
