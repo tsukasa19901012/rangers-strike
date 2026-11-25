@@ -819,7 +819,6 @@ const PROTECTED_TARGET_KINDS = new Set<PendingEffectChoice["kind"]>([
   "select_command",
   "select_commands",
   "select_power",
-  "pick",
   "pick_effect_branch",
 ]);
 
