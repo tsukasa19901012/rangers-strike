@@ -29,10 +29,12 @@ function ctx(sourceCardId: string, effectId: string, selfId?: string) {
 describe("報告カードの能動効果ランタイム", () => {
   it("XG3-066 ライダースラッシュ: 条件を満たす敵 S を選んで撃破するバナーが出る", () => {
     const self = inst("XG3-066", "self");
-    // ナンバー1 の敵 S ユニット（XG3-066 自身が number:1 の S）を的にする
-    const enemy = inst("XG3-066", "target");
+    // 必要パワー1 の敵 S ユニット（RK-135）を的にする。ナンバー1 の XG3-066 は「アタックされる以外では相手に選ばれない」ので選べない
+    // （ユーザー報告 2026-11-25「パトアーマーの効果で選ばれないサソードRFを選ぶことができる」）。
+    const enemy = inst("RK-135", "target");
+    const sasword = inst("XG3-066", "sasword");
     const state = baseState({ battle: [self] });
-    state.players.player2 = { ...state.players.player2, battle: [enemy] };
+    state.players.player2 = { ...state.players.player2, battle: [enemy, sasword] };
 
     const { state: opened } = applyGrantKeyword(
       state,
@@ -41,6 +43,7 @@ describe("報告カードの能動効果ランタイム", () => {
     );
     expect(opened.pendingEffectChoice?.effectId).toBe("rider_slash_destroy");
     expect(opened.pendingEffectChoice?.validInstanceIds).toContain(enemy.instanceId);
+    expect(opened.pendingEffectChoice?.validInstanceIds).not.toContain(sasword.instanceId);
 
     const r = applyAction(opened, {
       type: "resolve_effect_choice",
@@ -101,8 +104,10 @@ describe("報告カードの能動効果ランタイム", () => {
 
   it("XG3-062 ライダーキック: パワー1/2/3 が揃うと敵 S をパワー送り（自軍は対象外）", () => {
     const self = inst("XG3-062", "self");
-    const enemy = inst("XG3-066", "enemyS");
-    const ally = inst("XG3-066", "allyS");
+    const enemy = inst("RK-135", "enemyS");
+    const ally = inst("RK-135", "allyS");
+    // 「アタックされる以外では相手に選ばれない」敵軍 S ユニットは選べない（ユーザー報告 2026-11-25）
+    const sasword = inst("XG3-066", "sasword");
     const state = baseState({ battle: [self, ally] });
     state.definitions = {
       ...state.definitions,
@@ -114,7 +119,7 @@ describe("報告カードの能動効果ランタイム", () => {
       ...state.players.player1,
       power: [inst("TST-PW1", "pw1"), inst("TST-PW2", "pw2"), inst("TST-PW3", "pw3")],
     };
-    state.players.player2 = { ...state.players.player2, battle: [enemy] };
+    state.players.player2 = { ...state.players.player2, battle: [enemy, sasword] };
 
     const { state: opened } = applyGrantKeyword(
       state,
@@ -125,6 +130,7 @@ describe("報告カードの能動効果ランタイム", () => {
     // 自軍ユニットは選択肢に含まれない
     expect(opened.pendingEffectChoice?.validInstanceIds).toContain(enemy.instanceId);
     expect(opened.pendingEffectChoice?.validInstanceIds).not.toContain(ally.instanceId);
+    expect(opened.pendingEffectChoice?.validInstanceIds).not.toContain(sasword.instanceId);
 
     const r = applyAction(opened, {
       type: "resolve_effect_choice",

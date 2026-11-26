@@ -401,7 +401,7 @@ import {
 } from "../rules/operationCounters";
 import { applyLionDance, applyUseJuuKunDo, isLionDanceCard } from "../rules/juuKunDo";
 import { applyResolveRuinSurvey } from "../rules/ruinSurvey";
-import { applySeabedDrawPlacement, openEffectChoice, SUPER_BRAIN_KEEP_EFFECT_ID } from "../rules/pendingChoices";
+import { applySeabedDrawPlacement, guardOpponentProtectedTargets, openEffectChoice, SUPER_BRAIN_KEEP_EFFECT_ID } from "../rules/pendingChoices";
 import { applyConfirmDenjiReveal } from "../rules/denjiMachine";
 import {
   applyConfirmShironReveal,
@@ -1143,7 +1143,8 @@ function applyActionUncached(
     applyActionWithRng(state, action, options),
   );
   // 「自軍山札を見て…」の選択には、山札の全部を見るだけのカードとして足す（rules/deckLook.ts）。
-  const result = raw.ok && raw.state ? { ...raw, state: withDeckLookView(raw.state) } : raw;
+  // 「相手に選ばれない」敵軍のカードは、どの効果の選択の候補にも入れない（rules/pendingChoices.ts guardOpponentProtectedTargets）。
+  const result = raw.ok && raw.state ? { ...raw, state: withDeckLookView(guardOpponentProtectedTargets(raw.state)) } : raw;
   if (!result.ok || rngState === undefined) return result;
   const withRng = { ...result.state, rngState };
   sharePerCardCacheInSearch(result.state, withRng);

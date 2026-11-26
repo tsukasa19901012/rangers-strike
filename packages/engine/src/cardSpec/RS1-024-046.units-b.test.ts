@@ -481,6 +481,27 @@ describe("RS-046 パトアーマー", () => {
     expect(opts).not.toContain(own.instanceId);
   });
 
+  it("RS-046: 「相手に選ばれない」敵軍ユニット（XG3-066 サソードRF・RK-057 ザビーRF・XG5-051 カブトHF）は選べない（ユーザー報告 2026-11-25「パトアーマーの効果で選ばれないサソードRFを選ぶことができる」）", () => {
+    const sasword = inst("XG3-066", "sasword");
+    const zabee = inst("RK-057", "zabee");
+    const kabuto = inst("XG5-051", "kabuto");
+    const ok = inst("SPEC-S-1000", "ok");
+    const { state } = setup({}, { battle: [sasword, zabee, kabuto, ok] });
+    const opts = choiceOptions(state, "player1");
+    expect(opts).toContain(ok.instanceId);
+    expect(opts).not.toContain(sasword.instanceId);
+    expect(opts).not.toContain(zabee.instanceId);
+    expect(opts).not.toContain(kabuto.instanceId);
+    expect(() => choose(state, "player1", sasword.instanceId)).toThrow();
+  });
+
+  it("RS-046: 敵軍バトルエリアに「相手に選ばれない」ユニットしかなければ、選択は開かず何も送られない（ユーザー報告 2026-11-25）", () => {
+    const sasword = inst("XG3-066", "sasword");
+    const { state } = setup({}, { battle: [sasword] });
+    expect(state.pendingEffectChoice?.effectId).not.toBe("armor_attack");
+    expect(zoneOf(state, "player2", sasword.instanceId)).toBe("battle");
+  });
+
   it("RS-046: 発動は任意（発動できる）（出典: atwiki/page-283「発動できる」）", () => {
     const enemy = inst("SPEC-S-1000", "enemy");
     let { state } = setup({}, { battle: [enemy] });
