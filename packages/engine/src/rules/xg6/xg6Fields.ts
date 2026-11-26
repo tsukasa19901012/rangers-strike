@@ -9,6 +9,7 @@
  * - `xg6GrantsBlast`: XG6-004 フルブラスト・アクション（keywords/battleKeywords.ts）。
  * - ターン中の記録（`hasXg6Mark` 等。GameState.xg6）。
  */
+import { unitOnlySize } from "../../core/catalog";
 import { cardCategories, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { getPlayerModifiers, hasTurnRuleModifier } from "../../core/scopedModifiers";
@@ -118,7 +119,7 @@ function xg6bFieldBpBonus(state: GameState, playerId: PlayerId, instance: CardIn
   let bonus = 0;
   const enemyId = enemyOf(playerId);
   // XG6-023 データスハイパー【ハイパーパンチ】「敵軍Lユニットがあれば、これはBP+5000される。」（atwiki/page-2293）
-  if (isCardId(instance.cardId, "XG6-023") && fieldUnitsOf(state, enemyId).some((c) => state.definitions[c.cardId]?.size === "L")) bonus += 5000;
+  if (isCardId(instance.cardId, "XG6-023") && fieldUnitsOf(state, enemyId).some((c) => unitOnlySize(state.definitions, c) === "L")) bonus += 5000;
   // XG6-029 強化スカイライダー「※これは特徴「仮面ライダー」を持つ自軍コマンド1つにつきBP+500される。」（atwiki/page-2323）
   if (isCardId(instance.cardId, "XG6-029")) {
     bonus += 500 * state.players[playerId].command.filter((c) => (state.definitions[c.cardId]?.features ?? []).includes("仮面ライダー")).length;
@@ -147,7 +148,7 @@ export function xg6DefenderBlocksAttack(
   // XG6-065 サブマシーン【友情の証】「これは自軍Lユニットがあれば、敵軍ユニットにアタックされない。」（エリアを問わない）
   if (defender && isCardId(defender.cardId, "XG6-065")) return fieldUnitsOf(state, defenderPlayerId).some((c) => sizeOf(state, c) === "L");
   if (!defender || !isCardId(defender.cardId, "XG6-030")) return false;
-  if (state.definitions[attacker.cardId]?.size !== "S") return false;
+  if (unitOnlySize(state.definitions, attacker) !== "S") return false;
   const command = state.players[defenderPlayerId].command;
   return command.length > 0 && command.every((c) => c.commandHeld);
 }
@@ -255,6 +256,8 @@ export function xg6GrantsBlast(state: Pick<GameState, "players" | "definitions">
 // XG6-045〜XG6-065 の継続効果
 
 function sizeOf(state: Pick<GameState, "definitions">, card: CardInstance): string | undefined {
+  // 「S/Lユニット」の判定なのでビークルは除く（core/catalog.ts unitOnlySize）。
+  if (state.definitions[card.cardId]?.type === "vehicle") return undefined;
   return card.sizeOverride ?? state.definitions[card.cardId]?.size;
 }
 

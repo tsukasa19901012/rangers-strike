@@ -9,7 +9,7 @@ import { hasNameOrAlias } from "../../core/cardNames";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
-import { cardCategories, effectiveCommandCategories, getDefinition, isVehicle, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { cardCategories, effectiveCommandCategories, getDefinition, isVehicle, unitEffectiveCategories, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { logicalBattlePosition } from "../battleLine";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
@@ -93,7 +93,7 @@ export function xg3DefenderBlocksAttack(
     if (!cardHasKeyword(state.definitions, attacker.cardId, "wing", { state, playerId: attackerPlayerId })) return true;
   }
   // XG3-054 牛鬼【受け止める覚悟】「これはMAを持たない敵軍Sユニットにアタックされない」（いまのカテゴリ。atwiki/page-1918）。
-  if (isSameCardIdentity(defender.cardId, "XG3-054") && unitSizeOf(state.definitions, attacker) === "S") {
+  if (isSameCardIdentity(defender.cardId, "XG3-054") && unitOnlySize(state.definitions, attacker) === "S") {
     const zone = state.players[attackerPlayerId].battle.some((c) => c.instanceId === attacker.instanceId) ? "battle" : "rush";
     if (!(unitEffectiveCategories(state, attackerPlayerId, attacker, zone) as string[]).includes("MA")) return true;
   }
@@ -133,7 +133,7 @@ function isCarTarget(state: View, ownerId: PlayerId, card: CardInstance): boolea
 export function xg3AttackerCanAttackRush(state: View, attackerPlayerId: PlayerId, attacker: CardInstance): boolean {
   const battle = state.players[attackerPlayerId].battle;
   const i = battle.findIndex((c) => c.instanceId === attacker.instanceId);
-  if (i <= 0 || attacker.mountedOnInstanceId || unitSizeOf(state.definitions, attacker) !== "S") return false;
+  if (i <= 0 || attacker.mountedOnInstanceId || unitOnlySize(state.definitions, attacker) !== "S") return false;
   const prev = battle[i - 1]!;
   const vehicleId = isSameVehicleTextIdentity(prev.cardId, "XG3-077") ? prev.instanceId : prev.mountedOnInstanceId;
   if (!vehicleId) return false;
@@ -220,7 +220,7 @@ function gekiBlueApplies(state: View, playerId: PlayerId, instance: CardInstance
   if (!(state.xg3?.gekiBlue ?? []).some((g) => g.ownerId === playerId && g.turn === state.turn)) return false;
   const battle = state.players[playerId].battle;
   if (battle[1]?.instanceId !== instance.instanceId) return false;
-  if (unitSizeOf(state.definitions, instance) !== "M") return false;
+  if (unitOnlySize(state.definitions, instance) !== "M") return false;
   return (getDefinition(state.definitions, instance.cardId)?.features ?? []).includes("激気") || xg3AddedFeatures(state, instance).includes("激気");
 }
 

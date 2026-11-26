@@ -5,7 +5,7 @@
  */
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardCategories, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
+import { cardCategories, effectiveBp, getDefinition, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent, performDeckDraws, turnPlayerOf } from "../../core/helpers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { patchPlayer } from "../playerPatches";
@@ -522,7 +522,7 @@ const DV_TARGET_EFFECT_ID = "xg4016_dv_defender_target";
 
 XG4_KEYWORDS["XG4-016::dv_defender"] = (state, ctx) => {
   if (!ownTurn(state, ctx.playerId)) return { state, detail: "xg4016:not_own_turn" };
-  const ids = fieldUnits(state, ctx.playerId).filter((c) => unitSizeOf(state.definitions, c) === "L").map((c) => c.instanceId);
+  const ids = fieldUnits(state, ctx.playerId).filter((c) => unitOnlySize(state.definitions, c) === "L").map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "xg4016:no_l" };
   return {
     state: openAfter(state, { ...base(ctxBase(ctx), "XG4-016"), effectId: DV_L_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true }),
@@ -690,7 +690,7 @@ export function xg4aBattleCounterConditionMet(state: GameState, defenderId: Play
   if (!isCard(cardId, KARAKURI_MANTLE_CARD_ID)) return false;
   if (battle.defenderPlayerId !== defenderId || battle.effectBattle || battle.battleCancelled) return false;
   const defender = fieldUnits(state, defenderId).find((c) => c.instanceId === battle.defenderInstanceId);
-  return !!defender && unitSizeOf(state.definitions, defender) === "L";
+  return !!defender && unitOnlySize(state.definitions, defender) === "L";
 }
 
 export function applyXg4aBattleCounter(state: GameState, defenderId: PlayerId, pending: PendingBattle): { state: GameState; pending: PendingBattle; detail: string } {

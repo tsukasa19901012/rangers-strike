@@ -8,7 +8,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { drawOne, opponent } from "../../core/helpers";
-import { effectiveBp, effectiveCommandCategories, getDefinition, unitSizeOf } from "../../core/catalog";
+import { effectiveBp, effectiveCommandCategories, getDefinition, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import type { GrantKeywordContext } from "../../dsl/grantKeyword";
 import { unitFeatures } from "../addedFeatures";
 import { patchPlayer } from "../playerPatches";
@@ -107,7 +107,7 @@ const GT_SWORD_EFFECT_ID = "xg1_023_gt_sword";
 XG1_KEYWORDS["XG1-023::gt_sword"] = (state, ctx) => {
   const enemyId = opponent(ctx.playerId);
   const ids = state.players[enemyId].battle
-    .filter((c) => unitSizeOf(state.definitions, c) === "S" && effectiveBp(state, enemyId, c) >= 4000 && selectableEnemy(state, ctx.playerId, "XG1-023", c))
+    .filter((c) => unitOnlySize(state.definitions, c) === "S" && effectiveBp(state, enemyId, c) >= 4000 && selectableEnemy(state, ctx.playerId, "XG1-023", c))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "xg1_023:no_targets" };
   return { state: openAfter(state, pickOne(ctxBase(ctx), "XG1-023", GT_SWORD_EFFECT_ID, ids, false)), detail: GT_SWORD_EFFECT_ID };
@@ -202,7 +202,7 @@ const DORUDORU_TARGET_EFFECT_ID = "xg1_031_dorudoru_target";
 
 XG1_KEYWORDS["XG1-031::dorudoru"] = (state, ctx) => {
   const ids = state.players[ctx.playerId].rush
-    .filter((c) => unitSizeOf(state.definitions, c) === "M" && unitFeatures(state, ctx.playerId, c).includes("炎神") && numericComboNumber(state, c.cardId) !== null)
+    .filter((c) => unitOnlySize(state.definitions, c) === "M" && unitFeatures(state, ctx.playerId, c).includes("炎神") && numericComboNumber(state, c.cardId) !== null)
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "xg1_031:no_engine" };
   return { state: openAfter(state, pickOne(ctxBase(ctx), "XG1-031", DORUDORU_EFFECT_ID, ids, true)), detail: DORUDORU_EFFECT_ID };
@@ -237,7 +237,7 @@ const HOHO_TARGET_EFFECT_ID = "xg1_032_hoho_dan_target";
 
 XG1_KEYWORDS["XG1-032::hoho_dan"] = (state, ctx) => {
   const ids = state.players[ctx.playerId].rush
-    .filter((c) => unitSizeOf(state.definitions, c) === "M" && unitFeatures(state, ctx.playerId, c).includes("激気"))
+    .filter((c) => unitOnlySize(state.definitions, c) === "M" && unitFeatures(state, ctx.playerId, c).includes("激気"))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "xg1_032:no_geki" };
   return { state: openAfter(state, pickOne(ctxBase(ctx), "XG1-032", HOHO_EFFECT_ID, ids, true)), detail: HOHO_EFFECT_ID };

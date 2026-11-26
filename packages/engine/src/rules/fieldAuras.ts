@@ -13,7 +13,7 @@ import { hellSaturnGrantCount } from "./hellSaturn";
 import { activeNamedEffect } from "./ncGatedEffects";
 import { countActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { effectiveCommandCategories, getDefinition, cardName, unitSizeOf } from "../core/catalog";
+import { effectiveCommandCategories, getDefinition, cardName, unitOnlySize, unitSizeOf } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
@@ -230,13 +230,13 @@ export function passiveNamedFieldBpBonus(
   }
 
   // ルール: R-CONT-01 同じ継続効果は枚数分重複する（RS-045 / RS-037 は体数分 BP+1000）
-  if (role === "defending" && unitSizeOf(state.definitions, instance) === "M" && categoriesInclude(def.category, "OT")) {
+  if (role === "defending" && unitOnlySize(state.definitions, instance) === "M" && categoriesInclude(def.category, "OT")) {
     bonus +=
       1000 *
       countActiveFieldKeyword(state, playerId, "over_technology_m_bp_plus_on_attacked", ["rush"]);
   }
 
-  if (role === "attacking" && unitSizeOf(state.definitions, instance) === "M" && categoriesInclude(def.category, "WB")) {
+  if (role === "attacking" && unitOnlySize(state.definitions, instance) === "M" && categoriesInclude(def.category, "WB")) {
     bonus += 1000 * state.players[playerId].rush.filter((c) => c.cardId === "RS-037").length;
   }
 
@@ -244,7 +244,7 @@ export function passiveNamedFieldBpBonus(
   // ルール: R-CONT-01（体数分重複）、R-BP-02（BP0 以下はルールで撃破）
   if (
     role === "general" &&
-    def.size === "S" &&
+    unitOnlySize(state.definitions, instance) === "S" &&
     state.players[playerId].battle.some((c) => c.instanceId === instance.instanceId)
   ) {
     bonus -= 500 * state.players[opponent(playerId)].battle.filter((c) => c.cardId === "RK-046").length;

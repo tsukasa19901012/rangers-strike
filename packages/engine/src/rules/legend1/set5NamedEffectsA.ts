@@ -605,7 +605,7 @@ registerOptionalEffect(ECHO_CONFIRM_EFFECT_ID, {
 
 function echoDestroyTargets(state: GameState, ownerId: PlayerId): string[] {
   return fieldUnits(state, opponent(ownerId))
-    .filter((c) => defOf(state, c.cardId)?.size === "S")
+    .filter((c) => defOf(state, c.cardId)?.type === "unit" && defOf(state, c.cardId)?.size === "S")
     .map((c) => c.instanceId);
 }
 
@@ -843,7 +843,7 @@ function resolveMagRepair(state: GameState, playerId: PlayerId, instanceId: stri
 export function applyVrvMasterOnRush(state: GameState, playerId: PlayerId, rushedInstanceId: string): GameState {
   const player = state.players[playerId];
   const rushed = player.rush.find((c) => c.instanceId === rushedInstanceId);
-  if (!rushed || defOf(state, rushed.cardId)?.size !== "S") return state;
+  if (!rushed || defOf(state, rushed.cardId)?.type !== "unit" || defOf(state, rushed.cardId)?.size !== "S") return state;
   const masters = player.rush.filter((c) => c.cardId === "RS-299" && c.instanceId !== rushedInstanceId);
   let next = state;
   // オモテにしたカードは公開情報。両プレイヤーの UI が見られるよう記録する（記録しないと何も起きていないように見えた）。

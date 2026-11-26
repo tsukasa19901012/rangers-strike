@@ -4,7 +4,7 @@
  * 選択の組み立ては rules/rm/rm1Effects.ts の部品（openAfter・close・proceed 等）を使う。
  */
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition, isSmallUnit, unitSizeOf } from "../../core/catalog";
+import { unitOnlySize, cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition, isSmallUnit, unitSizeOf } from "../../core/catalog";
 import { opponent, performDeckDraws, turnPlayerOf } from "../../core/helpers";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import type { GrantKeywordContext } from "../../dsl/grantKeyword";
@@ -50,7 +50,7 @@ function isUnit(state: Pick<GameState, "definitions">, cardId: string): boolean 
 }
 
 function sizeNow(state: GameState, card: CardInstance): string | undefined {
-  return unitSizeOf(state.definitions, card);
+  return unitOnlySize(state.definitions, card);
 }
 
 /** 場のユニット1体を持ち主のパワーゾーンにダメージにして置く選択（resolver は POWER_DAMAGE_PICK）。 */

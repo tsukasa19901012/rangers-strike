@@ -16,7 +16,7 @@ import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent, turnPlayerOf } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { shuffleCards } from "../../core/deckShuffle";
@@ -583,7 +583,7 @@ export function rk16OnBattleDestroy(
   const vehicle = vehicleId ? findField(state, winnerId, vehicleId) : undefined;
   if (!vehicle || !isSameVehicleTextIdentity(vehicle.cardId, "RK-324")) return state;
   const defeated = state.players[defeatedOwnerId].discard.find((c) => c.instanceId === defeatedInstanceId);
-  if (!defeated || unitSizeOf(state.definitions, defeated) !== "S") return state;
+  if (!defeated || unitOnlySize(state.definitions, defeated) !== "S") return state;
   return openOrQueue(state, {
     ...confirmChoice({ playerId: winnerId, phasePlayerId: turnPlayerOf(state), sourceInstanceId: vehicle.instanceId }, "RK-324", BOOST_EFFECT_ID),
     rk16Meta: { picked: defeatedInstanceId, owner: defeatedOwnerId },

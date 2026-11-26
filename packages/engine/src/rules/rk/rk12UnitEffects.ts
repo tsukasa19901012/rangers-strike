@@ -16,7 +16,7 @@
  */
 import { fusionMaterialAliasRequiresNoOwnL, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
-import { canPlayOperationExceptCommandHold, cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { canPlayOperationExceptCommandHold, cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent, turnPlayerOf } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { shuffleCards } from "../../core/deckShuffle";
@@ -875,7 +875,7 @@ function namesOf(state: GameState, ownerId: PlayerId, cardId: string): string[] 
   const names = [d.name];
   const m = (d.text ?? "").match(/※(?:自軍Lユニットがなければ、)?これは「([^」]+)」としてつかえる/);
   if (m) {
-    const ownL = fieldUnits(state, ownerId).some((c) => unitSizeOf(state.definitions, c) === "L");
+    const ownL = fieldUnits(state, ownerId).some((c) => unitOnlySize(state.definitions, c) === "L");
     if (!(fusionMaterialAliasRequiresNoOwnL(d.text) && ownL)) names.push(...m[1]!.split(/[＋+]/));
   }
   return names;

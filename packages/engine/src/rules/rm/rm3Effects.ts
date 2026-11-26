@@ -13,7 +13,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, unitEffectiveCategories, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent, turnPlayerOf } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { cardNotSelectableByOpponent } from "../../keywords/effectTargetability";
@@ -423,7 +423,7 @@ function bigCannonTargets(state: GameState, playerId: PlayerId): string[] {
 function drillTargets(state: GameState, playerId: PlayerId): string[] {
   const enemyId = opponent(playerId);
   return fieldUnits(state, enemyId)
-    .filter((c) => unitSizeOf(state.definitions, c) === "M" && !rk1IsSmallNow(state, c) && !c.commandHeld && unitFeatures(state, enemyId, c).includes("メカ") && selectableEnemy(state, playerId, "RM-053", c))
+    .filter((c) => unitOnlySize(state.definitions, c) === "M" && !rk1IsSmallNow(state, c) && !c.commandHeld && unitFeatures(state, enemyId, c).includes("メカ") && selectableEnemy(state, playerId, "RM-053", c))
     .map((c) => c.instanceId);
 }
 

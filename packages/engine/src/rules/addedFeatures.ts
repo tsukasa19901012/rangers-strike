@@ -17,7 +17,7 @@ import { getPlayerModifiers } from "../core/scopedModifiers";
 import { rk1AddedUnitFeatures } from "./rk/rk1Features";
 import { rk2FeaturesStripped } from "./rk/rk2Features";
 import { rk6AddedFeatures } from "./rk/rk6Fields";
-import { unitSizeOf } from "../core/catalog";
+import { unitOnlySize, unitSizeOf } from "../core/catalog";
 
 export const DEUS_GENE_RULE_ID = "deus_gene_features";
 export const KIRIGAKURE_RULE_ID = "kirigakure_features";
@@ -69,7 +69,7 @@ export function unitFeatures(
   // RS-429 マスター・シャーフー【暮らしの中に修行あり】: 自軍ラッシュエリアにある間、すべての S ユニットの特徴に「激気」を追加する
   // （自軍・敵軍とも。atwiki/page-508）。
   if (
-    unitSizeOf(state.definitions, instance) === "S" &&
+    unitOnlySize(state.definitions, instance) === "S" &&
     (state.players.player1.rush.some((c) => c.cardId === "RS-429") ||
       state.players.player2.rush.some((c) => c.cardId === "RS-429"))
   ) {

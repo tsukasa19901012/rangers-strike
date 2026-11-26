@@ -7,7 +7,7 @@
 import { openDeckLook } from "../deckLook";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
-import { getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
+import { getDefinition, parsePowerCost, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent, turnPlayerOf } from "../../core/helpers";
 import { countAvailablePower } from "../../core/power";
 import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
@@ -289,7 +289,7 @@ const KANBU_EFFECT_ID = "xg3074_kanbu";
 function kanbuReady(state: GameState, playerId: PlayerId, instanceId: string): boolean {
   const card = state.players[playerId].hand.find((c) => c.instanceId === instanceId);
   if (!card) return false;
-  if (fieldUnits(state, playerId).some((c) => unitSizeOf(state.definitions, c) === "L")) return false;
+  if (fieldUnits(state, playerId).some((c) => unitOnlySize(state.definitions, c) === "L")) return false;
   const cost = costNumber(state, card.cardId) ?? 0;
   return countAvailablePower(state, playerId) >= cost;
 }

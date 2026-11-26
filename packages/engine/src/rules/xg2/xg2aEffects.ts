@@ -5,7 +5,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardName, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { cardName, getDefinition, unitEffectiveCategories, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { addTurnRestrictionModifier } from "../../core/scopedModifiers";
@@ -111,7 +111,7 @@ function destroyMaybeAsDamage(state: GameState, ownerId: PlayerId, instanceId: s
   const from = zoneOfField(state, ownerId, instanceId);
   const found = findField(state, ownerId, instanceId);
   if (!from || !found) return state;
-  const isL = unitSizeOf(state.definitions, found) === "L";
+  const isL = unitOnlySize(state.definitions, found) === "L";
   return tryLeaveField(state, {
     ownerPlayerId: ownerId,
     instanceId,

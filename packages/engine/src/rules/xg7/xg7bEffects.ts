@@ -6,7 +6,7 @@
 import { lookCtx, openDeckLook } from "../deckLook";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
-import { commandCategoriesOf, cardName, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { commandCategoriesOf, cardName, getDefinition, unitEffectiveCategories, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { buildLogEntry } from "../../log/formatLog";
 import { drawOne, opponent, turnPlayerOf } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
@@ -376,7 +376,7 @@ const GREAT_STRIKE_EFFECT_ID = "xg7029_great_strike";
 function openGreatStrike(state: GameState, playerId: PlayerId, card: CardInstance, battleBeforeEnter: CardInstance[]): GameState {
   const left = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
   if (!left || !isCard(left.cardId, "XG7-029")) return state;
-  if (unitSizeOf(state.definitions, card) !== "L" || unitEffectiveCategories(state, playerId, card, "battle").length < 2) return state;
+  if (unitOnlySize(state.definitions, card) !== "L" || unitEffectiveCategories(state, playerId, card, "battle").length < 2) return state;
   const enemyId = opponent(playerId);
   const ids = fieldUnits(state, enemyId)
     .filter((c) => !cardHasKeyword(state.definitions, c.cardId, "wing", { state, playerId: enemyId }) && selectableEnemy(state, playerId, "XG7-029", c))

@@ -9,7 +9,7 @@ import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
 import { listDslEffectsForTrigger } from "../../dsl/effectLookup";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardCategories, getDefinition, parsePowerCost, unitSizeOf, effectiveBp } from "../../core/catalog";
+import { cardCategories, getDefinition, parsePowerCost, unitOnlySize, unitSizeOf, effectiveBp } from "../../core/catalog";
 import { countAvailablePower } from "../../core/power";
 import { effectivePowerCost, opponent, drawOne, turnPlayerOf } from "../../core/helpers";
 import { emitUnitLeftZoneAndResolve } from "../../events/emitUnitLeftZone";
@@ -382,7 +382,7 @@ ENTER_BATTLE_HOOKS.push((state, playerId, card, battleBeforeEnter) => {
   if (!isSameCardIdentity(card.cardId, LINER_BOY_CARD_ID)) return state;
   const left = battleBeforeEnter[battleBeforeEnter.length - 1];
   if (!left) return state;
-  const size = unitSizeOf(state.definitions, left) as string | undefined;
+  const size = unitOnlySize(state.definitions, left) as string | undefined;
   if (size !== "L" && size !== "XL") return state;
   if (!unitFeatures(state, playerId, left).includes("人型")) return state;
   return openAfter(state, {
@@ -587,7 +587,7 @@ KEYWORDS["XG3-013::reito_kosen"] = (state) => ({ state, detail: "xg3013:hook" })
 KEYWORDS["XG3-015::bear_strike"] = (state) => ({ state, detail: "xg3015:hook" });
 
 function isHumanL(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
-  return unitSizeOf(state.definitions, card) === "L" && unitFeatures(state, playerId, card).includes("人型");
+  return unitOnlySize(state.definitions, card) === "L" && unitFeatures(state, playerId, card).includes("人型");
 }
 
 function bearSpApplies(state: GameState, playerId: PlayerId): boolean {
@@ -808,7 +808,7 @@ ENTER_BATTLE_HOOKS.push((state, playerId, card, battleBeforeEnter) => {
   const left = battleBeforeEnter[battleBeforeEnter.length - 1];
   if (!left) return state;
   const src = KARAKURI.find((id) => isSameCardIdentity(left.cardId, id));
-  if (!src || unitSizeOf(state.definitions, card) !== "L") return state;
+  if (!src || unitOnlySize(state.definitions, card) !== "L") return state;
   const mine = fieldCategories(state, playerId, card);
   if (!fieldCategories(state, playerId, left).some((c) => mine.includes(c))) return state;
   const grant = { ownerId: playerId, instanceId: card.instanceId, partnerInstanceId: left.instanceId, sourceCardId: src, turn: state.turn };

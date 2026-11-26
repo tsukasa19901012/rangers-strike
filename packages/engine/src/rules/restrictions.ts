@@ -49,7 +49,7 @@ import {
   isUnit,
   isVehicle,
   unitEffectiveCategories,
-  unitSizeOf,
+  unitOnlySize, unitSizeOf,
 } from "../core/catalog";
 import {
   heldCallLeadMatchesCategories,
@@ -291,7 +291,7 @@ export function patSignerBlocksMove(
   unit: CardInstance,
 ): boolean {
   const def = getDefinition(state.definitions, unit.cardId);
-  if (unitSizeOf(state.definitions, unit) !== "M") return false;
+  if (unitOnlySize(state.definitions, unit) !== "M") return false;
 
   const bp = effectiveBp(state, playerId, unit);
   if (bp < 5000) return false;

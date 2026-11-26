@@ -5,7 +5,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardCategories, effectiveCommandCategories, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { cardCategories, effectiveCommandCategories, getDefinition, unitEffectiveCategories, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
@@ -93,7 +93,7 @@ export function enemySUnits(state: GameState, playerId: PlayerId, sourceCardId: 
 export const costNumber = rm1CostNumber;
 
 export function isSCard(state: Pick<GameState, "definitions">, card: CardInstance): boolean {
-  return unitSizeOf(state.definitions, card) === "S";
+  return unitOnlySize(state.definitions, card) === "S";
 }
 
 /** コマンドゾーンに置ける（5枚未満）か。 */

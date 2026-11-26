@@ -775,6 +775,8 @@ export function isValidPowerMaterial(
   rushingInstanceId: string,
 ): boolean {
   if (card.instanceId === rushingInstanceId) return false;
+  // 「自軍Sユニット」はユニットだけ。Sビークル（RK-058 マシンゼクトロン等）は使えない（RK-147 デンライナーイスルギ）。
+  if (getDefinition(definitions, card.cardId)?.type !== "unit") return false;
   return isSmallUnit(definitions, card);
 }
 

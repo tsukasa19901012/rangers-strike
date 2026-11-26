@@ -5,7 +5,7 @@ import { isDivingOrochi } from "../rules/errataCardEffects";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { commandCategoriesOf, getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories, unitSizeOf, type SizedCard } from "../core/catalog";
+import { commandCategoriesOf, getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories, unitOnlySize, unitSizeOf, type SizedCard } from "../core/catalog";
 import { findInZone, opponent } from "../core/helpers";
 import { lastBattleProtectsOtherS } from "../rules/promotedNcEffects";
 import { getCardDslDocument } from "./effectLookup";
@@ -353,7 +353,7 @@ function robotoughBpBonus(state: Pick<GameState, "definitions">, instance: CardI
   const cost =
     typeof def.powerCost === "number" ? def.powerCost : parseInt(String(def.powerCost), 10);
   if (
-    unitSizeOf(state.definitions, instance) === "S" &&
+    unitOnlySize(state.definitions, instance) === "S" &&
     cardCategories(def).includes("WB") &&
     !def.rushAdditionalCondition &&
     Number.isFinite(cost)

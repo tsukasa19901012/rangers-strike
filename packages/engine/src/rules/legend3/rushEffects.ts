@@ -1,7 +1,7 @@
 import { openDeckLook } from "../deckLook";
 import { getUnitEffectBlock, hasUnnamedRule } from "@rangers-strike/cards";
 import type { GameState, PendingEffectChoice, PlayerId } from "../../types/game";
-import { getDefinition, isSmallUnit, unitSizeOf } from "../../core/catalog";
+import { getDefinition, isSmallUnit, unitOnlySize, unitSizeOf } from "../../core/catalog";
 import { crossReductionFor } from "../../keywords/battleKeywords";
 import {
   battlePositionOneBased,
@@ -223,7 +223,7 @@ export function resolveLegend3OnRushEffects(
           nextState.players[enemyId].battle.find((c) => c.instanceId === id) ??
           nextState.players[enemyId].rush.find((c) => c.instanceId === id);
         if (!inst) return false;
-        return unitSizeOf(nextState.definitions, inst) === "L";
+        return unitOnlySize(nextState.definitions, inst) === "L";
       });
       if (targets.length > 0) {
         const withChoice = startSelectUnitChoice(nextState, {
